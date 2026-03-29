@@ -1,0 +1,57 @@
+---
+title: Divider
+description: Horizontal or vertical separator line.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# Divider
+
+Horizontal or vertical separator. Decorative by default (`aria-hidden`). Pass `decorative={false}` for a semantic separator.
+
+## Preview
+
+<ComponentPreview code={`
+import { Divider } from 'bare-ui'
+
+export default function App() {
+  return (
+    <div className="p-8 max-w-sm space-y-4">
+      <p className="text-sm text-gray-600">Section one content</p>
+      <Divider className="border-t border-gray-200" />
+      <p className="text-sm text-gray-600">Section two content</p>
+      <Divider className="border-t border-dashed border-gray-300" />
+      <p className="text-sm text-gray-600">Section three content</p>
+
+      <div className="flex items-center gap-4 h-8">
+        <span className="text-sm">Left</span>
+        <Divider orientation="vertical" className="border-l border-gray-300 h-full" />
+        <span className="text-sm">Right</span>
+      </div>
+    </div>
+  )
+}
+`} height={240} />
+
+## Usage
+
+```tsx
+import { Divider } from 'bare-ui'
+
+// Decorative (default)
+<Divider />
+
+// Semantic separator
+<Divider decorative={false} aria-label="Section break" />
+
+// Vertical
+<Divider orientation="vertical" />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Divider direction |
+| `decorative` | `boolean` | `true` | When `true`: `role="none"` + `aria-hidden`. When `false`: `role="separator"` + `aria-orientation` |
+| `...rest` | `HTMLAttributes<HTMLDivElement>` | — | Spread onto the element |

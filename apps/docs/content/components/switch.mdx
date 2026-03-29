@@ -1,0 +1,67 @@
+---
+title: Switch
+description: Toggle on/off with a thumb element and data-state.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# Switch
+
+Toggle component with a thumb element. Accessible — renders as a `<button role="switch">` with `aria-checked`.
+
+## Preview
+
+<ComponentPreview code={`
+import { Switch } from 'bare-ui'
+import { useState } from 'react'
+
+export default function App() {
+  const [enabled, setEnabled] = useState(false)
+
+  return (
+    <div className="p-8 flex items-center gap-3">
+      <Switch.Root
+        checked={enabled}
+        onCheckedChange={setEnabled}
+        className="relative inline-flex h-6 w-11 items-center rounded-full border-2 border-transparent transition-colors
+          [data-state=checked]:bg-blue-600 [data-state=unchecked]:bg-gray-200"
+      >
+        <Switch.Thumb className="inline-block h-4 w-4 rounded-full bg-white shadow transition-transform
+          [data-state=checked_&]:translate-x-5 [data-state=unchecked_&]:translate-x-0.5" />
+      </Switch.Root>
+      <span className="text-sm text-gray-700">{enabled ? 'Enabled' : 'Disabled'}</span>
+    </div>
+  )
+}
+`} height={100} />
+
+## Anatomy
+
+```tsx
+import { Switch } from 'bare-ui'
+
+<Switch.Root checked={on} onCheckedChange={setOn}>
+  <Switch.Thumb />
+</Switch.Root>
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `checked` | `boolean` | — | Controlled checked state |
+| `defaultChecked` | `boolean` | `false` | Initial state for uncontrolled use |
+| `onCheckedChange` | `(checked: boolean) => void` | — | Called when toggled |
+| `disabled` | `boolean` | `false` | Disables the switch |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-state` | Root, Thumb | `"checked"` / `"unchecked"` |
+| `data-disabled` | Root | Present when disabled |
+
+## Accessibility
+
+- `role="switch"` with `aria-checked` reflects the current state
+- Keyboard: Space toggles the switch

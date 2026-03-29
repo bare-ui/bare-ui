@@ -1,0 +1,82 @@
+---
+title: Hooks
+description: Publicly exported hooks from bare-ui.
+---
+
+# Hooks
+
+## `useInteractiveState`
+
+Tracks hover, keyboard focus, and press state for any element. This is the same hook used internally by Button, Accordion.Trigger, Modal.Close, and Drawer.Close — exported so you can build your own interactive components with identical state tracking.
+
+```tsx
+import { useInteractiveState } from 'bare-ui'
+
+function MyCard({ disabled }: { disabled?: boolean }) {
+  const { handlers, dataAttributes } = useInteractiveState({ disabled })
+
+  return (
+    <div
+      tabIndex={0}
+      role="button"
+      {...handlers}
+      {...dataAttributes}
+      className="
+        rounded-lg border p-4 cursor-pointer transition-all
+        [data-hover]:bg-gray-50
+        [data-active]:scale-95
+        [data-focus-visible]:ring-2
+        [data-disabled]:opacity-50 [data-disabled]:pointer-events-none
+      "
+    >
+      Card content
+    </div>
+  )
+}
+```
+
+### Returns
+
+| Key | Type | Description |
+|---|---|---|
+| `handlers` | `object` | Event handlers to spread onto the element |
+| `dataAttributes` | `object` | `data-hover`, `data-focus-visible`, `data-active`, `data-disabled` |
+| `isHovered` | `boolean` | Raw hover state |
+| `isFocusVisible` | `boolean` | Raw keyboard focus state |
+| `isActive` | `boolean` | Raw press state |
+
+### Options
+
+| Prop | Type | Description |
+|---|---|---|
+| `disabled` | `boolean` | Suppresses hover and active state when true; adds `data-disabled` |
+
+---
+
+## `useClickOutside`
+
+Fires a callback when the user clicks or taps outside a referenced element. Used internally by Dropdown and Search to close their menus.
+
+```tsx
+import { useRef } from 'react'
+import { useClickOutside } from 'bare-ui'
+
+function Popover() {
+  const ref = useRef<HTMLDivElement>(null)
+
+  useClickOutside(ref, () => setOpen(false))
+
+  return (
+    <div ref={ref}>
+      Popover content
+    </div>
+  )
+}
+```
+
+### Parameters
+
+| Param | Type | Description |
+|---|---|---|
+| `ref` | `RefObject<HTMLElement>` | Reference to the element to watch |
+| `handler` | `() => void` | Callback fired on outside click/tap |

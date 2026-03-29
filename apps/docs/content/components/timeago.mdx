@@ -1,0 +1,67 @@
+---
+title: Timeago
+description: Relative or formatted timestamp that updates live.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# Timeago
+
+Relative or formatted timestamp. In `isDuration` mode it updates live via a `setInterval`. Accepts `Date`, ISO string, or numeric timestamp.
+
+## Preview
+
+<ComponentPreview code={`
+import { Timeago } from 'bare-ui'
+
+export default function App() {
+  const now = new Date()
+  const fiveMinutesAgo = new Date(now - 5 * 60 * 1000)
+  const twoDaysAgo = new Date(now - 2 * 24 * 60 * 60 * 1000)
+
+  return (
+    <div className="p-8 space-y-3 text-sm text-gray-700">
+      <div className="flex gap-3">
+        <span className="text-gray-400 w-32">isDuration:</span>
+        <Timeago datetime={fiveMinutesAgo} isDuration />
+      </div>
+      <div className="flex gap-3">
+        <span className="text-gray-400 w-32">Formatted:</span>
+        <Timeago datetime={twoDaysAgo} />
+      </div>
+      <div className="flex gap-3">
+        <span className="text-gray-400 w-32">Time only:</span>
+        <Timeago datetime={now} timeOnly />
+      </div>
+    </div>
+  )
+}
+`} height={160} />
+
+## Usage
+
+```tsx
+import { Timeago } from 'bare-ui'
+
+// Live relative time ("5 minutes ago", "2 hours ago", "Just now")
+<Timeago datetime={new Date()} isDuration />
+
+// Formatted date ("Today, 09:00" / "15 Jun 2025, 09:00")
+<Timeago datetime="2025-06-15T09:00:00" />
+
+// Time only ("09:00")
+<Timeago datetime={new Date()} timeOnly />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `datetime` | `Date \| string \| number` | required | The timestamp to display |
+| `isDuration` | `boolean` | `false` | Show relative time ("5 minutes ago"); updates live |
+| `timeOnly` | `boolean` | `false` | Show only the time portion ("09:00") |
+| `className` | `string` | — | Applied to the `<time>` element |
+
+## Live updates
+
+In `isDuration` mode, the component sets a `setInterval` that recalculates the displayed string every minute. The `datetime` attribute on the `<time>` element always holds the original ISO timestamp for machine readability.

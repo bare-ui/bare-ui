@@ -1,0 +1,86 @@
+---
+title: OTP
+description: One-time password input with individual slots, auto-advance, and onComplete callback.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# OTP
+
+One-time password input with individual slot elements. Auto-advances on type, handles Backspace, fires `onComplete` when all slots are filled. Supports alphanumeric mode.
+
+## Preview
+
+<ComponentPreview code={`
+import { OTP } from 'bare-ui'
+import { useState } from 'react'
+
+export default function App() {
+  const [code, setCode] = useState('')
+
+  return (
+    <div className="p-8 space-y-4">
+      <OTP.Root
+        length={6}
+        onChange={setCode}
+        onComplete={(c) => alert('Code: ' + c)}
+        className="flex gap-2"
+      >
+        {[0,1,2].map(i => (
+          <OTP.Slot key={i} index={i}
+            className="w-10 h-12 rounded-lg border-2 border-gray-300 text-center text-lg font-bold outline-none
+              focus:border-blue-500 focus:ring-2 focus:ring-blue-200
+              [data-active]:border-blue-500" />
+        ))}
+        <OTP.Separator className="flex items-center text-gray-400 font-bold text-lg">—</OTP.Separator>
+        {[3,4,5].map(i => (
+          <OTP.Slot key={i} index={i}
+            className="w-10 h-12 rounded-lg border-2 border-gray-300 text-center text-lg font-bold outline-none
+              focus:border-blue-500 focus:ring-2 focus:ring-blue-200" />
+        ))}
+      </OTP.Root>
+      {code.length === 6 && <p className="text-sm text-green-600 font-medium">Code complete: {code}</p>}
+    </div>
+  )
+}
+`} height={160} />
+
+## Anatomy
+
+```tsx
+import { OTP } from 'bare-ui'
+
+<OTP.Root length={6} onComplete={(code) => console.log(code)}>
+  <OTP.Slot index={0} />
+  <OTP.Slot index={1} />
+  <OTP.Slot index={2} />
+  <OTP.Separator />
+  <OTP.Slot index={3} />
+  <OTP.Slot index={4} />
+  <OTP.Slot index={5} />
+</OTP.Root>
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `length` | `number` | required | Total number of slots |
+| `value` | `string` | — | Controlled value |
+| `defaultValue` | `string` | `''` | Initial value for uncontrolled use |
+| `onChange` | `(value: string) => void` | — | Called on every change |
+| `onComplete` | `(value: string) => void` | — | Called when all slots are filled |
+| `disabled` | `boolean` | `false` | Disables all slots |
+| `alphanumeric` | `boolean` | `false` | Allows letters in addition to digits |
+
+## Slot props
+
+| Prop | Type | Description |
+|---|---|---|
+| `index` | `number` | Which slot this element represents (0-based) |
+
+## Root data attributes
+
+| Attribute | When present |
+|---|---|
+| `data-complete` | All slots are filled |

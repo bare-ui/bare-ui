@@ -1,0 +1,124 @@
+---
+title: Search
+description: Search input with dropdown results, keyboard navigation, and loading state.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# Search
+
+Search input with a dropdown results list. Keyboard navigation with Arrow keys, Enter to select, Escape to close. Supports loading state and empty state.
+
+## Preview
+
+<ComponentPreview code={`
+import { Search } from 'bare-ui'
+import { useState, useMemo } from 'react'
+
+const ALL = [
+  { id: 'react', title: 'React' },
+  { id: 'vue', title: 'Vue' },
+  { id: 'svelte', title: 'Svelte' },
+  { id: 'solid', title: 'Solid' },
+  { id: 'angular', title: 'Angular' },
+]
+
+export default function App() {
+  const [query, setQuery] = useState('')
+  const [selected, setSelected] = useState(null)
+
+  const results = useMemo(() =>
+    ALL.filter(o => o.title.toLowerCase().includes(query.toLowerCase())),
+    [query]
+  )
+
+  return (
+    <div className="p-8 max-w-xs relative">
+      <Search.Root
+        onSearchChange={setQuery}
+        onSelect={(opt) => setSelected(opt)}
+      >
+        <Search.Input
+          placeholder="Search frameworks..."
+          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+        />
+        <Search.Content className="absolute z-10 mt-1 w-full rounded-md border border-gray-200 bg-white shadow-lg overflow-hidden">
+          {results.map((opt) => (
+            <Search.Item key={opt.id} option={opt}
+              className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 [data-highlighted]:bg-blue-50 [data-highlighted]:text-blue-700">
+              {opt.title}
+            </Search.Item>
+          ))}
+          <Search.Empty className="px-3 py-2 text-sm text-gray-400">
+            No results found
+          </Search.Empty>
+        </Search.Content>
+      </Search.Root>
+      {selected && <p className="mt-3 text-xs text-gray-400">Selected: {selected.title}</p>}
+    </div>
+  )
+}
+`} height={200} />
+
+## Anatomy
+
+```tsx
+import { Search } from 'bare-ui'
+import type { SearchOption } from 'bare-ui'
+
+const options: SearchOption[] = [
+  { id: 'react', title: 'React' },
+]
+
+<Search.Root onSearchChange={setQuery} onSelect={(opt) => console.log(opt)} loading={isLoading}>
+  <Search.Input placeholder="Search..." />
+  <Search.Content>
+    {options.map((opt) => (
+      <Search.Item key={opt.id} option={opt}>
+        {opt.title}
+      </Search.Item>
+    ))}
+    <Search.Empty>No results found</Search.Empty>
+  </Search.Content>
+</Search.Root>
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `onSearchChange` | `(query: string) => void` | — | Called on every keystroke |
+| `onSelect` | `(option: SearchOption) => void` | — | Called when an item is selected |
+| `loading` | `boolean` | `false` | Adds `data-loading` to root |
+| `searchDelay` | `number` | `0` | Debounce delay for `onSearchChange` in ms |
+
+## SearchOption type
+
+```ts
+type SearchOption = {
+  id: string | number
+  title: string
+  subtitle?: string
+}
+```
+
+## Item data attributes
+
+| Attribute | When present |
+|---|---|
+| `data-highlighted` | Item is keyboard-focused / active |
+
+## Root data attributes
+
+| Attribute | When present |
+|---|---|
+| `data-loading` | `loading` prop is true |
+
+## Keyboard navigation
+
+| Key | Action |
+|---|---|
+| `ArrowDown` | Move highlight down |
+| `ArrowUp` | Move highlight up |
+| `Enter` | Select highlighted item |
+| `Escape` | Close dropdown, clear highlight |

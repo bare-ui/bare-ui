@@ -1,0 +1,78 @@
+---
+title: Rating
+description: Star rating with hover preview, read-only, and disabled modes.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# Rating
+
+Star rating component. Hover preview shows the prospective rating before clicking. Supports read-only (non-interactive) and disabled modes.
+
+## Preview
+
+<ComponentPreview code={`
+import { Rating } from 'bare-ui'
+import { useState } from 'react'
+
+export default function App() {
+  const [value, setValue] = useState(3)
+
+  return (
+    <div className="p-8 space-y-4">
+      <div className="space-y-1">
+        <p className="text-xs text-gray-500">Interactive</p>
+        <Rating
+          value={value}
+          onChange={setValue}
+          max={5}
+          className="flex gap-1"
+          starClassName="text-2xl cursor-pointer transition-colors [data-filled]:text-yellow-400 [data-hover]:text-yellow-300 text-gray-300"
+        />
+        <p className="text-xs text-gray-400">{value} / 5</p>
+      </div>
+      <div className="space-y-1">
+        <p className="text-xs text-gray-500">Read-only</p>
+        <Rating value={4} readOnly max={5} className="flex gap-1"
+          starClassName="text-2xl [data-filled]:text-yellow-400 text-gray-300" />
+      </div>
+    </div>
+  )
+}
+`} height={200} />
+
+## Usage
+
+```tsx
+import { Rating } from 'bare-ui'
+
+// Interactive
+<Rating defaultValue={3} max={5} onChange={(v) => console.log(v)} />
+
+// Controlled
+<Rating value={rating} onChange={setRating} />
+
+// Read-only (renders as role="img")
+<Rating value={4} readOnly />
+
+// Disabled
+<Rating value={2} disabled />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `number` | — | Controlled rating value |
+| `defaultValue` | `number` | `0` | Initial value for uncontrolled use |
+| `onChange` | `(value: number) => void` | — | Called when rating changes |
+| `max` | `number` | `5` | Total number of stars |
+| `readOnly` | `boolean` | `false` | Non-interactive; renders `role="img"` |
+| `disabled` | `boolean` | `false` | Disables interaction |
+
+## Star data attributes
+
+| Attribute | When present |
+|---|---|
+| `data-filled` | This star is at or below the current rating |
+| `data-hover` | Mouse is hovering this star (hover preview) |

@@ -25,3 +25,10 @@ dist-ssr
 
 *storybook.log
 storybook-static
+
+# Next.js (docs app)
+.next
+out
+
+# Turbo
+.turbo

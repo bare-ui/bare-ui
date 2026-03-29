@@ -1,0 +1,61 @@
+---
+title: Avatar
+description: Image with a fallback for loading errors or missing sources.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# Avatar
+
+Image with a lazy-loading fallback. Fallback renders automatically when `src` is empty or the image fails to load.
+
+## Preview
+
+<ComponentPreview code={`
+import { Avatar } from 'bare-ui'
+
+export default function App() {
+  return (
+    <div className="p-8 flex gap-4 items-center">
+      {/* With a valid image */}
+      <Avatar.Root className="relative w-12 h-12 rounded-full overflow-hidden bg-gray-100">
+        <Avatar.Image
+          src="https://i.pravatar.cc/100"
+          alt="User avatar"
+          className="w-full h-full object-cover [data-status=loading]:opacity-0 [data-status=loaded]:opacity-100 transition-opacity"
+        />
+        <Avatar.Fallback className="absolute inset-0 flex items-center justify-center text-gray-500 font-semibold text-sm">
+          JD
+        </Avatar.Fallback>
+      </Avatar.Root>
+
+      {/* Fallback shown — broken src */}
+      <Avatar.Root className="relative w-12 h-12 rounded-full overflow-hidden bg-gray-200">
+        <Avatar.Image src="" alt="Missing" className="w-full h-full object-cover" />
+        <Avatar.Fallback className="absolute inset-0 flex items-center justify-center text-gray-500 font-semibold text-sm">
+          AB
+        </Avatar.Fallback>
+      </Avatar.Root>
+    </div>
+  )
+}
+`} height={120} />
+
+## Anatomy
+
+```tsx
+import { Avatar } from 'bare-ui'
+
+<Avatar.Root>
+  <Avatar.Image src="/avatar.jpg" alt="User avatar" />
+  <Avatar.Fallback>JD</Avatar.Fallback>
+</Avatar.Root>
+```
+
+## Image data attributes
+
+| Attribute | Values |
+|---|---|
+| `data-status` | `"loading"` → `"loaded"` / `"error"` |
+
+`Fallback` renders when `data-status` is `"error"` or `src` is empty.

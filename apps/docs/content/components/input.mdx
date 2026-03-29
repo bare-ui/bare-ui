@@ -1,0 +1,121 @@
+---
+title: Input
+description: Compound text input with consumer-controlled error state.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# Input
+
+Compound component for text inputs. Works controlled and uncontrolled. Validation is entirely consumer-controlled — set `invalidType` to trigger the error state.
+
+## Preview
+
+<ComponentPreview code={`
+import { Input } from 'bare-ui'
+import { useState } from 'react'
+
+export default function App() {
+  const [email, setEmail] = useState('')
+  const [invalidType, setInvalidType] = useState('')
+
+  function validate() {
+    if (!email) setInvalidType('required')
+    else if (!email.includes('@')) setInvalidType('email')
+    else setInvalidType('')
+  }
+
+  return (
+    <div className="p-8 max-w-sm space-y-1">
+      <Input.Root
+        value={email}
+        onChange={setEmail}
+        invalidType={invalidType}
+        isRequired
+        errorMessage={{
+          required: 'Email is required',
+          email: 'Enter a valid email address',
+        }}
+      >
+        <Input.Label className="block text-sm font-medium text-gray-700">Email</Input.Label>
+        <Input.Field
+          type="email"
+          placeholder="you@example.com"
+          onBlur={validate}
+          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none
+            [data-active]:border-blue-500 [data-active]:ring-2 [data-active]:ring-blue-200
+            [data-invalid]:border-red-500 [data-invalid]:ring-2 [data-invalid]:ring-red-100"
+        />
+        <Input.Error className="mt-1 text-xs text-red-600" />
+      </Input.Root>
+      <button onClick={validate} className="mt-3 text-xs text-blue-600 underline">Validate</button>
+    </div>
+  )
+}
+`} height={200} />
+
+## Anatomy
+
+```tsx
+import { Input } from 'bare-ui'
+
+<Input.Root value={value} onChange={setValue}>
+  <Input.Label>Email</Input.Label>
+  <Input.Field type="email" placeholder="you@example.com" />
+  <Input.Error />
+</Input.Root>
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `string` | — | Controlled value |
+| `defaultValue` | `string` | `''` | Initial value for uncontrolled use |
+| `onChange` | `(value: string) => void` | — | Called on every keystroke |
+| `onFocus` | `() => void` | — | Called when field gains focus |
+| `onBlur` | `() => void` | — | Called when field loses focus |
+| `invalidType` | `string` | `''` | Key into `errorMessage`; set by consumer when invalid |
+| `errorMessage` | `Record<string, string>` | `{}` | Map of error keys to display strings |
+| `isRequired` | `boolean` | `false` | Shows `*` in label; sets `aria-required` |
+| `isSuccess` | `boolean` | `false` | Adds `data-success` to field |
+| `id` | `string` | auto-generated | Links label `htmlFor` to field `id` |
+
+## Field data attributes
+
+| Attribute | When present |
+|---|---|
+| `data-active` | Field is focused |
+| `data-invalid` | `invalidType` is non-empty |
+| `data-success` | `isSuccess` is true |
+
+`aria-invalid="true"` and `aria-required="true"` are also set automatically.
+
+## Validation pattern
+
+bare-ui does not validate — you decide when and what is invalid:
+
+```tsx
+const [value, setValue] = useState('')
+const [invalidType, setInvalidType] = useState('')
+
+function handleBlur() {
+  if (!value) setInvalidType('required')
+  else setInvalidType('')
+}
+
+function handleSubmit() {
+  if (!value) { setInvalidType('required'); return }
+  // proceed...
+}
+
+<Input.Root
+  value={value}
+  onChange={setValue}
+  invalidType={invalidType}
+  errorMessage={{ required: 'This field is required' }}
+>
+  <Input.Field onBlur={handleBlur} />
+  <Input.Error />
+</Input.Root>
+```

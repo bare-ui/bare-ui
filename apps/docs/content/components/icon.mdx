@@ -1,0 +1,71 @@
+---
+title: Icon
+description: Renders consumer-supplied SVG strings by name. Ships no SVG assets.
+---
+
+# Icon
+
+Renders an SVG from a consumer-supplied icon map. bare-ui ships **no SVG assets** — you bring your own.
+
+## Usage
+
+```tsx
+import { Icon } from 'bare-ui'
+
+// Bring your own SVG strings
+const icons = {
+  home: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>',
+  settings: '<svg viewBox="0 0 24 24" fill="currentColor">...</svg>',
+}
+
+// Decorative (aria-hidden by default)
+<Icon type="home" icons={icons} size="medium" />
+
+// Accessible — sets role="img" and aria-label
+<Icon type="home" icons={icons} label="Go home" />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `type` | `string` | required | Key into `icons` map |
+| `icons` | `Record<string, string>` | required | Map of name → SVG string |
+| `size` | `Size` | `'medium'` | Sets `data-size` |
+| `label` | `string` | — | If provided: `role="img"` + `aria-label`; otherwise `aria-hidden="true"` |
+| `className` | `string` | — | Applied to the wrapper element |
+
+## Size values
+
+`'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge'`
+
+Use `data-size` to set dimensions:
+
+```css
+[data-size="small"]  { width: 1rem;    height: 1rem; }
+[data-size="medium"] { width: 1.25rem; height: 1.25rem; }
+[data-size="large"]  { width: 1.5rem;  height: 1.5rem; }
+```
+
+## Typical icon map setup
+
+```ts
+// icons.ts
+export const icons = {
+  arrow_right: '<svg viewBox="0 0 24 24">...</svg>',
+  check: '<svg viewBox="0 0 24 24">...</svg>',
+  x: '<svg viewBox="0 0 24 24">...</svg>',
+}
+```
+
+Pass the map once from a parent or via context to avoid prop-drilling:
+
+```tsx
+// Use a wrapper component in your design system
+import { Icon as BareIcon } from 'bare-ui'
+import { icons } from './icons'
+
+export function Icon(props: Omit<React.ComponentProps<typeof BareIcon>, 'icons'>) {
+  return <BareIcon icons={icons} {...props} />
+}
+```

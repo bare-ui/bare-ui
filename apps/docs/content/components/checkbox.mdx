@@ -1,0 +1,80 @@
+---
+title: Checkbox
+description: Multi-select checkbox group with controlled state.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# Checkbox
+
+Multi-select checkbox group. Controlled via `value: (string | number)[]` and `onChange`.
+
+## Preview
+
+<ComponentPreview code={`
+import { Checkbox } from 'bare-ui'
+import { useState } from 'react'
+
+export default function App() {
+  const [selected, setSelected] = useState(['newsletters'])
+
+  return (
+    <div className="p-8 space-y-3">
+      <p className="text-sm font-medium text-gray-700">Email preferences</p>
+      <Checkbox.Root value={selected} onChange={setSelected}>
+        {[
+          { value: 'newsletters', label: 'Newsletters' },
+          { value: 'updates', label: 'Product updates' },
+          { value: 'marketing', label: 'Marketing emails' },
+        ].map((opt) => (
+          <Checkbox.Item key={opt.value} value={opt.value}
+            className="flex items-center gap-2 cursor-pointer">
+            <Checkbox.Indicator className="w-4 h-4 rounded border-2 border-gray-300 flex items-center justify-center
+              [data-state=checked]:bg-blue-600 [data-state=checked]:border-blue-600">
+              <span className="hidden text-white text-xs [data-state=checked_&]:inline">✓</span>
+            </Checkbox.Indicator>
+            <Checkbox.Label className="text-sm text-gray-700">{opt.label}</Checkbox.Label>
+          </Checkbox.Item>
+        ))}
+      </Checkbox.Root>
+      <p className="text-xs text-gray-400">Selected: {selected.join(', ') || 'none'}</p>
+    </div>
+  )
+}
+`} height={220} />
+
+## Anatomy
+
+```tsx
+import { Checkbox } from 'bare-ui'
+
+<Checkbox.Root value={selected} onChange={setSelected}>
+  <Checkbox.Item value="option-a">
+    <Checkbox.Indicator>✓</Checkbox.Indicator>
+    <Checkbox.Label>Option A</Checkbox.Label>
+  </Checkbox.Item>
+</Checkbox.Root>
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `(string \| number)[]` | — | Controlled selected values |
+| `defaultValue` | `(string \| number)[]` | `[]` | Initial selected values |
+| `onChange` | `(value: (string \| number)[]) => void` | — | Called when selection changes |
+| `disabled` | `boolean` | `false` | Disables all items |
+
+## Item props
+
+| Prop | Type | Description |
+|---|---|---|
+| `value` | `string \| number` | The value this item represents |
+| `disabled` | `boolean` | Disables this specific item |
+
+## Indicator data attributes
+
+| Attribute | Values |
+|---|---|
+| `data-state` | `"checked"` / `"unchecked"` |
+| `data-disabled` | Present when disabled |

@@ -1,0 +1,61 @@
+---
+title: Image
+description: Image wrapper with a loader placeholder shown until the image loads.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# Image
+
+Image wrapper with a loader placeholder. The placeholder is shown until the image fires a `load` event. `data-loaded` is set after successful load; `data-position` is set on the wrapper.
+
+## Preview
+
+<ComponentPreview code={`
+import { Image } from 'bare-ui'
+
+export default function App() {
+  return (
+    <div className="p-8 flex gap-4">
+      <Image
+        src="https://picsum.photos/seed/bare/200/120"
+        alt="A scenic photo"
+        position="center"
+        className="rounded-lg overflow-hidden w-48 h-28 bg-gray-100"
+        onImageLoaded={() => console.log('loaded')}
+      />
+    </div>
+  )
+}
+`} height={160} />
+
+## Usage
+
+```tsx
+import { Image } from 'bare-ui'
+
+<Image
+  src="/photo.jpg"
+  alt="A photo"
+  position="center"
+  className="rounded"
+  onImageLoaded={() => console.log('loaded')}
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `src` | `string` | required | Image source URL |
+| `alt` | `string` | required | Alt text |
+| `position` | `HorizontalPosition` | — | Sets `data-position` on wrapper |
+| `onImageLoaded` | `() => void` | — | Called when image loads successfully |
+| `className` | `string` | — | Applied to the wrapper element |
+
+## Data attributes
+
+| Attribute | Element | When present |
+|---|---|---|
+| `data-position` | Wrapper | `position` prop is set |
+| `data-loaded` | `<img>` | After successful `load` event |

@@ -1,0 +1,166 @@
+---
+title: Getting Started
+description: Install bare-ui and style your first component.
+---
+
+import { Steps, Tabs } from 'nextra/components'
+
+# Getting Started
+
+## Installation
+
+<Steps>
+
+### Install the package
+
+```bash npm2yarn
+npm install bare-ui
+```
+
+bare-ui has no production dependencies. React 19 is a peer dependency.
+
+### Add peer dependencies
+
+If you don't already have React 19:
+
+```bash npm2yarn
+npm install react@^19 react-dom@^19
+```
+
+### Use a component
+
+```tsx
+import { Button } from 'bare-ui'
+
+export function SaveButton() {
+  return (
+    <Button type="submit" className="px-4 py-2 rounded bg-blue-600 text-white">
+      Save changes
+    </Button>
+  )
+}
+```
+
+</Steps>
+
+## Styling approach
+
+bare-ui ships no CSS. All interactive state is exposed through `data-*` attributes. Target them with any CSS approach you prefer.
+
+<Tabs items={['Tailwind CSS', 'CSS Modules', 'Plain CSS']}>
+
+<div>
+
+```tsx
+<Button className="
+  px-4 py-2 rounded bg-blue-600 text-white transition-all
+  [data-hover]:bg-blue-700
+  [data-active]:scale-95
+  [data-focus-visible]:ring-2 [data-focus-visible]:ring-offset-2
+  [data-disabled]:opacity-50 [data-disabled]:cursor-not-allowed
+">
+  Submit
+</Button>
+```
+
+</div>
+
+<div>
+
+```css
+/* button.module.css */
+.button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  background: #2563eb;
+  color: white;
+}
+.button[data-hover] { background: #1d4ed8; }
+.button[data-active] { transform: scale(0.95); }
+.button[data-focus-visible] { outline: 2px solid #2563eb; }
+.button[data-disabled] { opacity: 0.5; cursor: not-allowed; }
+```
+
+```tsx
+import styles from './button.module.css'
+<Button className={styles.button}>Submit</Button>
+```
+
+</div>
+
+<div>
+
+```css
+.button[data-hover]         { background: #1d4ed8; }
+.button[data-active]        { transform: scale(0.95); }
+.button[data-focus-visible] { outline: 2px solid #2563eb; }
+.button[data-disabled]      { opacity: 0.5; cursor: not-allowed; }
+```
+
+</div>
+
+</Tabs>
+
+## Compound components
+
+Complex components use the `Component.Part` pattern. You compose the markup yourself:
+
+```tsx
+import { Input } from 'bare-ui'
+
+<Input.Root value={value} onChange={setValue}>
+  <Input.Label>Email address</Input.Label>
+  <Input.Field type="email" placeholder="you@example.com" />
+  <Input.Error />
+</Input.Root>
+```
+
+You control the DOM order. Need the error above the field? Swap them. Need a wrapper div between label and field? Add it. bare-ui never dictates structure.
+
+## Validation pattern
+
+bare-ui components do **not** validate internally. You own validation — set `invalidType` when your logic determines the field is invalid:
+
+```tsx
+const [email, setEmail] = useState('')
+const [invalidType, setInvalidType] = useState('')
+
+function handleSubmit(e: React.FormEvent) {
+  e.preventDefault()
+  if (!email) setInvalidType('required')
+  else if (!email.includes('@')) setInvalidType('email')
+  else setInvalidType('')  // clear the error
+}
+
+<Input.Root
+  value={email}
+  onChange={setEmail}
+  invalidType={invalidType}
+  errorMessage={{
+    required: 'Email is required',
+    email: 'Enter a valid email address',
+  }}
+>
+  <Input.Label>Email</Input.Label>
+  <Input.Field type="email" />
+  <Input.Error />
+</Input.Root>
+```
+
+## TypeScript
+
+All prop types are exported:
+
+```ts
+import type {
+  ButtonProps,
+  InputRootProps,
+  TextareaRootProps,
+  PasswordRootProps,
+  ModalRootProps,
+  AccordionRootProps,
+  SearchOption,
+  Size,
+  Status,
+} from 'bare-ui'
+```

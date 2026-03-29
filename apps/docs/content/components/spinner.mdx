@@ -1,0 +1,58 @@
+---
+title: Spinner
+description: Animated loading indicator with size and color props.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# Spinner
+
+Animated 12-dot loading indicator. Renders `role="status"` with `aria-label="Loading"`.
+
+## Preview
+
+<ComponentPreview code={`
+import { Spinner } from 'bare-ui'
+
+export default function App() {
+  return (
+    <div className="p-8 flex gap-8 items-center">
+      <Spinner size="small" />
+      <Spinner size="medium" />
+      <Spinner size="large" />
+      <Spinner size="medium" color="#6366f1" />
+    </div>
+  )
+}
+`} height={100} />
+
+## Usage
+
+```tsx
+import { Spinner } from 'bare-ui'
+
+<Spinner />
+<Spinner size="large" />
+<Spinner size="small" color="#6366f1" />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | Controls `data-size` |
+| `color` | `string` | — | Sets the `--spinner-color` CSS variable |
+| `...rest` | `HTMLAttributes<HTMLDivElement>` | — | Spread onto root element |
+
+## CSS variable
+
+The `color` prop sets `--spinner-color` on the root element. Override it in CSS if you prefer:
+
+```css
+.my-spinner { --spinner-color: #6366f1; }
+```
+
+## Accessibility
+
+- `role="status"` announces the loading state to screen readers
+- `aria-label="Loading"` provides a text description

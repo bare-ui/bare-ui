@@ -1,0 +1,69 @@
+---
+title: List
+description: Ordered or unordered list with optional striped rows and dividers.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# List
+
+Ordered or unordered list container. Variant attributes (`data-type`, `data-striped`, `data-divider`, `data-size`) are used as CSS hooks.
+
+## Preview
+
+<ComponentPreview code={`
+import { List } from 'bare-ui'
+
+export default function App() {
+  return (
+    <div className="p-8 max-w-xs space-y-6">
+      <List
+        data-striped
+        data-divider
+        className="rounded-lg border border-gray-200 overflow-hidden divide-y divide-gray-100
+          [&>li]:px-4 [&>li]:py-2 [&>li]:text-sm
+          [&>li:nth-child(odd)]:bg-gray-50"
+      >
+        <li>First item</li>
+        <li>Second item</li>
+        <li>Third item</li>
+        <li>Fourth item</li>
+      </List>
+
+      <List isOrdered
+        className="list-decimal list-inside space-y-1 text-sm text-gray-700">
+        <li>Step one</li>
+        <li>Step two</li>
+        <li>Step three</li>
+      </List>
+    </div>
+  )
+}
+`} height={260} />
+
+## Usage
+
+```tsx
+import { List } from 'bare-ui'
+
+// Unordered with variants
+<List data-type="disc" data-striped data-divider data-size="medium">
+  <li>Item one</li>
+  <li>Item two</li>
+</List>
+
+// Ordered
+<List isOrdered>
+  <li>First</li>
+  <li>Second</li>
+</List>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `isOrdered` | `boolean` | `false` | Renders as `<ol>` instead of `<ul>` |
+| `...rest` | `HTMLAttributes<HTMLUListElement \| HTMLOListElement>` | — | All list HTML attributes |
+
+Pass `data-type`, `data-striped`, `data-divider`, `data-size` directly as HTML attributes and target them in CSS.

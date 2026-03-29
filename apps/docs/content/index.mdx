@@ -1,0 +1,57 @@
+---
+title: Introduction
+description: A headless, unstyled React 19 component library.
+---
+
+import { Cards } from 'nextra/components'
+
+# bare-ui
+
+A headless, unstyled React 19 component library. Components ship with zero CSS — style them entirely with your own classes and CSS by targeting `data-*` attributes that reflect interactive state.
+
+## Why bare-ui?
+
+Most component libraries bundle design decisions you can't escape. bare-ui takes the opposite approach: every component is a behaviour primitive. You get the logic, accessibility, and state tracking — nothing else.
+
+```tsx
+// bare-ui ships no styles. This is all you get:
+<Button onClick={handleClick}>Save</Button>
+
+// Style it however you want using data-* attributes:
+<Button className="
+  px-4 py-2 rounded bg-blue-600 text-white
+  [data-hover]:bg-blue-700
+  [data-active]:scale-95
+  [data-focus-visible]:ring-2
+  [data-disabled]:opacity-50
+">
+  Save
+</Button>
+```
+
+## Core principles
+
+**Unstyled by default.** No CSS shipped. No design opinions. You own the design system.
+
+**State via `data-*` attributes.** Every interactive state (hover, focus, active, disabled, open/closed) is exposed as a data attribute — empty string when active, absent when not. Style with CSS attribute selectors.
+
+**Compound components.** Complex widgets follow the `Component.Part` pattern. You compose the markup, control the order, and add whatever wrapper elements you need.
+
+**Consumer-owned validation.** Form components expose `invalidType` and `errorMessage` props but perform no validation internally. Set `invalidType` when your validation logic decides it's invalid — the component renders the error state.
+
+**`asChild` for polymorphism.** Pass `asChild` to Button to merge all props onto your own child element — great for router links and icon buttons.
+
+## Components
+
+<Cards>
+  <Cards.Card title="Button" href="/docs/components/button" />
+  <Cards.Card title="Input" href="/docs/components/input" />
+  <Cards.Card title="Modal" href="/docs/components/modal" />
+  <Cards.Card title="Accordion" href="/docs/components/accordion" />
+  <Cards.Card title="Select" href="/docs/components/select" />
+  <Cards.Card title="Checkbox" href="/docs/components/checkbox" />
+  <Cards.Card title="Radio" href="/docs/components/radio" />
+  <Cards.Card title="Dropdown" href="/docs/components/dropdown" />
+  <Cards.Card title="Tooltip" href="/docs/components/tooltip" />
+  <Cards.Card title="Search" href="/docs/components/search" />
+</Cards>

@@ -1,0 +1,68 @@
+---
+title: Data Attributes
+description: Complete reference for all data-* attributes bare-ui exposes.
+---
+
+# Data Attributes
+
+All interactive state in bare-ui is exposed through `data-*` attributes. An attribute is **present as an empty string** when active and **absent** when not — never `"true"` or `"false"`.
+
+```css
+/* Target present-when-active attributes like this: */
+[data-hover]         { ... }  /* ✓ correct */
+[data-hover="true"]  { ... }  /* ✗ never matches */
+[data-hover="false"] { ... }  /* ✗ never matches */
+```
+
+## Universal interactive attributes
+
+Set by `useInteractiveState` — available on Button and any component using the hook.
+
+| Attribute | When present |
+|---|---|
+| `data-hover` | Mouse is over the element |
+| `data-focus-visible` | Element has keyboard focus (matches `:focus-visible`) |
+| `data-active` | Element is being pressed (pointer down, or Space/Enter held) |
+| `data-disabled` | Element is disabled |
+| `data-autofocus` | Element was rendered with the `autoFocus` prop |
+
+## Form field attributes
+
+| Attribute | Component | When present |
+|---|---|---|
+| `data-active` | Input, Textarea, Password | Field is focused |
+| `data-invalid` | Input, Textarea, Password | `invalidType` prop is set (consumer-controlled) |
+| `data-success` | Input, Textarea | `isSuccess` prop is true |
+
+## State attributes
+
+| Attribute | Component | Values |
+|---|---|---|
+| `data-state` | Modal, Drawer, Accordion Item/Trigger/Content, Dropdown Menu, Tooltip Content, Switch | `"open"` / `"closed"` or `"checked"` / `"unchecked"` |
+| `data-visible` | Password.Toggle | Present when password is visible |
+| `data-loading` | Search.Root | Present when `loading` prop is true |
+| `data-highlighted` | Search.Item | Present on the keyboard-focused result item |
+| `data-complete` | OTP.Root | Present when all slots are filled |
+
+## Variant attributes
+
+Set by the consumer directly as HTML attributes — bare-ui passes them through.
+
+| Attribute | Component | Example values |
+|---|---|---|
+| `data-size` | Icon, ProgressBar, List, Spinner | `"small"`, `"medium"`, `"large"` |
+| `data-status` | Alert | `"success"`, `"warning"`, `"danger"` |
+| `data-color` | Card | Any string — your design tokens |
+| `data-type` | List | `"disc"`, `"decimal"`, etc. |
+| `data-striped` | List | Present attribute (no value needed) |
+| `data-divider` | List | Present attribute (no value needed) |
+| `data-position` | Image wrapper | `"left"`, `"center"`, `"right"` |
+| `data-count` | Badge | Raw numeric count value |
+| `data-side` | Tooltip.Content | `"top"`, `"bottom"`, `"left"`, `"right"` |
+
+## Media attributes
+
+| Attribute | Component | When present |
+|---|---|---|
+| `data-loaded` | Image `<img>` | After a successful `load` event |
+| `data-status` | Avatar.Image | `"loading"`, `"loaded"`, or `"error"` |

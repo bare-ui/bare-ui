@@ -1,0 +1,88 @@
+---
+title: Select
+description: Accessible select menu with groups, separators, and a custom trigger.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# Select
+
+Accessible select menu with groups, separators, and a fully custom trigger element.
+
+## Preview
+
+<ComponentPreview code={`
+import { Select } from 'bare-ui'
+import { useState } from 'react'
+
+export default function App() {
+  const [value, setValue] = useState('')
+
+  return (
+    <div className="p-8 max-w-xs">
+      <Select.Root value={value} onValueChange={setValue}>
+        <Select.Trigger className="w-full flex items-center justify-between rounded-md border border-gray-300 px-3 py-2 text-sm bg-white
+          hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <Select.Value placeholder="Pick a framework" />
+          <span className="text-gray-400">▾</span>
+        </Select.Trigger>
+        <Select.Content className="mt-1 w-full rounded-md border border-gray-200 bg-white shadow-lg overflow-hidden">
+          <Select.Group>
+            <Select.GroupLabel className="px-3 pt-2 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-wide">Frontend</Select.GroupLabel>
+            <Select.Item value="react" className="px-3 py-2 text-sm cursor-pointer hover:bg-blue-50 [data-selected]:font-medium [data-selected]:text-blue-600">React</Select.Item>
+            <Select.Item value="vue" className="px-3 py-2 text-sm cursor-pointer hover:bg-blue-50">Vue</Select.Item>
+            <Select.Item value="svelte" className="px-3 py-2 text-sm cursor-pointer hover:bg-blue-50">Svelte</Select.Item>
+          </Select.Group>
+          <Select.Separator className="my-1 border-t border-gray-100" />
+          <Select.Item value="other" className="px-3 py-2 text-sm cursor-pointer hover:bg-blue-50">Other</Select.Item>
+        </Select.Content>
+      </Select.Root>
+      {value && <p className="mt-3 text-xs text-gray-400">Selected: {value}</p>}
+    </div>
+  )
+}
+`} height={200} />
+
+## Anatomy
+
+```tsx
+import { Select } from 'bare-ui'
+
+<Select.Root value={value} onValueChange={setValue}>
+  <Select.Trigger>
+    <Select.Value placeholder="Pick an option" />
+  </Select.Trigger>
+  <Select.Content>
+    <Select.Group>
+      <Select.GroupLabel>Group name</Select.GroupLabel>
+      <Select.Item value="a">Option A</Select.Item>
+      <Select.Item value="b">Option B</Select.Item>
+    </Select.Group>
+    <Select.Separator />
+    <Select.Item value="c">Option C</Select.Item>
+  </Select.Content>
+</Select.Root>
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `string` | — | Controlled selected value |
+| `defaultValue` | `string` | — | Initial value for uncontrolled use |
+| `onValueChange` | `(value: string) => void` | — | Called when selection changes |
+| `disabled` | `boolean` | `false` | Disables the select |
+
+## Item props
+
+| Prop | Type | Description |
+|---|---|---|
+| `value` | `string` | The value this item represents |
+| `disabled` | `boolean` | Disables this specific item |
+
+## Item data attributes
+
+| Attribute | When present |
+|---|---|
+| `data-selected` | This item is currently selected |
+| `data-disabled` | Item is disabled |

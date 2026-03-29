@@ -1,0 +1,63 @@
+---
+title: ProgressBar
+description: Accessible progress indicator with role="progressbar" and ARIA attributes.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# ProgressBar
+
+Accessible progress indicator. Renders `role="progressbar"` with `aria-valuenow`, `aria-valuemin`, and `aria-valuemax`. The inner fill width is set via inline style.
+
+## Preview
+
+<ComponentPreview code={`
+import { ProgressBar } from 'bare-ui'
+import { useState, useEffect } from 'react'
+
+export default function App() {
+  const [value, setValue] = useState(30)
+
+  useEffect(() => {
+    const t = setInterval(() => setValue(v => v >= 100 ? 0 : v + 5), 400)
+    return () => clearInterval(t)
+  }, [])
+
+  return (
+    <div className="p-8 max-w-sm space-y-4">
+      <ProgressBar
+        value={value}
+        min={0}
+        max={100}
+        className="h-2 w-full rounded-full bg-gray-200 overflow-hidden"
+      >
+        <div className="h-full bg-blue-600 rounded-full transition-all duration-300" style={{ width: value + '%' }} />
+      </ProgressBar>
+      <p className="text-sm text-gray-500">{value}%</p>
+    </div>
+  )
+}
+`} height={140} showConsole={false} />
+
+## Usage
+
+```tsx
+import { ProgressBar } from 'bare-ui'
+
+<ProgressBar value={65} min={0} max={100} data-size="medium" />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `number` | required | Current progress value (clamped to `[min, max]`) |
+| `min` | `number` | `0` | Minimum value |
+| `max` | `number` | `100` | Maximum value |
+| `...rest` | `HTMLAttributes<HTMLDivElement>` | — | Spread onto root element |
+
+## Accessibility
+
+- `role="progressbar"` on the root element
+- `aria-valuenow`, `aria-valuemin`, `aria-valuemax` set automatically from props
+- Value is clamped — passing a value outside `[min, max]` is safe

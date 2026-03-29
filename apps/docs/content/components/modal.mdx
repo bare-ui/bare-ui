@@ -1,0 +1,103 @@
+---
+title: Modal
+description: Dialog with portal rendering, overlay-click and Escape key close.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# Modal
+
+Compound modal dialog. Renders into a portal, closes on overlay click or Escape key. Supports controlled and uncontrolled state.
+
+## Preview
+
+<ComponentPreview code={`
+import { Modal } from 'bare-ui'
+import { useState } from 'react'
+
+export default function App() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div className="p-8">
+      <button
+        onClick={() => setOpen(true)}
+        className="px-4 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700"
+      >
+        Open modal
+      </button>
+
+      <Modal.Root open={open} onOpenChange={setOpen}>
+        <Modal.Portal>
+          <Modal.Overlay className="fixed inset-0 bg-black/50 flex items-center justify-center">
+            <Modal.Content className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm">
+              <h2 className="text-lg font-semibold mb-2">Confirm action</h2>
+              <p className="text-sm text-gray-600 mb-4">Are you sure you want to continue?</p>
+              <div className="flex gap-2 justify-end">
+                <Modal.Close className="px-3 py-1.5 rounded text-sm text-gray-600 hover:bg-gray-100">
+                  Cancel
+                </Modal.Close>
+                <button className="px-3 py-1.5 rounded bg-blue-600 text-white text-sm hover:bg-blue-700">
+                  Confirm
+                </button>
+              </div>
+            </Modal.Content>
+          </Modal.Overlay>
+        </Modal.Portal>
+      </Modal.Root>
+    </div>
+  )
+}
+`} height={120} />
+
+## Anatomy
+
+```tsx
+import { Modal } from 'bare-ui'
+
+<Modal.Root open={open} onOpenChange={setOpen}>
+  <Modal.Portal>
+    <Modal.Overlay>
+      <Modal.Content>
+        <h2>Dialog title</h2>
+        <p>Dialog body</p>
+        <Modal.Close>Close</Modal.Close>
+      </Modal.Content>
+    </Modal.Overlay>
+  </Modal.Portal>
+</Modal.Root>
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `open` | `boolean` | — | Controlled open state |
+| `defaultOpen` | `boolean` | `false` | Initial state for uncontrolled use |
+| `onOpenChange` | `(open: boolean) => void` | — | Called when open state changes |
+
+## Data attributes
+
+`data-state` is set on both `Modal.Overlay` and `Modal.Content`:
+
+| Value | When |
+|---|---|
+| `"open"` | Modal is open |
+| `"closed"` | Modal is closed |
+
+## Behaviour
+
+- **Portal** — content is rendered outside the document tree via `createPortal`
+- **Escape key** — closes the modal
+- **Overlay click** — closes the modal
+- **`Modal.Content`** — renders with `role="dialog"` and `aria-modal="true"`
+- **`Modal.Close`** — any button inside that calls `onOpenChange(false)` on click
+
+## Animation
+
+Use `data-state` with CSS transitions:
+
+```css
+[data-state="open"]   { animation: fadeIn 150ms ease; }
+[data-state="closed"] { animation: fadeOut 150ms ease; }
+```

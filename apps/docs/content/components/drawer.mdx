@@ -1,0 +1,85 @@
+---
+title: Drawer
+description: Side-panel overlay with portal rendering and close behaviours.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# Drawer
+
+Side-panel overlay. Same structure as Modal. Closes on overlay click or Escape key. Includes an optional `Drawer.Header` sub-component.
+
+## Preview
+
+<ComponentPreview code={`
+import { Drawer } from 'bare-ui'
+import { useState } from 'react'
+
+export default function App() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div className="p-8">
+      <button onClick={() => setOpen(true)}
+        className="px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium bg-white hover:bg-gray-50">
+        Open drawer
+      </button>
+
+      <Drawer.Root open={open} onOpenChange={setOpen}>
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 bg-black/40">
+            <Drawer.Content className="fixed right-0 top-0 h-full w-72 bg-white shadow-xl flex flex-col [data-state=closed]:translate-x-full transition-transform">
+              <Drawer.Header className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                <h2 className="text-base font-semibold">Settings</h2>
+                <Drawer.Close className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 text-lg leading-none">
+                  ✕
+                </Drawer.Close>
+              </Drawer.Header>
+              <div className="flex-1 p-4 text-sm text-gray-600">
+                Drawer body content
+              </div>
+            </Drawer.Content>
+          </Drawer.Overlay>
+        </Drawer.Portal>
+      </Drawer.Root>
+    </div>
+  )
+}
+`} height={120} />
+
+## Anatomy
+
+```tsx
+import { Drawer } from 'bare-ui'
+
+<Drawer.Root open={open} onOpenChange={setOpen}>
+  <Drawer.Portal>
+    <Drawer.Overlay>
+      <Drawer.Content>
+        <Drawer.Header>
+          <h2>Title</h2>
+          <Drawer.Close>✕</Drawer.Close>
+        </Drawer.Header>
+        <p>Drawer body</p>
+      </Drawer.Content>
+    </Drawer.Overlay>
+  </Drawer.Portal>
+</Drawer.Root>
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `open` | `boolean` | — | Controlled open state |
+| `defaultOpen` | `boolean` | `false` | Initial state for uncontrolled use |
+| `onOpenChange` | `(open: boolean) => void` | — | Called when open state changes |
+
+## Data attributes
+
+`data-state` is set on both `Drawer.Overlay` and `Drawer.Content`:
+
+| Value | When |
+|---|---|
+| `"open"` | Drawer is open |
+| `"closed"` | Drawer is closed |

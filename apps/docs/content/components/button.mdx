@@ -1,0 +1,94 @@
+---
+title: Button
+description: A native button with full interactive state tracking and asChild polymorphism.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# Button
+
+A native `<button>` with full interactive state tracking. Use `asChild` to render as any element while keeping all behaviour and data attributes.
+
+## Preview
+
+<ComponentPreview code={`
+import { Button } from 'bare-ui'
+
+export default function App() {
+  return (
+    <div className="flex gap-3 p-8">
+      <Button
+        className="px-4 py-2 rounded-lg bg-blue-600 text-white font-medium transition-all
+          [data-hover]:bg-blue-700
+          [data-active]:scale-95
+          [data-focus-visible]:ring-2 [data-focus-visible]:ring-blue-500 [data-focus-visible]:ring-offset-2"
+        onClick={() => alert('Saved!')}
+      >
+        Save changes
+      </Button>
+      <Button
+        disabled
+        className="px-4 py-2 rounded-lg bg-blue-600 text-white font-medium
+          [data-disabled]:opacity-40 [data-disabled]:cursor-not-allowed"
+      >
+        Disabled
+      </Button>
+    </div>
+  )
+}
+`} height={120} />
+
+## Anatomy
+
+```tsx
+import { Button } from 'bare-ui'
+
+<Button>Click me</Button>
+
+// Polymorphic — renders as an anchor
+<Button asChild>
+  <a href="/dashboard">Go to dashboard</a>
+</Button>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `asChild` | `boolean` | `false` | Merge all props onto the immediate child element |
+| `disabled` | `boolean` | `false` | Disables the button; adds `data-disabled` |
+| `autoFocus` | `boolean` | `false` | Auto-focuses on mount; adds `data-autofocus` |
+| `type` | `'button' \| 'submit' \| 'reset'` | `'button'` | Native button type (ignored when `asChild`) |
+| `...rest` | `ButtonHTMLAttributes` | — | All standard HTML button attributes |
+
+## Data attributes
+
+| Attribute | When present |
+|---|---|
+| `data-hover` | Mouse is over the button |
+| `data-focus-visible` | Button has keyboard focus |
+| `data-active` | Button is being pressed |
+| `data-disabled` | `disabled` prop is true |
+| `data-autofocus` | `autoFocus` prop is true |
+
+## `asChild`
+
+`asChild` merges all props (including `data-*` attributes and event handlers) onto the child element. The child must be a single React element.
+
+```tsx
+// Renders as <a> with all Button data attributes and handlers
+<Button asChild>
+  <a href="/profile">View profile</a>
+</Button>
+
+// Works with custom components too
+<Button asChild>
+  <Link to="/dashboard">Dashboard</Link>
+</Button>
+```
+
+## Accessibility
+
+- Renders as `<button>` by default — correct semantics and keyboard behaviour out of the box.
+- `type="button"` prevents accidental form submission.
+- `data-focus-visible` uses `element.matches(':focus-visible')` — only keyboard navigation triggers it, not mouse clicks.

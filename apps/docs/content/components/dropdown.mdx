@@ -1,0 +1,75 @@
+---
+title: Dropdown
+description: Trigger and menu pattern with keyboard and click-outside support.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# Dropdown
+
+Trigger + menu pattern. Closes on Escape key, outside click, and menu item selection. Controlled and uncontrolled.
+
+## Preview
+
+<ComponentPreview code={`
+import { Dropdown } from 'bare-ui'
+
+export default function App() {
+  return (
+    <div className="p-8">
+      <Dropdown.Root>
+        <Dropdown.Trigger className="flex items-center gap-1 px-3 py-2 rounded-lg border border-gray-300 text-sm font-medium bg-white hover:bg-gray-50">
+          Options <span className="text-gray-400 text-xs">▾</span>
+        </Dropdown.Trigger>
+        <Dropdown.Menu className="mt-1 w-44 rounded-lg border border-gray-200 bg-white shadow-lg overflow-hidden [data-state=closed]:hidden">
+          <button className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50">Edit</button>
+          <button className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50">Duplicate</button>
+          <hr className="border-gray-100" />
+          <button className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50">Delete</button>
+        </Dropdown.Menu>
+      </Dropdown.Root>
+    </div>
+  )
+}
+`} height={130} />
+
+## Anatomy
+
+```tsx
+import { Dropdown } from 'bare-ui'
+
+<Dropdown.Root>
+  <Dropdown.Trigger>Options</Dropdown.Trigger>
+  <Dropdown.Menu>
+    <button>Edit</button>
+    <button>Delete</button>
+  </Dropdown.Menu>
+</Dropdown.Root>
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `open` | `boolean` | — | Controlled open state |
+| `defaultOpen` | `boolean` | `false` | Initial state for uncontrolled use |
+| `onOpenChange` | `(open: boolean) => void` | — | Called when open state changes |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-state` | Menu | `"open"` / `"closed"` |
+
+Trigger also sets `aria-expanded`.
+
+## Hiding the closed menu
+
+The menu is always rendered in the DOM — use `data-state` to hide it:
+
+```css
+[data-state="closed"] { display: none; }
+
+/* Or with Tailwind: */
+/* className="[data-state=closed]:hidden" */
+```

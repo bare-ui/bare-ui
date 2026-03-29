@@ -1,0 +1,62 @@
+---
+title: Card
+description: Unstyled container with optional data-color and data-size attributes.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# Card
+
+A simple unstyled container element. Pass `data-color` and `data-size` to drive your design token styles.
+
+## Preview
+
+<ComponentPreview code={`
+import { Card } from 'bare-ui'
+
+const colorStyles = {
+  blue:  'bg-blue-50 border-blue-200',
+  green: 'bg-green-50 border-green-200',
+  red:   'bg-red-50 border-red-200',
+}
+
+export default function App() {
+  return (
+    <div className="p-8 flex gap-3 flex-wrap">
+      {['blue', 'green', 'red'].map(color => (
+        <Card
+          key={color}
+          data-color={color}
+          className={\`rounded-xl border p-4 w-32 text-center \${colorStyles[color]}\`}
+        >
+          <p className="text-sm font-medium capitalize text-gray-700">{color}</p>
+          <p className="text-xs text-gray-500 mt-1">Card content</p>
+        </Card>
+      ))}
+    </div>
+  )
+}
+`} height={140} />
+
+## Usage
+
+```tsx
+import { Card } from 'bare-ui'
+
+<Card data-color="blue" data-size="large" className="p-4 rounded-xl border">
+  Card content
+</Card>
+```
+
+## Props
+
+All standard `HTMLAttributes<HTMLDivElement>` — `className`, `onClick`, etc. `data-color` and `data-size` are passed through as standard HTML attributes and used as CSS hooks.
+
+## Styling with data attributes
+
+```css
+[data-color="blue"]  { background: var(--color-blue-50); }
+[data-color="green"] { background: var(--color-green-50); }
+[data-size="small"]  { padding: var(--space-2); }
+[data-size="large"]  { padding: var(--space-6); }
+```

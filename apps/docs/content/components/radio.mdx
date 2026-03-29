@@ -1,0 +1,88 @@
+---
+title: Radio
+description: Single-selection radio group.
+---
+
+import { ComponentPreview } from '../../src/components/component-preview'
+
+# Radio
+
+Single-selection radio group. Controlled via `value` and `onChange`. Items share a `name` attribute for native form semantics.
+
+## Preview
+
+<ComponentPreview code={`
+import { Radio } from 'bare-ui'
+import { useState } from 'react'
+
+export default function App() {
+  const [plan, setPlan] = useState('starter')
+
+  return (
+    <div className="p-8 space-y-3">
+      <p className="text-sm font-medium text-gray-700">Select a plan</p>
+      <Radio.Root value={plan} onChange={setPlan} name="plan">
+        {[
+          { value: 'starter', label: 'Starter', desc: 'Free forever' },
+          { value: 'pro', label: 'Pro', desc: '$12 / month' },
+          { value: 'enterprise', label: 'Enterprise', desc: 'Custom pricing' },
+        ].map((opt) => (
+          <Radio.Item key={opt.value} value={opt.value}
+            className="flex items-center gap-3 cursor-pointer py-1">
+            <Radio.Indicator className="w-4 h-4 rounded-full border-2 border-gray-300 flex items-center justify-center
+              [data-state=checked]:border-blue-600">
+              <span className="hidden w-2 h-2 rounded-full bg-blue-600 [data-state=checked_&]:block" />
+            </Radio.Indicator>
+            <div>
+              <Radio.Label className="text-sm font-medium text-gray-800">{opt.label}</Radio.Label>
+              <p className="text-xs text-gray-500">{opt.desc}</p>
+            </div>
+          </Radio.Item>
+        ))}
+      </Radio.Root>
+      <p className="text-xs text-gray-400">Selected: {plan}</p>
+    </div>
+  )
+}
+`} height={240} />
+
+## Anatomy
+
+```tsx
+import { Radio } from 'bare-ui'
+
+<Radio.Root value={selected} onChange={setSelected} name="options">
+  <Radio.Item value="a">
+    <Radio.Indicator />
+    <Radio.Label>Option A</Radio.Label>
+  </Radio.Item>
+  <Radio.Item value="b">
+    <Radio.Indicator />
+    <Radio.Label>Option B</Radio.Label>
+  </Radio.Item>
+</Radio.Root>
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `string \| number` | — | Controlled selected value |
+| `defaultValue` | `string \| number` | — | Initial selected value |
+| `onChange` | `(value: string \| number) => void` | — | Called when selection changes |
+| `name` | `string` | auto-generated | Shared `name` attribute for all radio inputs |
+| `disabled` | `boolean` | `false` | Disables all items |
+
+## Item props
+
+| Prop | Type | Description |
+|---|---|---|
+| `value` | `string \| number` | The value this item represents |
+| `disabled` | `boolean` | Disables this specific item |
+
+## Indicator data attributes
+
+| Attribute | Values |
+|---|---|
+| `data-state` | `"checked"` / `"unchecked"` |
+| `data-disabled` | Present when disabled |
