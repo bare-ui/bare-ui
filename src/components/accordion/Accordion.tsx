@@ -1,6 +1,6 @@
-import React, { createContext, useCallback, useContext, useState } from 'react'
-import { useInteractiveState } from '@/hooks/use-interactive-state'
-import { mergeProps } from '@/utils/merge-props'
+import React, { createContext, useCallback, useContext, useState } from 'react';
+import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { mergeProps } from '@/utils/merge-props';
 import type {
 	AccordionContextValue,
 	AccordionContentProps,
@@ -8,27 +8,25 @@ import type {
 	AccordionItemProps,
 	AccordionRootProps,
 	AccordionTriggerProps,
-} from './Accordion.types'
+} from './Accordion.types';
 
 // ---------------------------------------------------------------------------
 // Context
 // ---------------------------------------------------------------------------
 
-const AccordionContext = createContext<AccordionContextValue | null>(null)
-const AccordionItemContext = createContext<AccordionItemContextValue | null>(null)
+const AccordionContext = createContext<AccordionContextValue | null>(null);
+const AccordionItemContext = createContext<AccordionItemContextValue | null>(null);
 
 function useAccordionContext() {
-	const ctx = useContext(AccordionContext)
-	if (!ctx)
-		throw new globalThis.Error('Accordion sub-components must be used within Accordion.Root')
-	return ctx
+	const ctx = useContext(AccordionContext);
+	if (!ctx) throw new globalThis.Error('Accordion sub-components must be used within Accordion.Root');
+	return ctx;
 }
 
 function useAccordionItemContext() {
-	const ctx = useContext(AccordionItemContext)
-	if (!ctx)
-		throw new globalThis.Error('Accordion.Trigger/Content must be used within Accordion.Item')
-	return ctx
+	const ctx = useContext(AccordionItemContext);
+	if (!ctx) throw new globalThis.Error('Accordion.Trigger/Content must be used within Accordion.Item');
+	return ctx;
 }
 
 // ---------------------------------------------------------------------------
@@ -46,69 +44,77 @@ const Root = React.forwardRef<HTMLDivElement, AccordionRootProps>(
 				onChange,
 				collapsible = false,
 				...divRest
-			} = rest
+			} = rest;
 
 			// eslint-disable-next-line react-hooks/rules-of-hooks
-			const [uncontrolledValue, setUncontrolledValue] = useState<string>(defaultValue ?? '')
-			const isControlled = controlledValue !== undefined
-			const openValue = isControlled ? controlledValue : uncontrolledValue
+			const [uncontrolledValue, setUncontrolledValue] = useState<string>(defaultValue ?? '');
+			const isControlled = controlledValue !== undefined;
+			const openValue = isControlled ? controlledValue : uncontrolledValue;
 
 			// eslint-disable-next-line react-hooks/rules-of-hooks
-			const isOpen = useCallback((v: string) => openValue === v, [openValue])
+			const isOpen = useCallback((v: string) => openValue === v, [openValue]);
 
 			// eslint-disable-next-line react-hooks/rules-of-hooks
 			const toggle = useCallback(
 				(v: string) => {
-					const next = openValue === v ? (collapsible ? '' : openValue) : v
-					if (!isControlled) setUncontrolledValue(next)
-					onChange?.(next)
+					const next =
+						openValue === v ?
+							collapsible ? ''
+							:	openValue
+						:	v;
+					if (!isControlled) setUncontrolledValue(next);
+					onChange?.(next);
 				},
 				[openValue, collapsible, isControlled, onChange],
-			)
+			);
 
 			return (
 				<AccordionContext.Provider value={{ isOpen, toggle, disabled }}>
-					<div ref={ref} className={className} {...divRest}>
+					<div
+						ref={ref}
+						className={className}
+						{...divRest}>
 						{children}
 					</div>
 				</AccordionContext.Provider>
-			)
+			);
 		}
 
 		// ── Multiple ─────────────────────────────────────────────────────────────
-		const { type: _type, value: controlledValue, defaultValue, onChange, ...divRest } = rest
+		const { type: _type, value: controlledValue, defaultValue, onChange, ...divRest } = rest;
 
 		// eslint-disable-next-line react-hooks/rules-of-hooks
-		const [uncontrolledValues, setUncontrolledValues] = useState<string[]>(defaultValue ?? [])
-		const isControlled = controlledValue !== undefined
-		const openValues = isControlled ? controlledValue : uncontrolledValues
+		const [uncontrolledValues, setUncontrolledValues] = useState<string[]>(defaultValue ?? []);
+		const isControlled = controlledValue !== undefined;
+		const openValues = isControlled ? controlledValue : uncontrolledValues;
 
 		// eslint-disable-next-line react-hooks/rules-of-hooks
-		const isOpen = useCallback((v: string) => openValues.includes(v), [openValues])
+		const isOpen = useCallback((v: string) => openValues.includes(v), [openValues]);
 
 		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const toggle = useCallback(
 			(v: string) => {
-				const next = openValues.includes(v)
-					? openValues.filter((x) => x !== v)
-					: [...openValues, v]
-				if (!isControlled) setUncontrolledValues(next)
-				onChange?.(next)
+				const next = openValues.includes(v) ? openValues.filter((x) => x !== v) : [...openValues, v];
+				if (!isControlled) setUncontrolledValues(next);
+				onChange?.(next);
 			},
 			[openValues, isControlled, onChange],
-		)
+		);
 
 		return (
 			<AccordionContext.Provider value={{ isOpen, toggle, disabled }}>
-				<div ref={ref} className={className} {...divRest}>
+				<div
+					ref={ref}
+					className={className}
+					{...divRest}>
 					{children}
 				</div>
 			</AccordionContext.Provider>
-		)
+		);
 	},
-)
+);
 
-Root.displayName = 'Accordion.Root'
+Root.displayName = 'Accordion.Root';
 
 // ---------------------------------------------------------------------------
 // Item
@@ -116,9 +122,9 @@ Root.displayName = 'Accordion.Root'
 
 const Item = React.forwardRef<HTMLDivElement, AccordionItemProps>(
 	({ value, disabled = false, className, children, ...rest }, ref) => {
-		const ctx = useAccordionContext()
-		const isDisabled = disabled || ctx.disabled
-		const isOpen = ctx.isOpen(value)
+		const ctx = useAccordionContext();
+		const isDisabled = disabled || ctx.disabled;
+		const isOpen = ctx.isOpen(value);
 
 		return (
 			<AccordionItemContext.Provider value={{ value, isOpen, disabled: isDisabled }}>
@@ -127,16 +133,15 @@ const Item = React.forwardRef<HTMLDivElement, AccordionItemProps>(
 					className={className}
 					data-state={isOpen ? 'open' : 'closed'}
 					data-disabled={isDisabled ? '' : undefined}
-					{...rest}
-				>
+					{...rest}>
 					{children}
 				</div>
 			</AccordionItemContext.Provider>
-		)
+		);
 	},
-)
+);
 
-Item.displayName = 'Accordion.Item'
+Item.displayName = 'Accordion.Item';
 
 // ---------------------------------------------------------------------------
 // Trigger
@@ -144,19 +149,16 @@ Item.displayName = 'Accordion.Item'
 
 const Trigger = React.forwardRef<HTMLButtonElement, AccordionTriggerProps>(
 	({ children, className, onClick, ...rest }, ref) => {
-		const { isOpen, disabled, value } = useAccordionItemContext()
-		const { toggle } = useAccordionContext()
-		const { handlers, dataAttributes } = useInteractiveState({ disabled })
+		const { isOpen, disabled, value } = useAccordionItemContext();
+		const { toggle } = useAccordionContext();
+		const { handlers, dataAttributes } = useInteractiveState({ disabled });
 
-		const merged = mergeProps(
-			rest as Record<string, unknown>,
-			handlers as Record<string, unknown>,
-		)
+		const merged = mergeProps(rest as Record<string, unknown>, handlers as Record<string, unknown>);
 
 		return (
 			<button
 				ref={ref}
-				type="button"
+				type='button'
 				disabled={disabled}
 				aria-expanded={isOpen}
 				data-state={isOpen ? 'open' : 'closed'}
@@ -165,17 +167,16 @@ const Trigger = React.forwardRef<HTMLButtonElement, AccordionTriggerProps>(
 				{...dataAttributes}
 				{...merged}
 				onClick={(e) => {
-					toggle(value)
-					onClick?.(e)
-				}}
-			>
+					toggle(value);
+					onClick?.(e);
+				}}>
 				{children}
 			</button>
-		)
+		);
 	},
-)
+);
 
-Trigger.displayName = 'Accordion.Trigger'
+Trigger.displayName = 'Accordion.Trigger';
 
 // ---------------------------------------------------------------------------
 // Content
@@ -183,26 +184,25 @@ Trigger.displayName = 'Accordion.Trigger'
 
 const Content = React.forwardRef<HTMLDivElement, AccordionContentProps>(
 	({ forceMount = false, children, className, ...rest }, ref) => {
-		const { isOpen } = useAccordionItemContext()
+		const { isOpen } = useAccordionItemContext();
 
-		if (!forceMount && !isOpen) return null
+		if (!forceMount && !isOpen) return null;
 
 		return (
 			<div
 				ref={ref}
-				role="region"
+				role='region'
 				hidden={forceMount && !isOpen ? true : undefined}
 				className={className}
 				data-state={isOpen ? 'open' : 'closed'}
-				{...rest}
-			>
+				{...rest}>
 				{children}
 			</div>
-		)
+		);
 	},
-)
+);
 
-Content.displayName = 'Accordion.Content'
+Content.displayName = 'Accordion.Content';
 
 // ---------------------------------------------------------------------------
 // Export
@@ -213,4 +213,4 @@ export const Accordion = {
 	Item,
 	Trigger,
 	Content,
-}
+};

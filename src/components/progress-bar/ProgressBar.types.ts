@@ -10,7 +10,7 @@
  */
 export interface ProgressBarProps extends React.HTMLAttributes<HTMLDivElement> {
 	/** The progress percentage value (0-100) */
-	percentage?: number
+	percentage?: number;
 	/** The size of the progress bar */
-	size?: string
+	size?: string;
 }

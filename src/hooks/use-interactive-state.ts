@@ -1,32 +1,32 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
 export interface InteractiveStateOptions {
-	disabled?: boolean
+	disabled?: boolean;
 }
 
 export interface InteractiveStateResult {
 	/** Spread onto the element to wire up interaction tracking */
 	handlers: {
-		onMouseEnter: () => void
-		onMouseLeave: () => void
-		onFocus: (e: React.FocusEvent) => void
-		onBlur: () => void
-		onPointerDown: () => void
-		onPointerUp: () => void
-		onKeyDown: (e: React.KeyboardEvent) => void
-		onKeyUp: (e: React.KeyboardEvent) => void
-	}
+		onMouseEnter: () => void;
+		onMouseLeave: () => void;
+		onFocus: (e: React.FocusEvent) => void;
+		onBlur: () => void;
+		onPointerDown: () => void;
+		onPointerUp: () => void;
+		onKeyDown: (e: React.KeyboardEvent) => void;
+		onKeyUp: (e: React.KeyboardEvent) => void;
+	};
 	/** Spread onto the element to apply state as data attributes */
 	dataAttributes: {
-		'data-hover'?: ''
-		'data-focus-visible'?: ''
-		'data-active'?: ''
-		'data-disabled'?: ''
-	}
+		'data-hover'?: '';
+		'data-focus-visible'?: '';
+		'data-active'?: '';
+		'data-disabled'?: '';
+	};
 	/** Raw booleans for programmatic use */
-	isHovered: boolean
-	isFocusVisible: boolean
-	isActive: boolean
+	isHovered: boolean;
+	isFocusVisible: boolean;
+	isActive: boolean;
 }
 
 /**
@@ -47,49 +47,49 @@ export interface InteractiveStateResult {
  * }
  */
 export function useInteractiveState(options: InteractiveStateOptions = {}): InteractiveStateResult {
-	const { disabled = false } = options
+	const { disabled = false } = options;
 
-	const [isHovered, setIsHovered] = useState(false)
-	const [isFocusVisible, setIsFocusVisible] = useState(false)
-	const [isActive, setIsActive] = useState(false)
+	const [isHovered, setIsHovered] = useState(false);
+	const [isFocusVisible, setIsFocusVisible] = useState(false);
+	const [isActive, setIsActive] = useState(false);
 
 	const handlers: InteractiveStateResult['handlers'] = {
 		onMouseEnter: () => {
-			if (!disabled) setIsHovered(true)
+			if (!disabled) setIsHovered(true);
 		},
 		onMouseLeave: () => {
-			setIsHovered(false)
-			setIsActive(false)
+			setIsHovered(false);
+			setIsActive(false);
 		},
 		onFocus: (e: React.FocusEvent) => {
 			if ((e.currentTarget as Element).matches(':focus-visible')) {
-				setIsFocusVisible(true)
+				setIsFocusVisible(true);
 			}
 		},
 		onBlur: () => {
-			setIsFocusVisible(false)
-			setIsActive(false)
+			setIsFocusVisible(false);
+			setIsActive(false);
 		},
 		onPointerDown: () => {
-			if (!disabled) setIsActive(true)
+			if (!disabled) setIsActive(true);
 		},
 		onPointerUp: () => {
-			setIsActive(false)
+			setIsActive(false);
 		},
 		onKeyDown: (e: React.KeyboardEvent) => {
-			if ((e.key === ' ' || e.key === 'Enter') && !disabled) setIsActive(true)
+			if ((e.key === ' ' || e.key === 'Enter') && !disabled) setIsActive(true);
 		},
 		onKeyUp: (e: React.KeyboardEvent) => {
-			if (e.key === ' ' || e.key === 'Enter') setIsActive(false)
+			if (e.key === ' ' || e.key === 'Enter') setIsActive(false);
 		},
-	}
+	};
 
 	const dataAttributes: InteractiveStateResult['dataAttributes'] = {
 		'data-hover': isHovered ? '' : undefined,
 		'data-focus-visible': isFocusVisible ? '' : undefined,
 		'data-active': isActive ? '' : undefined,
 		'data-disabled': disabled ? '' : undefined,
-	}
+	};
 
-	return { handlers, dataAttributes, isHovered, isFocusVisible, isActive }
+	return { handlers, dataAttributes, isHovered, isFocusVisible, isActive };
 }

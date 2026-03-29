@@ -1,19 +1,19 @@
-import React from 'react'
+import React from 'react';
 
 // ---------------------------------------------------------------------------
 // Context
 // ---------------------------------------------------------------------------
 
 export interface AccordionContextValue {
-	isOpen: (value: string) => boolean
-	toggle: (value: string) => void
-	disabled: boolean
+	isOpen: (value: string) => boolean;
+	toggle: (value: string) => void;
+	disabled: boolean;
 }
 
 export interface AccordionItemContextValue {
-	value: string
-	isOpen: boolean
-	disabled: boolean
+	value: string;
+	isOpen: boolean;
+	disabled: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -22,32 +22,32 @@ export interface AccordionItemContextValue {
 
 interface AccordionRootBase extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
 	/** Disables all items */
-	disabled?: boolean
+	disabled?: boolean;
 }
 
 interface AccordionRootSingle extends AccordionRootBase {
-	type: 'single'
+	type: 'single';
 	/** Controlled open value */
-	value?: string
+	value?: string;
 	/** Initial open value (uncontrolled) */
-	defaultValue?: string
+	defaultValue?: string;
 	/** Called when the open item changes */
-	onChange?: (value: string) => void
+	onChange?: (value: string) => void;
 	/** Allow closing the open item by clicking it again (default: false) */
-	collapsible?: boolean
+	collapsible?: boolean;
 }
 
 interface AccordionRootMultiple extends AccordionRootBase {
-	type: 'multiple'
+	type: 'multiple';
 	/** Controlled open values */
-	value?: string[]
+	value?: string[];
 	/** Initial open values (uncontrolled) */
-	defaultValue?: string[]
+	defaultValue?: string[];
 	/** Called when open items change */
-	onChange?: (value: string[]) => void
+	onChange?: (value: string[]) => void;
 }
 
-export type AccordionRootProps = AccordionRootSingle | AccordionRootMultiple
+export type AccordionRootProps = AccordionRootSingle | AccordionRootMultiple;
 
 // ---------------------------------------------------------------------------
 // Sub-components
@@ -55,14 +55,14 @@ export type AccordionRootProps = AccordionRootSingle | AccordionRootMultiple
 
 export interface AccordionItemProps extends React.HTMLAttributes<HTMLDivElement> {
 	/** Unique identifier — must match the value used in Root */
-	value: string
+	value: string;
 	/** Disables this item only */
-	disabled?: boolean
+	disabled?: boolean;
 }
 
-export type AccordionTriggerProps = React.ButtonHTMLAttributes<HTMLButtonElement>
+export type AccordionTriggerProps = React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export interface AccordionContentProps extends React.HTMLAttributes<HTMLDivElement> {
 	/** Keep content mounted in the DOM even when closed (useful for CSS animations) */
-	forceMount?: boolean
+	forceMount?: boolean;
 }

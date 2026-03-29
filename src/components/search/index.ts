@@ -1,4 +1,4 @@
-export { Search } from './Search'
+export { Search } from './Search';
 export type {
 	SearchRootProps,
 	SearchInputProps,
@@ -6,4 +6,4 @@ export type {
 	SearchItemProps,
 	SearchEmptyProps,
 	SearchOption,
-} from './Search.types'
+} from './Search.types';

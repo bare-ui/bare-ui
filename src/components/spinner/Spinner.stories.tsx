@@ -1,14 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Spinner } from './Spinner'
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Spinner } from './Spinner';
 
 const meta = {
 	title: 'Components/Spinner',
 	component: Spinner,
 	tags: ['autodocs'],
-} satisfies Meta<typeof Spinner>
+} satisfies Meta<typeof Spinner>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Spinner styles — uses 12 radial dots with staggered opacity animation
 const spinnerStyle = `
@@ -49,90 +49,139 @@ const spinnerStyle = `
     0%, 39%, 100% { opacity: 0.15; }
     40% { opacity: 1; }
   }
-`
+`;
 
 export const Default: Story = {
 	render: () => (
 		<>
 			<style>{spinnerStyle}</style>
-			<Spinner size="medium" className="bare-spinner text-gray-700" />
+			<Spinner
+				size='medium'
+				className='bare-spinner text-gray-700'
+			/>
 		</>
 	),
-}
+};
 
 export const Small: Story = {
 	render: () => (
 		<>
 			<style>{spinnerStyle}</style>
-			<Spinner size="small" className="bare-spinner text-gray-700" />
+			<Spinner
+				size='small'
+				className='bare-spinner text-gray-700'
+			/>
 		</>
 	),
-}
+};
 
 export const Medium: Story = {
 	render: () => (
 		<>
 			<style>{spinnerStyle}</style>
-			<Spinner size="medium" className="bare-spinner text-gray-700" />
+			<Spinner
+				size='medium'
+				className='bare-spinner text-gray-700'
+			/>
 		</>
 	),
-}
+};
 
 export const Large: Story = {
 	render: () => (
 		<>
 			<style>{spinnerStyle}</style>
-			<Spinner size="large" className="bare-spinner text-gray-700" />
+			<Spinner
+				size='large'
+				className='bare-spinner text-gray-700'
+			/>
 		</>
 	),
-}
+};
 
 export const CustomColor: Story = {
 	render: () => (
 		<>
 			<style>{spinnerStyle}</style>
-			<Spinner size="medium" color="#3b82f6" className="bare-spinner" />
+			<Spinner
+				size='medium'
+				color='#3b82f6'
+				className='bare-spinner'
+			/>
 		</>
 	),
-}
+};
 
 export const AllSizes: Story = {
 	render: () => (
 		<>
 			<style>{spinnerStyle}</style>
-			<div className="flex items-center gap-8">
-				<div className="flex flex-col items-center gap-2">
-					<Spinner size="small" className="bare-spinner text-gray-700" />
-					<span className="text-xs text-gray-500">Small</span>
+			<div className='flex items-center gap-8'>
+				<div className='flex flex-col items-center gap-2'>
+					<Spinner
+						size='small'
+						className='bare-spinner text-gray-700'
+					/>
+					<span className='text-xs text-gray-500'>Small</span>
 				</div>
-				<div className="flex flex-col items-center gap-2">
-					<Spinner size="medium" className="bare-spinner text-gray-700" />
-					<span className="text-xs text-gray-500">Medium</span>
+				<div className='flex flex-col items-center gap-2'>
+					<Spinner
+						size='medium'
+						className='bare-spinner text-gray-700'
+					/>
+					<span className='text-xs text-gray-500'>Medium</span>
 				</div>
-				<div className="flex flex-col items-center gap-2">
-					<Spinner size="large" className="bare-spinner text-gray-700" />
-					<span className="text-xs text-gray-500">Large</span>
+				<div className='flex flex-col items-center gap-2'>
+					<Spinner
+						size='large'
+						className='bare-spinner text-gray-700'
+					/>
+					<span className='text-xs text-gray-500'>Large</span>
 				</div>
 			</div>
 		</>
 	),
-}
+};
 
 export const Colors: Story = {
 	render: () => (
 		<>
 			<style>{spinnerStyle}</style>
-			<div className="flex items-center gap-8">
-				<Spinner size="medium" color="#6b7280" className="bare-spinner" />
-				<Spinner size="medium" color="#3b82f6" className="bare-spinner" />
-				<Spinner size="medium" color="#10b981" className="bare-spinner" />
-				<Spinner size="medium" color="#f59e0b" className="bare-spinner" />
-				<Spinner size="medium" color="#ef4444" className="bare-spinner" />
-				<Spinner size="medium" color="#8b5cf6" className="bare-spinner" />
+			<div className='flex items-center gap-8'>
+				<Spinner
+					size='medium'
+					color='#6b7280'
+					className='bare-spinner'
+				/>
+				<Spinner
+					size='medium'
+					color='#3b82f6'
+					className='bare-spinner'
+				/>
+				<Spinner
+					size='medium'
+					color='#10b981'
+					className='bare-spinner'
+				/>
+				<Spinner
+					size='medium'
+					color='#f59e0b'
+					className='bare-spinner'
+				/>
+				<Spinner
+					size='medium'
+					color='#ef4444'
+					className='bare-spinner'
+				/>
+				<Spinner
+					size='medium'
+					color='#8b5cf6'
+					className='bare-spinner'
+				/>
 			</div>
 		</>
 	),
-}
+};
 
 export const LoadingButton: Story = {
 	render: () => (
@@ -140,11 +189,14 @@ export const LoadingButton: Story = {
 			<style>{spinnerStyle}</style>
 			<button
 				disabled
-				className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white opacity-70"
-			>
-				<Spinner size="small" color="#fff" className="bare-spinner" />
+				className='inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white opacity-70'>
+				<Spinner
+					size='small'
+					color='#fff'
+					className='bare-spinner'
+				/>
 				Loading…
 			</button>
 		</>
 	),
-}
+};

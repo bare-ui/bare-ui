@@ -45,21 +45,21 @@ export const iconNames = [
 	'volume-up',
 	'warning-triangle',
 	'x',
-] as const
+] as const;
 
-export type IconName = (typeof iconNames)[number]
+export type IconName = (typeof iconNames)[number];
 
-export const iconSizes = ['xsmall', 'small', 'medium', 'large', 'xlarge', 'xxlarge'] as const
+export const iconSizes = ['xsmall', 'small', 'medium', 'large', 'xlarge', 'xxlarge'] as const;
 
-export type IconSize = (typeof iconSizes)[number]
+export type IconSize = (typeof iconSizes)[number];
 
 export interface IconProps extends React.SVGAttributes<SVGSVGElement> {
 	/** The icon name that matches an SVG asset. */
-	type: IconName
+	type: IconName;
 	/** A size modifier that increases or decreases the icon size. */
-	size?: IconSize
+	size?: IconSize;
 	/** Accessible label for the icon. */
-	label?: string
+	label?: string;
 	/** Map of icon names to raw SVG strings. Must be provided by the consumer. */
-	icons?: Partial<Record<IconName, string>>
+	icons?: Partial<Record<IconName, string>>;
 }

@@ -10,9 +10,9 @@
  */
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 	/** Color modifier for the card */
-	color?: string
+	color?: string;
 	/** Size modifier that controls padding around the card */
-	size?: string
+	size?: string;
 	/** Card content */
-	children?: React.ReactNode
+	children?: React.ReactNode;
 }

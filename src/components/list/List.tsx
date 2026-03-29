@@ -1,9 +1,9 @@
-import React from 'react'
-import type { ListProps } from './List.types'
+import React from 'react';
+import type { ListProps } from './List.types';
 
 const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListProps>(
 	({ isOrdered = false, type, size, className, children, ...rest }, ref) => {
-		const Tag = isOrdered ? 'ol' : 'ul'
+		const Tag = isOrdered ? 'ol' : 'ul';
 
 		return (
 			<Tag
@@ -13,14 +13,13 @@ const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListProps>(
 				data-size={size}
 				data-striped={type === 'striped' ? '' : undefined}
 				data-divider={type === 'divider' ? '' : undefined}
-				{...rest}
-			>
+				{...rest}>
 				{children}
 			</Tag>
-		)
+		);
 	},
-)
+);
 
-List.displayName = 'List'
+List.displayName = 'List';
 
-export { List }
+export { List };

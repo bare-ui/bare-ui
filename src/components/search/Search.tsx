@@ -1,7 +1,7 @@
-import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { useClickOutside } from '@/hooks/use-click-outside'
-import { useInteractiveState } from '@/hooks/use-interactive-state'
-import { mergeProps } from '@/utils/merge-props'
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useClickOutside } from '@/hooks/use-click-outside';
+import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { mergeProps } from '@/utils/merge-props';
 import type {
 	SearchContentProps,
 	SearchContextValue,
@@ -10,16 +10,16 @@ import type {
 	SearchItemProps,
 	SearchOption,
 	SearchRootProps,
-} from './Search.types'
+} from './Search.types';
 
-const SearchContext = createContext<SearchContextValue | null>(null)
+const SearchContext = createContext<SearchContextValue | null>(null);
 
 function useSearchContext() {
-	const context = useContext(SearchContext)
+	const context = useContext(SearchContext);
 	if (!context) {
-		throw new globalThis.Error('Search compound components must be used within Search.Root')
+		throw new globalThis.Error('Search compound components must be used within Search.Root');
 	}
-	return context
+	return context;
 }
 
 const Root = React.forwardRef<HTMLDivElement, SearchRootProps>(
@@ -41,91 +41,91 @@ const Root = React.forwardRef<HTMLDivElement, SearchRootProps>(
 		},
 		ref,
 	) => {
-		const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen)
-		const isOpenControlled = controlledOpen !== undefined
-		const open = isOpenControlled ? controlledOpen : uncontrolledOpen
+		const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+		const isOpenControlled = controlledOpen !== undefined;
+		const open = isOpenControlled ? controlledOpen : uncontrolledOpen;
 
-		const [uncontrolledValue, setUncontrolledValue] = useState(defaultSearchValue)
-		const isValueControlled = controlledValue !== undefined
-		const searchValue = isValueControlled ? controlledValue : uncontrolledValue
+		const [uncontrolledValue, setUncontrolledValue] = useState(defaultSearchValue);
+		const isValueControlled = controlledValue !== undefined;
+		const searchValue = isValueControlled ? controlledValue : uncontrolledValue;
 
-		const [highlightedIndex, setHighlightedIndex] = useState(-1)
-		const [itemCount, setItemCount] = useState(0)
-		const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-		const inputRef = useRef<HTMLInputElement>(null)
-		const rootRef = useRef<HTMLDivElement>(null)
-		const combinedRef = (ref as React.RefObject<HTMLDivElement | null>) || rootRef
-		const internalRef = ref ? combinedRef : rootRef
+		const [highlightedIndex, setHighlightedIndex] = useState(-1);
+		const [itemCount, setItemCount] = useState(0);
+		const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+		const inputRef = useRef<HTMLInputElement>(null);
+		const rootRef = useRef<HTMLDivElement>(null);
+		const combinedRef = (ref as React.RefObject<HTMLDivElement | null>) || rootRef;
+		const internalRef = ref ? combinedRef : rootRef;
 
 		const handleOpenChange = useCallback(
 			(value: boolean) => {
 				if (!isOpenControlled) {
-					setUncontrolledOpen(value)
+					setUncontrolledOpen(value);
 				}
-				onOpenChange?.(value)
+				onOpenChange?.(value);
 				if (!value) {
-					setHighlightedIndex(-1)
+					setHighlightedIndex(-1);
 				}
 			},
 			[isOpenControlled, onOpenChange],
-		)
+		);
 
 		const handleSearchChange = useCallback(
 			(value: string) => {
 				if (!isValueControlled) {
-					setUncontrolledValue(value)
+					setUncontrolledValue(value);
 				}
-				onSearchChange?.(value)
+				onSearchChange?.(value);
 
 				if (typingTimeoutRef.current) {
-					clearTimeout(typingTimeoutRef.current)
+					clearTimeout(typingTimeoutRef.current);
 				}
 
 				typingTimeoutRef.current = setTimeout(() => {
-					onSubmitSearch?.()
-				}, searchDelay)
+					onSubmitSearch?.();
+				}, searchDelay);
 			},
 			[isValueControlled, onSearchChange, onSubmitSearch, searchDelay],
-		)
+		);
 
 		const handleSelect = useCallback(
 			(option: SearchOption) => {
 				if (typingTimeoutRef.current) {
-					clearTimeout(typingTimeoutRef.current)
+					clearTimeout(typingTimeoutRef.current);
 				}
-				onSelect?.(option)
+				onSelect?.(option);
 				if (!isValueControlled) {
-					setUncontrolledValue('')
+					setUncontrolledValue('');
 				}
-				onSearchChange?.('')
-				handleOpenChange(false)
+				onSearchChange?.('');
+				handleOpenChange(false);
 			},
 			[onSelect, isValueControlled, onSearchChange, handleOpenChange],
-		)
+		);
 
 		const registerItem = useCallback(() => {
-			const index = itemCount
-			setItemCount((prev) => prev + 1)
-			return index
-		}, [itemCount])
+			const index = itemCount;
+			setItemCount((prev) => prev + 1);
+			return index;
+		}, [itemCount]);
 
 		const unregisterItem = useCallback(() => {
-			setItemCount((prev) => Math.max(0, prev - 1))
-		}, [])
+			setItemCount((prev) => Math.max(0, prev - 1));
+		}, []);
 
 		useClickOutside(internalRef, () => {
 			if (open) {
-				handleOpenChange(false)
+				handleOpenChange(false);
 			}
-		})
+		});
 
 		useEffect(() => {
 			return () => {
 				if (typingTimeoutRef.current) {
-					clearTimeout(typingTimeoutRef.current)
+					clearTimeout(typingTimeoutRef.current);
 				}
-			}
-		}, [])
+			};
+		}, []);
 
 		const contextValue: SearchContextValue = {
 			open,
@@ -141,9 +141,9 @@ const Root = React.forwardRef<HTMLDivElement, SearchRootProps>(
 			unregisterItem,
 			inputRef,
 			setInputNode: (node: HTMLInputElement | null) => {
-				;(inputRef as React.MutableRefObject<HTMLInputElement | null>).current = node
+				(inputRef as React.MutableRefObject<HTMLInputElement | null>).current = node;
 			},
-		}
+		};
 
 		return (
 			<SearchContext.Provider value={contextValue}>
@@ -151,160 +151,146 @@ const Root = React.forwardRef<HTMLDivElement, SearchRootProps>(
 					ref={internalRef}
 					className={className}
 					data-loading={loading ? '' : undefined}
-					{...rest}
-				>
+					{...rest}>
 					{children}
 				</div>
 			</SearchContext.Provider>
-		)
+		);
 	},
-)
+);
 
-Root.displayName = 'Search.Root'
+Root.displayName = 'Search.Root';
 
-const Input = React.forwardRef<HTMLInputElement, SearchInputProps>(
-	({ className, ...rest }, ref) => {
-		const ctx = useSearchContext()
+const Input = React.forwardRef<HTMLInputElement, SearchInputProps>(({ className, ...rest }, ref) => {
+	const ctx = useSearchContext();
 
-		const combinedRef = (node: HTMLInputElement | null) => {
-			ctx.setInputNode(node)
-			if (typeof ref === 'function') ref(node)
-			else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = node
+	const combinedRef = (node: HTMLInputElement | null) => {
+		ctx.setInputNode(node);
+		if (typeof ref === 'function') ref(node);
+		else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = node;
+	};
+
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		switch (e.key) {
+			case 'ArrowDown':
+				e.preventDefault();
+				if (ctx.itemCount > 0) {
+					ctx.setHighlightedIndex(ctx.highlightedIndex < ctx.itemCount - 1 ? ctx.highlightedIndex + 1 : 0);
+				}
+				break;
+			case 'ArrowUp':
+				e.preventDefault();
+				if (ctx.itemCount > 0) {
+					ctx.setHighlightedIndex(ctx.highlightedIndex > 0 ? ctx.highlightedIndex - 1 : ctx.itemCount - 1);
+				}
+				break;
+			case 'Escape':
+				ctx.onOpenChange(false);
+				ctx.inputRef.current?.blur();
+				break;
 		}
+	};
 
-		const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-			switch (e.key) {
-				case 'ArrowDown':
-					e.preventDefault()
-					if (ctx.itemCount > 0) {
-						ctx.setHighlightedIndex(
-							ctx.highlightedIndex < ctx.itemCount - 1 ? ctx.highlightedIndex + 1 : 0,
-						)
-					}
-					break
-				case 'ArrowUp':
-					e.preventDefault()
-					if (ctx.itemCount > 0) {
-						ctx.setHighlightedIndex(
-							ctx.highlightedIndex > 0 ? ctx.highlightedIndex - 1 : ctx.itemCount - 1,
-						)
-					}
-					break
-				case 'Escape':
-					ctx.onOpenChange(false)
-					ctx.inputRef.current?.blur()
-					break
-			}
+	return (
+		<input
+			ref={combinedRef}
+			type='text'
+			value={ctx.searchValue}
+			className={className}
+			onFocus={() => ctx.onOpenChange(true)}
+			onChange={(e) => ctx.onSearchChange(e.target.value)}
+			onKeyDown={handleKeyDown}
+			{...rest}
+		/>
+	);
+});
+
+Input.displayName = 'Search.Input';
+
+const Content = React.forwardRef<HTMLDivElement, SearchContentProps>(({ children, className, ...rest }, ref) => {
+	const { open } = useSearchContext();
+
+	if (!open) return null;
+
+	return (
+		<div
+			ref={ref}
+			role='listbox'
+			className={className}
+			data-state={open ? 'open' : 'closed'}
+			{...rest}>
+			{children}
+		</div>
+	);
+});
+
+Content.displayName = 'Search.Content';
+
+const Item = React.forwardRef<HTMLDivElement, SearchItemProps>(({ option, children, className, ...rest }, ref) => {
+	const ctx = useSearchContext();
+	const indexRef = useRef(-1);
+	const { handlers, dataAttributes } = useInteractiveState();
+
+	useEffect(() => {
+		indexRef.current = ctx.registerItem();
+		return () => ctx.unregisterItem();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	const isHighlighted = ctx.highlightedIndex === indexRef.current;
+
+	const handleKeyDown = (e: React.KeyboardEvent) => {
+		handlers.onKeyDown(e);
+		if (e.key === 'Enter') {
+			ctx.onSelect(option);
 		}
+	};
 
-		return (
-			<input
-				ref={combinedRef}
-				type="text"
-				value={ctx.searchValue}
-				className={className}
-				onFocus={() => ctx.onOpenChange(true)}
-				onChange={(e) => ctx.onSearchChange(e.target.value)}
-				onKeyDown={handleKeyDown}
-				{...rest}
-			/>
-		)
-	},
-)
+	const merged = mergeProps(
+		rest as Record<string, unknown>,
+		{
+			...handlers,
+			onKeyDown: handleKeyDown,
+		} as Record<string, unknown>,
+	);
 
-Input.displayName = 'Search.Input'
+	return (
+		<div
+			ref={ref}
+			role='option'
+			aria-selected={isHighlighted}
+			className={className}
+			data-highlighted={isHighlighted ? '' : undefined}
+			{...dataAttributes}
+			{...merged}
+			onClick={(e) => {
+				ctx.onSelect(option);
+				(rest.onClick as ((e: React.MouseEvent<HTMLDivElement>) => void) | undefined)?.(e);
+			}}
+			tabIndex={-1}>
+			{children}
+		</div>
+	);
+});
 
-const Content = React.forwardRef<HTMLDivElement, SearchContentProps>(
-	({ children, className, ...rest }, ref) => {
-		const { open } = useSearchContext()
+Item.displayName = 'Search.Item';
 
-		if (!open) return null
+const Empty = React.forwardRef<HTMLDivElement, SearchEmptyProps>(({ children, className, ...rest }, ref) => {
+	const { itemCount, loading } = useSearchContext();
 
-		return (
-			<div
-				ref={ref}
-				role="listbox"
-				className={className}
-				data-state={open ? 'open' : 'closed'}
-				{...rest}
-			>
-				{children}
-			</div>
-		)
-	},
-)
+	if (itemCount > 0 || loading) return null;
 
-Content.displayName = 'Search.Content'
+	return (
+		<div
+			ref={ref}
+			className={className}
+			{...rest}>
+			{children}
+		</div>
+	);
+});
 
-const Item = React.forwardRef<HTMLDivElement, SearchItemProps>(
-	({ option, children, className, ...rest }, ref) => {
-		const ctx = useSearchContext()
-		const indexRef = useRef(-1)
-		const { handlers, dataAttributes } = useInteractiveState()
-
-		useEffect(() => {
-			indexRef.current = ctx.registerItem()
-			return () => ctx.unregisterItem()
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, [])
-
-		const isHighlighted = ctx.highlightedIndex === indexRef.current
-
-		const handleKeyDown = (e: React.KeyboardEvent) => {
-			handlers.onKeyDown(e)
-			if (e.key === 'Enter') {
-				ctx.onSelect(option)
-			}
-		}
-
-		const merged = mergeProps(
-			rest as Record<string, unknown>,
-			{
-				...handlers,
-				onKeyDown: handleKeyDown,
-			} as Record<string, unknown>,
-		)
-
-		return (
-			<div
-				ref={ref}
-				role="option"
-				aria-selected={isHighlighted}
-				className={className}
-				data-highlighted={isHighlighted ? '' : undefined}
-				{...dataAttributes}
-				{...merged}
-				onClick={(e) => {
-					ctx.onSelect(option)
-					;(
-						rest.onClick as ((e: React.MouseEvent<HTMLDivElement>) => void) | undefined
-					)?.(e)
-				}}
-				tabIndex={-1}
-			>
-				{children}
-			</div>
-		)
-	},
-)
-
-Item.displayName = 'Search.Item'
-
-const Empty = React.forwardRef<HTMLDivElement, SearchEmptyProps>(
-	({ children, className, ...rest }, ref) => {
-		const { itemCount, loading } = useSearchContext()
-
-		if (itemCount > 0 || loading) return null
-
-		return (
-			<div ref={ref} className={className} {...rest}>
-				{children}
-			</div>
-		)
-	},
-)
-
-Empty.displayName = 'Search.Empty'
+Empty.displayName = 'Search.Empty';
 
 export const Search = {
 	Root,
@@ -312,4 +298,4 @@ export const Search = {
 	Content,
 	Item,
 	Empty,
-}
+};

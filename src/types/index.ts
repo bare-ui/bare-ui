@@ -7,4 +7,4 @@ export type {
 	BaseTextFieldProps,
 	BaseFormFieldHandle,
 	BaseOption,
-} from './common'
+} from './common';

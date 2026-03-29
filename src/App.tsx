@@ -6,7 +6,7 @@ function App() {
 				Run <code>npm run storybook</code> to preview components.
 			</p>
 		</div>
-	)
+	);
 }
 
-export default App
+export default App;

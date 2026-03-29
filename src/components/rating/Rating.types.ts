@@ -4,17 +4,17 @@
 
 export interface RatingProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
 	/** Controlled rating value (1–max) */
-	value?: number
+	value?: number;
 	/** Initial uncontrolled value */
-	defaultValue?: number
+	defaultValue?: number;
 	/** Callback fired when a star is selected */
-	onChange?: (value: number) => void
+	onChange?: (value: number) => void;
 	/** Number of stars to render (default: 5) */
-	max?: number
+	max?: number;
 	/** Disables all interaction */
-	disabled?: boolean
+	disabled?: boolean;
 	/** Read-only display — no interaction, no hover preview */
-	readOnly?: boolean
+	readOnly?: boolean;
 	/** className applied to each individual star button */
-	starClassName?: string
+	starClassName?: string;
 }

@@ -1,4 +1,4 @@
-export { Select } from './Select'
+export { Select } from './Select';
 export type {
 	SelectRootProps,
 	SelectTriggerProps,
@@ -8,4 +8,4 @@ export type {
 	SelectSeparatorProps,
 	SelectGroupProps,
 	SelectGroupLabelProps,
-} from './Select.types'
+} from './Select.types';

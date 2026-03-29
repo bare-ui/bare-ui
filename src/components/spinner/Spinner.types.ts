@@ -10,7 +10,7 @@
  */
 export interface SpinnerProps extends React.HTMLAttributes<HTMLDivElement> {
 	/** The size of the spinner */
-	size?: string
+	size?: string;
 	/** Custom color for the spinner dots (applied as a CSS variable) */
-	color?: string
+	color?: string;
 }

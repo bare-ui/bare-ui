@@ -1,37 +1,37 @@
 /** Format configuration for timeago display. */
 export interface TimeagoFormatConfig {
 	/** Text to display for "just now". */
-	just: string
+	just: string;
 	/** Template for past time (use #time placeholder). */
-	past: string
+	past: string;
 	/** Template for today's time (use #time placeholder). */
-	today: string
+	today: string;
 	/** Second format templates. */
-	second: { one: string; other: string }
+	second: { one: string; other: string };
 	/** Minute format templates. */
-	minute: { one: string; other: string }
+	minute: { one: string; other: string };
 	/** Hour format templates. */
-	hour: { one: string; other: string }
+	hour: { one: string; other: string };
 	/** Array of day names (Sunday to Saturday). */
-	days: string[]
+	days: string[];
 	/** Array of month names (January to December). */
-	months: string[]
+	months: string[];
 }
 
 /** Plural form type. */
-export type TimeagoPlural = 'one' | 'other'
+export type TimeagoPlural = 'one' | 'other';
 
 export interface TimeagoProps extends React.HTMLAttributes<HTMLTimeElement> {
 	/** The date/time to display. */
-	datetime: string | Date | number
+	datetime: string | Date | number;
 	/** Enable live updates. */
-	isLive?: boolean
+	isLive?: boolean;
 	/** Display time as duration. */
-	isDuration?: boolean
+	isDuration?: boolean;
 	/** Display only the time portion (HH:MM format) without date information. */
-	timeOnly?: boolean
+	timeOnly?: boolean;
 	/** Custom format configuration. */
-	format?: TimeagoFormatConfig
+	format?: TimeagoFormatConfig;
 	/** Function to determine pluralization form. */
-	pluralize?: (n: number) => TimeagoPlural
+	pluralize?: (n: number) => TimeagoPlural;
 }

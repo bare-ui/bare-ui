@@ -1,13 +1,5 @@
-import React, {
-	createContext,
-	useCallback,
-	useContext,
-	useImperativeHandle,
-	useMemo,
-	useRef,
-	useState,
-} from 'react'
-import { Helper } from '@/utils/helper'
+import React, { createContext, useCallback, useContext, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { Helper } from '@/utils/helper';
 import type {
 	TextareaContextValue,
 	TextareaErrorProps,
@@ -15,16 +7,16 @@ import type {
 	TextareaHandle,
 	TextareaLabelProps,
 	TextareaRootProps,
-} from './Textarea.types'
+} from './Textarea.types';
 
-const TextareaContext = createContext<TextareaContextValue | null>(null)
+const TextareaContext = createContext<TextareaContextValue | null>(null);
 
 function useTextareaContext() {
-	const context = useContext(TextareaContext)
+	const context = useContext(TextareaContext);
 	if (!context) {
-		throw new globalThis.Error('Textarea compound components must be used within Textarea.Root')
+		throw new globalThis.Error('Textarea compound components must be used within Textarea.Root');
 	}
-	return context
+	return context;
 }
 
 const Root = React.forwardRef<TextareaHandle, TextareaRootProps>(
@@ -49,114 +41,113 @@ const Root = React.forwardRef<TextareaHandle, TextareaRootProps>(
 		},
 		ref,
 	) => {
-		const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue)
-		const isControlled = controlledValue !== undefined
-		const value = isControlled ? controlledValue : uncontrolledValue
+		const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
+		const isControlled = controlledValue !== undefined;
+		const value = isControlled ? controlledValue : uncontrolledValue;
 
-		const [isActive, setIsActive] = useState(false)
-		const [internalInvalidType, setInternalInvalidType] = useState('')
-		const invalidType =
-			controlledInvalidType !== undefined ? controlledInvalidType : internalInvalidType
+		const [isActive, setIsActive] = useState(false);
+		const [internalInvalidType, setInternalInvalidType] = useState('');
+		const invalidType = controlledInvalidType !== undefined ? controlledInvalidType : internalInvalidType;
 
-		const fieldRef = useRef<HTMLTextAreaElement>(null)
-		const textareaId = useMemo(() => id || Helper.generateUUID(), [id])
+		const fieldRef = useRef<HTMLTextAreaElement>(null);
+		const textareaId = useMemo(() => id || Helper.generateUUID(), [id]);
 
 		const setInvalidType = useCallback(
 			(type: string) => {
 				if (controlledInvalidType === undefined) {
-					setInternalInvalidType(type)
+					setInternalInvalidType(type);
 				}
-				onInvalidTypeChange?.(type)
+				onInvalidTypeChange?.(type);
 			},
 			[controlledInvalidType, onInvalidTypeChange],
-		)
+		);
 
 		const setError = useCallback(
 			(hasError: boolean) => {
-				onErrorChange?.(hasError)
+				onErrorChange?.(hasError);
 			},
 			[onErrorChange],
-		)
+		);
 
 		const handleValidation = useCallback(() => {
-			if (validation === 'phone') return
+			if (validation === 'phone') return;
 
-			const currentValue = fieldRef.current?.value ?? ''
-			const trimmedValue = validation === 'email' ? currentValue.trim() : currentValue
+			const currentValue = fieldRef.current?.value ?? '';
+			const trimmedValue = validation === 'email' ? currentValue.trim() : currentValue;
 
 			if (validation === 'email' && fieldRef.current) {
-				fieldRef.current.value = trimmedValue
+				fieldRef.current.value = trimmedValue;
 			}
 
 			const validator = Helper.isValid({
 				value: trimmedValue,
 				type: validation as 'email' | 'name' | 'phone',
-			})
+			});
 
 			if (validator.isValid) {
-				setError(false)
-				setInvalidType('')
+				setError(false);
+				setInvalidType('');
 			} else {
-				setError(true)
-				setInvalidType(validation)
+				setError(true);
+				setInvalidType(validation);
 			}
-		}, [validation, setError, setInvalidType])
+		}, [validation, setError, setInvalidType]);
 
 		const handleIsEmpty = useCallback((): boolean => {
-			const currentValue = fieldRef.current?.value ?? ''
-			const empty = Helper.isEmpty(currentValue)
+			const currentValue = fieldRef.current?.value ?? '';
+			const empty = Helper.isEmpty(currentValue);
 
 			if (empty) {
-				setError(true)
-				setInvalidType('required')
-				return true
+				setError(true);
+				setInvalidType('required');
+				return true;
 			} else {
-				setError(false)
-				setInvalidType('')
-				return false
+				setError(false);
+				setInvalidType('');
+				return false;
 			}
-		}, [setError, setInvalidType])
+		}, [setError, setInvalidType]);
 
 		const handleChange = useCallback(
 			(newValue: string) => {
 				if (!isControlled) {
-					setUncontrolledValue(newValue)
+					setUncontrolledValue(newValue);
 				}
-				onChange?.(newValue)
+				onChange?.(newValue);
 			},
 			[isControlled, onChange],
-		)
+		);
 
 		const handleFocus = useCallback(() => {
-			setIsActive(true)
-			onFocus?.()
-		}, [onFocus])
+			setIsActive(true);
+			onFocus?.();
+		}, [onFocus]);
 
 		const handleBlur = useCallback(() => {
-			const currentValue = fieldRef.current?.value ?? ''
+			const currentValue = fieldRef.current?.value ?? '';
 			if (isActive && currentValue.length === 0) {
-				setIsActive(false)
+				setIsActive(false);
 			}
 
 			if (isRequired) {
-				const empty = handleIsEmpty()
+				const empty = handleIsEmpty();
 				if (!empty && validation.length) {
-					handleValidation()
+					handleValidation();
 				}
 			} else {
 				if (validation.length && currentValue.length) {
-					handleValidation()
+					handleValidation();
 				}
 			}
 
-			onBlur?.()
-		}, [isActive, isRequired, validation, handleIsEmpty, handleValidation, onBlur])
+			onBlur?.();
+		}, [isActive, isRequired, validation, handleIsEmpty, handleValidation, onBlur]);
 
 		const validate = useCallback(() => {
-			handleBlur()
-		}, [handleBlur])
+			handleBlur();
+		}, [handleBlur]);
 
-		useImperativeHandle(ref, () => ({ validate }), [validate])
+		useImperativeHandle(ref, () => ({ validate }), [validate]);
 
 		const contextValue: TextareaContextValue = {
 			value,
@@ -172,91 +163,95 @@ const Root = React.forwardRef<TextareaHandle, TextareaRootProps>(
 			handleBlur,
 			fieldRef,
 			setFieldNode: (node: HTMLTextAreaElement | null) => {
-				;(fieldRef as React.MutableRefObject<HTMLTextAreaElement | null>).current = node
+				(fieldRef as React.MutableRefObject<HTMLTextAreaElement | null>).current = node;
 			},
-		}
+		};
 
 		return (
 			<TextareaContext.Provider value={contextValue}>
-				<div className={className} {...rest}>
+				<div
+					className={className}
+					{...rest}>
 					{children}
 				</div>
 			</TextareaContext.Provider>
-		)
+		);
 	},
-)
+);
 
-Root.displayName = 'Textarea.Root'
+Root.displayName = 'Textarea.Root';
 
-const Field = React.forwardRef<HTMLTextAreaElement, TextareaFieldProps>(
-	({ className, ...rest }, ref) => {
-		const ctx = useTextareaContext()
+const Field = React.forwardRef<HTMLTextAreaElement, TextareaFieldProps>(({ className, ...rest }, ref) => {
+	const ctx = useTextareaContext();
 
-		const combinedRef = (node: HTMLTextAreaElement | null) => {
-			ctx.setFieldNode(node)
-			if (typeof ref === 'function') ref(node)
-			else if (ref) (ref as React.MutableRefObject<HTMLTextAreaElement | null>).current = node
-		}
+	const combinedRef = (node: HTMLTextAreaElement | null) => {
+		ctx.setFieldNode(node);
+		if (typeof ref === 'function') ref(node);
+		else if (ref) (ref as React.MutableRefObject<HTMLTextAreaElement | null>).current = node;
+	};
 
-		return (
-			<textarea
-				ref={combinedRef}
-				id={ctx.textareaId}
-				value={ctx.value}
-				required={ctx.isRequired}
-				className={className}
-				aria-required={ctx.isRequired || undefined}
-				aria-invalid={ctx.invalidType ? true : undefined}
-				data-invalid={ctx.invalidType ? '' : undefined}
-				data-active={ctx.isActive ? '' : undefined}
-				data-success={ctx.isSuccess ? '' : undefined}
-				onFocus={ctx.handleFocus}
-				onBlur={ctx.handleBlur}
-				onChange={(e) => ctx.handleChange(e.target.value)}
-				{...rest}
-			/>
-		)
-	},
-)
+	return (
+		<textarea
+			ref={combinedRef}
+			id={ctx.textareaId}
+			value={ctx.value}
+			required={ctx.isRequired}
+			className={className}
+			aria-required={ctx.isRequired || undefined}
+			aria-invalid={ctx.invalidType ? true : undefined}
+			data-invalid={ctx.invalidType ? '' : undefined}
+			data-active={ctx.isActive ? '' : undefined}
+			data-success={ctx.isSuccess ? '' : undefined}
+			onFocus={ctx.handleFocus}
+			onBlur={ctx.handleBlur}
+			onChange={(e) => ctx.handleChange(e.target.value)}
+			{...rest}
+		/>
+	);
+});
 
-Field.displayName = 'Textarea.Field'
+Field.displayName = 'Textarea.Field';
 
-const Label = React.forwardRef<HTMLLabelElement, TextareaLabelProps>(
-	({ children, className, ...rest }, ref) => {
-		const ctx = useTextareaContext()
+const Label = React.forwardRef<HTMLLabelElement, TextareaLabelProps>(({ children, className, ...rest }, ref) => {
+	const ctx = useTextareaContext();
 
-		return (
-			<label ref={ref} htmlFor={ctx.textareaId} className={className} {...rest}>
-				{ctx.isRequired && <span>*</span>}
-				{children}
-			</label>
-		)
-	},
-)
+	return (
+		<label
+			ref={ref}
+			htmlFor={ctx.textareaId}
+			className={className}
+			{...rest}>
+			{ctx.isRequired && <span>*</span>}
+			{children}
+		</label>
+	);
+});
 
-Label.displayName = 'Textarea.Label'
+Label.displayName = 'Textarea.Label';
 
-const Error = React.forwardRef<HTMLElement, TextareaErrorProps>(
-	({ children, className, ...rest }, ref) => {
-		const ctx = useTextareaContext()
+const Error = React.forwardRef<HTMLElement, TextareaErrorProps>(({ children, className, ...rest }, ref) => {
+	const ctx = useTextareaContext();
 
-		if (!ctx.invalidType) return null
+	if (!ctx.invalidType) return null;
 
-		const message = children ?? ctx.errorMessage[ctx.invalidType]
+	const message = children ?? ctx.errorMessage[ctx.invalidType];
 
-		return (
-			<small ref={ref} role="alert" className={className} {...rest}>
-				{message}
-			</small>
-		)
-	},
-)
+	return (
+		<small
+			ref={ref}
+			role='alert'
+			className={className}
+			{...rest}>
+			{message}
+		</small>
+	);
+});
 
-Error.displayName = 'Textarea.Error'
+Error.displayName = 'Textarea.Error';
 
 export const Textarea = {
 	Root,
 	Field,
 	Label,
 	Error,
-}
+};

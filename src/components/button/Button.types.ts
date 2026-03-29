@@ -20,5 +20,5 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 	 *   <a href="/about">About</a>
 	 * </Button>
 	 */
-	asChild?: boolean
+	asChild?: boolean;
 }

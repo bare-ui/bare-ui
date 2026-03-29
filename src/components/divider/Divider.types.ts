@@ -17,11 +17,11 @@ export interface DividerProps extends React.HTMLAttributes<HTMLDivElement> {
 	 * Exposed as `data-orientation="horizontal|vertical"` for CSS targeting.
 	 * @default 'horizontal'
 	 */
-	orientation?: 'horizontal' | 'vertical'
+	orientation?: 'horizontal' | 'vertical';
 	/**
 	 * When true, the divider is purely presentational and hidden from
 	 * assistive technology. When false, it is announced as a separator.
 	 * @default true
 	 */
-	decorative?: boolean
+	decorative?: boolean;
 }

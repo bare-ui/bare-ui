@@ -1,10 +1,5 @@
-import React, { createContext, useContext, useRef, useState } from 'react'
-import type {
-	TooltipContextValue,
-	TooltipRootProps,
-	TooltipTriggerProps,
-	TooltipContentProps,
-} from './Tooltip.types'
+import React, { createContext, useContext, useRef, useState } from 'react';
+import type { TooltipContextValue, TooltipRootProps, TooltipTriggerProps, TooltipContentProps } from './Tooltip.types';
 
 // ---------------------------------------------------------------------------
 // Context
@@ -13,7 +8,7 @@ import type {
 const TooltipContext = createContext<TooltipContextValue>({
 	open: false,
 	setOpen: () => {},
-})
+});
 
 // ---------------------------------------------------------------------------
 // Root
@@ -26,35 +21,35 @@ const Root = ({
 	delayDuration = 300,
 	children,
 }: TooltipRootProps) => {
-	const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen)
-	const isControlled = controlledOpen !== undefined
-	const open = isControlled ? controlledOpen : uncontrolledOpen
-	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+	const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+	const isControlled = controlledOpen !== undefined;
+	const open = isControlled ? controlledOpen : uncontrolledOpen;
+	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	const setOpen = (value: boolean) => {
 		if (timerRef.current) {
-			clearTimeout(timerRef.current)
-			timerRef.current = null
+			clearTimeout(timerRef.current);
+			timerRef.current = null;
 		}
 		if (value) {
 			timerRef.current = setTimeout(() => {
-				if (!isControlled) setUncontrolledOpen(true)
-				onOpenChange?.(true)
-			}, delayDuration)
+				if (!isControlled) setUncontrolledOpen(true);
+				onOpenChange?.(true);
+			}, delayDuration);
 		} else {
-			if (!isControlled) setUncontrolledOpen(false)
-			onOpenChange?.(false)
+			if (!isControlled) setUncontrolledOpen(false);
+			onOpenChange?.(false);
 		}
-	}
+	};
 
 	return (
 		<TooltipContext.Provider value={{ open, setOpen }}>
 			<span style={{ position: 'relative', display: 'inline-block' }}>{children}</span>
 		</TooltipContext.Provider>
-	)
-}
+	);
+};
 
-Root.displayName = 'Tooltip.Root'
+Root.displayName = 'Tooltip.Root';
 
 // ---------------------------------------------------------------------------
 // Trigger
@@ -62,36 +57,35 @@ Root.displayName = 'Tooltip.Root'
 
 const Trigger = React.forwardRef<HTMLSpanElement, TooltipTriggerProps>(
 	({ children, onMouseEnter, onMouseLeave, onFocus, onBlur, ...rest }, ref) => {
-		const { setOpen } = useContext(TooltipContext)
+		const { setOpen } = useContext(TooltipContext);
 
 		return (
 			<span
 				ref={ref}
 				onMouseEnter={(e) => {
-					setOpen(true)
-					onMouseEnter?.(e)
+					setOpen(true);
+					onMouseEnter?.(e);
 				}}
 				onMouseLeave={(e) => {
-					setOpen(false)
-					onMouseLeave?.(e)
+					setOpen(false);
+					onMouseLeave?.(e);
 				}}
 				onFocus={(e) => {
-					setOpen(true)
-					onFocus?.(e)
+					setOpen(true);
+					onFocus?.(e);
 				}}
 				onBlur={(e) => {
-					setOpen(false)
-					onBlur?.(e)
+					setOpen(false);
+					onBlur?.(e);
 				}}
-				{...rest}
-			>
+				{...rest}>
 				{children}
 			</span>
-		)
+		);
 	},
-)
+);
 
-Trigger.displayName = 'Tooltip.Trigger'
+Trigger.displayName = 'Tooltip.Trigger';
 
 // ---------------------------------------------------------------------------
 // Content
@@ -99,7 +93,7 @@ Trigger.displayName = 'Tooltip.Trigger'
 
 const Content = React.forwardRef<HTMLSpanElement, TooltipContentProps>(
 	({ side = 'top', className, children, style, ...rest }, ref) => {
-		const { open } = useContext(TooltipContext)
+		const { open } = useContext(TooltipContext);
 
 		const positionStyle: React.CSSProperties = {
 			position: 'absolute',
@@ -129,28 +123,27 @@ const Content = React.forwardRef<HTMLSpanElement, TooltipContentProps>(
 				transform: 'translateY(-50%)',
 				marginLeft: 8,
 			}),
-		}
+		};
 
 		return (
 			<span
 				ref={ref}
-				role="tooltip"
+				role='tooltip'
 				data-state={open ? 'open' : 'closed'}
 				data-side={side}
 				className={className}
 				style={{ ...positionStyle, ...style }}
-				{...rest}
-			>
+				{...rest}>
 				{children}
 			</span>
-		)
+		);
 	},
-)
+);
 
-Content.displayName = 'Tooltip.Content'
+Content.displayName = 'Tooltip.Content';
 
 // ---------------------------------------------------------------------------
 // Export
 // ---------------------------------------------------------------------------
 
-export const Tooltip = { Root, Trigger, Content }
+export const Tooltip = { Root, Trigger, Content };

@@ -1,21 +1,21 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Image } from './Image'
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Image } from './Image';
 
 const meta = {
 	title: 'Components/Image',
 	component: Image,
 	tags: ['autodocs'],
-} satisfies Meta<typeof Image>
+} satisfies Meta<typeof Image>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
 	args: {
 		src: 'https://picsum.photos/400/300',
 		alt: 'Sample image',
 	},
-}
+};
 
 export const PositionLeft: Story = {
 	args: {
@@ -23,7 +23,7 @@ export const PositionLeft: Story = {
 		alt: 'Left aligned image',
 		position: 'left',
 	},
-}
+};
 
 export const PositionCenter: Story = {
 	args: {
@@ -31,7 +31,7 @@ export const PositionCenter: Story = {
 		alt: 'Center aligned image',
 		position: 'center',
 	},
-}
+};
 
 export const PositionRight: Story = {
 	args: {
@@ -39,4 +39,4 @@ export const PositionRight: Story = {
 		alt: 'Right aligned image',
 		position: 'right',
 	},
-}
+};

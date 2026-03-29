@@ -1,4 +1,4 @@
-export { Drawer } from './Drawer'
+export { Drawer } from './Drawer';
 export type {
 	DrawerRootProps,
 	DrawerPortalProps,
@@ -6,4 +6,4 @@ export type {
 	DrawerContentProps,
 	DrawerHeaderProps,
 	DrawerCloseProps,
-} from './Drawer.types'
+} from './Drawer.types';

@@ -1,30 +1,23 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
-import type {
-	AvatarFallbackProps,
-	AvatarImageProps,
-	AvatarImageStatus,
-	AvatarRootProps,
-} from './Avatar.types'
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import type { AvatarFallbackProps, AvatarImageProps, AvatarImageStatus, AvatarRootProps } from './Avatar.types';
 
 // ---------------------------------------------------------------------------
 // Context
 // ---------------------------------------------------------------------------
 
 interface AvatarContextValue {
-	imageStatus: AvatarImageStatus
-	setImageStatus: (status: AvatarImageStatus) => void
+	imageStatus: AvatarImageStatus;
+	setImageStatus: (status: AvatarImageStatus) => void;
 }
 
-const AvatarContext = createContext<AvatarContextValue | null>(null)
+const AvatarContext = createContext<AvatarContextValue | null>(null);
 
 function useAvatarContext(): AvatarContextValue {
-	const ctx = useContext(AvatarContext)
+	const ctx = useContext(AvatarContext);
 	if (!ctx) {
-		throw new globalThis.Error(
-			'[bare-ui] Avatar sub-components must be used inside <Avatar.Root>',
-		)
+		throw new globalThis.Error('[bare-ui] Avatar sub-components must be used inside <Avatar.Root>');
 	}
-	return ctx
+	return ctx;
 }
 
 // ---------------------------------------------------------------------------
@@ -41,21 +34,22 @@ function useAvatarContext(): AvatarContextValue {
  *   <Avatar.Fallback>JD</Avatar.Fallback>
  * </Avatar.Root>
  */
-const AvatarRoot = React.forwardRef<HTMLDivElement, AvatarRootProps>(
-	({ children, ...rest }, ref) => {
-		const [imageStatus, setImageStatus] = useState<AvatarImageStatus>('loading')
+const AvatarRoot = React.forwardRef<HTMLDivElement, AvatarRootProps>(({ children, ...rest }, ref) => {
+	const [imageStatus, setImageStatus] = useState<AvatarImageStatus>('loading');
 
-		return (
-			<AvatarContext.Provider value={{ imageStatus, setImageStatus }}>
-				<div ref={ref} data-status={imageStatus} {...rest}>
-					{children}
-				</div>
-			</AvatarContext.Provider>
-		)
-	},
-)
+	return (
+		<AvatarContext.Provider value={{ imageStatus, setImageStatus }}>
+			<div
+				ref={ref}
+				data-status={imageStatus}
+				{...rest}>
+				{children}
+			</div>
+		</AvatarContext.Provider>
+	);
+});
 
-AvatarRoot.displayName = 'Avatar.Root'
+AvatarRoot.displayName = 'Avatar.Root';
 
 // ---------------------------------------------------------------------------
 // Avatar.Image
@@ -70,17 +64,17 @@ AvatarRoot.displayName = 'Avatar.Root'
  */
 const AvatarImage = React.forwardRef<HTMLImageElement, AvatarImageProps>(
 	({ src, onLoad, onError, style, ...rest }, ref) => {
-		const { imageStatus, setImageStatus } = useAvatarContext()
+		const { imageStatus, setImageStatus } = useAvatarContext();
 
 		useEffect(() => {
 			if (!src) {
-				setImageStatus('error')
+				setImageStatus('error');
 			} else {
-				setImageStatus('loading')
+				setImageStatus('loading');
 			}
-		}, [src, setImageStatus])
+		}, [src, setImageStatus]);
 
-		if (!src) return null
+		if (!src) return null;
 
 		return (
 			<img
@@ -89,20 +83,20 @@ const AvatarImage = React.forwardRef<HTMLImageElement, AvatarImageProps>(
 				data-status={imageStatus}
 				style={{ display: imageStatus === 'loaded' ? undefined : 'none', ...style }}
 				onLoad={(e) => {
-					setImageStatus('loaded')
-					onLoad?.(e)
+					setImageStatus('loaded');
+					onLoad?.(e);
 				}}
 				onError={(e) => {
-					setImageStatus('error')
-					onError?.(e)
+					setImageStatus('error');
+					onError?.(e);
 				}}
 				{...rest}
 			/>
-		)
+		);
 	},
-)
+);
 
-AvatarImage.displayName = 'Avatar.Image'
+AvatarImage.displayName = 'Avatar.Image';
 
 // ---------------------------------------------------------------------------
 // Avatar.Fallback
@@ -124,28 +118,30 @@ AvatarImage.displayName = 'Avatar.Image'
  */
 const AvatarFallback = React.forwardRef<HTMLSpanElement, AvatarFallbackProps>(
 	({ delayMs = 0, children, ...rest }, ref) => {
-		const { imageStatus } = useAvatarContext()
-		const [canRender, setCanRender] = useState(delayMs === 0)
+		const { imageStatus } = useAvatarContext();
+		const [canRender, setCanRender] = useState(delayMs === 0);
 
 		useEffect(() => {
 			if (delayMs > 0) {
-				const timer = setTimeout(() => setCanRender(true), delayMs)
-				return () => clearTimeout(timer)
+				const timer = setTimeout(() => setCanRender(true), delayMs);
+				return () => clearTimeout(timer);
 			}
-		}, [delayMs])
+		}, [delayMs]);
 
-		if (imageStatus === 'loaded') return null
-		if (!canRender) return null
+		if (imageStatus === 'loaded') return null;
+		if (!canRender) return null;
 
 		return (
-			<span ref={ref} {...rest}>
+			<span
+				ref={ref}
+				{...rest}>
 				{children}
 			</span>
-		)
+		);
 	},
-)
+);
 
-AvatarFallback.displayName = 'Avatar.Fallback'
+AvatarFallback.displayName = 'Avatar.Fallback';
 
 // ---------------------------------------------------------------------------
 // Compound export
@@ -155,4 +151,4 @@ export const Avatar = Object.assign(AvatarRoot, {
 	Root: AvatarRoot,
 	Image: AvatarImage,
 	Fallback: AvatarFallback,
-})
+});

@@ -1,28 +1,26 @@
-import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { mergeProps } from '@/utils/merge-props'
-import { useInteractiveState } from '@/hooks/use-interactive-state'
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { mergeProps } from '@/utils/merge-props';
+import { useInteractiveState } from '@/hooks/use-interactive-state';
 import type {
 	AlertContextValue,
 	AlertDescriptionProps,
 	AlertDismissProps,
 	AlertRootProps,
 	AlertTitleProps,
-} from './Alert.types'
+} from './Alert.types';
 
 // ---------------------------------------------------------------------------
 // Context
 // ---------------------------------------------------------------------------
 
-const AlertContext = createContext<AlertContextValue | null>(null)
+const AlertContext = createContext<AlertContextValue | null>(null);
 
 function useAlertContext(): AlertContextValue {
-	const ctx = useContext(AlertContext)
+	const ctx = useContext(AlertContext);
 	if (!ctx) {
-		throw new globalThis.Error(
-			'[bare-ui] Alert sub-components must be used inside <Alert.Root>',
-		)
+		throw new globalThis.Error('[bare-ui] Alert sub-components must be used inside <Alert.Root>');
 	}
-	return ctx
+	return ctx;
 }
 
 // ---------------------------------------------------------------------------
@@ -44,75 +42,71 @@ function useAlertContext(): AlertContextValue {
  * </Alert.Root>
  */
 const AlertRoot = React.forwardRef<HTMLDivElement, AlertRootProps>(
-	(
-		{
-			status,
-			isAutoDismissable = false,
-			dismissCountdown = 3000,
-			onDismiss,
-			children,
-			...rest
-		},
-		ref,
-	) => {
-		const [dismissed, setDismissed] = useState(false)
-		const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+	({ status, isAutoDismissable = false, dismissCountdown = 3000, onDismiss, children, ...rest }, ref) => {
+		const [dismissed, setDismissed] = useState(false);
+		const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 		const dismiss = useCallback(() => {
-			setDismissed(true)
-			onDismiss?.()
-		}, [onDismiss])
+			setDismissed(true);
+			onDismiss?.();
+		}, [onDismiss]);
 
 		useEffect(() => {
 			if (isAutoDismissable) {
-				timeoutRef.current = setTimeout(dismiss, dismissCountdown)
+				timeoutRef.current = setTimeout(dismiss, dismissCountdown);
 			}
 			return () => {
-				if (timeoutRef.current) clearTimeout(timeoutRef.current)
-			}
-		}, [isAutoDismissable, dismissCountdown, dismiss])
+				if (timeoutRef.current) clearTimeout(timeoutRef.current);
+			};
+		}, [isAutoDismissable, dismissCountdown, dismiss]);
 
-		if (dismissed) return null
+		if (dismissed) return null;
 
 		return (
 			<AlertContext.Provider value={{ status, dismiss }}>
-				<div ref={ref} role="alert" data-status={status} {...rest}>
+				<div
+					ref={ref}
+					role='alert'
+					data-status={status}
+					{...rest}>
 					{children}
 				</div>
 			</AlertContext.Provider>
-		)
+		);
 	},
-)
+);
 
-AlertRoot.displayName = 'Alert.Root'
+AlertRoot.displayName = 'Alert.Root';
 
 // ---------------------------------------------------------------------------
 // Alert.Title
 // ---------------------------------------------------------------------------
 
-const AlertTitle = React.forwardRef<HTMLParagraphElement, AlertTitleProps>(
-	({ children, ...rest }, ref) => (
-		<p ref={ref} data-part="title" {...rest}>
-			{children}
-		</p>
-	),
-)
+const AlertTitle = React.forwardRef<HTMLParagraphElement, AlertTitleProps>(({ children, ...rest }, ref) => (
+	<p
+		ref={ref}
+		data-part='title'
+		{...rest}>
+		{children}
+	</p>
+));
 
-AlertTitle.displayName = 'Alert.Title'
+AlertTitle.displayName = 'Alert.Title';
 
 // ---------------------------------------------------------------------------
 // Alert.Description
 // ---------------------------------------------------------------------------
 
-const AlertDescription = React.forwardRef<HTMLParagraphElement, AlertDescriptionProps>(
-	({ children, ...rest }, ref) => (
-		<p ref={ref} data-part="description" {...rest}>
-			{children}
-		</p>
-	),
-)
+const AlertDescription = React.forwardRef<HTMLParagraphElement, AlertDescriptionProps>(({ children, ...rest }, ref) => (
+	<p
+		ref={ref}
+		data-part='description'
+		{...rest}>
+		{children}
+	</p>
+));
 
-AlertDescription.displayName = 'Alert.Description'
+AlertDescription.displayName = 'Alert.Description';
 
 // ---------------------------------------------------------------------------
 // Alert.Dismiss
@@ -122,39 +116,29 @@ AlertDescription.displayName = 'Alert.Description'
  * The dismiss button. Fires the Root's dismiss handler when clicked.
  * Tracks hover/focus-visible/active state via data attributes.
  */
-const AlertDismiss = React.forwardRef<HTMLButtonElement, AlertDismissProps>(
-	({ children, ...rest }, ref) => {
-		const { dismiss } = useAlertContext()
-		const { handlers, dataAttributes } = useInteractiveState()
+const AlertDismiss = React.forwardRef<HTMLButtonElement, AlertDismissProps>(({ children, ...rest }, ref) => {
+	const { dismiss } = useAlertContext();
+	const { handlers, dataAttributes } = useInteractiveState();
 
-		const mergedProps = mergeProps(
-			rest as Record<string, unknown>,
-			handlers as Record<string, unknown>,
-		)
+	const mergedProps = mergeProps(rest as Record<string, unknown>, handlers as Record<string, unknown>);
 
-		return (
-			<button
-				ref={ref}
-				type="button"
-				aria-label="Dismiss"
-				{...dataAttributes}
-				{...mergedProps}
-				onClick={(e) => {
-					dismiss()
-					;(
-						rest.onClick as
-							| ((e: React.MouseEvent<HTMLButtonElement>) => void)
-							| undefined
-					)?.(e)
-				}}
-			>
-				{children}
-			</button>
-		)
-	},
-)
+	return (
+		<button
+			ref={ref}
+			type='button'
+			aria-label='Dismiss'
+			{...dataAttributes}
+			{...mergedProps}
+			onClick={(e) => {
+				dismiss();
+				(rest.onClick as ((e: React.MouseEvent<HTMLButtonElement>) => void) | undefined)?.(e);
+			}}>
+			{children}
+		</button>
+	);
+});
 
-AlertDismiss.displayName = 'Alert.Dismiss'
+AlertDismiss.displayName = 'Alert.Dismiss';
 
 // ---------------------------------------------------------------------------
 // Compound export
@@ -165,4 +149,4 @@ export const Alert = {
 	Title: AlertTitle,
 	Description: AlertDescription,
 	Dismiss: AlertDismiss,
-}
+};

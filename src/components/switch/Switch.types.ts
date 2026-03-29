@@ -1,22 +1,19 @@
-import React from 'react'
+import React from 'react';
 
 export interface SwitchContextValue {
-	checked: boolean
-	disabled: boolean
+	checked: boolean;
+	disabled: boolean;
 }
 
-export interface SwitchRootProps extends Omit<
-	React.ButtonHTMLAttributes<HTMLButtonElement>,
-	'onChange'
-> {
+export interface SwitchRootProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onChange'> {
 	/** Controlled checked state */
-	checked?: boolean
+	checked?: boolean;
 	/** Initial unchecked state (uncontrolled) */
-	defaultChecked?: boolean
+	defaultChecked?: boolean;
 	/** Called when the switch is toggled */
-	onChange?: (checked: boolean) => void
+	onChange?: (checked: boolean) => void;
 	/** Disables the switch */
-	disabled?: boolean
+	disabled?: boolean;
 }
 
-export type SwitchThumbProps = React.HTMLAttributes<HTMLSpanElement>
+export type SwitchThumbProps = React.HTMLAttributes<HTMLSpanElement>;

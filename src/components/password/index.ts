@@ -1,4 +1,4 @@
-export { Password } from './Password'
+export { Password } from './Password';
 export type {
 	PasswordRootProps,
 	PasswordFieldProps,
@@ -6,4 +6,4 @@ export type {
 	PasswordLabelProps,
 	PasswordErrorProps,
 	PasswordHandle,
-} from './Password.types'
+} from './Password.types';

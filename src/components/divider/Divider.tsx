@@ -1,5 +1,5 @@
-import React from 'react'
-import type { DividerProps } from './Divider.types'
+import React from 'react';
+import type { DividerProps } from './Divider.types';
 
 /**
  * A headless visual or semantic divider.
@@ -24,14 +24,22 @@ import type { DividerProps } from './Divider.types'
  */
 const Divider = React.forwardRef<HTMLDivElement, DividerProps>(
 	({ orientation = 'horizontal', decorative = true, ...rest }, ref) => {
-		const semanticProps = decorative
-			? { role: 'none' as const, 'aria-hidden': true as const }
-			: { role: 'separator' as const, 'aria-orientation': orientation }
+		const semanticProps =
+			decorative ?
+				{ role: 'none' as const, 'aria-hidden': true as const }
+			:	{ role: 'separator' as const, 'aria-orientation': orientation };
 
-		return <div ref={ref} data-orientation={orientation} {...semanticProps} {...rest} />
+		return (
+			<div
+				ref={ref}
+				data-orientation={orientation}
+				{...semanticProps}
+				{...rest}
+			/>
+		);
 	},
-)
+);
 
-Divider.displayName = 'Divider'
+Divider.displayName = 'Divider';
 
-export { Divider }
+export { Divider };

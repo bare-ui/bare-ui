@@ -1,13 +1,5 @@
-import React, {
-	createContext,
-	useCallback,
-	useContext,
-	useImperativeHandle,
-	useMemo,
-	useRef,
-	useState,
-} from 'react'
-import { Helper } from '@/utils/helper'
+import React, { createContext, useCallback, useContext, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { Helper } from '@/utils/helper';
 import type {
 	InputContextValue,
 	InputErrorProps,
@@ -15,16 +7,16 @@ import type {
 	InputHandle,
 	InputLabelProps,
 	InputRootProps,
-} from './Input.types'
+} from './Input.types';
 
-const InputContext = createContext<InputContextValue | null>(null)
+const InputContext = createContext<InputContextValue | null>(null);
 
 function useInputContext() {
-	const context = useContext(InputContext)
+	const context = useContext(InputContext);
 	if (!context) {
-		throw new globalThis.Error('Input compound components must be used within Input.Root')
+		throw new globalThis.Error('Input compound components must be used within Input.Root');
 	}
-	return context
+	return context;
 }
 
 const Root = React.forwardRef<InputHandle, InputRootProps>(
@@ -49,114 +41,113 @@ const Root = React.forwardRef<InputHandle, InputRootProps>(
 		},
 		ref,
 	) => {
-		const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue)
-		const isControlled = controlledValue !== undefined
-		const value = isControlled ? controlledValue : uncontrolledValue
+		const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
+		const isControlled = controlledValue !== undefined;
+		const value = isControlled ? controlledValue : uncontrolledValue;
 
-		const [isActive, setIsActive] = useState(false)
-		const [internalInvalidType, setInternalInvalidType] = useState('')
-		const invalidType =
-			controlledInvalidType !== undefined ? controlledInvalidType : internalInvalidType
+		const [isActive, setIsActive] = useState(false);
+		const [internalInvalidType, setInternalInvalidType] = useState('');
+		const invalidType = controlledInvalidType !== undefined ? controlledInvalidType : internalInvalidType;
 
-		const fieldRef = useRef<HTMLInputElement>(null)
-		const inputId = useMemo(() => id || Helper.generateUUID(), [id])
+		const fieldRef = useRef<HTMLInputElement>(null);
+		const inputId = useMemo(() => id || Helper.generateUUID(), [id]);
 
 		const setInvalidType = useCallback(
 			(type: string) => {
 				if (controlledInvalidType === undefined) {
-					setInternalInvalidType(type)
+					setInternalInvalidType(type);
 				}
-				onInvalidTypeChange?.(type)
+				onInvalidTypeChange?.(type);
 			},
 			[controlledInvalidType, onInvalidTypeChange],
-		)
+		);
 
 		const setError = useCallback(
 			(hasError: boolean) => {
-				onErrorChange?.(hasError)
+				onErrorChange?.(hasError);
 			},
 			[onErrorChange],
-		)
+		);
 
 		const handleValidation = useCallback(() => {
-			if (validation === 'phone') return
+			if (validation === 'phone') return;
 
-			const currentValue = fieldRef.current?.value ?? ''
-			const trimmedValue = validation === 'email' ? currentValue.trim() : currentValue
+			const currentValue = fieldRef.current?.value ?? '';
+			const trimmedValue = validation === 'email' ? currentValue.trim() : currentValue;
 
 			if (validation === 'email' && fieldRef.current) {
-				fieldRef.current.value = trimmedValue
+				fieldRef.current.value = trimmedValue;
 			}
 
 			const validator = Helper.isValid({
 				value: trimmedValue,
 				type: validation as 'email' | 'name' | 'phone',
-			})
+			});
 
 			if (validator.isValid) {
-				setError(false)
-				setInvalidType('')
+				setError(false);
+				setInvalidType('');
 			} else {
-				setError(true)
-				setInvalidType(validation)
+				setError(true);
+				setInvalidType(validation);
 			}
-		}, [validation, setError, setInvalidType])
+		}, [validation, setError, setInvalidType]);
 
 		const handleIsEmpty = useCallback((): boolean => {
-			const currentValue = fieldRef.current?.value ?? ''
-			const empty = Helper.isEmpty(currentValue)
+			const currentValue = fieldRef.current?.value ?? '';
+			const empty = Helper.isEmpty(currentValue);
 
 			if (empty) {
-				setError(true)
-				setInvalidType('required')
-				return true
+				setError(true);
+				setInvalidType('required');
+				return true;
 			} else {
-				setError(false)
-				setInvalidType('')
-				return false
+				setError(false);
+				setInvalidType('');
+				return false;
 			}
-		}, [setError, setInvalidType])
+		}, [setError, setInvalidType]);
 
 		const handleChange = useCallback(
 			(newValue: string) => {
 				if (!isControlled) {
-					setUncontrolledValue(newValue)
+					setUncontrolledValue(newValue);
 				}
-				onChange?.(newValue)
+				onChange?.(newValue);
 			},
 			[isControlled, onChange],
-		)
+		);
 
 		const handleFocus = useCallback(() => {
-			setIsActive(true)
-			onFocus?.()
-		}, [onFocus])
+			setIsActive(true);
+			onFocus?.();
+		}, [onFocus]);
 
 		const handleBlur = useCallback(() => {
-			const currentValue = fieldRef.current?.value ?? ''
+			const currentValue = fieldRef.current?.value ?? '';
 			if (isActive && currentValue.length === 0) {
-				setIsActive(false)
+				setIsActive(false);
 			}
 
 			if (isRequired) {
-				const empty = handleIsEmpty()
+				const empty = handleIsEmpty();
 				if (!empty && validation.length) {
-					handleValidation()
+					handleValidation();
 				}
 			} else {
 				if (validation.length && currentValue.length) {
-					handleValidation()
+					handleValidation();
 				}
 			}
 
-			onBlur?.()
-		}, [isActive, isRequired, validation, handleIsEmpty, handleValidation, onBlur])
+			onBlur?.();
+		}, [isActive, isRequired, validation, handleIsEmpty, handleValidation, onBlur]);
 
 		const validate = useCallback(() => {
-			handleBlur()
-		}, [handleBlur])
+			handleBlur();
+		}, [handleBlur]);
 
-		useImperativeHandle(ref, () => ({ validate }), [validate])
+		useImperativeHandle(ref, () => ({ validate }), [validate]);
 
 		const contextValue: InputContextValue = {
 			value,
@@ -172,30 +163,32 @@ const Root = React.forwardRef<InputHandle, InputRootProps>(
 			handleBlur,
 			fieldRef,
 			setFieldNode: (node: HTMLInputElement | null) => {
-				;(fieldRef as React.MutableRefObject<HTMLInputElement | null>).current = node
+				(fieldRef as React.MutableRefObject<HTMLInputElement | null>).current = node;
 			},
-		}
+		};
 
 		return (
 			<InputContext.Provider value={contextValue}>
-				<div className={className} {...rest}>
+				<div
+					className={className}
+					{...rest}>
 					{children}
 				</div>
 			</InputContext.Provider>
-		)
+		);
 	},
-)
+);
 
-Root.displayName = 'Input.Root'
+Root.displayName = 'Input.Root';
 
 const Field = React.forwardRef<HTMLInputElement, InputFieldProps>(({ className, ...rest }, ref) => {
-	const ctx = useInputContext()
+	const ctx = useInputContext();
 
 	const combinedRef = (node: HTMLInputElement | null) => {
-		ctx.setFieldNode(node)
-		if (typeof ref === 'function') ref(node)
-		else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = node
-	}
+		ctx.setFieldNode(node);
+		if (typeof ref === 'function') ref(node);
+		else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = node;
+	};
 
 	return (
 		<input
@@ -214,47 +207,51 @@ const Field = React.forwardRef<HTMLInputElement, InputFieldProps>(({ className, 
 			onChange={(e) => ctx.handleChange(e.target.value)}
 			{...rest}
 		/>
-	)
-})
+	);
+});
 
-Field.displayName = 'Input.Field'
+Field.displayName = 'Input.Field';
 
-const Label = React.forwardRef<HTMLLabelElement, InputLabelProps>(
-	({ children, className, ...rest }, ref) => {
-		const ctx = useInputContext()
+const Label = React.forwardRef<HTMLLabelElement, InputLabelProps>(({ children, className, ...rest }, ref) => {
+	const ctx = useInputContext();
 
-		return (
-			<label ref={ref} htmlFor={ctx.inputId} className={className} {...rest}>
-				{ctx.isRequired && <span>*</span>}
-				{children}
-			</label>
-		)
-	},
-)
+	return (
+		<label
+			ref={ref}
+			htmlFor={ctx.inputId}
+			className={className}
+			{...rest}>
+			{ctx.isRequired && <span>*</span>}
+			{children}
+		</label>
+	);
+});
 
-Label.displayName = 'Input.Label'
+Label.displayName = 'Input.Label';
 
-const Error = React.forwardRef<HTMLElement, InputErrorProps>(
-	({ children, className, ...rest }, ref) => {
-		const ctx = useInputContext()
+const Error = React.forwardRef<HTMLElement, InputErrorProps>(({ children, className, ...rest }, ref) => {
+	const ctx = useInputContext();
 
-		if (!ctx.invalidType) return null
+	if (!ctx.invalidType) return null;
 
-		const message = children ?? ctx.errorMessage[ctx.invalidType]
+	const message = children ?? ctx.errorMessage[ctx.invalidType];
 
-		return (
-			<small ref={ref} role="alert" className={className} {...rest}>
-				{message}
-			</small>
-		)
-	},
-)
+	return (
+		<small
+			ref={ref}
+			role='alert'
+			className={className}
+			{...rest}>
+			{message}
+		</small>
+	);
+});
 
-Error.displayName = 'Input.Error'
+Error.displayName = 'Input.Error';
 
 export const Input = {
 	Root,
 	Field,
 	Label,
 	Error,
-}
+};

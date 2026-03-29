@@ -27,11 +27,11 @@ export {
 	Textarea,
 	Timeago,
 	Tooltip,
-} from './components'
+} from './components';
 
 // Hooks
-export { useClickOutside, useInteractiveState } from './hooks'
-export type { InteractiveStateOptions, InteractiveStateResult } from './hooks'
+export { useClickOutside, useInteractiveState } from './hooks';
+export type { InteractiveStateOptions, InteractiveStateResult } from './hooks';
 
 // Types
 export type {
@@ -43,7 +43,7 @@ export type {
 	BaseTextFieldProps,
 	BaseFormFieldHandle,
 	BaseOption,
-} from './types'
+} from './types';
 
 // Component types
 export type {
@@ -51,30 +51,20 @@ export type {
 	AccordionItemProps,
 	AccordionTriggerProps,
 	AccordionContentProps,
-} from './components/accordion'
-export type {
-	AlertRootProps,
-	AlertTitleProps,
-	AlertDescriptionProps,
-	AlertDismissProps,
-} from './components/alert'
-export type {
-	AvatarRootProps,
-	AvatarImageProps,
-	AvatarFallbackProps,
-	AvatarImageStatus,
-} from './components/avatar'
-export type { BadgeProps } from './components/badge'
-export type { ButtonProps } from './components/button'
-export type { CardProps } from './components/card'
-export type { DividerProps } from './components/divider'
+} from './components/accordion';
+export type { AlertRootProps, AlertTitleProps, AlertDescriptionProps, AlertDismissProps } from './components/alert';
+export type { AvatarRootProps, AvatarImageProps, AvatarFallbackProps, AvatarImageStatus } from './components/avatar';
+export type { BadgeProps } from './components/badge';
+export type { ButtonProps } from './components/button';
+export type { CardProps } from './components/card';
+export type { DividerProps } from './components/divider';
 export type {
 	CheckboxRootProps,
 	CheckboxItemProps,
 	CheckboxIndicatorProps,
 	CheckboxLabelProps,
 	CheckboxHandle,
-} from './components/checkbox'
+} from './components/checkbox';
 export type {
 	DrawerRootProps,
 	DrawerPortalProps,
@@ -82,31 +72,31 @@ export type {
 	DrawerContentProps,
 	DrawerHeaderProps,
 	DrawerCloseProps,
-} from './components/drawer'
+} from './components/drawer';
 export type {
 	DropdownRootProps,
 	DropdownTriggerProps,
 	DropdownMenuProps,
 	DropdownPosition,
-} from './components/dropdown'
-export type { IconProps, IconName, IconSize } from './components/icon'
-export type { ImageProps } from './components/image'
+} from './components/dropdown';
+export type { IconProps, IconName, IconSize } from './components/icon';
+export type { ImageProps } from './components/image';
 export type {
 	InputRootProps,
 	InputFieldProps,
 	InputLabelProps,
 	InputErrorProps,
 	InputHandle,
-} from './components/input'
-export type { ListProps } from './components/list'
+} from './components/input';
+export type { ListProps } from './components/list';
 export type {
 	ModalRootProps,
 	ModalPortalProps,
 	ModalOverlayProps,
 	ModalContentProps,
 	ModalCloseProps,
-} from './components/modal'
-export type { OTPRootProps, OTPSlotProps, OTPSeparatorProps } from './components/otp'
+} from './components/modal';
+export type { OTPRootProps, OTPSlotProps, OTPSeparatorProps } from './components/otp';
 export type {
 	PasswordRootProps,
 	PasswordFieldProps,
@@ -114,16 +104,16 @@ export type {
 	PasswordLabelProps,
 	PasswordErrorProps,
 	PasswordHandle,
-} from './components/password'
-export type { ProgressBarProps } from './components/progress-bar'
+} from './components/password';
+export type { ProgressBarProps } from './components/progress-bar';
 export type {
 	RadioRootProps,
 	RadioItemProps,
 	RadioIndicatorProps,
 	RadioLabelProps,
 	RadioHandle,
-} from './components/radio'
-export type { RatingProps } from './components/rating'
+} from './components/radio';
+export type { RatingProps } from './components/rating';
 export type {
 	SearchRootProps,
 	SearchInputProps,
@@ -131,7 +121,7 @@ export type {
 	SearchItemProps,
 	SearchEmptyProps,
 	SearchOption,
-} from './components/search'
+} from './components/search';
 export type {
 	SelectRootProps,
 	SelectTriggerProps,
@@ -141,19 +131,15 @@ export type {
 	SelectSeparatorProps,
 	SelectGroupProps,
 	SelectGroupLabelProps,
-} from './components/select'
-export type { SpinnerProps } from './components/spinner'
-export type { SwitchRootProps, SwitchThumbProps } from './components/switch'
+} from './components/select';
+export type { SpinnerProps } from './components/spinner';
+export type { SwitchRootProps, SwitchThumbProps } from './components/switch';
 export type {
 	TextareaRootProps,
 	TextareaFieldProps,
 	TextareaLabelProps,
 	TextareaErrorProps,
 	TextareaHandle,
-} from './components/textarea'
-export type { TimeagoProps, TimeagoFormatConfig, TimeagoPlural } from './components/timeago'
-export type {
-	TooltipRootProps,
-	TooltipTriggerProps,
-	TooltipContentProps,
-} from './components/tooltip'
+} from './components/textarea';
+export type { TimeagoProps, TimeagoFormatConfig, TimeagoPlural } from './components/timeago';
+export type { TooltipRootProps, TooltipTriggerProps, TooltipContentProps } from './components/tooltip';

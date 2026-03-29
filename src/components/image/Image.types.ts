@@ -10,11 +10,11 @@
  */
 export interface ImageProps extends React.HTMLAttributes<HTMLDivElement> {
 	/** Source path of the image */
-	src: string
+	src: string;
 	/** Alt text for the image */
-	alt?: string
+	alt?: string;
 	/** Horizontal alignment of the image */
-	position?: string
+	position?: string;
 	/** Callback fired when the image has loaded or errored */
-	onImageLoaded?: () => void
+	onImageLoaded?: () => void;
 }
