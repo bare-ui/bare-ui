@@ -4,5 +4,4 @@ export type {
 	CheckboxItemProps,
 	CheckboxIndicatorProps,
 	CheckboxLabelProps,
-	CheckboxHandle,
 } from './Checkbox.types';

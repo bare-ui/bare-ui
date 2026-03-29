@@ -1,15 +1,14 @@
-import React, { createContext, useCallback, useContext, useImperativeHandle, useState } from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { Helper } from '@/utils/helper';
 import type {
 	RadioContextValue,
-	RadioHandle,
 	RadioIndicatorProps,
 	RadioItemContextValue,
 	RadioItemProps,
 	RadioLabelProps,
 	RadioRootProps,
 } from './Radio.types';
-import { Helper } from '@/utils/helper';
 
 const RadioContext = createContext<RadioContextValue | null>(null);
 const RadioItemContext = createContext<RadioItemContextValue | null>(null);
@@ -30,14 +29,12 @@ function useRadioItemContext() {
 	return context;
 }
 
-const Root = React.forwardRef<RadioHandle, RadioRootProps>(
+const Root = React.forwardRef<HTMLDivElement, RadioRootProps>(
 	(
 		{
 			value: controlledValue,
 			defaultValue,
 			onChange,
-			onErrorChange,
-			isRequired = false,
 			name,
 			children,
 			className,
@@ -49,16 +46,7 @@ const Root = React.forwardRef<RadioHandle, RadioRootProps>(
 		const isControlled = controlledValue !== undefined;
 		const selectedValue = isControlled ? controlledValue : uncontrolledValue;
 
-		const groupName = React.useMemo(() => name || Helper.generateUUID(), [name]);
-
-		const handleValidation = useCallback(
-			(val: string | number | undefined) => {
-				if (!isRequired) return;
-				const hasValue = val !== undefined && val !== null && String(val).length > 0;
-				onErrorChange?.(!hasValue);
-			},
-			[isRequired, onErrorChange],
-		);
+		const groupName = useMemo(() => name || Helper.generateUUID(), [name]);
 
 		const isSelected = useCallback(
 			(itemValue: string | number) => {
@@ -70,24 +58,16 @@ const Root = React.forwardRef<RadioHandle, RadioRootProps>(
 
 		const select = useCallback(
 			(itemValue: string | number) => {
-				if (!isControlled) {
-					setUncontrolledValue(itemValue);
-				}
+				if (!isControlled) setUncontrolledValue(itemValue);
 				onChange?.(itemValue);
-				handleValidation(itemValue);
 			},
-			[isControlled, onChange, handleValidation],
+			[isControlled, onChange],
 		);
 
-		const validate = useCallback(() => {
-			handleValidation(selectedValue);
-		}, [handleValidation, selectedValue]);
-
-		useImperativeHandle(ref, () => ({ validate }), [validate]);
-
 		return (
-			<RadioContext.Provider value={{ selectedValue, isRequired, name: groupName, select, isSelected }}>
+			<RadioContext.Provider value={{ selectedValue, name: groupName, select, isSelected }}>
 				<div
+					ref={ref}
 					role='radiogroup'
 					className={className}
 					{...rest}>

@@ -1,15 +1,14 @@
-import React, { createContext, useCallback, useContext, useImperativeHandle, useState } from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { Helper } from '@/utils/helper';
 import type {
 	CheckboxContextValue,
-	CheckboxHandle,
 	CheckboxIndicatorProps,
 	CheckboxItemContextValue,
 	CheckboxItemProps,
 	CheckboxLabelProps,
 	CheckboxRootProps,
 } from './Checkbox.types';
-import { Helper } from '@/utils/helper';
 
 const CheckboxContext = createContext<CheckboxContextValue | null>(null);
 const CheckboxItemContext = createContext<CheckboxItemContextValue | null>(null);
@@ -30,14 +29,12 @@ function useCheckboxItemContext() {
 	return context;
 }
 
-const Root = React.forwardRef<CheckboxHandle, CheckboxRootProps>(
+const Root = React.forwardRef<HTMLDivElement, CheckboxRootProps>(
 	(
 		{
 			value: controlledValue,
 			defaultValue = [],
 			onChange,
-			onErrorChange,
-			isRequired = false,
 			name,
 			children,
 			className,
@@ -49,19 +46,7 @@ const Root = React.forwardRef<CheckboxHandle, CheckboxRootProps>(
 		const isControlled = controlledValue !== undefined;
 		const values = isControlled ? controlledValue : uncontrolledValue;
 
-		const groupName = React.useMemo(() => name || Helper.generateUUID(), [name]);
-
-		const handleValidation = useCallback(
-			(val: (string | number)[]) => {
-				if (!isRequired) return;
-				if (val.length > 0) {
-					onErrorChange?.(false);
-				} else {
-					onErrorChange?.(true);
-				}
-			},
-			[isRequired, onErrorChange],
-		);
+		const groupName = useMemo(() => name || Helper.generateUUID(), [name]);
 
 		const isChecked = useCallback(
 			(itemValue: string | number) => {
@@ -81,24 +66,16 @@ const Root = React.forwardRef<CheckboxHandle, CheckboxRootProps>(
 					currentValues.splice(index, 1);
 				}
 
-				if (!isControlled) {
-					setUncontrolledValue(currentValues);
-				}
+				if (!isControlled) setUncontrolledValue(currentValues);
 				onChange?.(currentValues);
-				handleValidation(currentValues);
 			},
-			[values, isControlled, onChange, handleValidation],
+			[values, isControlled, onChange],
 		);
 
-		const validate = useCallback(() => {
-			handleValidation(values);
-		}, [handleValidation, values]);
-
-		useImperativeHandle(ref, () => ({ validate }), [validate]);
-
 		return (
-			<CheckboxContext.Provider value={{ values, isRequired, name: groupName, toggle, isChecked }}>
+			<CheckboxContext.Provider value={{ values, name: groupName, toggle, isChecked }}>
 				<div
+					ref={ref}
 					role='group'
 					className={className}
 					{...rest}>

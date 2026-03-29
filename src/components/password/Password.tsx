@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { Helper } from '@/utils/helper';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { mergeProps } from '@/utils/merge-props';
@@ -6,7 +6,6 @@ import type {
 	PasswordContextValue,
 	PasswordErrorProps,
 	PasswordFieldProps,
-	PasswordHandle,
 	PasswordLabelProps,
 	PasswordRootProps,
 	PasswordToggleProps,
@@ -28,7 +27,7 @@ function usePasswordContext() {
 // Root
 // ---------------------------------------------------------------------------
 
-const Root = React.forwardRef<PasswordHandle, PasswordRootProps>(
+const Root = React.forwardRef<HTMLDivElement, PasswordRootProps>(
 	(
 		{
 			value: controlledValue,
@@ -36,10 +35,9 @@ const Root = React.forwardRef<PasswordHandle, PasswordRootProps>(
 			onChange,
 			onFocus,
 			onBlur,
-			onErrorChange,
 			isRequired = false,
 			errorMessage = {},
-			invalidType: controlledInvalidType,
+			invalidType = '',
 			id,
 			className,
 			children,
@@ -52,25 +50,8 @@ const Root = React.forwardRef<PasswordHandle, PasswordRootProps>(
 		const value = isControlled ? controlledValue : uncontrolledValue;
 
 		const [visible, setVisible] = useState(false);
-		const [internalInvalidType, setInternalInvalidType] = useState('');
-		const invalidType = controlledInvalidType !== undefined ? controlledInvalidType : internalInvalidType;
-
 		const fieldRef = useRef<HTMLInputElement>(null);
 		const inputId = useMemo(() => id ?? Helper.generateUUID(), [id]);
-
-		const setError = useCallback((hasError: boolean) => onErrorChange?.(hasError), [onErrorChange]);
-
-		const handleIsEmpty = useCallback((): boolean => {
-			const empty = Helper.isEmpty(fieldRef.current?.value ?? '');
-			if (empty) {
-				setError(true);
-				if (controlledInvalidType === undefined) setInternalInvalidType('required');
-			} else {
-				setError(false);
-				if (controlledInvalidType === undefined) setInternalInvalidType('');
-			}
-			return empty;
-		}, [setError, controlledInvalidType]);
 
 		const handleChange = useCallback(
 			(val: string) => {
@@ -82,14 +63,7 @@ const Root = React.forwardRef<PasswordHandle, PasswordRootProps>(
 
 		const handleFocus = useCallback(() => onFocus?.(), [onFocus]);
 
-		const handleBlur = useCallback(() => {
-			if (isRequired) handleIsEmpty();
-			onBlur?.();
-		}, [isRequired, handleIsEmpty, onBlur]);
-
-		const validate = useCallback(() => handleBlur(), [handleBlur]);
-
-		useImperativeHandle(ref, () => ({ validate }), [validate]);
+		const handleBlur = useCallback(() => onBlur?.(), [onBlur]);
 
 		return (
 			<PasswordContext.Provider
@@ -109,6 +83,7 @@ const Root = React.forwardRef<PasswordHandle, PasswordRootProps>(
 					},
 				}}>
 				<div
+					ref={ref}
 					className={className}
 					{...rest}>
 					{children}

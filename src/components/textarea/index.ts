@@ -4,5 +4,4 @@ export type {
 	TextareaFieldProps,
 	TextareaLabelProps,
 	TextareaErrorProps,
-	TextareaHandle,
 } from './Textarea.types';

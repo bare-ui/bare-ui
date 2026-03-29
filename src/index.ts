@@ -38,10 +38,7 @@ export type {
 	Size,
 	Status,
 	HorizontalPosition,
-	ValidationType,
 	BaseFormFieldProps,
-	BaseTextFieldProps,
-	BaseFormFieldHandle,
 	BaseOption,
 } from './types';
 
@@ -63,7 +60,6 @@ export type {
 	CheckboxItemProps,
 	CheckboxIndicatorProps,
 	CheckboxLabelProps,
-	CheckboxHandle,
 } from './components/checkbox';
 export type {
 	DrawerRootProps,
@@ -86,7 +82,6 @@ export type {
 	InputFieldProps,
 	InputLabelProps,
 	InputErrorProps,
-	InputHandle,
 } from './components/input';
 export type { ListProps } from './components/list';
 export type {
@@ -103,7 +98,6 @@ export type {
 	PasswordToggleProps,
 	PasswordLabelProps,
 	PasswordErrorProps,
-	PasswordHandle,
 } from './components/password';
 export type { ProgressBarProps } from './components/progress-bar';
 export type {
@@ -111,7 +105,6 @@ export type {
 	RadioItemProps,
 	RadioIndicatorProps,
 	RadioLabelProps,
-	RadioHandle,
 } from './components/radio';
 export type { RatingProps } from './components/rating';
 export type {
@@ -139,7 +132,6 @@ export type {
 	TextareaFieldProps,
 	TextareaLabelProps,
 	TextareaErrorProps,
-	TextareaHandle,
 } from './components/textarea';
 export type { TimeagoProps, TimeagoFormatConfig, TimeagoPlural } from './components/timeago';
 export type { TooltipRootProps, TooltipTriggerProps, TooltipContentProps } from './components/tooltip';

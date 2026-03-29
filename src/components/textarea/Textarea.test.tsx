@@ -52,28 +52,28 @@ describe('Textarea', () => {
 		expect(ta).toHaveAttribute('data-active', '');
 	});
 
+	it('data-active is cleared on blur', async () => {
+		renderTextarea();
+		const ta = screen.getByPlaceholderText('Enter message');
+		await userEvent.click(ta);
+		await userEvent.tab();
+		expect(ta).not.toHaveAttribute('data-active');
+	});
+
 	it('required: shows * in label', () => {
 		renderTextarea({ isRequired: true });
 		expect(screen.getByText('*')).toBeInTheDocument();
 	});
 
-	it('required: error shows on blur when empty', async () => {
-		renderTextarea({
-			isRequired: true,
-			errorMessage: { required: 'Message is required' },
-		});
-		const ta = screen.getByPlaceholderText('Enter message');
-		await userEvent.click(ta);
-		await userEvent.tab();
+	it('shows error when invalidType is set by consumer', () => {
+		renderTextarea({ invalidType: 'required', errorMessage: { required: 'Message is required' } });
 		expect(screen.getByRole('alert')).toHaveTextContent('Message is required');
-		expect(ta).toHaveAttribute('data-invalid', '');
-		expect(ta).toHaveAttribute('aria-invalid', 'true');
+		expect(screen.getByPlaceholderText('Enter message')).toHaveAttribute('data-invalid', '');
+		expect(screen.getByPlaceholderText('Enter message')).toHaveAttribute('aria-invalid', 'true');
 	});
 
-	it('no error when not required and left empty', async () => {
-		renderTextarea();
-		await userEvent.click(screen.getByPlaceholderText('Enter message'));
-		await userEvent.tab();
+	it('no error shown when invalidType is not set', () => {
+		renderTextarea({ errorMessage: { required: 'Message is required' } });
 		expect(screen.queryByRole('alert')).toBeNull();
 	});
 

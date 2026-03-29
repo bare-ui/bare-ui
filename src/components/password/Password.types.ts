@@ -28,13 +28,11 @@ export interface PasswordRootProps extends Omit<
 	onFocus?: () => void;
 	/** Called when the field loses focus */
 	onBlur?: () => void;
-	/** Called with true/false when error state changes */
-	onErrorChange?: (hasError: boolean) => void;
-	/** Mark as required — validates on blur */
+	/** Mark as required — shows * in label and sets required attribute */
 	isRequired?: boolean;
-	/** Error messages keyed by type */
+	/** Error messages keyed by type, displayed by Password.Error */
 	errorMessage?: Record<string, string>;
-	/** Override the error type externally */
+	/** Set by the consumer to show an error state */
 	invalidType?: string;
 	/** HTML id forwarded to the input */
 	id?: string;
@@ -47,7 +45,3 @@ export type PasswordToggleProps = React.ButtonHTMLAttributes<HTMLButtonElement>;
 export type PasswordLabelProps = React.LabelHTMLAttributes<HTMLLabelElement>;
 
 export type PasswordErrorProps = React.HTMLAttributes<HTMLElement>;
-
-export interface PasswordHandle {
-	validate: () => void;
-}

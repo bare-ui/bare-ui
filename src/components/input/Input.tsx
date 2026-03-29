@@ -1,10 +1,9 @@
-import React, { createContext, useCallback, useContext, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { Helper } from '@/utils/helper';
 import type {
 	InputContextValue,
 	InputErrorProps,
 	InputFieldProps,
-	InputHandle,
 	InputLabelProps,
 	InputRootProps,
 } from './Input.types';
@@ -19,7 +18,7 @@ function useInputContext() {
 	return context;
 }
 
-const Root = React.forwardRef<InputHandle, InputRootProps>(
+const Root = React.forwardRef<HTMLDivElement, InputRootProps>(
 	(
 		{
 			value: controlledValue,
@@ -27,10 +26,7 @@ const Root = React.forwardRef<InputHandle, InputRootProps>(
 			onChange,
 			onFocus,
 			onBlur,
-			onErrorChange,
-			onInvalidTypeChange,
-			validation = '',
-			invalidType: controlledInvalidType,
+			invalidType = '',
 			errorMessage = {},
 			isRequired = false,
 			isSuccess = false,
@@ -44,75 +40,12 @@ const Root = React.forwardRef<InputHandle, InputRootProps>(
 		const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
 		const isControlled = controlledValue !== undefined;
 		const value = isControlled ? controlledValue : uncontrolledValue;
-
 		const [isActive, setIsActive] = useState(false);
-		const [internalInvalidType, setInternalInvalidType] = useState('');
-		const invalidType = controlledInvalidType !== undefined ? controlledInvalidType : internalInvalidType;
-
-		const fieldRef = useRef<HTMLInputElement>(null);
 		const inputId = useMemo(() => id || Helper.generateUUID(), [id]);
-
-		const setInvalidType = useCallback(
-			(type: string) => {
-				if (controlledInvalidType === undefined) {
-					setInternalInvalidType(type);
-				}
-				onInvalidTypeChange?.(type);
-			},
-			[controlledInvalidType, onInvalidTypeChange],
-		);
-
-		const setError = useCallback(
-			(hasError: boolean) => {
-				onErrorChange?.(hasError);
-			},
-			[onErrorChange],
-		);
-
-		const handleValidation = useCallback(() => {
-			if (validation === 'phone') return;
-
-			const currentValue = fieldRef.current?.value ?? '';
-			const trimmedValue = validation === 'email' ? currentValue.trim() : currentValue;
-
-			if (validation === 'email' && fieldRef.current) {
-				fieldRef.current.value = trimmedValue;
-			}
-
-			const validator = Helper.isValid({
-				value: trimmedValue,
-				type: validation as 'email' | 'name' | 'phone',
-			});
-
-			if (validator.isValid) {
-				setError(false);
-				setInvalidType('');
-			} else {
-				setError(true);
-				setInvalidType(validation);
-			}
-		}, [validation, setError, setInvalidType]);
-
-		const handleIsEmpty = useCallback((): boolean => {
-			const currentValue = fieldRef.current?.value ?? '';
-			const empty = Helper.isEmpty(currentValue);
-
-			if (empty) {
-				setError(true);
-				setInvalidType('required');
-				return true;
-			} else {
-				setError(false);
-				setInvalidType('');
-				return false;
-			}
-		}, [setError, setInvalidType]);
 
 		const handleChange = useCallback(
 			(newValue: string) => {
-				if (!isControlled) {
-					setUncontrolledValue(newValue);
-				}
+				if (!isControlled) setUncontrolledValue(newValue);
 				onChange?.(newValue);
 			},
 			[isControlled, onChange],
@@ -124,30 +57,9 @@ const Root = React.forwardRef<InputHandle, InputRootProps>(
 		}, [onFocus]);
 
 		const handleBlur = useCallback(() => {
-			const currentValue = fieldRef.current?.value ?? '';
-			if (isActive && currentValue.length === 0) {
-				setIsActive(false);
-			}
-
-			if (isRequired) {
-				const empty = handleIsEmpty();
-				if (!empty && validation.length) {
-					handleValidation();
-				}
-			} else {
-				if (validation.length && currentValue.length) {
-					handleValidation();
-				}
-			}
-
+			setIsActive(false);
 			onBlur?.();
-		}, [isActive, isRequired, validation, handleIsEmpty, handleValidation, onBlur]);
-
-		const validate = useCallback(() => {
-			handleBlur();
-		}, [handleBlur]);
-
-		useImperativeHandle(ref, () => ({ validate }), [validate]);
+		}, [onBlur]);
 
 		const contextValue: InputContextValue = {
 			value,
@@ -157,19 +69,15 @@ const Root = React.forwardRef<InputHandle, InputRootProps>(
 			isSuccess,
 			isRequired,
 			errorMessage,
-			validation,
 			handleChange,
 			handleFocus,
 			handleBlur,
-			fieldRef,
-			setFieldNode: (node: HTMLInputElement | null) => {
-				(fieldRef as React.MutableRefObject<HTMLInputElement | null>).current = node;
-			},
 		};
 
 		return (
 			<InputContext.Provider value={contextValue}>
 				<div
+					ref={ref}
 					className={className}
 					{...rest}>
 					{children}
@@ -184,15 +92,9 @@ Root.displayName = 'Input.Root';
 const Field = React.forwardRef<HTMLInputElement, InputFieldProps>(({ className, ...rest }, ref) => {
 	const ctx = useInputContext();
 
-	const combinedRef = (node: HTMLInputElement | null) => {
-		ctx.setFieldNode(node);
-		if (typeof ref === 'function') ref(node);
-		else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = node;
-	};
-
 	return (
 		<input
-			ref={combinedRef}
+			ref={ref}
 			id={ctx.inputId}
 			value={ctx.value}
 			required={ctx.isRequired}

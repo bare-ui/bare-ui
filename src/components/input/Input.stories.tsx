@@ -48,21 +48,17 @@ export const Required: Story = {
 	),
 };
 
-export const WithEmailValidation: Story = {
+export const WithError: Story = {
 	render: () => (
 		<Input.Root
-			validation='email'
-			errorMessage={{
-				email: 'Please enter a valid email address',
-				required: 'Email is required',
-			}}
-			isRequired
+			invalidType='email'
+			defaultValue='not-an-email'
+			errorMessage={{ email: 'Please enter a valid email address' }}
 			className='flex w-72 flex-col gap-1.5'>
 			<Input.Label className='text-sm font-medium text-gray-700'>Email</Input.Label>
 			<Input.Field
 				type='email'
-				placeholder='you@example.com'
-				className='w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+				className='w-full rounded-md border border-red-500 px-3 py-2 text-sm outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500'
 			/>
 			<Input.Error className='text-xs text-red-500' />
 		</Input.Root>

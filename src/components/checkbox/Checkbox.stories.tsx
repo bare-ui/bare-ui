@@ -46,7 +46,6 @@ export const Required: Story = {
 		return (
 			<Checkbox.Root
 				name='terms'
-				isRequired
 				className='flex flex-col gap-3'>
 				{['Terms of Service', 'Privacy Policy', 'Newsletter'].map((item) => (
 					<Checkbox.Item

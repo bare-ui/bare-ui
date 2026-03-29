@@ -5,5 +5,4 @@ export type {
 	PasswordToggleProps,
 	PasswordLabelProps,
 	PasswordErrorProps,
-	PasswordHandle,
 } from './Password.types';

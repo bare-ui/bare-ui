@@ -9,6 +9,7 @@ A headless, unstyled React 19 component library. Components ship with zero CSS �
 - **Compound components.** Complex widgets (Modal, Input, Accordion, etc.) follow the `Component.Part` pattern — you compose the structure yourself, giving you full control over markup order and wrapping elements.
 - **Controlled & uncontrolled.** Every stateful component works both ways.
 - **`asChild` for polymorphism.** Pass `asChild` to Button to merge all props and data attributes onto your own child element — useful for router links, icon buttons, and custom wrappers.
+- **Consumer-owned validation.** Form components expose `invalidType` and `errorMessage` props but perform no validation internally. You decide when and how to validate — set `invalidType` to the error key and the component renders the error state.
 
 ---
 
@@ -41,8 +42,8 @@ All interactive components expose state through data attributes. Attributes are 
 | `data-disabled` | Element is disabled |
 | `data-autofocus` | Element was rendered with `autoFocus` |
 | `data-state` | Open/closed, checked/unchecked — varies per component |
-| `data-invalid` | Form field has a validation error |
-| `data-success` | Form field passed validation |
+| `data-invalid` | Form field is in an invalid state (consumer-controlled via `invalidType`) |
+| `data-success` | Form field is in a success state (consumer-controlled via `isSuccess`) |
 
 ---
 
@@ -89,51 +90,74 @@ import { Button } from 'bare-ui'
 
 ### Input
 
-Compound component for text inputs with built-in validation.
+Compound component for text inputs. Validation is entirely consumer-controlled — set `invalidType` to trigger the error state.
 
 ```tsx
 import { Input } from 'bare-ui'
 
 // Uncontrolled
-<Input.Root isRequired errorMessage={{ required: 'Email is required', email: 'Invalid email' }} validation="email">
-  <Input.Label>Email</Input.Label>
-  <Input.Field type="email" placeholder="you@example.com" />
-  <Input.Error />
+<Input.Root>
+  <Input.Label>Username</Input.Label>
+  <Input.Field placeholder="Enter username" />
 </Input.Root>
 
 // Controlled
 const [value, setValue] = useState('')
 
 <Input.Root value={value} onChange={setValue}>
-  <Input.Label>Username</Input.Label>
-  <Input.Field placeholder="Enter username" />
+  <Input.Label>Email</Input.Label>
+  <Input.Field type="email" placeholder="you@example.com" />
 </Input.Root>
 
-// Imperative validation via ref
-const inputRef = useRef<InputHandle>(null)
+// With consumer-controlled error state
+const [invalidType, setInvalidType] = useState('')
 
-<Input.Root ref={inputRef} isRequired errorMessage={{ required: 'Required' }}>
-  <Input.Field />
+function handleSubmit() {
+  if (!value) setInvalidType('required')
+  else if (!value.includes('@')) setInvalidType('email')
+  else setInvalidType('')
+}
+
+<Input.Root
+  value={value}
+  onChange={setValue}
+  invalidType={invalidType}
+  isRequired
+  errorMessage={{
+    required: 'Email is required',
+    email: 'Enter a valid email address',
+  }}
+>
+  <Input.Label>Email</Input.Label>
+  <Input.Field type="email" placeholder="you@example.com" />
   <Input.Error />
 </Input.Root>
-
-<button onClick={() => inputRef.current?.validate()}>Validate</button>
 ```
 
-**Root props:** `value`, `defaultValue`, `onChange(value: string)`, `onFocus`, `onBlur`, `isRequired`, `isSuccess`, `validation` (`'email' | 'name' | 'phone' | ''`), `errorMessage` (record of validation type → message string), `id`, `onErrorChange`, `onInvalidTypeChange`.
+**Root props:** `value`, `defaultValue`, `onChange(value: string)`, `onFocus`, `onBlur`, `isRequired`, `isSuccess`, `invalidType` (key into `errorMessage`), `errorMessage` (record of error key → message string), `id`.
 
-**Field data attributes:** `data-active` (focused), `data-invalid` (has error), `data-success`.
+**Field data attributes:** `data-active` (focused), `data-invalid` (when `invalidType` is set), `data-success` (when `isSuccess` is true). `aria-invalid` is also set when invalid.
 
 ---
 
 ### Textarea
 
-Same API as Input, but renders a `<textarea>`.
+Same API as Input, but renders a `<textarea>`. Validation is consumer-controlled via `invalidType`.
 
 ```tsx
 import { Textarea } from 'bare-ui'
 
-<Textarea.Root isRequired errorMessage={{ required: 'Message is required' }}>
+// Basic usage
+<Textarea.Root>
+  <Textarea.Label>Message</Textarea.Label>
+  <Textarea.Field placeholder="Write something..." rows={4} />
+</Textarea.Root>
+
+// With consumer-controlled error
+<Textarea.Root
+  invalidType={invalidType}
+  errorMessage={{ required: 'Message is required' }}
+>
   <Textarea.Label>Message</Textarea.Label>
   <Textarea.Field placeholder="Write something..." rows={4} />
   <Textarea.Error />
@@ -144,12 +168,23 @@ import { Textarea } from 'bare-ui'
 
 ### Password
 
-Input compound component with a built-in show/hide toggle.
+Input compound component with a built-in show/hide toggle. Validation is consumer-controlled via `invalidType`.
 
 ```tsx
 import { Password } from 'bare-ui'
 
-<Password.Root isRequired errorMessage={{ required: 'Password is required' }}>
+// Basic usage
+<Password.Root>
+  <Password.Label>Password</Password.Label>
+  <Password.Field placeholder="••••••••" />
+  <Password.Toggle />
+</Password.Root>
+
+// With consumer-controlled error
+<Password.Root
+  invalidType={invalidType}
+  errorMessage={{ required: 'Password is required' }}
+>
   <Password.Label>Password</Password.Label>
   <Password.Field placeholder="••••••••" />
   <Password.Toggle />
@@ -717,7 +752,8 @@ All component props and utility types are exported:
 import type {
   ButtonProps,
   InputRootProps,
-  InputHandle,
+  TextareaRootProps,
+  PasswordRootProps,
   ModalRootProps,
   AccordionRootProps,
   SearchOption,

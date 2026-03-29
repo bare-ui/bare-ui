@@ -1,14 +1,10 @@
-import type { ValidationType } from '@/types/common';
-
 export interface TextareaRootProps {
 	value?: string;
 	defaultValue?: string;
 	onChange?: (value: string) => void;
 	onFocus?: () => void;
 	onBlur?: () => void;
-	onErrorChange?: (hasError: boolean) => void;
-	onInvalidTypeChange?: (type: string) => void;
-	validation?: ValidationType;
+	/** Set by the consumer to show an error state. Use the key in errorMessage to display the message. */
 	invalidType?: string;
 	errorMessage?: Record<string, string>;
 	isRequired?: boolean;
@@ -43,14 +39,7 @@ export interface TextareaContextValue {
 	isSuccess: boolean;
 	isRequired: boolean;
 	errorMessage: Record<string, string>;
-	validation: ValidationType;
 	handleChange: (value: string) => void;
 	handleFocus: () => void;
 	handleBlur: () => void;
-	fieldRef: React.RefObject<HTMLTextAreaElement | null>;
-	setFieldNode: (node: HTMLTextAreaElement | null) => void;
-}
-
-export interface TextareaHandle {
-	validate: () => void;
 }

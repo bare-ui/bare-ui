@@ -75,22 +75,14 @@ describe('Password', () => {
 		expect(screen.getByText('*')).toBeInTheDocument();
 	});
 
-	it('required: shows error on blur when empty', async () => {
-		renderPassword({
-			isRequired: true,
-			errorMessage: { required: 'Password is required' },
-		});
-		const field = screen.getByPlaceholderText('Enter password');
-		await userEvent.click(field);
-		await userEvent.tab();
+	it('shows error when invalidType is set by consumer', () => {
+		renderPassword({ invalidType: 'required', errorMessage: { required: 'Password is required' } });
 		expect(screen.getByRole('alert')).toHaveTextContent('Password is required');
-		expect(field).toHaveAttribute('data-invalid', '');
+		expect(screen.getByPlaceholderText('Enter password')).toHaveAttribute('data-invalid', '');
 	});
 
-	it('no error when not required and left empty', async () => {
-		renderPassword();
-		await userEvent.click(screen.getByPlaceholderText('Enter password'));
-		await userEvent.tab();
+	it('no error shown when invalidType is not set', () => {
+		renderPassword({ errorMessage: { required: 'Password is required' } });
 		expect(screen.queryByRole('alert')).toBeNull();
 	});
 

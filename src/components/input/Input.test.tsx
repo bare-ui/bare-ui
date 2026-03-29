@@ -58,50 +58,28 @@ describe('Input', () => {
 		expect(input).toHaveAttribute('data-active', '');
 	});
 
+	it('data-active is cleared on blur', async () => {
+		renderInput();
+		const input = screen.getByPlaceholderText('Enter email');
+		await userEvent.click(input);
+		await userEvent.tab();
+		expect(input).not.toHaveAttribute('data-active');
+	});
+
 	it('required: shows * in label when isRequired=true', () => {
 		renderInput({ isRequired: true });
 		expect(screen.getByText('*')).toBeInTheDocument();
 	});
 
-	it('required: error shows on blur with empty field', async () => {
-		renderInput({
-			isRequired: true,
-			errorMessage: { required: 'This field is required' },
-		});
-		const input = screen.getByPlaceholderText('Enter email');
-		await userEvent.click(input);
-		await userEvent.tab();
+	it('shows error when invalidType is set by consumer', () => {
+		renderInput({ invalidType: 'required', errorMessage: { required: 'This field is required' } });
 		expect(screen.getByRole('alert')).toHaveTextContent('This field is required');
-		expect(input).toHaveAttribute('data-invalid', '');
-		expect(input).toHaveAttribute('aria-invalid', 'true');
+		expect(screen.getByPlaceholderText('Enter email')).toHaveAttribute('data-invalid', '');
+		expect(screen.getByPlaceholderText('Enter email')).toHaveAttribute('aria-invalid', 'true');
 	});
 
-	it('no error shown when field is not required and left empty', async () => {
-		renderInput();
-		await userEvent.click(screen.getByPlaceholderText('Enter email'));
-		await userEvent.tab();
-		expect(screen.queryByRole('alert')).toBeNull();
-	});
-
-	it('email validation: error on invalid email blur', async () => {
-		renderInput({
-			validation: 'email',
-			errorMessage: { email: 'Invalid email' },
-		});
-		const input = screen.getByPlaceholderText('Enter email');
-		await userEvent.type(input, 'not-an-email');
-		await userEvent.tab();
-		expect(screen.getByRole('alert')).toHaveTextContent('Invalid email');
-	});
-
-	it('email validation: no error on valid email blur', async () => {
-		renderInput({
-			validation: 'email',
-			errorMessage: { email: 'Invalid email' },
-		});
-		const input = screen.getByPlaceholderText('Enter email');
-		await userEvent.type(input, 'user@example.com');
-		await userEvent.tab();
+	it('no error shown when invalidType is not set', () => {
+		renderInput({ errorMessage: { required: 'This field is required' } });
 		expect(screen.queryByRole('alert')).toBeNull();
 	});
 
