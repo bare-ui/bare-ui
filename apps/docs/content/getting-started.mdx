@@ -1,6 +1,6 @@
 ---
 title: Getting Started
-description: Install wire-ui and style your first component.
+description: Install Wire UI and style your first component.
 ---
 
 import { Steps, Tabs } from 'nextra/components'
@@ -14,10 +14,10 @@ import { Steps, Tabs } from 'nextra/components'
 ### Install the package
 
 ```bash npm2yarn
-npm install wire-ui
+npm install @wire-ui/react
 ```
 
-wire-ui has no production dependencies. React 19 is a peer dependency.
+Wire UI has no production dependencies. React 19 is a peer dependency.
 
 ### Add peer dependencies
 
@@ -45,7 +45,7 @@ export function SaveButton() {
 
 ## Styling approach
 
-wire-ui ships no CSS. All interactive state is exposed through `data-*` attributes. Target them with any CSS approach you prefer.
+Wire UI ships no CSS. All interactive state is exposed through `data-*` attributes. Target them with any CSS approach you prefer.
 
 <Tabs items={['Tailwind CSS', 'CSS Modules', 'Plain CSS']}>
 
@@ -115,11 +115,11 @@ import { Input } from '@wire-ui/react'
 </Input.Root>
 ```
 
-You control the DOM order. Need the error above the field? Swap them. Need a wrapper div between label and field? Add it. wire-ui never dictates structure.
+You control the DOM order. Need the error above the field? Swap them. Need a wrapper div between label and field? Add it. Wire UI never dictates structure.
 
 ## Validation pattern
 
-wire-ui components do **not** validate internally. You own validation — set `invalidType` when your logic determines the field is invalid:
+Wire UI components do **not** validate internally. You own validation — set `invalidType` when your logic determines the field is invalid:
 
 ```tsx
 const [email, setEmail] = useState('')
