@@ -9,36 +9,23 @@ import {
 } from '@codesandbox/sandpack-react'
 import { useState } from 'react'
 
-const APP_ENTRY = `
-import React from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App'
-
-const root = createRoot(document.getElementById('root'))
-root.render(<App />)
-`.trim()
-
-const HTML_ENTRY = `
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
-</html>
-`.trim()
+const LIB_PKG = JSON.stringify({
+  name: '@wire-ui/react',
+  version: '0.1.4',
+  type: 'module',
+  main: './index.js',
+  module: './index.js',
+  exports: { '.': { import: './index.js', default: './index.js' } },
+})
 
 type Props = {
   code: string
   height?: number
   showConsole?: boolean
+  libSource: string
 }
 
-export function ComponentPreview({ code, height = 200, showConsole = false }: Props) {
+export function ComponentPreview({ code, height = 200, showConsole = false, libSource }: Props) {
   const [showCode, setShowCode] = useState(false)
 
   return (
@@ -54,15 +41,15 @@ export function ComponentPreview({ code, height = 200, showConsole = false }: Pr
       </div>
 
       <SandpackProvider
-        template="react"
+        template="react-ts"
         files={{
-          '/App.tsx': code,
-          '/index.tsx': APP_ENTRY,
-          '/index.html': HTML_ENTRY,
+          '/App.tsx': { code, active: true },
+          '/node_modules/@wire-ui/react/index.js': { code: libSource, hidden: true },
+          '/node_modules/@wire-ui/react/package.json': { code: LIB_PKG, hidden: true },
         }}
         customSetup={{
           dependencies: {
-            'wire-ui': 'latest',
+            // React is provided by the template; no external fetches needed
           },
         }}
         options={{

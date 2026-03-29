@@ -1,5 +1,5 @@
 {
-  "name": "wire-ui",
+  "name": "@wire-ui/react",
   "version": "0.1.4",
   "type": "module",
   "main": "./dist/wire-ui.cjs.js",

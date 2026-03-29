@@ -30,7 +30,7 @@ npm install react@^19 react-dom@^19
 ### Use a component
 
 ```tsx
-import { Button } from 'wire-ui'
+import { Button } from '@wire-ui/react'
 
 export function SaveButton() {
   return (
@@ -106,7 +106,7 @@ import styles from './button.module.css'
 Complex components use the `Component.Part` pattern. You compose the markup yourself:
 
 ```tsx
-import { Input } from 'wire-ui'
+import { Input } from '@wire-ui/react'
 
 <Input.Root value={value} onChange={setValue}>
   <Input.Label>Email address</Input.Label>
@@ -162,5 +162,5 @@ import type {
   SearchOption,
   Size,
   Status,
-} from 'wire-ui'
+} from '@wire-ui/react'
 ```

@@ -16,7 +16,7 @@ A headless, unstyled React 19 component library. Components ship with zero CSS �
 ## Installation
 
 ```bash
-npm install wire-ui
+npm install @wire-ui/react
 ```
 
 ### Peer requirements
@@ -54,7 +54,7 @@ All interactive components expose state through data attributes. Attributes are 
 A native `<button>` with interactive state tracking. Use `asChild` to render as any element.
 
 ```tsx
-import { Button } from 'wire-ui'
+import { Button } from '@wire-ui/react'
 
 // Default button
 <Button onClick={() => console.log('clicked')}>
@@ -93,7 +93,7 @@ import { Button } from 'wire-ui'
 Compound component for text inputs. Validation is entirely consumer-controlled — set `invalidType` to trigger the error state.
 
 ```tsx
-import { Input } from 'wire-ui'
+import { Input } from '@wire-ui/react'
 
 // Uncontrolled
 <Input.Root>
@@ -145,7 +145,7 @@ function handleSubmit() {
 Same API as Input, but renders a `<textarea>`. Validation is consumer-controlled via `invalidType`.
 
 ```tsx
-import { Textarea } from 'wire-ui'
+import { Textarea } from '@wire-ui/react'
 
 // Basic usage
 <Textarea.Root>
@@ -171,7 +171,7 @@ import { Textarea } from 'wire-ui'
 Input compound component with a built-in show/hide toggle. Validation is consumer-controlled via `invalidType`.
 
 ```tsx
-import { Password } from 'wire-ui'
+import { Password } from '@wire-ui/react'
 
 // Basic usage
 <Password.Root>
@@ -201,7 +201,7 @@ import { Password } from 'wire-ui'
 Compound modal dialog with portal rendering, overlay click to close, and Escape key support.
 
 ```tsx
-import { Modal } from 'wire-ui'
+import { Modal } from '@wire-ui/react'
 
 // Uncontrolled
 <Modal.Root defaultOpen>
@@ -237,7 +237,7 @@ const [open, setOpen] = useState(false)
 Same structure as Modal, designed for side panels. Includes an optional Header sub-component.
 
 ```tsx
-import { Drawer } from 'wire-ui'
+import { Drawer } from '@wire-ui/react'
 
 <Drawer.Root open={open} onOpenChange={setOpen}>
   <Drawer.Portal>
@@ -261,7 +261,7 @@ import { Drawer } from 'wire-ui'
 Collapsible sections. Supports `single` (one item open at a time) and `multiple` (many open at once).
 
 ```tsx
-import { Accordion } from 'wire-ui'
+import { Accordion } from '@wire-ui/react'
 
 // Single — collapsible
 <Accordion.Root type="single" collapsible defaultValue="item-1">
@@ -294,7 +294,7 @@ import { Accordion } from 'wire-ui'
 A trigger + menu pattern with keyboard and click-outside support.
 
 ```tsx
-import { Dropdown } from 'wire-ui'
+import { Dropdown } from '@wire-ui/react'
 
 <Dropdown.Root>
   <Dropdown.Trigger>Options ▾</Dropdown.Trigger>
@@ -316,7 +316,7 @@ import { Dropdown } from 'wire-ui'
 Hover/focus tooltip with configurable delay and side.
 
 ```tsx
-import { Tooltip } from 'wire-ui'
+import { Tooltip } from '@wire-ui/react'
 
 <Tooltip.Root delayDuration={200}>
   <Tooltip.Trigger>
@@ -339,7 +339,7 @@ import { Tooltip } from 'wire-ui'
 Accessible select menu with groups, separators, and a custom trigger.
 
 ```tsx
-import { Select } from 'wire-ui'
+import { Select } from '@wire-ui/react'
 
 <Select.Root value={value} onValueChange={setValue}>
   <Select.Trigger>
@@ -364,7 +364,7 @@ import { Select } from 'wire-ui'
 Group and individual checkbox items.
 
 ```tsx
-import { Checkbox } from 'wire-ui'
+import { Checkbox } from '@wire-ui/react'
 
 <Checkbox.Root value={checked} onChange={setChecked}>
   <Checkbox.Item value="newsletters">
@@ -387,7 +387,7 @@ import { Checkbox } from 'wire-ui'
 Single-selection radio group.
 
 ```tsx
-import { Radio } from 'wire-ui'
+import { Radio } from '@wire-ui/react'
 
 <Radio.Root value={selected} onChange={setSelected} name="plan">
   <Radio.Item value="starter">
@@ -408,7 +408,7 @@ import { Radio } from 'wire-ui'
 Toggle on/off with a thumb element.
 
 ```tsx
-import { Switch } from 'wire-ui'
+import { Switch } from '@wire-ui/react'
 
 <Switch.Root checked={on} onCheckedChange={setOn}>
   <Switch.Thumb />
@@ -424,7 +424,7 @@ import { Switch } from 'wire-ui'
 One-time password input with individual slots and optional separators.
 
 ```tsx
-import { OTP } from 'wire-ui'
+import { OTP } from '@wire-ui/react'
 
 <OTP.Root length={6} onComplete={(code) => console.log(code)}>
   <OTP.Slot index={0} />
@@ -448,8 +448,8 @@ import { OTP } from 'wire-ui'
 Search input with a dropdown results list, keyboard navigation, and loading state.
 
 ```tsx
-import { Search } from 'wire-ui'
-import type { SearchOption } from 'wire-ui'
+import { Search } from '@wire-ui/react'
+import type { SearchOption } from '@wire-ui/react'
 
 const options: SearchOption[] = [
   { id: 'react', title: 'React' },
@@ -481,7 +481,7 @@ const options: SearchOption[] = [
 Dismissible alert with auto-dismiss support.
 
 ```tsx
-import { Alert } from 'wire-ui'
+import { Alert } from '@wire-ui/react'
 
 <Alert.Root
   data-status="warning"
@@ -502,7 +502,7 @@ import { Alert } from 'wire-ui'
 Image with a fallback for loading errors or missing sources.
 
 ```tsx
-import { Avatar } from 'wire-ui'
+import { Avatar } from '@wire-ui/react'
 
 <Avatar.Root>
   <Avatar.Image src="https://example.com/avatar.jpg" alt="User avatar" />
@@ -519,7 +519,7 @@ import { Avatar } from 'wire-ui'
 Numeric count badge, capped at 9+.
 
 ```tsx
-import { Badge } from 'wire-ui'
+import { Badge } from '@wire-ui/react'
 
 <Badge count={3} />       // renders "3"
 <Badge count={12} />      // renders "9+"
@@ -535,7 +535,7 @@ import { Badge } from 'wire-ui'
 A simple container element with optional color and size variants.
 
 ```tsx
-import { Card } from 'wire-ui'
+import { Card } from '@wire-ui/react'
 
 <Card data-color="blue" data-size="large" className="p-4 rounded shadow">
   Card content
@@ -549,7 +549,7 @@ import { Card } from 'wire-ui'
 Horizontal or vertical separator line.
 
 ```tsx
-import { Divider } from 'wire-ui'
+import { Divider } from '@wire-ui/react'
 
 // Decorative (default)
 <Divider />
@@ -568,7 +568,7 @@ import { Divider } from 'wire-ui'
 Renders an SVG from a consumer-supplied icon map. The library ships no SVG assets.
 
 ```tsx
-import { Icon } from 'wire-ui'
+import { Icon } from '@wire-ui/react'
 
 // Bring your own SVG strings
 const icons = {
@@ -591,7 +591,7 @@ const icons = {
 Image with a loader placeholder shown until the image loads.
 
 ```tsx
-import { Image } from 'wire-ui'
+import { Image } from '@wire-ui/react'
 
 <Image src="/photo.jpg" alt="A photo" position="center" className="rounded" />
 ```
@@ -605,7 +605,7 @@ import { Image } from 'wire-ui'
 Ordered or unordered list with optional striped rows and dividers.
 
 ```tsx
-import { List } from 'wire-ui'
+import { List } from '@wire-ui/react'
 
 <List data-type="disc" data-striped data-divider data-size="medium">
   <li>Item one</li>
@@ -627,7 +627,7 @@ import { List } from 'wire-ui'
 Accessible progress indicator.
 
 ```tsx
-import { ProgressBar } from 'wire-ui'
+import { ProgressBar } from '@wire-ui/react'
 
 <ProgressBar value={65} min={0} max={100} data-size="medium" />
 ```
@@ -641,7 +641,7 @@ Renders `role="progressbar"` with `aria-valuenow`, `aria-valuemin`, `aria-valuem
 Star rating with hover preview, controlled and read-only modes.
 
 ```tsx
-import { Rating } from 'wire-ui'
+import { Rating } from '@wire-ui/react'
 
 // Interactive
 <Rating defaultValue={3} max={5} onChange={(v) => console.log(v)} />
@@ -663,7 +663,7 @@ import { Rating } from 'wire-ui'
 Animated loading indicator.
 
 ```tsx
-import { Spinner } from 'wire-ui'
+import { Spinner } from '@wire-ui/react'
 
 <Spinner />
 <Spinner size="large" />
@@ -679,7 +679,7 @@ import { Spinner } from 'wire-ui'
 Relative or formatted timestamp that updates live.
 
 ```tsx
-import { Timeago } from 'wire-ui'
+import { Timeago } from '@wire-ui/react'
 
 // Live relative time ("5 minutes ago", "2 hours ago")
 <Timeago datetime={new Date()} isDuration />
@@ -702,7 +702,7 @@ import { Timeago } from 'wire-ui'
 Tracks hover, keyboard focus, and press state for any element. The same hook used internally by Button, Accordion.Trigger, and Modal.Close — exported for building your own interactive components.
 
 ```tsx
-import { useInteractiveState } from 'wire-ui'
+import { useInteractiveState } from '@wire-ui/react'
 
 function MyCard({ disabled }: { disabled?: boolean }) {
   const { handlers, dataAttributes } = useInteractiveState({ disabled })
@@ -732,7 +732,7 @@ Fires a callback when the user clicks outside a referenced element.
 
 ```tsx
 import { useRef } from 'react'
-import { useClickOutside } from 'wire-ui'
+import { useClickOutside } from '@wire-ui/react'
 
 function Popover() {
   const ref = useRef<HTMLDivElement>(null)
@@ -763,7 +763,7 @@ import type {
   Status,
   InteractiveStateOptions,
   InteractiveStateResult,
-} from 'wire-ui'
+} from '@wire-ui/react'
 ```
 
 ---

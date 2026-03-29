@@ -1,5 +1,4 @@
 import { Layout, Navbar } from 'nextra-theme-docs'
-import { Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
 
@@ -18,22 +17,17 @@ export default async function DocsLayout({ children }: { children: React.ReactNo
   )
 
   return (
-    <html lang="en" suppressHydrationWarning>
-      <Head />
-      <body>
-        <Layout
-          navbar={navbar}
-          pageMap={pageMap}
-          docsRepositoryBase="https://github.com/wire-ui/wire-ui/tree/main/apps/docs"
-          footer={
-            <p style={{ textAlign: 'center', fontSize: '0.875rem', color: '#888' }}>
-              MIT License © {new Date().getFullYear()} wire-ui
-            </p>
-          }
-        >
-          {children}
-        </Layout>
-      </body>
-    </html>
+    <Layout
+      navbar={navbar}
+      pageMap={pageMap}
+      docsRepositoryBase="https://github.com/wire-ui/wire-ui/tree/main/apps/docs"
+      footer={
+        <p key="footer" style={{ textAlign: 'center', fontSize: '0.875rem', color: '#888' }}>
+          MIT License © {new Date().getFullYear()} wire-ui
+        </p>
+      }
+    >
+      {children}
+    </Layout>
   )
 }
