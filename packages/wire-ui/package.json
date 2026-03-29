@@ -16,6 +16,9 @@
     "dist"
   ],
   "sideEffects": false,
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "scripts": {
     "build": "tsc -b && vite build",
     "prepublishOnly": "npm run build",
