@@ -1,0 +1,73 @@
+---
+title: Author
+description: The person behind wire-ui.
+---
+
+import { Cards } from 'nextra/components'
+
+# Author
+
+<div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+  <div style={{
+    display: 'flex',
+    alignItems: 'center',
+    gap: '1.5rem',
+    padding: '1.5rem',
+    borderRadius: '12px',
+    border: '1px solid color-mix(in srgb, currentColor 10%, transparent)',
+    background: 'color-mix(in srgb, currentColor 3%, transparent)',
+  }}>
+    <div style={{
+      width: '72px',
+      height: '72px',
+      borderRadius: '50%',
+      background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: '1.75rem',
+      fontWeight: 700,
+      color: '#fff',
+      flexShrink: 0,
+      letterSpacing: '-0.02em',
+    }}>
+      J
+    </div>
+    <div>
+      <div style={{ fontSize: '1.25rem', fontWeight: 700, letterSpacing: '-0.02em' }}>Jao</div>
+      <div style={{ fontSize: '0.875rem', marginTop: '2px', opacity: 0.6 }}>Sr. Frontend Engineer</div>
+      <div style={{ display: 'flex', gap: '8px', marginTop: '10px', flexWrap: 'wrap' }}>
+        {['React', 'Vue', 'TypeScript', 'Headless UI'].map((tag) => (
+          <span key={tag} style={{
+            fontSize: '0.7rem',
+            fontWeight: 500,
+            padding: '2px 8px',
+            borderRadius: '999px',
+            background: 'color-mix(in srgb, #6366f1 12%, transparent)',
+            color: '#6366f1',
+            letterSpacing: '0.02em',
+          }}>
+            {tag}
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h2 style={{ marginBottom: '0.75rem' }}>About</h2>
+    <p style={{ lineHeight: 1.7, opacity: 0.8 }}>
+      wire-ui is a headless, unstyled component library built for React 19 — with Vue and Solid
+      support on the way. The goal is to give developers full control over styling while handling
+      all the interaction states, accessibility, and behaviour under the hood.
+    </p>
+  </div>
+
+  <div>
+    <h2 style={{ marginBottom: '0.75rem' }}>Connect</h2>
+    <Cards>
+      <Cards.Card title="GitHub" href="https://github.com/wire-ui/wire-ui" arrow />
+      <Cards.Card title="npm — @wire-ui/react" href="https://www.npmjs.com/package/@wire-ui/react" arrow />
+    </Cards>
+  </div>
+</div>

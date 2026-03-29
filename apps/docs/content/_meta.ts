@@ -4,4 +4,5 @@ export default {
   components: 'Components',
   hooks: 'Hooks',
   'data-attributes': 'Data Attributes',
+  author: 'Author',
 }
