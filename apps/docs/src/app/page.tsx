@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import s from './page.module.css'
 
@@ -131,7 +132,15 @@ export default function App() {
         </p>
 
         <div className={s.authorCard}>
-          <div className={s.authorAvatar}>J</div>
+          <div className={s.authorAvatar}>
+            <Image
+              src="/images/authors/jao.png"
+              alt="Jao"
+              width={64}
+              height={64}
+              style={{ borderRadius: '50%', objectFit: 'cover', width: '100%', height: '100%' }}
+            />
+          </div>
           <div>
             <div className={s.authorName}>Jao</div>
             <div className={s.authorRole}>Sr. Frontend Engineer</div>
