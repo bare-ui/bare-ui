@@ -36,6 +36,7 @@ const FEATURES = [
 ]
 
 const AUTHOR_TAGS = ['React', 'Vue', 'TypeScript', 'Headless UI']
+const GITHUB_USERNAME = 'jaoaustero'
 
 export default function HomePage() {
   return (
@@ -135,15 +136,23 @@ export default function App() {
           <div className={s.authorAvatar}>
             <Image
               src="/images/authors/jao.png"
-              alt="Jao"
+              alt="Jerald Austero"
               width={64}
               height={64}
               style={{ borderRadius: '50%', objectFit: 'cover', width: '100%', height: '100%' }}
             />
           </div>
           <div>
-            <div className={s.authorName}>Jao</div>
+            <div className={s.authorName}>Jerald Austero</div>
             <div className={s.authorRole}>Sr. Frontend Engineer</div>
+            <a
+              href={`https://github.com/${GITHUB_USERNAME}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={s.authorGithub}
+            >
+              @{GITHUB_USERNAME}
+            </a>
             <div className={s.authorTags}>
               {AUTHOR_TAGS.map((tag) => (
                 <span key={tag} className={s.authorTag}>{tag}</span>

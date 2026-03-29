@@ -324,7 +324,25 @@
 .authorRole {
   font-size: 0.8rem;
   opacity: 0.5;
+  margin-bottom: 6px;
+}
+
+.authorGithub {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #6366f1;
+  text-decoration: none;
   margin-bottom: 10px;
+  opacity: 0.85;
+  transition: opacity 0.15s;
+}
+
+.authorGithub:hover {
+  opacity: 1;
+  text-decoration: underline;
 }
 
 .authorTags {
