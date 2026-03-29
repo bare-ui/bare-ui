@@ -1,0 +1,56 @@
+# Wire UI
+
+> A headless, unstyled React 19 component library. Style everything with your own CSS using data-* attributes that reflect interactive state.
+
+Wire UI provides behavior primitives for React applications. Every component handles interaction states, accessibility, and complex behaviors while shipping zero CSS. Style them with Tailwind, CSS Modules, plain CSS — anything that supports attribute selectors.
+
+## Getting Started
+
+- [Introduction](https://wire-ui.vercel.app/docs): Overview, core principles, and philosophy
+- [Getting Started](https://wire-ui.vercel.app/docs/getting-started): Installation, styling approach, validation pattern, TypeScript types
+- [Data Attributes](https://wire-ui.vercel.app/docs/data-attributes): Complete reference for all data-* attributes Wire UI exposes
+- [Hooks](https://wire-ui.vercel.app/docs/hooks): useInteractiveState and useClickOutside
+
+## Components
+
+### Layout
+
+- [Card](https://wire-ui.vercel.app/docs/components/card): Unstyled container with optional data-color and data-size attributes
+- [Divider](https://wire-ui.vercel.app/docs/components/divider): Horizontal or vertical separator line
+
+### Feedback
+
+- [Alert](https://wire-ui.vercel.app/docs/components/alert): Dismissible alert with auto-dismiss support
+- [Badge](https://wire-ui.vercel.app/docs/components/badge): Numeric count badge capped at 9+
+- [ProgressBar](https://wire-ui.vercel.app/docs/components/progress-bar): Accessible progress indicator with role="progressbar" and ARIA attributes
+- [Spinner](https://wire-ui.vercel.app/docs/components/spinner): Animated loading indicator with size and color props
+- [Timeago](https://wire-ui.vercel.app/docs/components/timeago): Relative or formatted timestamp that updates live
+- [Tooltip](https://wire-ui.vercel.app/docs/components/tooltip): Hover/focus tooltip with configurable delay and side
+
+### Forms
+
+- [Button](https://wire-ui.vercel.app/docs/components/button): Native button with full interactive state tracking and asChild polymorphism
+- [Checkbox](https://wire-ui.vercel.app/docs/components/checkbox): Multi-select checkbox group with controlled state
+- [Input](https://wire-ui.vercel.app/docs/components/input): Compound text input with consumer-controlled error state
+- [OTP](https://wire-ui.vercel.app/docs/components/otp): One-time password input with auto-advance and onComplete callback
+- [Password](https://wire-ui.vercel.app/docs/components/password): Password input with built-in show/hide toggle
+- [Radio](https://wire-ui.vercel.app/docs/components/radio): Single-selection radio group
+- [Rating](https://wire-ui.vercel.app/docs/components/rating): Star rating with hover preview, read-only, and disabled modes
+- [Search](https://wire-ui.vercel.app/docs/components/search): Search input with dropdown results and keyboard navigation
+- [Select](https://wire-ui.vercel.app/docs/components/select): Accessible select menu with groups, separators, and custom trigger
+- [Switch](https://wire-ui.vercel.app/docs/components/switch): Toggle on/off with thumb element and data-state
+- [Textarea](https://wire-ui.vercel.app/docs/components/textarea): Compound multi-line text input with consumer-controlled error state
+
+### Overlays
+
+- [Accordion](https://wire-ui.vercel.app/docs/components/accordion): Collapsible sections with single or multiple selection types
+- [Drawer](https://wire-ui.vercel.app/docs/components/drawer): Side-panel overlay with portal rendering and close behaviours
+- [Dropdown](https://wire-ui.vercel.app/docs/components/dropdown): Trigger and menu pattern with keyboard and click-outside support
+- [Modal](https://wire-ui.vercel.app/docs/components/modal): Dialog with portal rendering, overlay-click and Escape key close
+
+### Media
+
+- [Avatar](https://wire-ui.vercel.app/docs/components/avatar): Image with fallback for loading errors or missing sources
+- [Icon](https://wire-ui.vercel.app/docs/components/icon): Renders consumer-supplied SVG strings by name; ships no SVG assets
+- [Image](https://wire-ui.vercel.app/docs/components/image): Image wrapper with a loader placeholder shown until the image loads
+- [List](https://wire-ui.vercel.app/docs/components/list): Ordered or unordered list with optional striped rows and dividers

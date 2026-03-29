@@ -1,0 +1,774 @@
+# Wire UI — Full Documentation
+
+> A headless, unstyled React 19 component library. Style everything with your own CSS using data-* attributes that reflect interactive state.
+
+Wire UI provides behavior primitives for React applications. Components handle interaction states, accessibility, and complex behaviors while shipping zero CSS. Style them with Tailwind, CSS Modules, or plain CSS — anything that supports attribute selectors.
+
+Package: @wire-ui/react
+npm: https://www.npmjs.com/package/@wire-ui/react
+GitHub: https://github.com/wire-ui/wire-ui
+
+---
+
+## Introduction
+
+### Core Principles
+
+**Unstyled by default.** No CSS shipped. No design opinions. You own the design system.
+
+**State via data-* attributes.** Every interactive state (hover, focus, active, disabled, open/closed) is exposed as a data attribute — empty string when active, absent when not. Style with CSS attribute selectors.
+
+**Compound components.** Complex widgets follow the `Component.Part` pattern. You compose the markup, control the order, and add whatever wrapper elements you need.
+
+**Consumer-owned validation.** Form components expose `invalidType` and `errorMessage` props but perform no validation internally. Set `invalidType` when your validation logic decides it's invalid — the component renders the error state.
+
+**asChild for polymorphism.** Pass `asChild` to Button to merge all props onto your own child element — great for router links and icon buttons.
+
+---
+
+## Getting Started
+
+### Installation
+
+```bash
+npm install @wire-ui/react
+```
+
+Wire UI has no production dependencies. React 19 is a peer dependency.
+
+### Styling Approach
+
+Wire UI ships no CSS. All interactive state is exposed through data-* attributes. Target them with any CSS approach you prefer.
+
+#### Tailwind CSS
+
+```tsx
+<Button className="
+  px-4 py-2 rounded bg-blue-600 text-white transition-all
+  [data-hover]:bg-blue-700
+  [data-active]:scale-95
+  [data-focus-visible]:ring-2 [data-focus-visible]:ring-offset-2
+  [data-disabled]:opacity-50 [data-disabled]:cursor-not-allowed
+">
+  Submit
+</Button>
+```
+
+#### CSS Modules
+
+```css
+.button[data-hover]         { background: #1d4ed8; }
+.button[data-active]        { transform: scale(0.95); }
+.button[data-focus-visible] { outline: 2px solid #2563eb; }
+.button[data-disabled]      { opacity: 0.5; cursor: not-allowed; }
+```
+
+### Compound Components
+
+Complex components use the `Component.Part` pattern. You compose the markup yourself:
+
+```tsx
+import { Input } from '@wire-ui/react'
+
+<Input.Root value={value} onChange={setValue}>
+  <Input.Label>Email address</Input.Label>
+  <Input.Field type="email" placeholder="you@example.com" />
+  <Input.Error />
+</Input.Root>
+```
+
+### Validation Pattern
+
+Wire UI components do not validate internally. You own validation:
+
+```tsx
+const [email, setEmail] = useState('')
+const [invalidType, setInvalidType] = useState('')
+
+function handleSubmit(e) {
+  e.preventDefault()
+  if (!email) setInvalidType('required')
+  else if (!email.includes('@')) setInvalidType('email')
+  else setInvalidType('')
+}
+
+<Input.Root
+  value={email}
+  onChange={setEmail}
+  invalidType={invalidType}
+  errorMessage={{
+    required: 'Email is required',
+    email: 'Enter a valid email address',
+  }}
+>
+  <Input.Label>Email</Input.Label>
+  <Input.Field type="email" />
+  <Input.Error />
+</Input.Root>
+```
+
+### TypeScript
+
+All prop types are exported:
+
+```ts
+import type {
+  ButtonProps, InputRootProps, TextareaRootProps, PasswordRootProps,
+  ModalRootProps, AccordionRootProps, SearchOption, Size, Status,
+} from '@wire-ui/react'
+```
+
+---
+
+## Data Attributes
+
+All interactive state is exposed through data-* attributes. An attribute is present as an empty string when active and absent when not — never "true" or "false".
+
+```css
+[data-hover]         { ... }  /* correct */
+[data-hover="true"]  { ... }  /* never matches */
+```
+
+### Universal Interactive Attributes
+
+These are set by useInteractiveState and are available on Button and any component using the hook.
+
+| Attribute          | When present                                         |
+|--------------------|------------------------------------------------------|
+| data-hover         | Mouse is over the element                            |
+| data-focus-visible | Element has keyboard focus (matches :focus-visible)  |
+| data-active        | Element is being pressed                             |
+| data-disabled      | Element is disabled                                  |
+| data-autofocus     | Element was rendered with the autoFocus prop         |
+
+### Form Field Attributes
+
+| Attribute    | Component                    | When present                              |
+|--------------|------------------------------|-------------------------------------------|
+| data-active  | Input, Textarea, Password    | Field is focused                          |
+| data-invalid | Input, Textarea, Password    | invalidType prop is set                   |
+| data-success | Input, Textarea              | isSuccess prop is true                    |
+
+### State Attributes
+
+| Attribute       | Component                                                          | Values                          |
+|-----------------|--------------------------------------------------------------------|---------------------------------|
+| data-state      | Modal, Drawer, Accordion Item/Trigger/Content, Dropdown, Tooltip  | "open"/"closed" or "checked"/"unchecked" |
+| data-visible    | Password.Toggle                                                    | Present when password visible   |
+| data-loading    | Search.Root                                                        | Present when loading prop true  |
+| data-highlighted| Search.Item                                                        | Present on keyboard-focused item|
+| data-complete   | OTP.Root                                                           | Present when all slots filled   |
+
+---
+
+## Hooks
+
+### useInteractiveState
+
+Tracks hover, keyboard focus, and press state for any element. Same hook used internally by Button — exported so you can build your own interactive components.
+
+```tsx
+import { useInteractiveState } from '@wire-ui/react'
+
+function MyCard({ disabled }) {
+  const { handlers, dataAttributes } = useInteractiveState({ disabled })
+
+  return (
+    <div tabIndex={0} role="button" {...handlers} {...dataAttributes}>
+      Card content
+    </div>
+  )
+}
+```
+
+Returns: `handlers` (event handlers), `dataAttributes` (data-hover, data-focus-visible, data-active, data-disabled), `isHovered`, `isFocusVisible`, `isActive`.
+
+### useClickOutside
+
+Fires a callback when the user clicks outside a referenced element. Used internally by Dropdown and Search.
+
+```tsx
+import { useRef } from 'react'
+import { useClickOutside } from '@wire-ui/react'
+
+function Popover() {
+  const ref = useRef(null)
+  useClickOutside(ref, () => setOpen(false))
+  return <div ref={ref}>Popover content</div>
+}
+```
+
+Parameters: `ref` (RefObject<HTMLElement>), `handler` (() => void).
+
+---
+
+## Components
+
+### Accordion
+
+Collapsible sections. Supports `single` (one item open at a time) and `multiple` (many open at once). Controlled and uncontrolled.
+
+```tsx
+import { Accordion } from '@wire-ui/react'
+
+<Accordion.Root type="single" collapsible defaultValue="item-1">
+  <Accordion.Item value="item-1">
+    <Accordion.Trigger>Section one</Accordion.Trigger>
+    <Accordion.Content>Content for section one.</Accordion.Content>
+  </Accordion.Item>
+</Accordion.Root>
+```
+
+Props (Root): type ("single" | "multiple"), collapsible (boolean), defaultValue (string), value (string), onValueChange (fn).
+Data attributes: data-state ("open" | "closed") on Item, Trigger, Content.
+
+---
+
+### Alert
+
+Dismissible alert with optional auto-dismiss timer. Status variants applied via data-status.
+
+```tsx
+import { Alert } from '@wire-ui/react'
+
+<Alert
+  data-status="success"
+  className="p-4 rounded-lg [data-status=success]:bg-green-50"
+  onDismiss={() => setVisible(false)}
+  autoDismiss={5000}
+>
+  <Alert.Content>Operation completed successfully.</Alert.Content>
+  <Alert.Dismiss>✕</Alert.Dismiss>
+</Alert>
+```
+
+Props: onDismiss (fn), autoDismiss (number ms). Data attributes: data-status (consumer-set: "success" | "warning" | "danger").
+
+---
+
+### Avatar
+
+Image with a lazy-loading fallback. Fallback renders automatically when src is empty or the image fails to load.
+
+```tsx
+import { Avatar } from '@wire-ui/react'
+
+<Avatar.Root className="w-10 h-10 rounded-full overflow-hidden">
+  <Avatar.Image src="/user.jpg" alt="Jane Doe" className="w-full h-full object-cover" />
+  <Avatar.Fallback className="w-full h-full bg-gray-200 flex items-center justify-center">
+    JD
+  </Avatar.Fallback>
+</Avatar.Root>
+```
+
+Data attributes: data-status ("loading" | "loaded" | "error") on Avatar.Image.
+
+---
+
+### Badge
+
+Numeric count badge. Caps display at 9+. Renders nothing when count is 0 or negative.
+
+```tsx
+import { Badge } from '@wire-ui/react'
+
+<Badge count={5} className="inline-flex items-center justify-center ...">
+  {/* Badge renders the count */}
+</Badge>
+```
+
+Props: count (number). Data attributes: data-count (raw number value).
+
+---
+
+### Button
+
+A native button with full interactive state tracking. Use asChild to render as any element.
+
+```tsx
+import { Button } from '@wire-ui/react'
+
+<Button
+  className="px-4 py-2 rounded bg-blue-600 text-white
+    [data-hover]:bg-blue-700
+    [data-active]:scale-95
+    [data-focus-visible]:ring-2
+    [data-disabled]:opacity-40"
+  onClick={() => handleClick()}
+>
+  Save changes
+</Button>
+
+// Polymorphic — renders as anchor
+<Button asChild>
+  <a href="/dashboard">Dashboard</a>
+</Button>
+```
+
+Props: asChild (boolean), disabled (boolean), all native button props.
+Data attributes: data-hover, data-focus-visible, data-active, data-disabled, data-autofocus.
+
+---
+
+### Card
+
+A simple unstyled container element. Pass data-color and data-size to drive design token styles.
+
+```tsx
+import { Card } from '@wire-ui/react'
+
+<Card data-color="primary" data-size="medium" className="rounded-xl border p-6">
+  Card content
+</Card>
+```
+
+---
+
+### Checkbox
+
+Multi-select checkbox group. Controlled via value: (string | number)[] and onChange.
+
+```tsx
+import { Checkbox } from '@wire-ui/react'
+
+<Checkbox.Group value={selected} onChange={setSelected}>
+  <Checkbox.Item value="react">
+    <Checkbox.Indicator className="w-4 h-4 border rounded [data-checked]:bg-blue-600" />
+    <Checkbox.Label>React</Checkbox.Label>
+  </Checkbox.Item>
+  <Checkbox.Item value="vue">
+    <Checkbox.Indicator className="w-4 h-4 border rounded [data-checked]:bg-blue-600" />
+    <Checkbox.Label>Vue</Checkbox.Label>
+  </Checkbox.Item>
+</Checkbox.Group>
+```
+
+Props (Group): value (array), onChange (fn). Data attributes: data-checked on Item/Indicator when selected.
+
+---
+
+### Divider
+
+Horizontal or vertical separator. Decorative by default (aria-hidden). Pass decorative={false} for a semantic separator.
+
+```tsx
+import { Divider } from '@wire-ui/react'
+
+<Divider className="my-4 border-t border-gray-200" />
+<Divider orientation="vertical" className="mx-4 border-l border-gray-200 h-full" />
+```
+
+Props: orientation ("horizontal" | "vertical"), decorative (boolean).
+
+---
+
+### Drawer
+
+Side-panel overlay. Same structure as Modal. Closes on overlay click or Escape key.
+
+```tsx
+import { Drawer } from '@wire-ui/react'
+
+<Drawer.Root>
+  <Drawer.Trigger>Open drawer</Drawer.Trigger>
+  <Drawer.Backdrop className="fixed inset-0 bg-black/50" />
+  <Drawer.Panel className="fixed inset-y-0 right-0 w-80 bg-white shadow-xl">
+    <Drawer.Header>
+      <Drawer.Title>Settings</Drawer.Title>
+      <Drawer.Close>✕</Drawer.Close>
+    </Drawer.Header>
+    Panel content
+  </Drawer.Panel>
+</Drawer.Root>
+```
+
+Data attributes: data-state ("open" | "closed") on Panel, Backdrop.
+
+---
+
+### Dropdown
+
+Trigger + menu pattern. Closes on Escape key, outside click, and menu item selection.
+
+```tsx
+import { Dropdown } from '@wire-ui/react'
+
+<Dropdown.Root>
+  <Dropdown.Trigger>Options</Dropdown.Trigger>
+  <Dropdown.Menu className="absolute z-10 mt-1 rounded-lg border bg-white shadow-lg">
+    <Dropdown.Item onSelect={() => handleEdit()}>Edit</Dropdown.Item>
+    <Dropdown.Item onSelect={() => handleDelete()}>Delete</Dropdown.Item>
+    <Dropdown.Separator className="my-1 border-t" />
+    <Dropdown.Item onSelect={() => handleArchive()}>Archive</Dropdown.Item>
+  </Dropdown.Menu>
+</Dropdown.Root>
+```
+
+Props (Root): open (boolean), onOpenChange (fn), defaultOpen (boolean).
+Data attributes: data-state ("open" | "closed") on Menu.
+
+---
+
+### Icon
+
+Renders an SVG from a consumer-supplied icon map. Wire UI ships no SVG assets — you bring your own.
+
+```tsx
+import { Icon } from '@wire-ui/react'
+
+const icons = {
+  check: '<path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" .../>',
+}
+
+<Icon name="check" icons={icons} size="medium" className="text-green-600" />
+```
+
+Props: name (string), icons (Record<string, string>), size ("small" | "medium" | "large").
+
+---
+
+### Image
+
+Image wrapper with a loader placeholder shown until the image fires a load event.
+
+```tsx
+import { Image } from '@wire-ui/react'
+
+<Image.Root data-position="center" className="relative overflow-hidden rounded-lg">
+  <Image.Loader className="absolute inset-0 bg-gray-200 animate-pulse" />
+  <Image.Img src="/photo.jpg" alt="Description" className="w-full h-full object-cover [data-loaded]:opacity-100 opacity-0" />
+</Image.Root>
+```
+
+Data attributes: data-loaded on Img after successful load, data-position on Root.
+
+---
+
+### Input
+
+Compound component for text inputs. Validation is entirely consumer-controlled.
+
+```tsx
+import { Input } from '@wire-ui/react'
+
+<Input.Root
+  value={value}
+  onChange={setValue}
+  invalidType={invalidType}
+  errorMessage={{ required: 'This field is required' }}
+>
+  <Input.Label>Email</Input.Label>
+  <Input.Field type="email" placeholder="you@example.com"
+    className="w-full border rounded px-3 py-2
+      [data-active]:ring-2 [data-invalid]:border-red-500" />
+  <Input.Error className="text-sm text-red-500 mt-1" />
+</Input.Root>
+```
+
+Props (Root): value, onChange, invalidType (string), errorMessage (Record<string, string>), isSuccess (boolean).
+Data attributes: data-active (focused), data-invalid, data-success on Field.
+
+---
+
+### List
+
+Ordered or unordered list container. Variant attributes used as CSS hooks.
+
+```tsx
+import { List } from '@wire-ui/react'
+
+<List.Root data-type="disc" data-size="medium" data-striped data-divider>
+  <List.Item>First item</List.Item>
+  <List.Item>Second item</List.Item>
+</List.Root>
+```
+
+Data attributes: data-type, data-size, data-striped, data-divider on Root.
+
+---
+
+### Modal
+
+Compound modal dialog. Renders into a portal, closes on overlay click or Escape key.
+
+```tsx
+import { Modal } from '@wire-ui/react'
+
+<Modal.Root>
+  <Modal.Trigger asChild>
+    <button>Open modal</button>
+  </Modal.Trigger>
+  <Modal.Backdrop className="fixed inset-0 bg-black/50 [data-state=open]:opacity-100" />
+  <Modal.Panel className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+    bg-white rounded-xl p-6 w-full max-w-md shadow-xl">
+    <Modal.Title>Confirm action</Modal.Title>
+    <Modal.Description>This cannot be undone.</Modal.Description>
+    <Modal.Close asChild>
+      <button>Cancel</button>
+    </Modal.Close>
+  </Modal.Panel>
+</Modal.Root>
+```
+
+Props (Root): open (boolean), onOpenChange (fn), defaultOpen (boolean).
+Data attributes: data-state ("open" | "closed") on Panel, Backdrop.
+
+---
+
+### OTP
+
+One-time password input. Auto-advances on type, handles Backspace, fires onComplete when all slots filled.
+
+```tsx
+import { OTP } from '@wire-ui/react'
+
+<OTP.Root
+  length={6}
+  onComplete={(value) => verifyCode(value)}
+  className="flex gap-2 [data-complete]:ring-2 [data-complete]:ring-green-500"
+>
+  {Array.from({ length: 6 }).map((_, i) => (
+    <OTP.Slot key={i} index={i}
+      className="w-10 h-12 border rounded text-center text-lg [data-active]:ring-2" />
+  ))}
+</OTP.Root>
+```
+
+Props (Root): length (number), onComplete (fn), alphanumeric (boolean).
+Data attributes: data-complete on Root when all slots filled, data-active on focused Slot.
+
+---
+
+### Password
+
+Password input with a built-in show/hide toggle. Validation is consumer-controlled.
+
+```tsx
+import { Password } from '@wire-ui/react'
+
+<Password.Root value={value} onChange={setValue} invalidType={invalidType}>
+  <Password.Label>Password</Password.Label>
+  <Password.Field className="w-full border rounded px-3 py-2 [data-invalid]:border-red-500" />
+  <Password.Toggle className="absolute right-3 top-1/2 -translate-y-1/2">
+    {/* data-visible is present when password is shown */}
+    Show
+  </Password.Toggle>
+  <Password.Error className="text-sm text-red-500 mt-1" />
+</Password.Root>
+```
+
+Data attributes: data-visible on Toggle when password is visible.
+
+---
+
+### ProgressBar
+
+Accessible progress indicator. Renders role="progressbar" with aria-valuenow, aria-valuemin, aria-valuemax.
+
+```tsx
+import { ProgressBar } from '@wire-ui/react'
+
+<ProgressBar.Root value={65} max={100} data-size="medium"
+  className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+  <ProgressBar.Fill className="h-full bg-blue-600 transition-all" />
+</ProgressBar.Root>
+```
+
+Props (Root): value (number), max (number, default 100).
+
+---
+
+### Radio
+
+Single-selection radio group. Controlled via value and onChange.
+
+```tsx
+import { Radio } from '@wire-ui/react'
+
+<Radio.Group value={selected} onChange={setSelected} name="size">
+  {['sm', 'md', 'lg'].map((size) => (
+    <Radio.Item key={size} value={size}>
+      <Radio.Indicator className="w-4 h-4 rounded-full border [data-checked]:bg-blue-600" />
+      <Radio.Label>{size.toUpperCase()}</Radio.Label>
+    </Radio.Item>
+  ))}
+</Radio.Group>
+```
+
+Data attributes: data-checked on Item/Indicator when selected.
+
+---
+
+### Rating
+
+Star rating component. Hover preview shows the prospective rating before clicking.
+
+```tsx
+import { Rating } from '@wire-ui/react'
+
+<Rating.Root value={rating} onChange={setRating} max={5}>
+  {Array.from({ length: 5 }).map((_, i) => (
+    <Rating.Star key={i} index={i + 1}
+      className="w-6 h-6 cursor-pointer [data-filled]:text-yellow-400 [data-hover]:text-yellow-300" />
+  ))}
+</Rating.Root>
+```
+
+Props (Root): value (number), onChange (fn), max (number), readOnly (boolean), disabled (boolean).
+Data attributes: data-filled, data-hover on Star.
+
+---
+
+### Search
+
+Search input with a dropdown results list. Keyboard navigation with Arrow keys, Enter to select, Escape to close.
+
+```tsx
+import { Search } from '@wire-ui/react'
+
+<Search.Root
+  options={results}
+  onSearch={(q) => fetchResults(q)}
+  onSelect={(item) => handleSelect(item)}
+  loading={isLoading}
+>
+  <Search.Input className="w-full border rounded px-3 py-2" placeholder="Search..." />
+  <Search.Dropdown className="absolute z-10 w-full bg-white border rounded-lg shadow-lg mt-1">
+    <Search.Empty className="p-4 text-gray-500">No results found</Search.Empty>
+    <Search.Loading className="p-4">Searching...</Search.Loading>
+    {results.map((item) => (
+      <Search.Item key={item.id} item={item}
+        className="px-4 py-2 cursor-pointer [data-highlighted]:bg-gray-100">
+        {item.label}
+      </Search.Item>
+    ))}
+  </Search.Dropdown>
+</Search.Root>
+```
+
+Data attributes: data-loading on Root, data-highlighted on the keyboard-focused Item.
+
+---
+
+### Select
+
+Accessible select menu with groups, separators, and a fully custom trigger.
+
+```tsx
+import { Select } from '@wire-ui/react'
+
+<Select.Root value={value} onValueChange={setValue}>
+  <Select.Trigger className="flex items-center justify-between border rounded px-3 py-2">
+    <Select.Value placeholder="Choose..." />
+    <Select.Icon />
+  </Select.Trigger>
+  <Select.Content className="absolute z-10 mt-1 w-full bg-white border rounded-lg shadow-lg">
+    <Select.Group>
+      <Select.Label>Fruits</Select.Label>
+      <Select.Item value="apple">Apple</Select.Item>
+      <Select.Item value="banana">Banana</Select.Item>
+    </Select.Group>
+    <Select.Separator className="my-1 border-t" />
+    <Select.Item value="other">Other</Select.Item>
+  </Select.Content>
+</Select.Root>
+```
+
+---
+
+### Spinner
+
+Animated 12-dot loading indicator. Renders role="status" with aria-label="Loading".
+
+```tsx
+import { Spinner } from '@wire-ui/react'
+
+<Spinner size="medium" color="#6366f1" />
+```
+
+Props: size ("small" | "medium" | "large"), color (CSS color string).
+
+---
+
+### Switch
+
+Toggle component with a thumb element. Renders as button role="switch" with aria-checked.
+
+```tsx
+import { Switch } from '@wire-ui/react'
+
+<Switch.Root
+  checked={enabled}
+  onCheckedChange={setEnabled}
+  className="relative inline-flex h-6 w-11 rounded-full transition-colors
+    [data-state=checked]:bg-blue-600 [data-state=unchecked]:bg-gray-300"
+>
+  <Switch.Thumb className="pointer-events-none block h-5 w-5 rounded-full bg-white shadow
+    translate-x-0.5 transition-transform [data-state=checked]:translate-x-5.5" />
+</Switch.Root>
+```
+
+Data attributes: data-state ("checked" | "unchecked") on Root and Thumb.
+
+---
+
+### Textarea
+
+Same compound API as Input, renders a textarea. Controlled, uncontrolled, consumer-controlled error state.
+
+```tsx
+import { Textarea } from '@wire-ui/react'
+
+<Textarea.Root value={value} onChange={setValue} invalidType={invalidType}>
+  <Textarea.Label>Message</Textarea.Label>
+  <Textarea.Field rows={4} className="w-full border rounded px-3 py-2
+    [data-active]:ring-2 [data-invalid]:border-red-500" />
+  <Textarea.Error className="text-sm text-red-500 mt-1" />
+</Textarea.Root>
+```
+
+---
+
+### Timeago
+
+Relative or formatted timestamp. In isDuration mode it updates live via setInterval.
+
+```tsx
+import { Timeago } from '@wire-ui/react'
+
+// Relative: "3 minutes ago"
+<Timeago date={new Date(Date.now() - 180000)} />
+
+// Live countdown
+<Timeago date={futureDate} isDuration />
+
+// Formatted: "Jan 15, 2025"
+<Timeago date="2025-01-15T10:30:00Z" format="MMM DD, YYYY" />
+```
+
+Props: date (Date | string | number), isDuration (boolean), format (string), updateInterval (number ms).
+
+---
+
+### Tooltip
+
+Hover/focus tooltip. Configurable delay and side.
+
+```tsx
+import { Tooltip } from '@wire-ui/react'
+
+<Tooltip.Root delayDuration={200}>
+  <Tooltip.Trigger asChild>
+    <button>Hover me</button>
+  </Tooltip.Trigger>
+  <Tooltip.Content side="top"
+    className="px-2 py-1 text-xs bg-gray-900 text-white rounded
+      [data-state=open]:opacity-100 [data-state=closed]:opacity-0">
+    This is a tooltip
+  </Tooltip.Content>
+</Tooltip.Root>
+```
+
+Props (Root): delayDuration (number ms), open (boolean), onOpenChange (fn).
+Props (Content): side ("top" | "bottom" | "left" | "right").
+Data attributes: data-state ("open" | "closed") on Content, data-side on Content.

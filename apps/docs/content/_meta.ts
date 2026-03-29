@@ -4,5 +4,6 @@ export default {
   components: 'Components',
   hooks: 'Hooks',
   'data-attributes': 'Data Attributes',
+  ai: 'AI',
   author: 'Author',
 }

@@ -1,0 +1,91 @@
+---
+title: LLMs.txt
+description: Use Wire UI documentation with AI coding assistants and LLMs.
+---
+
+import { Callout } from 'nextra/components'
+
+# LLMs.txt
+
+Wire UI provides [llms.txt](https://llmstxt.org) files so AI coding assistants can understand the library's API, component patterns, and data attribute conventions when helping you write code.
+
+## What is LLMs.txt?
+
+`llms.txt` is a proposed standard for providing structured documentation to large language models. By pointing your AI tool at these files, you get more accurate code suggestions, correct prop names, and proper data attribute usage without having to paste docs manually.
+
+## Available Files
+
+Two endpoints are served as static text files:
+
+| File | Description |
+|---|---|
+| [`/llms.txt`](/llms.txt) | Structured index with a brief description of every page and a link to each |
+| [`/llms-full.txt`](/llms-full.txt) | Complete documentation — every component's API, props, usage examples, and data attributes in a single file |
+
+<Callout type="info">
+  `llms-full.txt` is the recommended file for AI tools. It contains everything needed to generate correct Wire UI code without any follow-up lookups.
+</Callout>
+
+## Usage with AI Tools
+
+### Cursor
+
+1. Open **Cursor Settings → Features → Docs**
+2. Click **Add new doc**
+3. Paste the URL for `/llms-full.txt`
+4. Cursor will index it and make it available via `@Docs` in the chat
+
+Once added, type `@wire-ui` (or whatever name you give it) in any Cursor chat to pull in the full API reference.
+
+### Windsurf
+
+Reference the file directly in your prompt with `@`, or add it to your `.windsurfrules` file:
+
+```
+@https://wire-ui.vercel.app/llms-full.txt
+```
+
+### Claude / Claude Code
+
+Paste the URL or the raw content directly into your conversation:
+
+```
+Read the Wire UI docs at https://wire-ui.vercel.app/llms-full.txt and help me build a form with Input, Password, and a submit Button.
+```
+
+### Other tools
+
+Any tool that supports the `llms.txt` standard can point at either file. For tools that accept a URL, prefer `/llms-full.txt`. For tools that generate a context window from an index, use `/llms.txt`.
+
+## What's in Each File
+
+### `/llms.txt`
+
+A structured overview following the [llmstxt.org](https://llmstxt.org) format:
+
+```
+# Wire UI
+
+> A headless, unstyled React 19 component library...
+
+## Getting Started
+- [Introduction](/docs): ...
+- [Getting Started](/docs/getting-started): ...
+
+## Components
+
+### Forms
+- [Button](/docs/components/button): ...
+- [Input](/docs/components/input): ...
+...
+```
+
+### `/llms-full.txt`
+
+A single flat file containing:
+
+- Core principles and philosophy
+- Installation and styling approach
+- Complete data attribute reference
+- Hook documentation (`useInteractiveState`, `useClickOutside`)
+- All 27 components with props, usage examples, and data attributes
