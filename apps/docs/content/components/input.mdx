@@ -12,7 +12,7 @@ Compound component for text inputs. Works controlled and uncontrolled. Validatio
 ## Preview
 
 <ComponentPreview code={`
-import { Input } from 'bareui'
+import { Input } from 'wire-ui'
 import { useState } from 'react'
 
 export default function App() {
@@ -57,7 +57,7 @@ export default function App() {
 ## Anatomy
 
 ```tsx
-import { Input } from 'bareui'
+import { Input } from 'wire-ui'
 
 <Input.Root value={value} onChange={setValue}>
   <Input.Label>Email</Input.Label>
@@ -93,7 +93,7 @@ import { Input } from 'bareui'
 
 ## Validation pattern
 
-bare-ui does not validate — you decide when and what is invalid:
+wire-ui does not validate — you decide when and what is invalid:
 
 ```tsx
 const [value, setValue] = useState('')

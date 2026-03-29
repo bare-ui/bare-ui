@@ -5,12 +5,12 @@ description: Renders consumer-supplied SVG strings by name. Ships no SVG assets.
 
 # Icon
 
-Renders an SVG from a consumer-supplied icon map. bare-ui ships **no SVG assets** — you bring your own.
+Renders an SVG from a consumer-supplied icon map. wire-ui ships **no SVG assets** — you bring your own.
 
 ## Usage
 
 ```tsx
-import { Icon } from 'bareui'
+import { Icon } from 'wire-ui'
 
 // Bring your own SVG strings
 const icons = {
@@ -62,7 +62,7 @@ Pass the map once from a parent or via context to avoid prop-drilling:
 
 ```tsx
 // Use a wrapper component in your design system
-import { Icon as BareIcon } from 'bareui'
+import { Icon as BareIcon } from 'wire-ui'
 import { icons } from './icons'
 
 export function Icon(props: Omit<React.ComponentProps<typeof BareIcon>, 'icons'>) {

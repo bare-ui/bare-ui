@@ -1,5 +1,5 @@
 {
-  "name": "bare-ui-monorepo",
+  "name": "wire-ui-monorepo",
   "private": true,
   "workspaces": [
     "packages/*",

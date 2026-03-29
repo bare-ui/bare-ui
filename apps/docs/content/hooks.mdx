@@ -1,6 +1,6 @@
 ---
 title: Hooks
-description: Publicly exported hooks from bareui.
+description: Publicly exported hooks from wire-ui.
 ---
 
 # Hooks
@@ -10,7 +10,7 @@ description: Publicly exported hooks from bareui.
 Tracks hover, keyboard focus, and press state for any element. This is the same hook used internally by Button, Accordion.Trigger, Modal.Close, and Drawer.Close — exported so you can build your own interactive components with identical state tracking.
 
 ```tsx
-import { useInteractiveState } from 'bareui'
+import { useInteractiveState } from 'wire-ui'
 
 function MyCard({ disabled }: { disabled?: boolean }) {
   const { handlers, dataAttributes } = useInteractiveState({ disabled })
@@ -59,7 +59,7 @@ Fires a callback when the user clicks or taps outside a referenced element. Used
 
 ```tsx
 import { useRef } from 'react'
-import { useClickOutside } from 'bareui'
+import { useClickOutside } from 'wire-ui'
 
 function Popover() {
   const ref = useRef<HTMLDivElement>(null)

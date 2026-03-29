@@ -1,6 +1,6 @@
 ---
 title: Getting Started
-description: Install bareui and style your first component.
+description: Install wire-ui and style your first component.
 ---
 
 import { Steps, Tabs } from 'nextra/components'
@@ -14,10 +14,10 @@ import { Steps, Tabs } from 'nextra/components'
 ### Install the package
 
 ```bash npm2yarn
-npm install bareui
+npm install wire-ui
 ```
 
-bareui has no production dependencies. React 19 is a peer dependency.
+wire-ui has no production dependencies. React 19 is a peer dependency.
 
 ### Add peer dependencies
 
@@ -30,7 +30,7 @@ npm install react@^19 react-dom@^19
 ### Use a component
 
 ```tsx
-import { Button } from 'bareui'
+import { Button } from 'wire-ui'
 
 export function SaveButton() {
   return (
@@ -45,7 +45,7 @@ export function SaveButton() {
 
 ## Styling approach
 
-bareui ships no CSS. All interactive state is exposed through `data-*` attributes. Target them with any CSS approach you prefer.
+wire-ui ships no CSS. All interactive state is exposed through `data-*` attributes. Target them with any CSS approach you prefer.
 
 <Tabs items={['Tailwind CSS', 'CSS Modules', 'Plain CSS']}>
 
@@ -106,7 +106,7 @@ import styles from './button.module.css'
 Complex components use the `Component.Part` pattern. You compose the markup yourself:
 
 ```tsx
-import { Input } from 'bareui'
+import { Input } from 'wire-ui'
 
 <Input.Root value={value} onChange={setValue}>
   <Input.Label>Email address</Input.Label>
@@ -115,11 +115,11 @@ import { Input } from 'bareui'
 </Input.Root>
 ```
 
-You control the DOM order. Need the error above the field? Swap them. Need a wrapper div between label and field? Add it. bareui never dictates structure.
+You control the DOM order. Need the error above the field? Swap them. Need a wrapper div between label and field? Add it. wire-ui never dictates structure.
 
 ## Validation pattern
 
-bareui components do **not** validate internally. You own validation — set `invalidType` when your logic determines the field is invalid:
+wire-ui components do **not** validate internally. You own validation — set `invalidType` when your logic determines the field is invalid:
 
 ```tsx
 const [email, setEmail] = useState('')
@@ -162,5 +162,5 @@ import type {
   SearchOption,
   Size,
   Status,
-} from 'bareui'
+} from 'wire-ui'
 ```

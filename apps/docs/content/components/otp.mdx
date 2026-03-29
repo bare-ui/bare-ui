@@ -12,7 +12,7 @@ One-time password input with individual slot elements. Auto-advances on type, ha
 ## Preview
 
 <ComponentPreview code={`
-import { OTP } from 'bareui'
+import { OTP } from 'wire-ui'
 import { useState } from 'react'
 
 export default function App() {
@@ -48,7 +48,7 @@ export default function App() {
 ## Anatomy
 
 ```tsx
-import { OTP } from 'bareui'
+import { OTP } from 'wire-ui'
 
 <OTP.Root length={6} onComplete={(code) => console.log(code)}>
   <OTP.Slot index={0} />

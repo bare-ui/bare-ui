@@ -10,10 +10,10 @@ export default async function DocsLayout({ children }: { children: React.ReactNo
     <Navbar
       logo={
         <span style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '-0.02em' }}>
-          bareui
+          wire-ui
         </span>
       }
-      projectLink="https://github.com/bare-ui/bare-ui"
+      projectLink="https://github.com/wire-ui/wire-ui"
     />
   )
 
@@ -24,10 +24,10 @@ export default async function DocsLayout({ children }: { children: React.ReactNo
         <Layout
           navbar={navbar}
           pageMap={pageMap}
-          docsRepositoryBase="https://github.com/bare-ui/bare-ui/tree/main/apps/docs"
+          docsRepositoryBase="https://github.com/wire-ui/wire-ui/tree/main/apps/docs"
           footer={
             <p style={{ textAlign: 'center', fontSize: '0.875rem', color: '#888' }}>
-              MIT License © {new Date().getFullYear()} bareui
+              MIT License © {new Date().getFullYear()} wire-ui
             </p>
           }
         >

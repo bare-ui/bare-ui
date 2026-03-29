@@ -10,7 +10,7 @@
     "clean": "rm -rf .next out"
   },
   "dependencies": {
-    "bareui": "*",
+    "wire-ui": "*",
     "next": "^15.3.2",
     "nextra": "^4.3.2",
     "nextra-theme-docs": "^4.3.2",
