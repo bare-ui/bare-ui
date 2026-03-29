@@ -10,7 +10,7 @@ Renders an SVG from a consumer-supplied icon map. bare-ui ships **no SVG assets*
 ## Usage
 
 ```tsx
-import { Icon } from 'bare-ui'
+import { Icon } from 'bareui'
 
 // Bring your own SVG strings
 const icons = {
@@ -62,7 +62,7 @@ Pass the map once from a parent or via context to avoid prop-drilling:
 
 ```tsx
 // Use a wrapper component in your design system
-import { Icon as BareIcon } from 'bare-ui'
+import { Icon as BareIcon } from 'bareui'
 import { icons } from './icons'
 
 export function Icon(props: Omit<React.ComponentProps<typeof BareIcon>, 'icons'>) {

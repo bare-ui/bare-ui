@@ -62,7 +62,7 @@ export function ComponentPreview({ code, height = 200, showConsole = false }: Pr
         }}
         customSetup={{
           dependencies: {
-            'bare-ui': 'latest',
+            'bareui': 'latest',
           },
         }}
         options={{
