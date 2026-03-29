@@ -1,6 +1,6 @@
 {
-  "name": "bare-ui",
-  "version": "0.0.1",
+  "name": "bareui",
+  "version": "0.1.4",
   "type": "module",
   "main": "./dist/bare-ui.cjs.js",
   "module": "./dist/bare-ui.es.js",

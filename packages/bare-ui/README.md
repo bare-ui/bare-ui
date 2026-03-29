@@ -16,7 +16,7 @@ A headless, unstyled React 19 component library. Components ship with zero CSS �
 ## Installation
 
 ```bash
-npm install bare-ui
+npm install bareui
 ```
 
 ### Peer requirements
@@ -54,7 +54,7 @@ All interactive components expose state through data attributes. Attributes are 
 A native `<button>` with interactive state tracking. Use `asChild` to render as any element.
 
 ```tsx
-import { Button } from 'bare-ui'
+import { Button } from 'bareui'
 
 // Default button
 <Button onClick={() => console.log('clicked')}>
@@ -93,7 +93,7 @@ import { Button } from 'bare-ui'
 Compound component for text inputs. Validation is entirely consumer-controlled — set `invalidType` to trigger the error state.
 
 ```tsx
-import { Input } from 'bare-ui'
+import { Input } from 'bareui'
 
 // Uncontrolled
 <Input.Root>
@@ -145,7 +145,7 @@ function handleSubmit() {
 Same API as Input, but renders a `<textarea>`. Validation is consumer-controlled via `invalidType`.
 
 ```tsx
-import { Textarea } from 'bare-ui'
+import { Textarea } from 'bareui'
 
 // Basic usage
 <Textarea.Root>
@@ -171,7 +171,7 @@ import { Textarea } from 'bare-ui'
 Input compound component with a built-in show/hide toggle. Validation is consumer-controlled via `invalidType`.
 
 ```tsx
-import { Password } from 'bare-ui'
+import { Password } from 'bareui'
 
 // Basic usage
 <Password.Root>
@@ -201,7 +201,7 @@ import { Password } from 'bare-ui'
 Compound modal dialog with portal rendering, overlay click to close, and Escape key support.
 
 ```tsx
-import { Modal } from 'bare-ui'
+import { Modal } from 'bareui'
 
 // Uncontrolled
 <Modal.Root defaultOpen>
@@ -237,7 +237,7 @@ const [open, setOpen] = useState(false)
 Same structure as Modal, designed for side panels. Includes an optional Header sub-component.
 
 ```tsx
-import { Drawer } from 'bare-ui'
+import { Drawer } from 'bareui'
 
 <Drawer.Root open={open} onOpenChange={setOpen}>
   <Drawer.Portal>
@@ -261,7 +261,7 @@ import { Drawer } from 'bare-ui'
 Collapsible sections. Supports `single` (one item open at a time) and `multiple` (many open at once).
 
 ```tsx
-import { Accordion } from 'bare-ui'
+import { Accordion } from 'bareui'
 
 // Single — collapsible
 <Accordion.Root type="single" collapsible defaultValue="item-1">
@@ -294,7 +294,7 @@ import { Accordion } from 'bare-ui'
 A trigger + menu pattern with keyboard and click-outside support.
 
 ```tsx
-import { Dropdown } from 'bare-ui'
+import { Dropdown } from 'bareui'
 
 <Dropdown.Root>
   <Dropdown.Trigger>Options ▾</Dropdown.Trigger>
@@ -316,7 +316,7 @@ import { Dropdown } from 'bare-ui'
 Hover/focus tooltip with configurable delay and side.
 
 ```tsx
-import { Tooltip } from 'bare-ui'
+import { Tooltip } from 'bareui'
 
 <Tooltip.Root delayDuration={200}>
   <Tooltip.Trigger>
@@ -339,7 +339,7 @@ import { Tooltip } from 'bare-ui'
 Accessible select menu with groups, separators, and a custom trigger.
 
 ```tsx
-import { Select } from 'bare-ui'
+import { Select } from 'bareui'
 
 <Select.Root value={value} onValueChange={setValue}>
   <Select.Trigger>
@@ -364,7 +364,7 @@ import { Select } from 'bare-ui'
 Group and individual checkbox items.
 
 ```tsx
-import { Checkbox } from 'bare-ui'
+import { Checkbox } from 'bareui'
 
 <Checkbox.Root value={checked} onChange={setChecked}>
   <Checkbox.Item value="newsletters">
@@ -387,7 +387,7 @@ import { Checkbox } from 'bare-ui'
 Single-selection radio group.
 
 ```tsx
-import { Radio } from 'bare-ui'
+import { Radio } from 'bareui'
 
 <Radio.Root value={selected} onChange={setSelected} name="plan">
   <Radio.Item value="starter">
@@ -408,7 +408,7 @@ import { Radio } from 'bare-ui'
 Toggle on/off with a thumb element.
 
 ```tsx
-import { Switch } from 'bare-ui'
+import { Switch } from 'bareui'
 
 <Switch.Root checked={on} onCheckedChange={setOn}>
   <Switch.Thumb />
@@ -424,7 +424,7 @@ import { Switch } from 'bare-ui'
 One-time password input with individual slots and optional separators.
 
 ```tsx
-import { OTP } from 'bare-ui'
+import { OTP } from 'bareui'
 
 <OTP.Root length={6} onComplete={(code) => console.log(code)}>
   <OTP.Slot index={0} />
@@ -448,8 +448,8 @@ import { OTP } from 'bare-ui'
 Search input with a dropdown results list, keyboard navigation, and loading state.
 
 ```tsx
-import { Search } from 'bare-ui'
-import type { SearchOption } from 'bare-ui'
+import { Search } from 'bareui'
+import type { SearchOption } from 'bareui'
 
 const options: SearchOption[] = [
   { id: 'react', title: 'React' },
@@ -481,7 +481,7 @@ const options: SearchOption[] = [
 Dismissible alert with auto-dismiss support.
 
 ```tsx
-import { Alert } from 'bare-ui'
+import { Alert } from 'bareui'
 
 <Alert.Root
   data-status="warning"
@@ -502,7 +502,7 @@ import { Alert } from 'bare-ui'
 Image with a fallback for loading errors or missing sources.
 
 ```tsx
-import { Avatar } from 'bare-ui'
+import { Avatar } from 'bareui'
 
 <Avatar.Root>
   <Avatar.Image src="https://example.com/avatar.jpg" alt="User avatar" />
@@ -519,7 +519,7 @@ import { Avatar } from 'bare-ui'
 Numeric count badge, capped at 9+.
 
 ```tsx
-import { Badge } from 'bare-ui'
+import { Badge } from 'bareui'
 
 <Badge count={3} />       // renders "3"
 <Badge count={12} />      // renders "9+"
@@ -535,7 +535,7 @@ import { Badge } from 'bare-ui'
 A simple container element with optional color and size variants.
 
 ```tsx
-import { Card } from 'bare-ui'
+import { Card } from 'bareui'
 
 <Card data-color="blue" data-size="large" className="p-4 rounded shadow">
   Card content
@@ -549,7 +549,7 @@ import { Card } from 'bare-ui'
 Horizontal or vertical separator line.
 
 ```tsx
-import { Divider } from 'bare-ui'
+import { Divider } from 'bareui'
 
 // Decorative (default)
 <Divider />
@@ -568,7 +568,7 @@ import { Divider } from 'bare-ui'
 Renders an SVG from a consumer-supplied icon map. The library ships no SVG assets.
 
 ```tsx
-import { Icon } from 'bare-ui'
+import { Icon } from 'bareui'
 
 // Bring your own SVG strings
 const icons = {
@@ -591,7 +591,7 @@ const icons = {
 Image with a loader placeholder shown until the image loads.
 
 ```tsx
-import { Image } from 'bare-ui'
+import { Image } from 'bareui'
 
 <Image src="/photo.jpg" alt="A photo" position="center" className="rounded" />
 ```
@@ -605,7 +605,7 @@ import { Image } from 'bare-ui'
 Ordered or unordered list with optional striped rows and dividers.
 
 ```tsx
-import { List } from 'bare-ui'
+import { List } from 'bareui'
 
 <List data-type="disc" data-striped data-divider data-size="medium">
   <li>Item one</li>
@@ -627,7 +627,7 @@ import { List } from 'bare-ui'
 Accessible progress indicator.
 
 ```tsx
-import { ProgressBar } from 'bare-ui'
+import { ProgressBar } from 'bareui'
 
 <ProgressBar value={65} min={0} max={100} data-size="medium" />
 ```
@@ -641,7 +641,7 @@ Renders `role="progressbar"` with `aria-valuenow`, `aria-valuemin`, `aria-valuem
 Star rating with hover preview, controlled and read-only modes.
 
 ```tsx
-import { Rating } from 'bare-ui'
+import { Rating } from 'bareui'
 
 // Interactive
 <Rating defaultValue={3} max={5} onChange={(v) => console.log(v)} />
@@ -663,7 +663,7 @@ import { Rating } from 'bare-ui'
 Animated loading indicator.
 
 ```tsx
-import { Spinner } from 'bare-ui'
+import { Spinner } from 'bareui'
 
 <Spinner />
 <Spinner size="large" />
@@ -679,7 +679,7 @@ import { Spinner } from 'bare-ui'
 Relative or formatted timestamp that updates live.
 
 ```tsx
-import { Timeago } from 'bare-ui'
+import { Timeago } from 'bareui'
 
 // Live relative time ("5 minutes ago", "2 hours ago")
 <Timeago datetime={new Date()} isDuration />
@@ -702,7 +702,7 @@ import { Timeago } from 'bare-ui'
 Tracks hover, keyboard focus, and press state for any element. The same hook used internally by Button, Accordion.Trigger, and Modal.Close — exported for building your own interactive components.
 
 ```tsx
-import { useInteractiveState } from 'bare-ui'
+import { useInteractiveState } from 'bareui'
 
 function MyCard({ disabled }: { disabled?: boolean }) {
   const { handlers, dataAttributes } = useInteractiveState({ disabled })
@@ -732,7 +732,7 @@ Fires a callback when the user clicks outside a referenced element.
 
 ```tsx
 import { useRef } from 'react'
-import { useClickOutside } from 'bare-ui'
+import { useClickOutside } from 'bareui'
 
 function Popover() {
   const ref = useRef<HTMLDivElement>(null)
@@ -763,7 +763,7 @@ import type {
   Status,
   InteractiveStateOptions,
   InteractiveStateResult,
-} from 'bare-ui'
+} from 'bareui'
 ```
 
 ---
