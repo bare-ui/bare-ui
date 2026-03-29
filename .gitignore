@@ -30,6 +30,7 @@ storybook-static
 .next
 out
 
+
 # Turbo
 .turbo
 
