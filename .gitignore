@@ -32,3 +32,7 @@ out
 
 # Turbo
 .turbo
+
+# Lockfile — generated on macOS (darwin-arm64), causes rolldown native
+# binding failures on Linux CI. Let each environment resolve its own.
+package-lock.json
