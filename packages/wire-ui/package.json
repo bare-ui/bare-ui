@@ -1,6 +1,6 @@
 {
   "name": "@wire-ui/react",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "type": "module",
   "main": "./dist/wire-ui.cjs.js",
   "module": "./dist/wire-ui.es.js",
@@ -16,6 +16,25 @@
     "dist"
   ],
   "sideEffects": false,
+  "homepage": "https://wire-ui.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wire-ui/wire-ui.git",
+    "directory": "packages/wire-ui"
+  },
+  "bugs": {
+    "url": "https://github.com/wire-ui/wire-ui/issues"
+  },
+  "keywords": [
+    "react",
+    "headless",
+    "unstyled",
+    "components",
+    "ui",
+    "accessible",
+    "data-attributes",
+    "design-system"
+  ],
   "engines": {
     "node": ">=20.19.0"
   },
