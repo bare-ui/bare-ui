@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { Icon } from './Icon';
 
 const testIcons = {
@@ -21,7 +21,7 @@ describe('Icon', () => {
 	it('returns null when type is not in icons map', () => {
 		const { container } = render(
 			<Icon
-				type='missing'
+				type={'missing' as never}
 				icons={testIcons}
 			/>,
 		);

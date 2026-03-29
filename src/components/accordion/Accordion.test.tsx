@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Accordion } from './Accordion';
 
-function renderSingle(rootProps: Omit<React.ComponentProps<typeof Accordion.Root>, 'type' | 'children'> = {}) {
+function renderSingle(rootProps: Record<string, unknown> = {}) {
 	return render(
 		<Accordion.Root
 			type='single'
@@ -20,7 +20,7 @@ function renderSingle(rootProps: Omit<React.ComponentProps<typeof Accordion.Root
 	);
 }
 
-function renderMultiple(rootProps: Omit<React.ComponentProps<typeof Accordion.Root>, 'type' | 'children'> = {}) {
+function renderMultiple(rootProps: Record<string, unknown> = {}) {
 	return render(
 		<Accordion.Root
 			type='multiple'
@@ -74,7 +74,7 @@ describe('Accordion (single)', () => {
 	});
 
 	it('collapsible: clicking open item closes it', async () => {
-		renderSingle({ collapsible: true } as never);
+		renderSingle({ collapsible: true });
 		await userEvent.click(screen.getByText('Section 1'));
 		expect(screen.getByText('Content 1')).toBeInTheDocument();
 		await userEvent.click(screen.getByText('Section 1'));
@@ -89,14 +89,14 @@ describe('Accordion (single)', () => {
 	});
 
 	it('defaultValue opens the item initially', () => {
-		renderSingle({ defaultValue: 'item-2' } as never);
+		renderSingle({ defaultValue: 'item-2' });
 		expect(screen.getByText('Content 2')).toBeInTheDocument();
 		expect(screen.queryByText('Content 1')).toBeNull();
 	});
 
 	it('onChange fires with the new value', async () => {
 		const handleChange = vi.fn();
-		renderSingle({ onChange: handleChange } as never);
+		renderSingle({ onChange: handleChange });
 		await userEvent.click(screen.getByText('Section 1'));
 		expect(handleChange).toHaveBeenCalledWith('item-1');
 	});
@@ -135,7 +135,7 @@ describe('Accordion (multiple)', () => {
 	});
 
 	it('defaultValue (array) opens multiple items initially', () => {
-		renderMultiple({ defaultValue: ['item-1', 'item-2'] } as never);
+		renderMultiple({ defaultValue: ['item-1', 'item-2'] });
 		expect(screen.getByText('Content 1')).toBeInTheDocument();
 		expect(screen.getByText('Content 2')).toBeInTheDocument();
 	});

@@ -4,9 +4,9 @@ import userEvent from '@testing-library/user-event';
 import { Search } from './Search';
 
 const options = [
-	{ value: 'apple', label: 'Apple' },
-	{ value: 'banana', label: 'Banana' },
-	{ value: 'cherry', label: 'Cherry' },
+	{ id: 'apple', title: 'Apple' },
+	{ id: 'banana', title: 'Banana' },
+	{ id: 'cherry', title: 'Cherry' },
 ];
 
 function renderSearch(rootProps: Omit<React.ComponentProps<typeof Search.Root>, 'children'> = {}) {
@@ -18,9 +18,9 @@ function renderSearch(rootProps: Omit<React.ComponentProps<typeof Search.Root>, 
 			<Search.Content>
 				{options.map((opt) => (
 					<Search.Item
-						key={opt.value}
+						key={opt.id}
 						option={opt}>
-						{opt.label}
+						{opt.title}
 					</Search.Item>
 				))}
 				<Search.Empty>No results</Search.Empty>
@@ -73,7 +73,7 @@ describe('Search', () => {
 		renderSearch({ onSelect: handleSelect });
 		await userEvent.click(screen.getByPlaceholderText('Search...'));
 		await userEvent.click(screen.getByText('Banana'));
-		expect(handleSelect).toHaveBeenCalledWith({ value: 'banana', label: 'Banana' });
+		expect(handleSelect).toHaveBeenCalledWith({ id: 'banana', title: 'Banana' });
 	});
 
 	it('clicking an item closes the dropdown', async () => {
