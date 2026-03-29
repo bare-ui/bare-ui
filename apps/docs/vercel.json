@@ -1,6 +1,7 @@
 {
-  "buildCommand": "cd ../.. && npm run build",
+  "buildCommand": "cd ../.. && npx turbo run build --filter=docs...",
   "outputDirectory": "out",
   "installCommand": "cd ../.. && npm install",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)apps/docs/public'"
 }
