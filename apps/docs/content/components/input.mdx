@@ -12,42 +12,39 @@ Compound component for text inputs. Works controlled and uncontrolled. Validatio
 
 <ComponentPreview code={`
 import { Input } from '@wire-ui/react'
-import { useState } from 'react'
 
 export default function App() {
-  const [email, setEmail] = useState('')
-  const [invalidType, setInvalidType] = useState('')
-
-  function validate() {
-    if (!email) setInvalidType('required')
-    else if (!email.includes('@')) setInvalidType('email')
-    else setInvalidType('')
-  }
-
   return (
-    <div className="p-8 max-w-sm space-y-1">
+    <div className="p-6 flex flex-col gap-6 max-w-xs">
+      <Input.Root className="flex flex-col gap-1.5">
+        <Input.Label className="text-sm font-medium text-gray-700">Full Name</Input.Label>
+        <Input.Field
+          placeholder="John Doe"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+        />
+      </Input.Root>
+
       <Input.Root
-        value={email}
-        onChange={setEmail}
-        invalidType={invalidType}
-        isRequired
-        errorMessage={{
-          required: 'Email is required',
-          email: 'Enter a valid email address',
-        }}
-      >
-        <Input.Label className="block text-sm font-medium text-gray-700">Email</Input.Label>
+        invalidType="email"
+        defaultValue="not-an-email"
+        errorMessage={{ email: 'Please enter a valid email address' }}
+        className="flex flex-col gap-1.5">
+        <Input.Label className="text-sm font-medium text-gray-700">Email</Input.Label>
         <Input.Field
           type="email"
-          placeholder="you@example.com"
-          onBlur={validate}
-          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none
-            [data-active]:border-blue-500 [data-active]:ring-2 [data-active]:ring-blue-200
-            [data-invalid]:border-red-500 [data-invalid]:ring-2 [data-invalid]:ring-red-100"
+          className="w-full rounded-md border border-red-500 px-3 py-2 text-sm outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500"
         />
-        <Input.Error className="mt-1 text-xs text-red-600" />
+        <Input.Error className="text-xs text-red-500" />
       </Input.Root>
-      <button onClick={validate} className="mt-3 text-xs text-blue-600 underline">Validate</button>
+
+      <Input.Root
+        isSuccess
+        defaultValue="available_user"
+        className="flex flex-col gap-1.5">
+        <Input.Label className="text-sm font-medium text-gray-700">Username</Input.Label>
+        <Input.Field className="w-full rounded-md border border-green-500 px-3 py-2 text-sm outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500" />
+        <span className="text-xs text-green-600">Username is available</span>
+      </Input.Root>
     </div>
   )
 }

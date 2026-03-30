@@ -14,23 +14,46 @@ Relative or formatted timestamp. In `isDuration` mode it updates live via a `set
 import { Timeago } from '@wire-ui/react'
 
 export default function App() {
-  const now = new Date()
-  const fiveMinutesAgo = new Date(now - 5 * 60 * 1000)
-  const twoDaysAgo = new Date(now - 2 * 24 * 60 * 60 * 1000)
+  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
+  const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
+  const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)
+  const lastYear = new Date('2025-06-15T10:30:00')
 
   return (
-    <div className="p-8 space-y-3 text-sm text-gray-700">
-      <div className="flex gap-3">
-        <span className="text-gray-400 w-32">isDuration:</span>
-        <Timeago datetime={fiveMinutesAgo} isDuration />
+    <div className="p-6 flex flex-col gap-8">
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-4">Recent date</p>
+        <div className="flex flex-col gap-3">
+          <div>
+            <span className="text-sm font-medium text-gray-500">Duration: </span>
+            <Timeago datetime={fiveMinutesAgo} isDuration className="text-sm text-gray-700" />
+          </div>
+          <div>
+            <span className="text-sm font-medium text-gray-500">Full date/time: </span>
+            <Timeago datetime={fiveMinutesAgo} className="text-sm text-gray-700" />
+          </div>
+          <div>
+            <span className="text-sm font-medium text-gray-500">Time only: </span>
+            <Timeago datetime={fiveMinutesAgo} timeOnly className="text-sm text-gray-700" />
+          </div>
+        </div>
       </div>
-      <div className="flex gap-3">
-        <span className="text-gray-400 w-32">Formatted:</span>
-        <Timeago datetime={twoDaysAgo} />
-      </div>
-      <div className="flex gap-3">
-        <span className="text-gray-400 w-32">Time only:</span>
-        <Timeago datetime={now} timeOnly />
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-4">Older dates</p>
+        <div className="flex flex-col gap-3">
+          <div>
+            <span className="text-sm font-medium text-gray-500">3 days ago: </span>
+            <Timeago datetime={threeDaysAgo} className="text-sm text-gray-700" />
+          </div>
+          <div>
+            <span className="text-sm font-medium text-gray-500">2 weeks ago: </span>
+            <Timeago datetime={twoWeeksAgo} className="text-sm text-gray-700" />
+          </div>
+          <div>
+            <span className="text-sm font-medium text-gray-500">Last year: </span>
+            <Timeago datetime={lastYear} className="text-sm text-gray-700" />
+          </div>
+        </div>
       </div>
     </div>
   )

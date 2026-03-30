@@ -12,48 +12,44 @@ Search input with a dropdown results list. Keyboard navigation with Arrow keys, 
 
 <ComponentPreview code={`
 import { Search } from '@wire-ui/react'
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 
-const ALL = [
-  { id: 'react', title: 'React' },
-  { id: 'vue', title: 'Vue' },
-  { id: 'svelte', title: 'Svelte' },
-  { id: 'solid', title: 'Solid' },
-  { id: 'angular', title: 'Angular' },
+const mockItems = [
+  { id: 1, title: 'React', subtitle: 'A JavaScript library for building user interfaces' },
+  { id: 2, title: 'Vue', subtitle: 'The progressive JavaScript framework' },
+  { id: 3, title: 'Angular', subtitle: 'Platform for building mobile and desktop apps' },
+  { id: 4, title: 'Svelte', subtitle: 'Cybernetically enhanced web apps' },
+  { id: 5, title: 'Next.js', subtitle: 'The React framework for production' },
 ]
 
 export default function App() {
   const [query, setQuery] = useState('')
-  const [selected, setSelected] = useState(null)
-
-  const results = useMemo(() =>
-    ALL.filter(o => o.title.toLowerCase().includes(query.toLowerCase())),
-    [query]
-  )
+  const filtered = mockItems.filter((item) => item.title.toLowerCase().includes(query.toLowerCase()))
 
   return (
-    <div className="p-8 max-w-xs relative">
+    <div className="p-6 flex justify-center">
       <Search.Root
+        value={query}
         onSearchChange={setQuery}
-        onSelect={(opt) => setSelected(opt)}
-      >
+        onSelect={(option) => alert('Selected: ' + option.title)}
+        className="relative w-80">
         <Search.Input
           placeholder="Search frameworks..."
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
         />
-        <Search.Content className="absolute z-10 mt-1 w-full rounded-md border border-gray-200 bg-white shadow-lg overflow-hidden">
-          {results.map((opt) => (
-            <Search.Item key={opt.id} option={opt}
-              className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 [data-highlighted]:bg-blue-50 [data-highlighted]:text-blue-700">
-              {opt.title}
+        <Search.Content className="absolute left-0 top-full z-10 mt-1 w-full rounded-md border border-gray-200 bg-white py-1 shadow-lg">
+          {filtered.map((item) => (
+            <Search.Item
+              key={item.id}
+              option={item}
+              className="cursor-pointer px-3 py-2 hover:bg-gray-100 data-[highlighted]:bg-blue-50">
+              <div className="text-sm font-medium text-gray-900">{item.title}</div>
+              <div className="text-xs text-gray-500">{item.subtitle}</div>
             </Search.Item>
           ))}
-          <Search.Empty className="px-3 py-2 text-sm text-gray-400">
-            No results found
-          </Search.Empty>
+          <Search.Empty className="px-3 py-4 text-center text-sm text-gray-500">No results found</Search.Empty>
         </Search.Content>
       </Search.Root>
-      {selected && <p className="mt-3 text-xs text-gray-400">Selected: {selected.title}</p>}
     </div>
   )
 }

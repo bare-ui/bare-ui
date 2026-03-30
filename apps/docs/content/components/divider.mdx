@@ -15,17 +15,34 @@ import { Divider } from '@wire-ui/react'
 
 export default function App() {
   return (
-    <div className="p-8 max-w-sm space-y-4">
-      <p className="text-sm text-gray-600">Section one content</p>
-      <Divider className="border-t border-gray-200" />
-      <p className="text-sm text-gray-600">Section two content</p>
-      <Divider className="border-t border-dashed border-gray-300" />
-      <p className="text-sm text-gray-600">Section three content</p>
-
-      <div className="flex items-center gap-4 h-8">
-        <span className="text-sm">Left</span>
-        <Divider orientation="vertical" className="border-l border-gray-300 h-full" />
-        <span className="text-sm">Right</span>
+    <div className="p-6 flex flex-col gap-8">
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-3">Horizontal</p>
+        <div className="flex flex-col gap-3">
+          <p className="text-sm text-gray-600">Item one</p>
+          <Divider className="h-px w-full bg-gray-200" />
+          <p className="text-sm text-gray-600">Item two</p>
+          <Divider className="h-px w-full bg-gray-200" />
+          <p className="text-sm text-gray-600">Item three</p>
+        </div>
+      </div>
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-3">Vertical</p>
+        <div className="flex h-6 items-center gap-3">
+          <span className="text-sm text-gray-600">Home</span>
+          <Divider orientation="vertical" className="h-full w-px bg-gray-200" />
+          <span className="text-sm text-gray-600">About</span>
+          <Divider orientation="vertical" className="h-full w-px bg-gray-200" />
+          <span className="text-sm text-gray-600">Contact</span>
+        </div>
+      </div>
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-3">With label</p>
+        <div className="flex w-64 items-center gap-3">
+          <Divider className="h-px flex-1 bg-gray-200" />
+          <span className="text-xs text-gray-400">OR</span>
+          <Divider className="h-px flex-1 bg-gray-200" />
+        </div>
       </div>
     </div>
   )

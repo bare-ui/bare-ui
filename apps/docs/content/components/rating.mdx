@@ -14,26 +14,47 @@ Star rating component. Hover preview shows the prospective rating before clickin
 import { Rating } from '@wire-ui/react'
 import { useState } from 'react'
 
+const starCls = 'size-6 cursor-pointer text-gray-300 outline-none transition-colors data-[highlighted]:text-yellow-400 data-[filled]:text-yellow-400 hover:scale-110 data-[disabled]:cursor-default data-[disabled]:opacity-50'
+
 export default function App() {
-  const [value, setValue] = useState(3)
+  const [value, setValue] = useState(0)
+  const labels = ['', 'Terrible', 'Bad', 'Okay', 'Good', 'Excellent']
 
   return (
-    <div className="p-8 space-y-4">
-      <div className="space-y-1">
-        <p className="text-xs text-gray-500">Interactive</p>
-        <Rating
-          value={value}
-          onChange={setValue}
-          max={5}
-          className="flex gap-1"
-          starClassName="text-2xl cursor-pointer transition-colors [data-filled]:text-yellow-400 [data-hover]:text-yellow-300 text-gray-300"
-        />
-        <p className="text-xs text-gray-400">{value} / 5</p>
+    <div className="p-6 flex flex-col gap-8">
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-3">With label</p>
+        <div className="flex flex-col items-start gap-2">
+          <Rating value={value} onChange={setValue} className="flex gap-0.5" starClassName={starCls} />
+          <p className="text-sm text-gray-500">
+            {value > 0 ? <span className="font-medium text-gray-800">{labels[value]}</span> : 'Select a rating'}
+          </p>
+        </div>
       </div>
-      <div className="space-y-1">
-        <p className="text-xs text-gray-500">Read-only</p>
-        <Rating value={4} readOnly max={5} className="flex gap-1"
-          starClassName="text-2xl [data-filled]:text-yellow-400 text-gray-300" />
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-3">With count</p>
+        <div className="flex items-center gap-2">
+          <Rating value={4} readOnly className="flex gap-0.5" starClassName="size-4 cursor-default text-gray-300 data-[filled]:text-yellow-400" />
+          <span className="text-sm font-medium text-gray-900">4.0</span>
+          <span className="text-sm text-gray-500">(128 reviews)</span>
+        </div>
+      </div>
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-3">Sizes</p>
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-3">
+            <span className="w-12 text-xs text-gray-500">Small</span>
+            <Rating defaultValue={3} className="flex gap-0.5" starClassName="size-4 cursor-pointer text-gray-300 transition-colors data-[highlighted]:text-yellow-400 data-[filled]:text-yellow-400" />
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="w-12 text-xs text-gray-500">Medium</span>
+            <Rating defaultValue={3} className="flex gap-0.5" starClassName={starCls} />
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="w-12 text-xs text-gray-500">Large</span>
+            <Rating defaultValue={3} className="flex gap-0.5" starClassName="size-9 cursor-pointer text-gray-300 transition-colors data-[highlighted]:text-yellow-400 data-[filled]:text-yellow-400" />
+          </div>
+        </div>
       </div>
     </div>
   )

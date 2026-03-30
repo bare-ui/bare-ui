@@ -15,16 +15,15 @@ import { Dropdown } from '@wire-ui/react'
 
 export default function App() {
   return (
-    <div className="p-8">
-      <Dropdown.Root>
-        <Dropdown.Trigger className="flex items-center gap-1 px-3 py-2 rounded-lg border border-gray-300 text-sm font-medium bg-white hover:bg-gray-50">
-          Options <span className="text-gray-400 text-xs">▾</span>
+    <div className="p-6 flex justify-center">
+      <Dropdown.Root className="relative inline-block">
+        <Dropdown.Trigger className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+          Open Menu
         </Dropdown.Trigger>
-        <Dropdown.Menu className="mt-1 w-44 rounded-lg border border-gray-200 bg-white shadow-lg overflow-hidden [data-state=closed]:hidden">
-          <button className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50">Edit</button>
-          <button className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50">Duplicate</button>
-          <hr className="border-gray-100" />
-          <button className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50">Delete</button>
+        <Dropdown.Menu className="absolute left-0 top-full z-10 mt-1 w-48 rounded-md border border-gray-200 bg-white py-1 shadow-lg">
+          <div className="cursor-pointer px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</div>
+          <div className="cursor-pointer px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</div>
+          <div className="cursor-pointer px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</div>
         </Dropdown.Menu>
       </Dropdown.Root>
     </div>

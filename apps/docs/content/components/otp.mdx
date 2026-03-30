@@ -14,31 +14,68 @@ One-time password input with individual slot elements. Auto-advances on type, ha
 import { OTP } from '@wire-ui/react'
 import { useState } from 'react'
 
+const slotCls = [
+  'h-12 w-10 rounded-lg border-2 border-gray-300 bg-white text-center text-lg font-mono font-semibold text-gray-900',
+  'outline-none transition-all caret-transparent',
+  'data-[active]:border-blue-500 data-[active]:ring-4 data-[active]:ring-blue-500/20',
+  'data-[filled]:border-gray-400',
+  'data-[complete]:border-green-500 data-[complete]:text-green-700',
+].join(' ')
+
 export default function App() {
-  const [code, setCode] = useState('')
+  const [value, setValue] = useState('')
+  const [status, setStatus] = useState('idle')
+
+  const handleComplete = (v) => {
+    setStatus(v === '123456' ? 'success' : 'error')
+  }
+
+  const handleChange = (v) => {
+    setValue(v)
+    if (v.length < 6) setStatus('idle')
+  }
+
+  const completeCls = [
+    'h-12 w-10 rounded-lg border-2 text-center text-lg font-mono font-semibold',
+    'outline-none transition-all caret-transparent',
+    status === 'success' ? 'border-green-500 bg-green-50 text-green-700'
+    : status === 'error' ? 'border-red-400 bg-red-50 text-red-600'
+    : 'border-gray-300 bg-white text-gray-900 data-[active]:border-blue-500 data-[active]:ring-4 data-[active]:ring-blue-500/20 data-[filled]:border-gray-400',
+  ].join(' ')
 
   return (
-    <div className="p-8 space-y-4">
-      <OTP.Root
-        length={6}
-        onChange={setCode}
-        onComplete={(c) => alert('Code: ' + c)}
-        className="flex gap-2"
-      >
-        {[0,1,2].map(i => (
-          <OTP.Slot key={i} index={i}
-            className="w-10 h-12 rounded-lg border-2 border-gray-300 text-center text-lg font-bold outline-none
-              focus:border-blue-500 focus:ring-2 focus:ring-blue-200
-              [data-active]:border-blue-500" />
-        ))}
-        <OTP.Separator className="flex items-center text-gray-400 font-bold text-lg">—</OTP.Separator>
-        {[3,4,5].map(i => (
-          <OTP.Slot key={i} index={i}
-            className="w-10 h-12 rounded-lg border-2 border-gray-300 text-center text-lg font-bold outline-none
-              focus:border-blue-500 focus:ring-2 focus:ring-blue-200" />
-        ))}
-      </OTP.Root>
-      {code.length === 6 && <p className="text-sm text-green-600 font-medium">Code complete: {code}</p>}
+    <div className="p-6 flex flex-col gap-8">
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-4">With separator</p>
+        <OTP.Root
+          length={6}
+          onChange={(v) => console.log('otp:', v)}
+          onComplete={(v) => console.log('complete:', v)}
+          className="flex items-center gap-2">
+          {[0, 1, 2].map((i) => (
+            <OTP.Slot key={i} index={i} className={slotCls} />
+          ))}
+          <OTP.Separator className="text-xl font-light text-gray-400" />
+          {[3, 4, 5].map((i) => (
+            <OTP.Slot key={i} index={i} className={slotCls} />
+          ))}
+        </OTP.Root>
+      </div>
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-2">With completion (try 123456)</p>
+        <OTP.Root
+          value={value}
+          onChange={handleChange}
+          onComplete={handleComplete}
+          length={6}
+          className="flex items-center gap-2">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <OTP.Slot key={i} index={i} className={completeCls} />
+          ))}
+        </OTP.Root>
+        {status === 'success' && <p className="mt-2 text-sm font-medium text-green-600">✓ Code verified</p>}
+        {status === 'error' && <p className="mt-2 text-sm font-medium text-red-500">✗ Invalid code, try again</p>}
+      </div>
     </div>
   )
 }

@@ -14,29 +14,51 @@ Accessible select menu with groups, separators, and a fully custom trigger eleme
 import { Select } from '@wire-ui/react'
 import { useState } from 'react'
 
+const frameworks = ['React', 'Vue', 'Angular', 'Svelte', 'Solid']
+
+const triggerCls = 'flex w-full items-center justify-between gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm outline-none transition data-[state=open]:border-blue-500 data-[state=open]:ring-1 data-[state=open]:ring-blue-500 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[hover]:bg-gray-50'
+
+const contentCls = 'absolute z-50 mt-1 w-full overflow-hidden rounded-md border border-gray-200 bg-white py-1 shadow-lg'
+
+const itemCls = 'flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-gray-700 outline-none transition data-[hover]:bg-gray-100 data-[selected]:font-medium data-[selected]:text-blue-600 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40'
+
+const ChevronIcon = () => (
+  <svg className="size-4 shrink-0 text-gray-400 transition-transform data-[state=open]:rotate-180" viewBox="0 0 20 20" fill="currentColor">
+    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+  </svg>
+)
+
+const CheckIcon = () => (
+  <svg className="size-4" viewBox="0 0 20 20" fill="currentColor">
+    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+  </svg>
+)
+
 export default function App() {
   const [value, setValue] = useState('')
 
   return (
-    <div className="p-8 max-w-xs">
-      <Select.Root value={value} onValueChange={setValue}>
-        <Select.Trigger className="w-full flex items-center justify-between rounded-md border border-gray-300 px-3 py-2 text-sm bg-white
-          hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <Select.Value placeholder="Pick a framework" />
-          <span className="text-gray-400">▾</span>
-        </Select.Trigger>
-        <Select.Content className="mt-1 w-full rounded-md border border-gray-200 bg-white shadow-lg overflow-hidden">
-          <Select.Group>
-            <Select.GroupLabel className="px-3 pt-2 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-wide">Frontend</Select.GroupLabel>
-            <Select.Item value="react" className="px-3 py-2 text-sm cursor-pointer hover:bg-blue-50 [data-selected]:font-medium [data-selected]:text-blue-600">React</Select.Item>
-            <Select.Item value="vue" className="px-3 py-2 text-sm cursor-pointer hover:bg-blue-50">Vue</Select.Item>
-            <Select.Item value="svelte" className="px-3 py-2 text-sm cursor-pointer hover:bg-blue-50">Svelte</Select.Item>
-          </Select.Group>
-          <Select.Separator className="my-1 border-t border-gray-100" />
-          <Select.Item value="other" className="px-3 py-2 text-sm cursor-pointer hover:bg-blue-50">Other</Select.Item>
-        </Select.Content>
-      </Select.Root>
-      {value && <p className="mt-3 text-xs text-gray-400">Selected: {value}</p>}
+    <div className="p-6 flex justify-center">
+      <div className="w-64">
+        <Select.Root value={value} onChange={setValue}>
+          <div className="relative">
+            <Select.Trigger className={triggerCls}>
+              <Select.Value placeholder="Select a framework" className="data-[placeholder]:text-gray-400" />
+              <ChevronIcon />
+            </Select.Trigger>
+            <Select.Content className={contentCls}>
+              {frameworks.map((fw) => (
+                <Select.Item key={fw} value={fw.toLowerCase()} className={itemCls}>
+                  <span className="flex-1">{fw}</span>
+                  <span className="invisible text-blue-600 data-[selected]:visible">
+                    <CheckIcon />
+                  </span>
+                </Select.Item>
+              ))}
+            </Select.Content>
+          </div>
+        </Select.Root>
+      </div>
     </div>
   )
 }

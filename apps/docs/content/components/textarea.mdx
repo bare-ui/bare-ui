@@ -12,30 +12,30 @@ Same compound API as Input, but renders a `<textarea>`. Controlled, uncontrolled
 
 <ComponentPreview code={`
 import { Textarea } from '@wire-ui/react'
-import { useState } from 'react'
 
 export default function App() {
-  const [message, setMessage] = useState('')
-  const [invalidType, setInvalidType] = useState('')
-
   return (
-    <div className="p-8 max-w-sm space-y-1">
-      <Textarea.Root
-        value={message}
-        onChange={setMessage}
-        invalidType={invalidType}
-        errorMessage={{ required: 'Message is required' }}
-      >
-        <Textarea.Label className="block text-sm font-medium text-gray-700">Message</Textarea.Label>
+    <div className="p-6 flex flex-col gap-6 max-w-xs">
+      <Textarea.Root className="flex flex-col gap-1.5">
+        <Textarea.Label className="text-sm font-medium text-gray-700">Message</Textarea.Label>
         <Textarea.Field
-          placeholder="Write something..."
+          placeholder="Type your message here..."
           rows={4}
-          onBlur={() => setInvalidType(message ? '' : 'required')}
-          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none resize-none
-            [data-active]:border-blue-500 [data-active]:ring-2 [data-active]:ring-blue-200
-            [data-invalid]:border-red-500"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
         />
-        <Textarea.Error className="mt-1 text-xs text-red-600" />
+      </Textarea.Root>
+
+      <Textarea.Root
+        isRequired
+        errorMessage={{ required: 'This field is required' }}
+        className="flex flex-col gap-1.5">
+        <Textarea.Label className="text-sm font-medium text-gray-700">Feedback</Textarea.Label>
+        <Textarea.Field
+          placeholder="Your feedback is important..."
+          rows={4}
+          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+        />
+        <Textarea.Error className="text-xs text-red-500" />
       </Textarea.Root>
     </div>
   )

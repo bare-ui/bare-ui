@@ -12,31 +12,55 @@ Accessible progress indicator. Renders `role="progressbar"` with `aria-valuenow`
 
 <ComponentPreview code={`
 import { ProgressBar } from '@wire-ui/react'
-import { useState, useEffect } from 'react'
+
+const trackCls = 'w-full overflow-hidden rounded-full bg-gray-200 [&_[data-part=fill]]:h-full [&_[data-part=fill]]:rounded-full [&_[data-part=fill]]:bg-blue-600 [&_[data-part=fill]]:transition-[width] [&_[data-part=fill]]:duration-300'
 
 export default function App() {
-  const [value, setValue] = useState(30)
-
-  useEffect(() => {
-    const t = setInterval(() => setValue(v => v >= 100 ? 0 : v + 5), 400)
-    return () => clearInterval(t)
-  }, [])
-
   return (
-    <div className="p-8 max-w-sm space-y-4">
-      <ProgressBar
-        value={value}
-        min={0}
-        max={100}
-        className="h-2 w-full rounded-full bg-gray-200 overflow-hidden"
-      >
-        <div className="h-full bg-blue-600 rounded-full transition-all duration-300" style={{ width: value + '%' }} />
-      </ProgressBar>
-      <p className="text-sm text-gray-500">{value}%</p>
+    <div className="p-6 flex flex-col gap-8">
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-4">All percentages</p>
+        <div className="flex w-80 flex-col gap-3">
+          {[0, 25, 50, 75, 100].map((p) => (
+            <div key={p} className="flex items-center gap-3">
+              <div className="w-8 text-right text-xs text-gray-500">{p}%</div>
+              <ProgressBar percentage={p} className={['flex-1 h-2', trackCls].join(' ')} />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-4">With label</p>
+        <div className="w-80">
+          <div className="mb-1 flex justify-between text-sm">
+            <span className="font-medium text-gray-700">Storage used</span>
+            <span className="text-gray-500">68%</span>
+          </div>
+          <ProgressBar percentage={68} className={['h-2', trackCls].join(' ')} />
+          <p className="mt-1 text-xs text-gray-400">6.8 GB of 10 GB used</p>
+        </div>
+      </div>
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-4">Sizes</p>
+        <div className="flex w-80 flex-col gap-4">
+          <div>
+            <p className="mb-1.5 text-xs text-gray-500">Small</p>
+            <ProgressBar percentage={60} className={['h-1', trackCls].join(' ')} />
+          </div>
+          <div>
+            <p className="mb-1.5 text-xs text-gray-500">Medium</p>
+            <ProgressBar percentage={60} className={['h-2', trackCls].join(' ')} />
+          </div>
+          <div>
+            <p className="mb-1.5 text-xs text-gray-500">Large</p>
+            <ProgressBar percentage={60} className={['h-4', trackCls].join(' ')} />
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
-`} showConsole={false} />
+`} />
 
 ## Usage
 

@@ -15,14 +15,19 @@ import { Image } from '@wire-ui/react'
 
 export default function App() {
   return (
-    <div className="p-8 flex gap-4">
-      <Image
-        src="https://picsum.photos/seed/bare/200/120"
-        alt="A scenic photo"
-        position="center"
-        className="rounded-lg overflow-hidden w-48 h-28 bg-gray-100"
-        onImageLoaded={() => console.log('loaded')}
-      />
+    <div className="p-6 flex flex-col gap-6">
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-2">Position: left</p>
+        <Image src="https://picsum.photos/400/300" alt="Left aligned" position="left" className="rounded-lg overflow-hidden w-64 h-40 bg-gray-100" />
+      </div>
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-2">Position: center</p>
+        <Image src="https://picsum.photos/400/301" alt="Center aligned" position="center" className="rounded-lg overflow-hidden w-64 h-40 bg-gray-100" />
+      </div>
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-2">Position: right</p>
+        <Image src="https://picsum.photos/400/302" alt="Right aligned" position="right" className="rounded-lg overflow-hidden w-64 h-40 bg-gray-100" />
+      </div>
     </div>
   )
 }

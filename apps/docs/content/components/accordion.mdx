@@ -13,23 +13,37 @@ Collapsible sections. Supports `single` (one item open at a time) and `multiple`
 <ComponentPreview code={`
 import { Accordion } from '@wire-ui/react'
 
+const faqs = [
+  { value: 'item-1', question: 'What is wire-ui?', answer: 'A headless React 19 component library. Zero styles shipped — you bring your own via className and data-attribute selectors.' },
+  { value: 'item-2', question: 'How is it different from Headless UI?', answer: 'wire-ui uses the asChild pattern, exports useInteractiveState publicly, and uses data-focus-visible (keyboard only) instead of data-focus.' },
+  { value: 'item-3', question: 'Does it support animations?', answer: 'Yes — pass forceMount to Accordion.Content and use CSS transitions on data-state. The grid-template-rows trick gives smooth height animations.' },
+  { value: 'item-4', question: 'Can multiple items be open at once?', answer: 'Yes — use type="multiple" on Accordion.Root. With type="single" only one item is open at a time.' },
+]
+
 export default function App() {
   return (
-    <div className="p-8 max-w-md space-y-1">
-      <Accordion.Root type="single" collapsible defaultValue="item-1">
-        {[
-          { id: 'item-1', title: 'What is wire-ui?', body: 'A headless React component library. Zero styles, full behaviour.' },
-          { id: 'item-2', title: 'How do I style it?', body: 'Use data-* attributes as CSS hooks. Works with Tailwind, CSS Modules, or plain CSS.' },
-          { id: 'item-3', title: 'Does it validate forms?', body: 'No. Validation is consumer-owned. Set invalidType to show errors.' },
-        ].map(({ id, title, body }) => (
-          <Accordion.Item key={id} value={id} className="border border-gray-200 rounded-lg overflow-hidden mb-1">
-            <Accordion.Trigger className="w-full flex justify-between items-center px-4 py-3 text-sm font-medium text-left
-              hover:bg-gray-50 [data-state=open]:bg-gray-50">
-              {title}
-              <span className="text-gray-400 transition-transform [data-state=open_&]:rotate-180">▾</span>
+    <div className="p-6 flex justify-center">
+      <Accordion.Root
+        type="single"
+        collapsible
+        defaultValue="item-1"
+        className="w-full max-w-lg divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white"
+      >
+        {faqs.map((faq) => (
+          <Accordion.Item key={faq.value} value={faq.value}>
+            <Accordion.Trigger className="flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-gray-900 outline-none transition-colors hover:bg-gray-50 data-[state=open]:text-blue-600 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50">
+              {faq.question}
+              <svg
+                className="size-4 shrink-0 text-gray-400 transition-transform duration-200 data-[state=open]:rotate-180"
+                data-state="inherit"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
             </Accordion.Trigger>
-            <Accordion.Content className="px-4 py-3 text-sm text-gray-600 border-t border-gray-100 [data-state=closed]:hidden">
-              {body}
+            <Accordion.Content className="px-5 pb-4 text-sm leading-relaxed text-gray-600">
+              {faq.answer}
             </Accordion.Content>
           </Accordion.Item>
         ))}
