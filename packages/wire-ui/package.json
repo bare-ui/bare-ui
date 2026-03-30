@@ -1,6 +1,7 @@
 {
   "name": "@wire-ui/react",
   "version": "0.1.5",
+  "license": "MIT",
   "type": "module",
   "main": "./dist/wire-ui.cjs.js",
   "module": "./dist/wire-ui.es.js",
