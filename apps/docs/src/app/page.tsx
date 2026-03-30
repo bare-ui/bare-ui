@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { ThemeToggle } from '../components/theme-toggle'
 import s from './page.module.css'
 
 const FEATURES = [
@@ -35,7 +36,6 @@ const FEATURES = [
   },
 ]
 
-const AUTHOR_TAGS = ['React', 'Vue', 'TypeScript', 'Headless UI']
 const GITHUB_USERNAME = 'jaoaustero'
 
 export default function HomePage() {
@@ -65,6 +65,7 @@ export default function HomePage() {
             <GitHubIcon />
             GitHub
           </a>
+          <ThemeToggle className={s.themeToggle} />
         </div>
       </nav>
 
@@ -152,7 +153,6 @@ export default function App() {
           </div>
           <div>
             <div className={s.authorName}>Jerald Austero</div>
-            <div className={s.authorRole}>Sr. Frontend Engineer</div>
             <a
               href={`https://github.com/${GITHUB_USERNAME}`}
               target="_blank"
@@ -161,11 +161,6 @@ export default function App() {
             >
               @{GITHUB_USERNAME}
             </a>
-            <div className={s.authorTags}>
-              {AUTHOR_TAGS.map((tag) => (
-                <span key={tag} className={s.authorTag}>{tag}</span>
-              ))}
-            </div>
           </div>
         </div>
       </section>
