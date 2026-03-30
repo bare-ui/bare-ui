@@ -44,7 +44,15 @@ export default function HomePage() {
 
       {/* ── Nav ──────────────────────────────────────────────── */}
       <nav className={s.nav}>
-        <Link href="/" className={s.navLogo}>wire-ui</Link>
+        <Link href="/" className={s.navLogo}>
+          <Image
+            src="/images/logo/wire-ui-logo.svg"
+            alt="Wire UI"
+            width={28}
+            height={28}
+            className={s.navLogoImg}
+          />
+        </Link>
         <div className={s.navLinks}>
           <Link href="/docs" className={s.navLink}>Docs</Link>
           <Link href="/docs/components/button" className={s.navLink}>Components</Link>

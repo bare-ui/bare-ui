@@ -1,8 +1,10 @@
+import Image from 'next/image'
 import { Layout, Navbar } from 'nextra-theme-docs'
 import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
 import { DocsProviders } from '../../components/docs-providers'
 import { FrameworkSwitcher } from '../../components/framework-switcher'
+import s from './logo.module.css'
 
 export default async function DocsLayout({ children }: { children: React.ReactNode }) {
   const pageMap = await getPageMap('/docs')
@@ -11,9 +13,13 @@ export default async function DocsLayout({ children }: { children: React.ReactNo
     <Navbar
       logo={
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '-0.02em' }}>
-            Wire UI
-          </span>
+          <Image
+            src="/images/logo/wire-ui-logo.svg"
+            alt="Wire UI"
+            width={28}
+            height={28}
+            className={s.logo}
+          />
           <FrameworkSwitcher />
         </div>
       }

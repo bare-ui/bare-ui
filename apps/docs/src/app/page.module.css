@@ -37,11 +37,22 @@
 }
 
 .navLogo {
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  display: flex;
+  align-items: center;
   text-decoration: none;
   color: inherit;
+}
+
+.navLogoImg {
+  display: block;
+  height: 28px;
+  width: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+  .navLogoImg {
+    filter: invert(1);
+  }
 }
 
 .navLinks {
