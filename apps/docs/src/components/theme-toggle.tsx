@@ -11,12 +11,14 @@ export function ThemeToggle({ className }: { className?: string }) {
     const isDark = stored ? stored === 'dark' : prefersDark
     setDark(isDark)
     document.documentElement.classList.toggle('dark', isDark)
+    document.documentElement.classList.toggle('light', !isDark)
   }, [])
 
   function toggle() {
     const next = !dark
     setDark(next)
     document.documentElement.classList.toggle('dark', next)
+    document.documentElement.classList.toggle('light', !next)
     localStorage.setItem('wire-ui-theme', next ? 'dark' : 'light')
   }
 

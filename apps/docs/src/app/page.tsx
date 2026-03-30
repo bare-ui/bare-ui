@@ -52,6 +52,7 @@ export default function HomePage() {
             height={28}
             className={s.navLogoImg}
           />
+          <span className={s.navLogoText}>Wire UI</span>
         </Link>
         <div className={s.navLinks}>
           <Link href="/docs" className={s.navLink}>Docs</Link>

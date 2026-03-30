@@ -1,9 +1,24 @@
+/* Prevent dark-mode FOUC: set html background before React hydrates.
+   We listen to both system preference AND the explicit .dark / .light class
+   that next-themes (Nextra) and our own ThemeToggle add to <html>. */
+
 html {
   background-color: #ffffff;
 }
 
+/* System dark — unless the user has explicitly forced light */
 @media (prefers-color-scheme: dark) {
-  html {
+  html:not(.light) {
     background-color: #0a0a0a;
   }
+}
+
+/* Explicit dark class (next-themes / our toggle) — always wins */
+html.dark {
+  background-color: #0a0a0a;
+}
+
+/* Explicit light class — overrides the media query above */
+html.light {
+  background-color: #ffffff;
 }

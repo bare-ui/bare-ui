@@ -4,8 +4,18 @@
   width: auto;
 }
 
+.logoText {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Invert the SVG logo in dark mode */
 @media (prefers-color-scheme: dark) {
-  .logo {
+  :global(html:not(.light)) .logo {
     filter: invert(1);
   }
+}
+:global(html.dark) .logo {
+  filter: invert(1);
 }

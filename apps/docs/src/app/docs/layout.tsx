@@ -12,14 +12,17 @@ export default async function DocsLayout({ children }: { children: React.ReactNo
   const navbar = (
     <Navbar
       logo={
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Image
-            src="/images/logo/wire-ui-logo.svg"
-            alt="Wire UI"
-            width={28}
-            height={28}
-            className={s.logo}
-          />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Image
+              src="/images/logo/wire-ui-logo.svg"
+              alt="Wire UI"
+              width={28}
+              height={28}
+              className={s.logo}
+            />
+            <span className={s.logoText}>Wire UI</span>
+          </div>
           <FrameworkSwitcher />
         </div>
       }

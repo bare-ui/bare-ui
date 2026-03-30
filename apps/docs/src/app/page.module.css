@@ -43,6 +43,7 @@
 .navLogo {
   display: flex;
   align-items: center;
+  gap: 8px;
   text-decoration: none;
   color: inherit;
 }
@@ -51,6 +52,13 @@
   display: block;
   height: 28px;
   width: auto;
+}
+
+.navLogoText {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: inherit;
 }
 
 @media (prefers-color-scheme: dark) {
