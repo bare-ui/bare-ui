@@ -5,6 +5,13 @@ const meta = {
 	title: 'Components/Timeago',
 	component: Timeago,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Relative or formatted timestamp that updates live.',
+			},
+		},
+	},
 } satisfies Meta<typeof Timeago>;
 
 export default meta;

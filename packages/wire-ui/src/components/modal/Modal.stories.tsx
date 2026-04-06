@@ -6,6 +6,13 @@ const meta = {
 	title: 'Components/Modal',
 	component: Modal.Root,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Dialog with portal rendering, overlay-click and Escape key close.',
+			},
+		},
+	},
 } satisfies Meta<typeof Modal.Root>;
 
 export default meta;

@@ -5,6 +5,13 @@ const meta = {
 	title: 'Components/Badge',
 	component: Badge,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Numeric count badge capped at 9+.',
+			},
+		},
+	},
 } satisfies Meta<typeof Badge>;
 
 export default meta;

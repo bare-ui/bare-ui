@@ -21,6 +21,13 @@ const meta = {
 			include: ['value', 'defaultValue', 'max', 'disabled', 'readOnly', 'onChange', 'starClassName', 'className'],
 		},
 	},
+	parameters: {
+		docs: {
+			description: {
+				component: 'Star rating with hover preview, read-only, and disabled modes.',
+			},
+		},
+	},
 } satisfies Meta<typeof Rating>;
 
 export default meta;

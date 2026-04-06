@@ -6,6 +6,13 @@ const meta = {
 	title: 'Components/Select',
 	component: Select.Root,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Accessible select menu with groups, separators, and a custom trigger.',
+			},
+		},
+	},
 } satisfies Meta<typeof Select.Root>;
 
 export default meta;

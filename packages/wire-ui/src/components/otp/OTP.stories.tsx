@@ -6,6 +6,13 @@ const meta = {
 	title: 'Components/OTP',
 	component: OTP.Root,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'One-time password input with individual slots, auto-advance, and onComplete callback.',
+			},
+		},
+	},
 } satisfies Meta<typeof OTP.Root>;
 
 export default meta;

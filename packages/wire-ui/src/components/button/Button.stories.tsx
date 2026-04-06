@@ -5,6 +5,13 @@ const meta = {
 	title: 'Components/Button',
 	component: Button,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'A native button with full interactive state tracking and asChild polymorphism.',
+			},
+		},
+	},
 } satisfies Meta<typeof Button>;
 
 export default meta;

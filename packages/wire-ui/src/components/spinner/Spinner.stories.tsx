@@ -5,6 +5,13 @@ const meta = {
 	title: 'Components/Spinner',
 	component: Spinner,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Animated loading indicator with size and color props.',
+			},
+		},
+	},
 } satisfies Meta<typeof Spinner>;
 
 export default meta;

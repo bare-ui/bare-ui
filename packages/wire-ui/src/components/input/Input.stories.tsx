@@ -5,6 +5,13 @@ const meta = {
 	title: 'Components/Input',
 	component: Input.Root,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Compound text input with consumer-controlled error state.',
+			},
+		},
+	},
 } satisfies Meta<typeof Input.Root>;
 
 export default meta;

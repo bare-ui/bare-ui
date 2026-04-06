@@ -5,6 +5,13 @@ const meta = {
 	title: 'Components/List',
 	component: List,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Ordered or unordered list with optional striped rows and dividers.',
+			},
+		},
+	},
 } satisfies Meta<typeof List>;
 
 export default meta;

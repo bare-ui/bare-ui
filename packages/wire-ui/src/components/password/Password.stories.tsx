@@ -5,6 +5,13 @@ const meta = {
 	title: 'Components/Password',
 	component: Password.Root,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Password input with a built-in show/hide toggle and consumer-controlled error state.',
+			},
+		},
+	},
 } satisfies Meta<typeof Password.Root>;
 
 export default meta;

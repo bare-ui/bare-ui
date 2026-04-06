@@ -5,6 +5,13 @@ const meta = {
 	title: 'Components/Radio',
 	component: Radio.Root,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Single-selection radio group.',
+			},
+		},
+	},
 } satisfies Meta<typeof Radio.Root>;
 
 export default meta;

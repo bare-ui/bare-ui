@@ -5,6 +5,13 @@ const meta = {
 	title: 'Components/Textarea',
 	component: Textarea.Root,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Compound multi-line text input with consumer-controlled error state.',
+			},
+		},
+	},
 } satisfies Meta<typeof Textarea.Root>;
 
 export default meta;

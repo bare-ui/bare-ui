@@ -5,6 +5,13 @@ const meta = {
 	title: 'Components/Dropdown',
 	component: Dropdown.Root,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Trigger and menu pattern with keyboard and click-outside support.',
+			},
+		},
+	},
 } satisfies Meta<typeof Dropdown.Root>;
 
 export default meta;

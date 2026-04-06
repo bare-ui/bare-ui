@@ -6,6 +6,13 @@ const meta = {
 	title: 'Components/Divider',
 	component: Divider,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Horizontal or vertical separator line.',
+			},
+		},
+	},
 } satisfies Meta<typeof Divider>;
 
 export default meta;

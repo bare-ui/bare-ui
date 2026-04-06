@@ -5,6 +5,13 @@ const meta = {
 	title: 'Components/Alert',
 	component: Alert.Root,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Dismissible alert with auto-dismiss support.',
+			},
+		},
+	},
 } satisfies Meta<typeof Alert.Root>;
 
 export default meta;

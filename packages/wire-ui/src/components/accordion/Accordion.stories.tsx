@@ -6,6 +6,13 @@ const meta = {
 	component: Accordion.Root,
 	tags: ['autodocs'],
 	args: { type: 'single' as const },
+	parameters: {
+		docs: {
+			description: {
+				component: 'Collapsible sections with single or multiple selection types.',
+			},
+		},
+	},
 } satisfies Meta<typeof Accordion.Root>;
 
 export default meta;

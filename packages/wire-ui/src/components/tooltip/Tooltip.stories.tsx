@@ -5,6 +5,13 @@ const meta = {
 	title: 'Components/Tooltip',
 	component: Tooltip.Root,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Hover/focus tooltip with configurable delay and side.',
+			},
+		},
+	},
 } satisfies Meta<typeof Tooltip.Root>;
 
 export default meta;

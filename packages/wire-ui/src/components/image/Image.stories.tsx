@@ -5,6 +5,13 @@ const meta = {
 	title: 'Components/Image',
 	component: Image,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Image wrapper with a loader placeholder shown until the image loads.',
+			},
+		},
+	},
 } satisfies Meta<typeof Image>;
 
 export default meta;

@@ -15,6 +15,13 @@ const meta = {
 	title: 'Components/Search',
 	component: Search.Root,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Search input with dropdown results, keyboard navigation, and loading state.',
+			},
+		},
+	},
 } satisfies Meta<typeof Search.Root>;
 
 export default meta;

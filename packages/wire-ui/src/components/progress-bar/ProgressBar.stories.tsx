@@ -6,6 +6,13 @@ const meta = {
 	title: 'Components/ProgressBar',
 	component: ProgressBar,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Accessible progress indicator with role="progressbar" and ARIA attributes.',
+			},
+		},
+	},
 } satisfies Meta<typeof ProgressBar>;
 
 export default meta;

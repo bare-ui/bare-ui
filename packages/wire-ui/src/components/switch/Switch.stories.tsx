@@ -6,6 +6,13 @@ const meta = {
 	title: 'Components/Switch',
 	component: Switch.Root,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Toggle on/off with a thumb element and data-state.',
+			},
+		},
+	},
 } satisfies Meta<typeof Switch.Root>;
 
 export default meta;

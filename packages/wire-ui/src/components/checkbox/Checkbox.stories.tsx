@@ -5,6 +5,13 @@ const meta = {
 	title: 'Components/Checkbox',
 	component: Checkbox.Root,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Multi-select checkbox group with controlled state.',
+			},
+		},
+	},
 } satisfies Meta<typeof Checkbox.Root>;
 
 export default meta;

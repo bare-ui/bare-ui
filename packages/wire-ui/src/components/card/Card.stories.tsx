@@ -5,6 +5,13 @@ const meta = {
 	title: 'Components/Card',
 	component: Card,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Unstyled container with optional data-color and data-size attributes.',
+			},
+		},
+	},
 } satisfies Meta<typeof Card>;
 
 export default meta;

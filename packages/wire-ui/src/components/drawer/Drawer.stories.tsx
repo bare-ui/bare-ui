@@ -6,6 +6,13 @@ const meta = {
 	title: 'Components/Drawer',
 	component: Drawer.Root,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Side-panel overlay with portal rendering and close behaviours.',
+			},
+		},
+	},
 } satisfies Meta<typeof Drawer.Root>;
 
 export default meta;
