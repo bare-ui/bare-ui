@@ -15,7 +15,6 @@ export default {
   badge: 'Badge',
   'progress-bar': 'ProgressBar',
   rating: 'Rating',
-  spinner: 'Spinner',
   '-- forms': {
     type: 'separator',
     title: 'Forms',

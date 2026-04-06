@@ -20,7 +20,6 @@ export { Radio } from './radio';
 export { Rating } from './rating';
 export { Search } from './search';
 export { Select } from './select';
-export { Spinner } from './spinner';
 export { Switch } from './switch';
 export { Textarea } from './textarea';
 export { Timeago } from './timeago';

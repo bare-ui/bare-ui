@@ -22,7 +22,6 @@ export {
 	Rating,
 	Search,
 	Select,
-	Spinner,
 	Switch,
 	Textarea,
 	Timeago,
@@ -125,7 +124,6 @@ export type {
 	SelectGroupProps,
 	SelectGroupLabelProps,
 } from './components/select';
-export type { SpinnerProps } from './components/spinner';
 export type { SwitchRootProps, SwitchThumbProps } from './components/switch';
 export type {
 	TextareaRootProps,
