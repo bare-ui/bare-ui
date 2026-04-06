@@ -38,6 +38,30 @@ const faqs = [
 	},
 ];
 
+const containerCls =
+	'w-full max-w-lg divide-y-2 divide-[#d4d4d4] rounded-[20px] border-[3px] border-black bg-white overflow-hidden';
+
+const triggerCls =
+	'flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-black outline-none transition-colors hover:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50';
+
+const chevronCls = 'size-4 shrink-0 text-black transition-transform duration-200 data-[state=open]:rotate-180';
+
+const contentCls = 'px-5 pb-4 text-sm leading-relaxed text-[#9ca3af]';
+
+const ChevronDown = () => (
+	<svg
+		className={chevronCls}
+		data-state='inherit'
+		viewBox='0 0 20 20'
+		fill='currentColor'>
+		<path
+			fillRule='evenodd'
+			d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'
+			clipRule='evenodd'
+		/>
+	</svg>
+);
+
 // ---------------------------------------------------------------------------
 // Default — single, collapsible, bordered
 // ---------------------------------------------------------------------------
@@ -48,28 +72,16 @@ export const Default: Story = {
 			type='single'
 			collapsible
 			defaultValue='item-1'
-			className='w-full max-w-lg divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white'>
+			className={containerCls}>
 			{faqs.map((faq) => (
 				<Accordion.Item
 					key={faq.value}
 					value={faq.value}>
-					<Accordion.Trigger className='flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-gray-900 outline-none transition-colors hover:bg-gray-50 data-[state=open]:text-blue-600 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50'>
+					<Accordion.Trigger className={triggerCls}>
 						{faq.question}
-						<svg
-							className='size-4 shrink-0 text-gray-400 transition-transform duration-200 data-[state=open]:rotate-180'
-							data-state='inherit'
-							viewBox='0 0 20 20'
-							fill='currentColor'>
-							<path
-								fillRule='evenodd'
-								d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'
-								clipRule='evenodd'
-							/>
-						</svg>
+						<ChevronDown />
 					</Accordion.Trigger>
-					<Accordion.Content className='px-5 pb-4 text-sm leading-relaxed text-gray-600'>
-						{faq.answer}
-					</Accordion.Content>
+					<Accordion.Content className={contentCls}>{faq.answer}</Accordion.Content>
 				</Accordion.Item>
 			))}
 		</Accordion.Root>
@@ -85,28 +97,16 @@ export const Multiple: Story = {
 		<Accordion.Root
 			type='multiple'
 			defaultValue={['item-1', 'item-3']}
-			className='w-full max-w-lg divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white'>
+			className={containerCls}>
 			{faqs.map((faq) => (
 				<Accordion.Item
 					key={faq.value}
 					value={faq.value}>
-					<Accordion.Trigger className='flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-gray-900 outline-none transition-colors hover:bg-gray-50 data-[state=open]:text-blue-600'>
+					<Accordion.Trigger className={triggerCls}>
 						{faq.question}
-						<svg
-							className='size-4 shrink-0 text-gray-400 transition-transform duration-200 data-[state=open]:rotate-180'
-							data-state='inherit'
-							viewBox='0 0 20 20'
-							fill='currentColor'>
-							<path
-								fillRule='evenodd'
-								d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'
-								clipRule='evenodd'
-							/>
-						</svg>
+						<ChevronDown />
 					</Accordion.Trigger>
-					<Accordion.Content className='px-5 pb-4 text-sm leading-relaxed text-gray-600'>
-						{faq.answer}
-					</Accordion.Content>
+					<Accordion.Content className={contentCls}>{faq.answer}</Accordion.Content>
 				</Accordion.Item>
 			))}
 		</Accordion.Root>
@@ -122,31 +122,21 @@ export const Animated: Story = {
 		<Accordion.Root
 			type='single'
 			collapsible
-			className='w-full max-w-lg divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white'>
+			className={containerCls}>
 			{faqs.map((faq) => (
 				<Accordion.Item
 					key={faq.value}
 					value={faq.value}>
-					<Accordion.Trigger className='flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-gray-900 outline-none transition-colors hover:bg-gray-50 data-[state=open]:text-blue-600'>
+					<Accordion.Trigger className={triggerCls}>
 						{faq.question}
-						<svg
-							className='size-4 shrink-0 text-gray-400 transition-transform duration-300 data-[state=open]:rotate-180'
-							data-state='inherit'
-							viewBox='0 0 20 20'
-							fill='currentColor'>
-							<path
-								fillRule='evenodd'
-								d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'
-								clipRule='evenodd'
-							/>
-						</svg>
+						<ChevronDown />
 					</Accordion.Trigger>
 					{/* forceMount keeps DOM mounted — CSS grid trick animates height */}
 					<Accordion.Content
 						forceMount
 						className='grid transition-all duration-300 ease-in-out data-[state=open]:grid-rows-[1fr] data-[state=closed]:grid-rows-[0fr]'>
 						<div className='overflow-hidden'>
-							<p className='px-5 pb-4 text-sm leading-relaxed text-gray-600'>{faq.answer}</p>
+							<p className='px-5 pb-4 text-sm leading-relaxed text-[#9ca3af]'>{faq.answer}</p>
 						</div>
 					</Accordion.Content>
 				</Accordion.Item>
@@ -164,26 +154,16 @@ export const Flush: Story = {
 		<Accordion.Root
 			type='single'
 			collapsible
-			className='w-full max-w-lg divide-y divide-gray-200'>
+			className='w-full max-w-lg divide-y-2 divide-[#d4d4d4]'>
 			{faqs.map((faq) => (
 				<Accordion.Item
 					key={faq.value}
 					value={faq.value}>
-					<Accordion.Trigger className='flex w-full items-center justify-between py-4 text-left text-sm font-medium text-gray-900 outline-none transition-colors hover:text-blue-600 data-[state=open]:text-blue-600'>
+					<Accordion.Trigger className='flex w-full items-center justify-between py-4 text-left text-sm font-medium text-black outline-none transition-colors hover:text-black data-[state=open]:text-black'>
 						{faq.question}
-						<svg
-							className='size-4 shrink-0 text-gray-400 transition-transform duration-200 data-[state=open]:rotate-180'
-							data-state='inherit'
-							viewBox='0 0 20 20'
-							fill='currentColor'>
-							<path
-								fillRule='evenodd'
-								d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'
-								clipRule='evenodd'
-							/>
-						</svg>
+						<ChevronDown />
 					</Accordion.Trigger>
-					<Accordion.Content className='pb-4 text-sm leading-relaxed text-gray-500'>
+					<Accordion.Content className='pb-4 text-sm leading-relaxed text-[#9ca3af]'>
 						{faq.answer}
 					</Accordion.Content>
 				</Accordion.Item>
@@ -200,20 +180,20 @@ export const Disabled: Story = {
 	render: () => (
 		<div className='flex w-full max-w-lg flex-col gap-6'>
 			<div>
-				<p className='mb-2 text-xs font-medium uppercase tracking-wide text-gray-400'>Single item disabled</p>
+				<p className='mb-2 text-xs font-medium uppercase tracking-wide text-[#9ca3af]'>Single item disabled</p>
 				<Accordion.Root
 					type='single'
 					collapsible
-					className='divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white'>
+					className={containerCls}>
 					{faqs.slice(0, 3).map((faq, i) => (
 						<Accordion.Item
 							key={faq.value}
 							value={faq.value}
 							disabled={i === 1}>
-							<Accordion.Trigger className='flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-gray-900 outline-none hover:bg-gray-50 data-[state=open]:text-blue-600 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40'>
+							<Accordion.Trigger className='flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-black outline-none hover:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40'>
 								{faq.question}
 							</Accordion.Trigger>
-							<Accordion.Content className='px-5 pb-4 text-sm text-gray-600'>
+							<Accordion.Content className='px-5 pb-4 text-sm text-[#9ca3af]'>
 								{faq.answer}
 							</Accordion.Content>
 						</Accordion.Item>
@@ -222,16 +202,16 @@ export const Disabled: Story = {
 			</div>
 
 			<div>
-				<p className='mb-2 text-xs font-medium uppercase tracking-wide text-gray-400'>All disabled</p>
+				<p className='mb-2 text-xs font-medium uppercase tracking-wide text-[#9ca3af]'>All disabled</p>
 				<Accordion.Root
 					type='single'
 					disabled
-					className='divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white opacity-60'>
+					className={[containerCls, 'opacity-60'].join(' ')}>
 					{faqs.slice(0, 3).map((faq) => (
 						<Accordion.Item
 							key={faq.value}
 							value={faq.value}>
-							<Accordion.Trigger className='flex w-full cursor-not-allowed items-center justify-between px-5 py-4 text-left text-sm font-medium text-gray-900 outline-none'>
+							<Accordion.Trigger className='flex w-full cursor-not-allowed items-center justify-between px-5 py-4 text-left text-sm font-medium text-black outline-none'>
 								{faq.question}
 							</Accordion.Trigger>
 						</Accordion.Item>

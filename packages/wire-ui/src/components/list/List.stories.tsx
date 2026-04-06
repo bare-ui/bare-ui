@@ -12,7 +12,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Unordered: Story = {
 	render: () => (
-		<List className='list-disc space-y-1 pl-5 text-sm text-gray-700'>
+		<List className='list-disc space-y-1 pl-5 text-sm text-black'>
 			<li>First item</li>
 			<li>Second item</li>
 			<li>Third item</li>
@@ -24,7 +24,7 @@ export const Ordered: Story = {
 	render: () => (
 		<List
 			isOrdered
-			className='list-decimal space-y-1 pl-5 text-sm text-gray-700'>
+			className='list-decimal space-y-1 pl-5 text-sm text-black'>
 			<li>First step</li>
 			<li>Second step</li>
 			<li>Third step</li>
@@ -34,11 +34,11 @@ export const Ordered: Story = {
 
 export const WithDividers: Story = {
 	render: () => (
-		<List className='w-64 divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white'>
+		<List className='w-64 divide-y divide-[#d4d4d4] overflow-hidden rounded-[8px] border-2 border-black bg-white'>
 			{['Inbox', 'Sent', 'Drafts', 'Trash', 'Spam'].map((item) => (
 				<li
 					key={item}
-					className='px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer'>
+					className='cursor-pointer px-4 py-3 text-sm text-black hover:bg-[#f5f5f5]'>
 					{item}
 				</li>
 			))}
@@ -48,7 +48,7 @@ export const WithDividers: Story = {
 
 export const WithIconsAndDividers: Story = {
 	render: () => (
-		<List className='w-72 divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white'>
+		<List className='w-72 divide-y divide-[#d4d4d4] overflow-hidden rounded-[8px] border-2 border-black bg-white'>
 			{[
 				{ label: 'Profile', icon: '👤', desc: 'Manage your account' },
 				{ label: 'Notifications', icon: '🔔', desc: 'Configure alerts' },
@@ -57,14 +57,14 @@ export const WithIconsAndDividers: Story = {
 			].map(({ label, icon, desc }) => (
 				<li
 					key={label}
-					className='flex cursor-pointer items-center gap-3 px-4 py-3 hover:bg-gray-50'>
+					className='flex cursor-pointer items-center gap-3 px-4 py-3 hover:bg-[#f5f5f5]'>
 					<span className='text-xl'>{icon}</span>
 					<div>
-						<p className='text-sm font-medium text-gray-900'>{label}</p>
-						<p className='text-xs text-gray-500'>{desc}</p>
+						<p className='text-sm font-medium text-black'>{label}</p>
+						<p className='text-xs text-[#9ca3af]'>{desc}</p>
 					</div>
 					<svg
-						className='ml-auto h-4 w-4 text-gray-400'
+						className='ml-auto h-4 w-4 text-black'
 						viewBox='0 0 20 20'
 						fill='currentColor'>
 						<path
@@ -81,7 +81,7 @@ export const WithIconsAndDividers: Story = {
 
 export const Striped: Story = {
 	render: () => (
-		<List className='w-64 overflow-hidden rounded-lg border border-gray-200 text-sm [&>li:nth-child(odd)]:bg-gray-50 [&>li]:px-4 [&>li]:py-2.5 [&>li]:text-gray-700'>
+		<List className='w-64 overflow-hidden rounded-[8px] border-2 border-black text-sm [&>li:nth-child(odd)]:bg-[#f5f5f5] [&>li]:px-4 [&>li]:py-2.5 [&>li]:text-black'>
 			<li>Alice Johnson</li>
 			<li>Bob Smith</li>
 			<li>Carol White</li>
@@ -93,11 +93,11 @@ export const Striped: Story = {
 
 export const SimpleMenu: Story = {
 	render: () => (
-		<List className='w-48 rounded-lg border border-gray-200 bg-white p-1 shadow-sm'>
+		<List className='w-48 overflow-hidden rounded-[8px] border-2 border-black bg-white p-1'>
 			{['Cut', 'Copy', 'Paste', 'Delete'].map((item) => (
 				<li
 					key={item}
-					className='cursor-pointer rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100'>
+					className='cursor-pointer rounded-[6px] px-3 py-2 text-sm text-black hover:bg-[#f5f5f5]'>
 					{item}
 				</li>
 			))}
@@ -119,7 +119,7 @@ export const Checklist: Story = {
 					className='flex items-center gap-2.5 text-sm'>
 					<span
 						className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${
-							done ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-gray-300 bg-white'
+							done ? 'border-black bg-black text-white' : 'border-black bg-white'
 						}`}>
 						{done && (
 							<svg
@@ -137,7 +137,7 @@ export const Checklist: Story = {
 							</svg>
 						)}
 					</span>
-					<span className={done ? 'text-gray-400 line-through' : 'text-gray-700'}>{label}</span>
+					<span className={done ? 'text-[#9ca3af] line-through' : 'text-black'}>{label}</span>
 				</li>
 			))}
 		</List>
@@ -146,12 +146,12 @@ export const Checklist: Story = {
 
 export const Horizontal: Story = {
 	render: () => (
-		<List className='flex gap-1 rounded-lg border border-gray-200 bg-gray-50 p-1'>
+		<List className='flex gap-1 overflow-hidden rounded-[8px] border-2 border-black bg-[#f5f5f5] p-1'>
 			{['All', 'Active', 'Completed', 'Archived'].map((tab) => (
 				<li
 					key={tab}
-					className={`cursor-pointer rounded-md px-3 py-1.5 text-sm font-medium ${
-						tab === 'All' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+					className={`cursor-pointer rounded-[6px] px-3 py-1.5 text-sm font-medium ${
+						tab === 'All' ? 'bg-black text-white' : 'text-[#9ca3af] hover:text-black'
 					}`}>
 					{tab}
 				</li>

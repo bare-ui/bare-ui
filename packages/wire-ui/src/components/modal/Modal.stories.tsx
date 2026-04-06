@@ -20,6 +20,17 @@ const CloseIcon = () => (
 	</svg>
 );
 
+const contentCls = 'w-full max-w-md overflow-hidden rounded-[20px] border-[3px] border-black bg-white';
+
+const triggerBtnCls =
+	'inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]';
+
+const outlineBtnCls =
+	'inline-flex items-center rounded-[8px] border-2 border-black px-4 py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]';
+
+const inputFieldCls =
+	'w-full rounded-[8px] border-2 border-black px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black focus:ring-offset-1';
+
 export const Default: Story = {
 	render: () => {
 		const [open, setOpen] = useState(false);
@@ -28,7 +39,7 @@ export const Default: Story = {
 			<>
 				<button
 					onClick={() => setOpen(true)}
-					className='rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700'>
+					className={triggerBtnCls}>
 					Open Modal
 				</button>
 
@@ -37,20 +48,20 @@ export const Default: Story = {
 					onOpenChange={setOpen}>
 					<Modal.Portal>
 						<Modal.Overlay className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
-							<Modal.Content className='w-full max-w-md rounded-xl bg-white p-6 shadow-xl'>
-								<div className='mb-4 flex items-start justify-between'>
-									<h2 className='text-lg font-semibold text-gray-900'>Modal Title</h2>
-									<Modal.Close className='rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600'>
-										<CloseIcon />
-									</Modal.Close>
-								</div>
-								<p className='mb-6 text-sm text-gray-600'>
-									This is a basic modal dialog. Press Escape or click outside to close.
-								</p>
-								<div className='flex justify-end gap-3'>
-									<Modal.Close className='rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'>
-										Close
-									</Modal.Close>
+							<Modal.Content className={contentCls}>
+								<div className='p-6'>
+									<div className='mb-4 flex items-start justify-between'>
+										<h2 className='text-lg font-semibold text-black'>Modal Title</h2>
+										<Modal.Close className='rounded p-1 text-[#9ca3af] hover:bg-[#f5f5f5] hover:text-black'>
+											<CloseIcon />
+										</Modal.Close>
+									</div>
+									<p className='mb-6 text-sm text-[#9ca3af]'>
+										This is a basic modal dialog. Press Escape or click outside to close.
+									</p>
+									<div className='flex justify-end gap-3'>
+										<Modal.Close className={outlineBtnCls}>Close</Modal.Close>
+									</div>
 								</div>
 							</Modal.Content>
 						</Modal.Overlay>
@@ -76,10 +87,10 @@ export const ConfirmDialog: Story = {
 				<div className='flex flex-col items-start gap-3'>
 					<button
 						onClick={() => setOpen(true)}
-						className='rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700'>
+						className={triggerBtnCls}>
 						Delete Account
 					</button>
-					{confirmed && <p className='text-sm text-red-600'>✓ Action confirmed</p>}
+					{confirmed && <p className='text-sm text-black'>✓ Action confirmed</p>}
 				</div>
 
 				<Modal.Root
@@ -87,10 +98,10 @@ export const ConfirmDialog: Story = {
 					onOpenChange={setOpen}>
 					<Modal.Portal>
 						<Modal.Overlay className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
-							<Modal.Content className='w-full max-w-sm rounded-xl bg-white p-6 shadow-xl'>
-								<div className='mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100'>
+							<Modal.Content className='w-full max-w-sm overflow-hidden rounded-[20px] border-[3px] border-black bg-white p-6'>
+								<div className='mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#f5f5f5]'>
 									<svg
-										className='h-6 w-6 text-red-600'
+										className='h-6 w-6 text-black'
 										fill='none'
 										viewBox='0 0 24 24'
 										stroke='currentColor'>
@@ -102,18 +113,18 @@ export const ConfirmDialog: Story = {
 										/>
 									</svg>
 								</div>
-								<h2 className='mb-2 text-base font-semibold text-gray-900'>Delete Account</h2>
-								<p className='mb-6 text-sm text-gray-500'>
+								<h2 className='mb-2 text-base font-semibold text-black'>Delete Account</h2>
+								<p className='mb-6 text-sm text-[#9ca3af]'>
 									Are you sure you want to delete your account? All of your data will be permanently
 									removed. This action cannot be undone.
 								</p>
 								<div className='flex gap-3'>
-									<Modal.Close className='flex-1 rounded-md border border-gray-300 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'>
+									<Modal.Close className='flex-1 rounded-[8px] border-2 border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]'>
 										Cancel
 									</Modal.Close>
 									<button
 										onClick={handleConfirm}
-										className='flex-1 rounded-md bg-red-600 py-2 text-sm font-medium text-white hover:bg-red-700'>
+										className='flex-1 rounded-[8px] border-2 border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]'>
 										Delete
 									</button>
 								</div>
@@ -134,7 +145,7 @@ export const FormModal: Story = {
 			<>
 				<button
 					onClick={() => setOpen(true)}
-					className='rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700'>
+					className={triggerBtnCls}>
 					Edit Profile
 				</button>
 
@@ -143,73 +154,71 @@ export const FormModal: Story = {
 					onOpenChange={setOpen}>
 					<Modal.Portal>
 						<Modal.Overlay className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
-							<Modal.Content className='w-full max-w-md rounded-xl bg-white shadow-xl'>
-								<div className='flex items-center justify-between border-b border-gray-200 px-6 py-4'>
-									<h2 className='text-base font-semibold text-gray-900'>Edit Profile</h2>
-									<Modal.Close className='rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600'>
+							<Modal.Content className={contentCls}>
+								<div className='flex items-center justify-between border-b border-[#d4d4d4] px-6 py-4'>
+									<h2 className='text-base font-semibold text-black'>Edit Profile</h2>
+									<Modal.Close className='rounded p-1 text-[#9ca3af] hover:bg-[#f5f5f5] hover:text-black'>
 										<CloseIcon />
 									</Modal.Close>
 								</div>
 
 								<div className='space-y-4 p-6'>
 									<div className='flex items-center gap-4'>
-										<div className='flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 text-xl font-bold text-white'>
+										<div className='flex h-16 w-16 items-center justify-center rounded-full border-2 border-black bg-black text-xl font-bold text-white'>
 											JD
 										</div>
-										<button className='rounded-md border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50'>
+										<button className='rounded-[8px] border-2 border-black px-3 py-1.5 text-xs font-medium text-black hover:bg-[#f5f5f5]'>
 											Change photo
 										</button>
 									</div>
 
 									<div className='grid grid-cols-2 gap-4'>
 										<div>
-											<label className='mb-1 block text-xs font-medium text-gray-700'>
+											<label className='mb-1 block text-xs font-medium text-black'>
 												First name
 											</label>
 											<input
 												type='text'
 												defaultValue='Jane'
-												className='w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
+												className={inputFieldCls}
 											/>
 										</div>
 										<div>
-											<label className='mb-1 block text-xs font-medium text-gray-700'>
+											<label className='mb-1 block text-xs font-medium text-black'>
 												Last name
 											</label>
 											<input
 												type='text'
 												defaultValue='Doe'
-												className='w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
+												className={inputFieldCls}
 											/>
 										</div>
 									</div>
 
 									<div>
-										<label className='mb-1 block text-xs font-medium text-gray-700'>Email</label>
+										<label className='mb-1 block text-xs font-medium text-black'>Email</label>
 										<input
 											type='email'
 											defaultValue='jane@example.com'
-											className='w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
+											className={inputFieldCls}
 										/>
 									</div>
 
 									<div>
-										<label className='mb-1 block text-xs font-medium text-gray-700'>Bio</label>
+										<label className='mb-1 block text-xs font-medium text-black'>Bio</label>
 										<textarea
 											rows={3}
 											defaultValue='Product designer and coffee enthusiast.'
-											className='w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
+											className={inputFieldCls}
 										/>
 									</div>
 								</div>
 
-								<div className='flex justify-end gap-3 border-t border-gray-200 px-6 py-4'>
-									<Modal.Close className='rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'>
-										Cancel
-									</Modal.Close>
+								<div className='flex justify-end gap-3 border-t border-[#d4d4d4] px-6 py-4'>
+									<Modal.Close className={outlineBtnCls}>Cancel</Modal.Close>
 									<button
 										onClick={() => setOpen(false)}
-										className='rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700'>
+										className={triggerBtnCls}>
 										Save changes
 									</button>
 								</div>
@@ -230,7 +239,7 @@ export const AlertModal: Story = {
 			<>
 				<button
 					onClick={() => setOpen(true)}
-					className='rounded-md bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600'>
+					className={triggerBtnCls}>
 					Show Alert
 				</button>
 
@@ -239,11 +248,11 @@ export const AlertModal: Story = {
 					onOpenChange={setOpen}>
 					<Modal.Portal>
 						<Modal.Overlay className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
-							<Modal.Content className='w-full max-w-sm rounded-xl bg-white p-6 shadow-xl'>
+							<Modal.Content className='w-full max-w-sm overflow-hidden rounded-[20px] border-[3px] border-black bg-white p-6'>
 								<div className='text-center'>
-									<div className='mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-100'>
+									<div className='mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#f5f5f5]'>
 										<svg
-											className='h-7 w-7 text-amber-600'
+											className='h-7 w-7 text-black'
 											fill='none'
 											viewBox='0 0 24 24'
 											stroke='currentColor'>
@@ -255,17 +264,17 @@ export const AlertModal: Story = {
 											/>
 										</svg>
 									</div>
-									<h2 className='mb-2 text-base font-semibold text-gray-900'>Session Expiring</h2>
-									<p className='mb-6 text-sm text-gray-500'>
+									<h2 className='mb-2 text-base font-semibold text-black'>Session Expiring</h2>
+									<p className='mb-6 text-sm text-[#9ca3af]'>
 										Your session will expire in 5 minutes. Would you like to extend it?
 									</p>
 									<div className='flex gap-3'>
-										<Modal.Close className='flex-1 rounded-md border border-gray-300 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'>
+										<Modal.Close className='flex-1 rounded-[8px] border-2 border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]'>
 											Sign out
 										</Modal.Close>
 										<button
 											onClick={() => setOpen(false)}
-											className='flex-1 rounded-md bg-blue-600 py-2 text-sm font-medium text-white hover:bg-blue-700'>
+											className='flex-1 rounded-[8px] border-2 border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]'>
 											Stay signed in
 										</button>
 									</div>
@@ -287,7 +296,7 @@ export const LargeContentModal: Story = {
 			<>
 				<button
 					onClick={() => setOpen(true)}
-					className='rounded-md border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'>
+					className={outlineBtnCls}>
 					Terms &amp; Conditions
 				</button>
 
@@ -296,10 +305,10 @@ export const LargeContentModal: Story = {
 					onOpenChange={setOpen}>
 					<Modal.Portal>
 						<Modal.Overlay className='fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center'>
-							<Modal.Content className='flex max-h-[80vh] w-full max-w-2xl flex-col rounded-xl bg-white shadow-xl'>
-								<div className='flex items-center justify-between border-b border-gray-200 px-6 py-4'>
-									<h2 className='text-base font-semibold text-gray-900'>Terms &amp; Conditions</h2>
-									<Modal.Close className='rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600'>
+							<Modal.Content className='flex max-h-[80vh] w-full max-w-2xl flex-col overflow-hidden rounded-[20px] border-[3px] border-black bg-white'>
+								<div className='flex items-center justify-between border-b border-[#d4d4d4] px-6 py-4'>
+									<h2 className='text-base font-semibold text-black'>Terms &amp; Conditions</h2>
+									<Modal.Close className='rounded p-1 text-[#9ca3af] hover:bg-[#f5f5f5] hover:text-black'>
 										<CloseIcon />
 									</Modal.Close>
 								</div>
@@ -309,7 +318,7 @@ export const LargeContentModal: Story = {
 										<div
 											key={i}
 											className='mb-4'>
-											<h3 className='mb-2 text-sm font-semibold text-gray-800'>
+											<h3 className='mb-2 text-sm font-semibold text-black'>
 												{i + 1}.{' '}
 												{
 													[
@@ -322,7 +331,7 @@ export const LargeContentModal: Story = {
 													][i]
 												}
 											</h3>
-											<p className='text-sm text-gray-600 leading-relaxed'>
+											<p className='text-sm leading-relaxed text-[#9ca3af]'>
 												Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
 												tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
 												veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
@@ -332,13 +341,11 @@ export const LargeContentModal: Story = {
 									))}
 								</div>
 
-								<div className='flex justify-end gap-3 border-t border-gray-200 px-6 py-4'>
-									<Modal.Close className='rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'>
-										Decline
-									</Modal.Close>
+								<div className='flex justify-end gap-3 border-t border-[#d4d4d4] px-6 py-4'>
+									<Modal.Close className={outlineBtnCls}>Decline</Modal.Close>
 									<button
 										onClick={() => setOpen(false)}
-										className='rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700'>
+										className={triggerBtnCls}>
 										Accept &amp; Continue
 									</button>
 								</div>

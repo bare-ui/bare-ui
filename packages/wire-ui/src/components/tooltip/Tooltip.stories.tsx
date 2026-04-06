@@ -11,16 +11,20 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const contentCls =
-	'rounded-md bg-gray-900 px-2.5 py-1.5 text-xs font-medium text-white shadow-md data-[state=closed]:hidden whitespace-nowrap';
+	'rounded-[8px] border-2 border-black bg-[#f5f5f5] px-2.5 py-1.5 text-xs font-medium text-black data-[state=closed]:hidden whitespace-nowrap';
+
+const outlineTriggerCls =
+	'rounded-[8px] border-2 border-black px-4 py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]';
+
+const solidTriggerCls =
+	'rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]';
 
 export const Default: Story = {
 	render: () => (
 		<div className='flex items-center justify-center p-20'>
 			<Tooltip.Root>
 				<Tooltip.Trigger>
-					<button className='rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700'>
-						Hover me
-					</button>
+					<button className={solidTriggerCls}>Hover me</button>
 				</Tooltip.Trigger>
 				<Tooltip.Content className={contentCls}>Tooltip content</Tooltip.Content>
 			</Tooltip.Root>
@@ -33,9 +37,7 @@ export const NoDelay: Story = {
 		<div className='flex items-center justify-center p-20'>
 			<Tooltip.Root delayDuration={0}>
 				<Tooltip.Trigger>
-					<button className='rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'>
-						Instant tooltip
-					</button>
+					<button className={outlineTriggerCls}>Instant tooltip</button>
 				</Tooltip.Trigger>
 				<Tooltip.Content className={contentCls}>Shows immediately</Tooltip.Content>
 			</Tooltip.Root>
@@ -48,9 +50,7 @@ export const Sides: Story = {
 		<div className='flex flex-col items-center justify-center gap-16 p-20'>
 			<Tooltip.Root delayDuration={0}>
 				<Tooltip.Trigger>
-					<button className='rounded-md bg-gray-100 px-4 py-2 text-sm text-gray-700 hover:bg-gray-200'>
-						Top (default)
-					</button>
+					<button className={outlineTriggerCls}>Top (default)</button>
 				</Tooltip.Trigger>
 				<Tooltip.Content
 					side='top'
@@ -61,9 +61,7 @@ export const Sides: Story = {
 
 			<Tooltip.Root delayDuration={0}>
 				<Tooltip.Trigger>
-					<button className='rounded-md bg-gray-100 px-4 py-2 text-sm text-gray-700 hover:bg-gray-200'>
-						Bottom
-					</button>
+					<button className={outlineTriggerCls}>Bottom</button>
 				</Tooltip.Trigger>
 				<Tooltip.Content
 					side='bottom'
@@ -75,9 +73,7 @@ export const Sides: Story = {
 			<div className='flex gap-24'>
 				<Tooltip.Root delayDuration={0}>
 					<Tooltip.Trigger>
-						<button className='rounded-md bg-gray-100 px-4 py-2 text-sm text-gray-700 hover:bg-gray-200'>
-							Left
-						</button>
+						<button className={outlineTriggerCls}>Left</button>
 					</Tooltip.Trigger>
 					<Tooltip.Content
 						side='left'
@@ -88,9 +84,7 @@ export const Sides: Story = {
 
 				<Tooltip.Root delayDuration={0}>
 					<Tooltip.Trigger>
-						<button className='rounded-md bg-gray-100 px-4 py-2 text-sm text-gray-700 hover:bg-gray-200'>
-							Right
-						</button>
+						<button className={outlineTriggerCls}>Right</button>
 					</Tooltip.Trigger>
 					<Tooltip.Content
 						side='right'
@@ -109,7 +103,7 @@ export const WithIcon: Story = {
 			<Tooltip.Root delayDuration={0}>
 				<Tooltip.Trigger>
 					<button
-						className='flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700'
+						className='flex h-8 w-8 items-center justify-center rounded-full border-2 border-black bg-white text-black hover:bg-[#f5f5f5]'
 						aria-label='More information'>
 						<svg
 							className='h-4 w-4'
@@ -138,27 +132,23 @@ export const DarkAndLight: Story = {
 		<div className='flex items-center justify-center gap-8 p-20'>
 			<Tooltip.Root delayDuration={0}>
 				<Tooltip.Trigger>
-					<button className='rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white'>
-						Dark tooltip
-					</button>
+					<button className={solidTriggerCls}>Dark tooltip</button>
 				</Tooltip.Trigger>
 				<Tooltip.Content
 					side='top'
-					className='whitespace-nowrap rounded-md bg-gray-900 px-2.5 py-1.5 text-xs font-medium text-white shadow-md data-[state=closed]:hidden'>
-					Dark background
+					className='whitespace-nowrap rounded-[8px] border-2 border-black bg-[#f5f5f5] px-2.5 py-1.5 text-xs font-medium text-black data-[state=closed]:hidden'>
+					Dark tooltip
 				</Tooltip.Content>
 			</Tooltip.Root>
 
 			<Tooltip.Root delayDuration={0}>
 				<Tooltip.Trigger>
-					<button className='rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm'>
-						Light tooltip
-					</button>
+					<button className={outlineTriggerCls}>Light tooltip</button>
 				</Tooltip.Trigger>
 				<Tooltip.Content
 					side='top'
-					className='whitespace-nowrap rounded-md border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-md data-[state=closed]:hidden'>
-					Light background
+					className='whitespace-nowrap rounded-[8px] border-2 border-black bg-[#f5f5f5] px-2.5 py-1.5 text-xs font-medium text-black data-[state=closed]:hidden'>
+					Light tooltip
 				</Tooltip.Content>
 			</Tooltip.Root>
 		</div>
@@ -168,11 +158,11 @@ export const DarkAndLight: Story = {
 export const InlineText: Story = {
 	render: () => (
 		<div className='p-8'>
-			<p className='text-sm text-gray-600'>
+			<p className='text-sm text-[#9ca3af]'>
 				Hover over the{' '}
 				<Tooltip.Root delayDuration={0}>
 					<Tooltip.Trigger>
-						<span className='cursor-help border-b border-dashed border-gray-400 text-gray-900'>
+						<span className='cursor-help border-b border-dashed border-black text-black'>
 							underlined text
 						</span>
 					</Tooltip.Trigger>

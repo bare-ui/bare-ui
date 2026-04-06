@@ -16,27 +16,16 @@ export const RecentDate = {
 		return (
 			<div className='flex flex-col gap-4'>
 				<div>
-					<span className='text-sm font-medium text-gray-500'>Duration (5 minutes ago):</span>
-					<Timeago
-						datetime={fiveMinutesAgo}
-						isDuration
-						className='ml-2 text-sm text-gray-700'
-					/>
+					<span className='text-sm font-medium text-[#9ca3af]'>Duration (5 minutes ago):</span>
+					<Timeago datetime={fiveMinutesAgo} isDuration className='ml-2 text-sm text-black' />
 				</div>
 				<div>
-					<span className='text-sm font-medium text-gray-500'>Full date/time:</span>
-					<Timeago
-						datetime={fiveMinutesAgo}
-						className='ml-2 text-sm text-gray-700'
-					/>
+					<span className='text-sm font-medium text-[#9ca3af]'>Full date/time:</span>
+					<Timeago datetime={fiveMinutesAgo} className='ml-2 text-sm text-black' />
 				</div>
 				<div>
-					<span className='text-sm font-medium text-gray-500'>Time only:</span>
-					<Timeago
-						datetime={fiveMinutesAgo}
-						timeOnly
-						className='ml-2 text-sm text-gray-700'
-					/>
+					<span className='text-sm font-medium text-[#9ca3af]'>Time only:</span>
+					<Timeago datetime={fiveMinutesAgo} timeOnly className='ml-2 text-sm text-black' />
 				</div>
 			</div>
 		);
@@ -52,33 +41,20 @@ export const OlderDate = {
 		return (
 			<div className='flex flex-col gap-4'>
 				<div>
-					<span className='text-sm font-medium text-gray-500'>3 days ago:</span>
-					<Timeago
-						datetime={threeDaysAgo}
-						className='ml-2 text-sm text-gray-700'
-					/>
+					<span className='text-sm font-medium text-[#9ca3af]'>3 days ago:</span>
+					<Timeago datetime={threeDaysAgo} className='ml-2 text-sm text-black' />
 				</div>
 				<div>
-					<span className='text-sm font-medium text-gray-500'>2 weeks ago:</span>
-					<Timeago
-						datetime={twoWeeksAgo}
-						className='ml-2 text-sm text-gray-700'
-					/>
+					<span className='text-sm font-medium text-[#9ca3af]'>2 weeks ago:</span>
+					<Timeago datetime={twoWeeksAgo} className='ml-2 text-sm text-black' />
 				</div>
 				<div>
-					<span className='text-sm font-medium text-gray-500'>Last year:</span>
-					<Timeago
-						datetime={lastYear}
-						className='ml-2 text-sm text-gray-700'
-					/>
+					<span className='text-sm font-medium text-[#9ca3af]'>Last year:</span>
+					<Timeago datetime={lastYear} className='ml-2 text-sm text-black' />
 				</div>
 				<div>
-					<span className='text-sm font-medium text-gray-500'>3 days ago (duration):</span>
-					<Timeago
-						datetime={threeDaysAgo}
-						isDuration
-						className='ml-2 text-sm text-gray-700'
-					/>
+					<span className='text-sm font-medium text-[#9ca3af]'>3 days ago (duration):</span>
+					<Timeago datetime={threeDaysAgo} isDuration className='ml-2 text-sm text-black' />
 				</div>
 			</div>
 		);

@@ -10,22 +10,14 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// ---------------------------------------------------------------------------
-// Shared styles
-// ---------------------------------------------------------------------------
-
 const fieldCls =
-	'w-full rounded-md border border-gray-300 px-3 py-2 pr-10 text-sm outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500 data-[invalid]:border-red-400 data-[invalid]:focus:border-red-400 data-[invalid]:focus:ring-red-400';
+	'w-full rounded-[8px] border-2 border-black px-3 py-2 pr-10 text-sm outline-none transition focus:ring-2 focus:ring-blue-500 focus:ring-offset-1';
 
 const toggleCls =
-	'group absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 outline-none transition hover:text-gray-600 data-[visible]:text-blue-500';
+	'group absolute inset-y-0 right-0 flex items-center px-3 text-[#9ca3af] outline-none transition hover:text-black data-[visible]:text-black';
 
-// Eye open icon
 const EyeIcon = () => (
-	<svg
-		className='size-4'
-		viewBox='0 0 20 20'
-		fill='currentColor'>
+	<svg className='size-4' viewBox='0 0 20 20' fill='currentColor'>
 		<path d='M10 12a2 2 0 100-4 2 2 0 000 4z' />
 		<path
 			fillRule='evenodd'
@@ -35,12 +27,8 @@ const EyeIcon = () => (
 	</svg>
 );
 
-// Eye closed icon
 const EyeOffIcon = () => (
-	<svg
-		className='size-4'
-		viewBox='0 0 20 20'
-		fill='currentColor'>
+	<svg className='size-4' viewBox='0 0 20 20' fill='currentColor'>
 		<path
 			fillRule='evenodd'
 			d='M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z'
@@ -50,25 +38,14 @@ const EyeOffIcon = () => (
 	</svg>
 );
 
-// ---------------------------------------------------------------------------
-// Stories
-// ---------------------------------------------------------------------------
-
 export const Default: Story = {
 	render: () => (
 		<Password.Root className='w-72'>
 			<div className='relative'>
-				<Password.Field
-					placeholder='Enter password'
-					className={fieldCls}
-				/>
+				<Password.Field placeholder='Enter password' className={fieldCls} />
 				<Password.Toggle className={toggleCls}>
-					<span className='group-data-[visible]:hidden'>
-						<EyeIcon />
-					</span>
-					<span className='hidden group-data-[visible]:block'>
-						<EyeOffIcon />
-					</span>
+					<span className='group-data-[visible]:hidden'><EyeIcon /></span>
+					<span className='hidden group-data-[visible]:block'><EyeOffIcon /></span>
 				</Password.Toggle>
 			</div>
 		</Password.Root>
@@ -78,19 +55,12 @@ export const Default: Story = {
 export const WithLabel: Story = {
 	render: () => (
 		<Password.Root className='flex w-72 flex-col gap-1.5'>
-			<Password.Label className='text-sm font-medium text-gray-700'>Password</Password.Label>
+			<Password.Label className='text-sm font-medium text-black'>Password</Password.Label>
 			<div className='relative'>
-				<Password.Field
-					placeholder='••••••••'
-					className={fieldCls}
-				/>
+				<Password.Field placeholder='••••••••' className={fieldCls} />
 				<Password.Toggle className={toggleCls}>
-					<span className='group-data-[visible]:hidden'>
-						<EyeIcon />
-					</span>
-					<span className='hidden group-data-[visible]:block'>
-						<EyeOffIcon />
-					</span>
+					<span className='group-data-[visible]:hidden'><EyeIcon /></span>
+					<span className='hidden group-data-[visible]:block'><EyeOffIcon /></span>
 				</Password.Toggle>
 			</div>
 		</Password.Root>
@@ -103,22 +73,15 @@ export const Required: Story = {
 			isRequired
 			errorMessage={{ required: 'Password is required' }}
 			className='flex w-72 flex-col gap-1.5'>
-			<Password.Label className='text-sm font-medium text-gray-700'>Password</Password.Label>
+			<Password.Label className='text-sm font-medium text-black'>Password</Password.Label>
 			<div className='relative'>
-				<Password.Field
-					placeholder='••••••••'
-					className={fieldCls}
-				/>
+				<Password.Field placeholder='••••••••' className={fieldCls} />
 				<Password.Toggle className={toggleCls}>
-					<span className='group-data-[visible]:hidden'>
-						<EyeIcon />
-					</span>
-					<span className='hidden group-data-[visible]:block'>
-						<EyeOffIcon />
-					</span>
+					<span className='group-data-[visible]:hidden'><EyeIcon /></span>
+					<span className='hidden group-data-[visible]:block'><EyeOffIcon /></span>
 				</Password.Toggle>
 			</div>
-			<Password.Error className='text-xs text-red-500' />
+			<Password.Error className='text-xs text-black' />
 		</Password.Root>
 	),
 };
@@ -127,36 +90,22 @@ export const ConfirmPassword: Story = {
 	render: () => (
 		<div className='flex w-72 flex-col gap-4'>
 			<Password.Root className='flex flex-col gap-1.5'>
-				<Password.Label className='text-sm font-medium text-gray-700'>New password</Password.Label>
+				<Password.Label className='text-sm font-medium text-black'>New password</Password.Label>
 				<div className='relative'>
-					<Password.Field
-						placeholder='••••••••'
-						className={fieldCls}
-					/>
+					<Password.Field placeholder='••••••••' className={fieldCls} />
 					<Password.Toggle className={toggleCls}>
-						<span className='group-data-[visible]:hidden'>
-							<EyeIcon />
-						</span>
-						<span className='hidden group-data-[visible]:block'>
-							<EyeOffIcon />
-						</span>
+						<span className='group-data-[visible]:hidden'><EyeIcon /></span>
+						<span className='hidden group-data-[visible]:block'><EyeOffIcon /></span>
 					</Password.Toggle>
 				</div>
 			</Password.Root>
 			<Password.Root className='flex flex-col gap-1.5'>
-				<Password.Label className='text-sm font-medium text-gray-700'>Confirm password</Password.Label>
+				<Password.Label className='text-sm font-medium text-black'>Confirm password</Password.Label>
 				<div className='relative'>
-					<Password.Field
-						placeholder='••••••••'
-						className={fieldCls}
-					/>
+					<Password.Field placeholder='••••••••' className={fieldCls} />
 					<Password.Toggle className={toggleCls}>
-						<span className='group-data-[visible]:hidden'>
-							<EyeIcon />
-						</span>
-						<span className='hidden group-data-[visible]:block'>
-							<EyeOffIcon />
-						</span>
+						<span className='group-data-[visible]:hidden'><EyeIcon /></span>
+						<span className='hidden group-data-[visible]:block'><EyeOffIcon /></span>
 					</Password.Toggle>
 				</div>
 			</Password.Root>

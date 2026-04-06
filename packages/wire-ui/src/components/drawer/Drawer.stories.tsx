@@ -21,6 +21,12 @@ const CloseIcon = () => (
 	</svg>
 );
 
+const triggerBtnCls =
+	'inline-flex items-center gap-2 rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]';
+
+const inputFieldCls =
+	'w-full rounded-[8px] border-2 border-black px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black focus:ring-offset-1';
+
 export const Default: Story = {
 	render: () => {
 		const [open, setOpen] = useState(false);
@@ -29,7 +35,7 @@ export const Default: Story = {
 			<>
 				<button
 					onClick={() => setOpen(true)}
-					className='rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700'>
+					className={triggerBtnCls}>
 					Open Drawer
 				</button>
 
@@ -38,15 +44,15 @@ export const Default: Story = {
 					onOpenChange={setOpen}>
 					<Drawer.Portal>
 						<Drawer.Overlay className='fixed inset-0 z-50 bg-black/50'>
-							<Drawer.Content className='fixed right-0 top-0 z-50 flex h-full w-80 flex-col bg-white shadow-xl'>
-								<Drawer.Header className='flex items-center justify-between border-b border-gray-200 px-4 py-3'>
-									<h2 className='text-lg font-semibold text-gray-900'>Drawer</h2>
-									<Drawer.Close className='rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600'>
+							<Drawer.Content className='fixed right-0 top-0 z-50 flex h-full w-80 flex-col border-l-[3px] border-black bg-white'>
+								<Drawer.Header className='flex items-center justify-between border-b border-[#d4d4d4] px-4 py-3'>
+									<h2 className='text-lg font-semibold text-black'>Drawer</h2>
+									<Drawer.Close className='rounded p-1 text-[#9ca3af] hover:bg-[#f5f5f5] hover:text-black'>
 										<CloseIcon />
 									</Drawer.Close>
 								</Drawer.Header>
 								<div className='flex-1 overflow-y-auto p-4'>
-									<p className='text-sm text-gray-600'>
+									<p className='text-sm text-[#9ca3af]'>
 										This is a simple drawer. Click the overlay or the close button to dismiss it.
 									</p>
 								</div>
@@ -77,7 +83,7 @@ export const NavigationDrawer: Story = {
 			<>
 				<button
 					onClick={() => setOpen(true)}
-					className='rounded-md border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'>
+					className='inline-flex items-center gap-2 rounded-[8px] border-2 border-black px-4 py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]'>
 					☰ Menu
 				</button>
 
@@ -86,10 +92,10 @@ export const NavigationDrawer: Story = {
 					onOpenChange={setOpen}>
 					<Drawer.Portal>
 						<Drawer.Overlay className='fixed inset-0 z-50 bg-black/40'>
-							<Drawer.Content className='fixed left-0 top-0 z-50 flex h-full w-64 flex-col bg-white shadow-xl'>
+							<Drawer.Content className='fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r-[3px] border-black bg-white'>
 								<Drawer.Header className='flex items-center justify-between px-4 py-4'>
-									<span className='text-lg font-bold text-gray-900'>MyApp</span>
-									<Drawer.Close className='rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600'>
+									<span className='text-lg font-bold text-black'>MyApp</span>
+									<Drawer.Close className='rounded p-1 text-[#9ca3af] hover:bg-[#f5f5f5] hover:text-black'>
 										<CloseIcon />
 									</Drawer.Close>
 								</Drawer.Header>
@@ -102,10 +108,10 @@ export const NavigationDrawer: Story = {
 												setActive(label);
 												setOpen(false);
 											}}
-											className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-												active === label ? 'bg-blue-50 text-blue-700' : (
-													'text-gray-700 hover:bg-gray-100'
-												)
+											className={`flex w-full items-center gap-3 rounded-[8px] px-3 py-2.5 text-sm font-medium transition-colors ${
+												active === label
+													? 'bg-black text-white'
+													: 'text-black hover:bg-[#f5f5f5]'
 											}`}>
 											<span className='text-base'>{icon}</span>
 											{label}
@@ -113,14 +119,14 @@ export const NavigationDrawer: Story = {
 									))}
 								</nav>
 
-								<div className='border-t border-gray-200 p-4'>
+								<div className='border-t border-[#d4d4d4] p-4'>
 									<div className='flex items-center gap-3'>
-										<div className='flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white'>
+										<div className='flex h-9 w-9 items-center justify-center rounded-full border-2 border-black bg-black text-sm font-semibold text-white'>
 											JD
 										</div>
 										<div>
-											<p className='text-sm font-medium text-gray-900'>Jane Doe</p>
-											<p className='text-xs text-gray-500'>jane@example.com</p>
+											<p className='text-sm font-medium text-black'>Jane Doe</p>
+											<p className='text-xs text-[#9ca3af]'>jane@example.com</p>
 										</div>
 									</div>
 								</div>
@@ -151,7 +157,7 @@ export const FilterDrawer: Story = {
 			<>
 				<button
 					onClick={() => setOpen(true)}
-					className='flex items-center gap-2 rounded-md border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'>
+					className='inline-flex items-center gap-2 rounded-[8px] border-2 border-black px-4 py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]'>
 					<svg
 						className='h-4 w-4'
 						viewBox='0 0 20 20'
@@ -164,7 +170,7 @@ export const FilterDrawer: Story = {
 					</svg>
 					Filters
 					{activeCount > 0 && (
-						<span className='inline-flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white'>
+						<span className='inline-flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white'>
 							{activeCount}
 						</span>
 					)}
@@ -175,17 +181,17 @@ export const FilterDrawer: Story = {
 					onOpenChange={setOpen}>
 					<Drawer.Portal>
 						<Drawer.Overlay className='fixed inset-0 z-50 bg-black/40'>
-							<Drawer.Content className='fixed right-0 top-0 z-50 flex h-full w-80 flex-col bg-white shadow-xl'>
-								<Drawer.Header className='flex items-center justify-between border-b border-gray-200 px-4 py-3'>
-									<h2 className='text-base font-semibold text-gray-900'>Filters</h2>
-									<Drawer.Close className='rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600'>
+							<Drawer.Content className='fixed right-0 top-0 z-50 flex h-full w-80 flex-col border-l-[3px] border-black bg-white'>
+								<Drawer.Header className='flex items-center justify-between border-b border-[#d4d4d4] px-4 py-3'>
+									<h2 className='text-base font-semibold text-black'>Filters</h2>
+									<Drawer.Close className='rounded p-1 text-[#9ca3af] hover:bg-[#f5f5f5] hover:text-black'>
 										<CloseIcon />
 									</Drawer.Close>
 								</Drawer.Header>
 
-								<div className='flex-1 overflow-y-auto divide-y divide-gray-200'>
+								<div className='flex-1 overflow-y-auto divide-y divide-[#d4d4d4]'>
 									<div className='p-4'>
-										<h3 className='mb-3 text-sm font-medium text-gray-700'>Availability</h3>
+										<h3 className='mb-3 text-sm font-medium text-black'>Availability</h3>
 										<div className='space-y-2'>
 											{(Object.keys(filters) as (keyof typeof filters)[]).map((key) => (
 												<label
@@ -195,9 +201,9 @@ export const FilterDrawer: Story = {
 														type='checkbox'
 														checked={filters[key]}
 														onChange={() => toggle(key)}
-														className='h-4 w-4 rounded border-gray-300 text-blue-600'
+														className='h-4 w-4 rounded border-2 border-black accent-black'
 													/>
-													<span className='text-sm text-gray-700 capitalize'>
+													<span className='text-sm text-black capitalize'>
 														{key.replace(/([A-Z])/g, ' $1').trim()}
 													</span>
 												</label>
@@ -206,8 +212,8 @@ export const FilterDrawer: Story = {
 									</div>
 
 									<div className='p-4'>
-										<h3 className='mb-3 text-sm font-medium text-gray-700'>Price Range</h3>
-										<div className='flex items-center gap-2 text-sm text-gray-600'>
+										<h3 className='mb-3 text-sm font-medium text-black'>Price Range</h3>
+										<div className='flex items-center gap-2 text-sm text-[#9ca3af]'>
 											<span>${priceRange[0]}</span>
 											<span>–</span>
 											<span>${priceRange[1]}</span>
@@ -218,12 +224,12 @@ export const FilterDrawer: Story = {
 											max={500}
 											value={priceRange[1]}
 											onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
-											className='mt-2 w-full'
+											className='mt-2 w-full accent-black'
 										/>
 									</div>
 								</div>
 
-								<div className='border-t border-gray-200 p-4'>
+								<div className='border-t border-[#d4d4d4] p-4'>
 									<div className='flex gap-3'>
 										<button
 											onClick={() =>
@@ -233,12 +239,12 @@ export const FilterDrawer: Story = {
 													newArrivals: false,
 												})
 											}
-											className='flex-1 rounded-md border border-gray-300 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'>
+											className='flex-1 rounded-[8px] border-2 border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]'>
 											Clear all
 										</button>
 										<button
 											onClick={() => setOpen(false)}
-											className='flex-1 rounded-md bg-blue-600 py-2 text-sm font-medium text-white hover:bg-blue-700'>
+											className='flex-1 rounded-[8px] border-2 border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]'>
 											Apply filters
 										</button>
 									</div>
@@ -260,7 +266,7 @@ export const FormDrawer: Story = {
 			<>
 				<button
 					onClick={() => setOpen(true)}
-					className='rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700'>
+					className={triggerBtnCls}>
 					+ Add Contact
 				</button>
 
@@ -269,10 +275,10 @@ export const FormDrawer: Story = {
 					onOpenChange={setOpen}>
 					<Drawer.Portal>
 						<Drawer.Overlay className='fixed inset-0 z-50 bg-black/40'>
-							<Drawer.Content className='fixed right-0 top-0 z-50 flex h-full w-96 flex-col bg-white shadow-xl'>
-								<Drawer.Header className='flex items-center justify-between border-b border-gray-200 px-5 py-4'>
-									<h2 className='text-base font-semibold text-gray-900'>New Contact</h2>
-									<Drawer.Close className='rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600'>
+							<Drawer.Content className='fixed right-0 top-0 z-50 flex h-full w-96 flex-col border-l-[3px] border-black bg-white'>
+								<Drawer.Header className='flex items-center justify-between border-b border-[#d4d4d4] px-5 py-4'>
+									<h2 className='text-base font-semibold text-black'>New Contact</h2>
+									<Drawer.Close className='rounded p-1 text-[#9ca3af] hover:bg-[#f5f5f5] hover:text-black'>
 										<CloseIcon />
 									</Drawer.Close>
 								</Drawer.Header>
@@ -281,65 +287,59 @@ export const FormDrawer: Story = {
 									<div className='space-y-4'>
 										<div className='grid grid-cols-2 gap-4'>
 											<div>
-												<label className='mb-1 block text-xs font-medium text-gray-700'>
+												<label className='mb-1 block text-xs font-medium text-black'>
 													First name
 												</label>
 												<input
 													type='text'
-													className='w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
+													className={inputFieldCls}
 													placeholder='Jane'
 												/>
 											</div>
 											<div>
-												<label className='mb-1 block text-xs font-medium text-gray-700'>
+												<label className='mb-1 block text-xs font-medium text-black'>
 													Last name
 												</label>
 												<input
 													type='text'
-													className='w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
+													className={inputFieldCls}
 													placeholder='Doe'
 												/>
 											</div>
 										</div>
 										<div>
-											<label className='mb-1 block text-xs font-medium text-gray-700'>
-												Email
-											</label>
+											<label className='mb-1 block text-xs font-medium text-black'>Email</label>
 											<input
 												type='email'
-												className='w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
+												className={inputFieldCls}
 												placeholder='jane@example.com'
 											/>
 										</div>
 										<div>
-											<label className='mb-1 block text-xs font-medium text-gray-700'>
-												Phone
-											</label>
+											<label className='mb-1 block text-xs font-medium text-black'>Phone</label>
 											<input
 												type='tel'
-												className='w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
+												className={inputFieldCls}
 												placeholder='+1 (555) 000-0000'
 											/>
 										</div>
 										<div>
-											<label className='mb-1 block text-xs font-medium text-gray-700'>
-												Notes
-											</label>
+											<label className='mb-1 block text-xs font-medium text-black'>Notes</label>
 											<textarea
 												rows={3}
-												className='w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
+												className={inputFieldCls}
 												placeholder='Any additional notes...'
 											/>
 										</div>
 									</div>
 								</div>
 
-								<div className='border-t border-gray-200 p-5'>
+								<div className='border-t border-[#d4d4d4] p-5'>
 									<div className='flex gap-3'>
-										<Drawer.Close className='flex-1 rounded-md border border-gray-300 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'>
+										<Drawer.Close className='flex-1 rounded-[8px] border-2 border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]'>
 											Cancel
 										</Drawer.Close>
-										<button className='flex-1 rounded-md bg-emerald-600 py-2 text-sm font-medium text-white hover:bg-emerald-700'>
+										<button className='flex-1 rounded-[8px] border-2 border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]'>
 											Save Contact
 										</button>
 									</div>

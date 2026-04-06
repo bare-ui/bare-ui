@@ -13,7 +13,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
 	args: {
 		children: 'This is a default card with some content inside.',
-		className: 'rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700',
+		className: 'rounded-[8px] border-2 border-black bg-white p-4 text-sm text-black',
 	},
 };
 
@@ -21,7 +21,7 @@ export const Primary: Story = {
 	args: {
 		color: 'primary',
 		children: 'This is a primary card.',
-		className: 'rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800',
+		className: 'rounded-[8px] border-2 border-black bg-[#f5f5f5] p-4 text-sm text-black',
 	},
 };
 
@@ -29,26 +29,20 @@ export const Inverse: Story = {
 	args: {
 		color: 'inverse',
 		children: 'This is an inverse card.',
-		className: 'rounded-lg border border-gray-700 bg-gray-900 p-4 text-sm text-gray-100',
+		className: 'rounded-[8px] border-2 border-black bg-black p-4 text-sm text-white',
 	},
 };
 
 export const Colors: Story = {
 	render: () => (
 		<div className='flex flex-col gap-4'>
-			<Card
-				color='default'
-				className='rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700'>
+			<Card color='default' className='rounded-[8px] border-2 border-black bg-white p-4 text-sm text-black'>
 				Default color card
 			</Card>
-			<Card
-				color='primary'
-				className='rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800'>
+			<Card color='primary' className='rounded-[8px] border-2 border-black bg-[#f5f5f5] p-4 text-sm text-black'>
 				Primary color card
 			</Card>
-			<Card
-				color='inverse'
-				className='rounded-lg border border-gray-700 bg-gray-900 p-4 text-sm text-gray-100'>
+			<Card color='inverse' className='rounded-[8px] border-2 border-black bg-black p-4 text-sm text-white'>
 				Inverse color card
 			</Card>
 		</div>
@@ -59,7 +53,7 @@ export const XSmall: Story = {
 	args: {
 		size: 'xsmall',
 		children: 'Extra small card',
-		className: 'rounded border border-gray-200 bg-white p-2 text-xs text-gray-700',
+		className: 'rounded-[8px] border-2 border-black bg-white p-2 text-xs text-black',
 	},
 };
 
@@ -67,7 +61,7 @@ export const Small: Story = {
 	args: {
 		size: 'small',
 		children: 'Small card',
-		className: 'rounded-md border border-gray-200 bg-white p-3 text-sm text-gray-700',
+		className: 'rounded-[8px] border-2 border-black bg-white p-3 text-sm text-black',
 	},
 };
 
@@ -75,7 +69,7 @@ export const Medium: Story = {
 	args: {
 		size: 'medium',
 		children: 'Medium card',
-		className: 'rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700',
+		className: 'rounded-[20px] border-[3px] border-black bg-white p-4 text-sm text-black',
 	},
 };
 
@@ -83,31 +77,23 @@ export const Large: Story = {
 	args: {
 		size: 'large',
 		children: 'Large card',
-		className: 'rounded-xl border border-gray-200 bg-white p-6 text-base text-gray-700',
+		className: 'rounded-[20px] border-[3px] border-black bg-white p-6 text-base text-black',
 	},
 };
 
 export const Sizes: Story = {
 	render: () => (
 		<div className='flex flex-col gap-4'>
-			<Card
-				size='xsmall'
-				className='rounded border border-gray-200 bg-white p-2 text-xs text-gray-700'>
+			<Card size='xsmall' className='rounded-[8px] border-2 border-black bg-white p-2 text-xs text-black'>
 				Extra small
 			</Card>
-			<Card
-				size='small'
-				className='rounded-md border border-gray-200 bg-white p-3 text-sm text-gray-700'>
+			<Card size='small' className='rounded-[8px] border-2 border-black bg-white p-3 text-sm text-black'>
 				Small
 			</Card>
-			<Card
-				size='medium'
-				className='rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700'>
+			<Card size='medium' className='rounded-[20px] border-[3px] border-black bg-white p-4 text-sm text-black'>
 				Medium
 			</Card>
-			<Card
-				size='large'
-				className='rounded-xl border border-gray-200 bg-white p-6 text-base text-gray-700'>
+			<Card size='large' className='rounded-[20px] border-[3px] border-black bg-white p-6 text-base text-black'>
 				Large
 			</Card>
 		</div>

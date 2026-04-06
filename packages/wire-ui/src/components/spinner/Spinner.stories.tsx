@@ -10,7 +10,6 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Spinner styles — uses 12 radial dots with staggered opacity animation
 const spinnerStyle = `
   .bare-spinner {
     position: relative;
@@ -55,10 +54,7 @@ export const Default: Story = {
 	render: () => (
 		<>
 			<style>{spinnerStyle}</style>
-			<Spinner
-				size='medium'
-				className='bare-spinner text-gray-700'
-			/>
+			<Spinner size='medium' className='bare-spinner text-black' />
 		</>
 	),
 };
@@ -67,10 +63,7 @@ export const Small: Story = {
 	render: () => (
 		<>
 			<style>{spinnerStyle}</style>
-			<Spinner
-				size='small'
-				className='bare-spinner text-gray-700'
-			/>
+			<Spinner size='small' className='bare-spinner text-black' />
 		</>
 	),
 };
@@ -79,10 +72,7 @@ export const Medium: Story = {
 	render: () => (
 		<>
 			<style>{spinnerStyle}</style>
-			<Spinner
-				size='medium'
-				className='bare-spinner text-gray-700'
-			/>
+			<Spinner size='medium' className='bare-spinner text-black' />
 		</>
 	),
 };
@@ -91,10 +81,7 @@ export const Large: Story = {
 	render: () => (
 		<>
 			<style>{spinnerStyle}</style>
-			<Spinner
-				size='large'
-				className='bare-spinner text-gray-700'
-			/>
+			<Spinner size='large' className='bare-spinner text-black' />
 		</>
 	),
 };
@@ -103,11 +90,7 @@ export const CustomColor: Story = {
 	render: () => (
 		<>
 			<style>{spinnerStyle}</style>
-			<Spinner
-				size='medium'
-				color='#3b82f6'
-				className='bare-spinner'
-			/>
+			<Spinner size='medium' color='#000000' className='bare-spinner' />
 		</>
 	),
 };
@@ -118,25 +101,16 @@ export const AllSizes: Story = {
 			<style>{spinnerStyle}</style>
 			<div className='flex items-center gap-8'>
 				<div className='flex flex-col items-center gap-2'>
-					<Spinner
-						size='small'
-						className='bare-spinner text-gray-700'
-					/>
-					<span className='text-xs text-gray-500'>Small</span>
+					<Spinner size='small' className='bare-spinner text-black' />
+					<span className='text-xs text-[#9ca3af]'>Small</span>
 				</div>
 				<div className='flex flex-col items-center gap-2'>
-					<Spinner
-						size='medium'
-						className='bare-spinner text-gray-700'
-					/>
-					<span className='text-xs text-gray-500'>Medium</span>
+					<Spinner size='medium' className='bare-spinner text-black' />
+					<span className='text-xs text-[#9ca3af]'>Medium</span>
 				</div>
 				<div className='flex flex-col items-center gap-2'>
-					<Spinner
-						size='large'
-						className='bare-spinner text-gray-700'
-					/>
-					<span className='text-xs text-gray-500'>Large</span>
+					<Spinner size='large' className='bare-spinner text-black' />
+					<span className='text-xs text-[#9ca3af]'>Large</span>
 				</div>
 			</div>
 		</>
@@ -148,36 +122,9 @@ export const Colors: Story = {
 		<>
 			<style>{spinnerStyle}</style>
 			<div className='flex items-center gap-8'>
-				<Spinner
-					size='medium'
-					color='#6b7280'
-					className='bare-spinner'
-				/>
-				<Spinner
-					size='medium'
-					color='#3b82f6'
-					className='bare-spinner'
-				/>
-				<Spinner
-					size='medium'
-					color='#10b981'
-					className='bare-spinner'
-				/>
-				<Spinner
-					size='medium'
-					color='#f59e0b'
-					className='bare-spinner'
-				/>
-				<Spinner
-					size='medium'
-					color='#ef4444'
-					className='bare-spinner'
-				/>
-				<Spinner
-					size='medium'
-					color='#8b5cf6'
-					className='bare-spinner'
-				/>
+				{Array.from({ length: 6 }).map((_, i) => (
+					<Spinner key={i} size='medium' color='#000000' className='bare-spinner' />
+				))}
 			</div>
 		</>
 	),
@@ -189,12 +136,8 @@ export const LoadingButton: Story = {
 			<style>{spinnerStyle}</style>
 			<button
 				disabled
-				className='inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white opacity-70'>
-				<Spinner
-					size='small'
-					color='#fff'
-					className='bare-spinner'
-				/>
+				className='inline-flex items-center gap-2 rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white opacity-70'>
+				<Spinner size='small' color='#fff' className='bare-spinner' />
 				Loading…
 			</button>
 		</>

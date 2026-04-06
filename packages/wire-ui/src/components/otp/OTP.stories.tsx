@@ -11,22 +11,13 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// ---------------------------------------------------------------------------
-// Shared slot style
-// ---------------------------------------------------------------------------
-
 const slotCls = [
-	'h-12 w-10 rounded-lg border-2 border-gray-300 bg-white text-center text-lg font-mono font-semibold text-gray-900',
+	'h-12 w-10 rounded-[8px] border-2 border-black bg-white text-center text-lg font-mono font-semibold text-black',
 	'outline-none transition-all caret-transparent',
-	'data-[active]:border-blue-500 data-[active]:ring-4 data-[active]:ring-blue-500/20',
-	'data-[filled]:border-gray-400',
-	'data-[complete]:border-green-500 data-[complete]:text-green-700',
-	'data-[disabled]:cursor-not-allowed data-[disabled]:bg-gray-100 data-[disabled]:text-gray-400',
+	'data-[active]:ring-4 data-[active]:ring-black/20',
+	'data-[complete]:bg-black data-[complete]:text-white',
+	'data-[disabled]:cursor-not-allowed data-[disabled]:bg-[#f5f5f5] data-[disabled]:text-[#9ca3af]',
 ].join(' ');
-
-// ---------------------------------------------------------------------------
-// Stories
-// ---------------------------------------------------------------------------
 
 export const Default: Story = {
 	render: () => (
@@ -36,11 +27,7 @@ export const Default: Story = {
 			onComplete={(v) => console.log('complete:', v)}
 			className='flex items-center gap-2'>
 			{Array.from({ length: 6 }).map((_, i) => (
-				<OTP.Slot
-					key={i}
-					index={i}
-					className={slotCls}
-				/>
+				<OTP.Slot key={i} index={i} className={slotCls} />
 			))}
 		</OTP.Root>
 	),
@@ -54,19 +41,11 @@ export const WithSeparator: Story = {
 			onComplete={(v) => console.log('complete:', v)}
 			className='flex items-center gap-2'>
 			{[0, 1, 2].map((i) => (
-				<OTP.Slot
-					key={i}
-					index={i}
-					className={slotCls}
-				/>
+				<OTP.Slot key={i} index={i} className={slotCls} />
 			))}
-			<OTP.Separator className='text-xl font-light text-gray-400' />
+			<OTP.Separator className='text-xl font-light text-black' />
 			{[3, 4, 5].map((i) => (
-				<OTP.Slot
-					key={i}
-					index={i}
-					className={slotCls}
-				/>
+				<OTP.Slot key={i} index={i} className={slotCls} />
 			))}
 		</OTP.Root>
 	),
@@ -84,11 +63,10 @@ export const FourDigit: Story = {
 					key={i}
 					index={i}
 					className={[
-						'h-14 w-12 rounded-xl border-2 border-gray-300 bg-white text-center text-2xl font-mono font-bold text-gray-900',
+						'h-14 w-12 rounded-[8px] border-2 border-black bg-white text-center text-2xl font-mono font-bold text-black',
 						'outline-none transition-all caret-transparent',
-						'data-[active]:border-blue-500 data-[active]:ring-4 data-[active]:ring-blue-500/20',
-						'data-[filled]:border-gray-400',
-						'data-[complete]:border-green-500 data-[complete]:text-green-700',
+						'data-[active]:ring-4 data-[active]:ring-black/20',
+						'data-[complete]:bg-black data-[complete]:text-white',
 					].join(' ')}
 				/>
 			))}
@@ -99,7 +77,7 @@ export const FourDigit: Story = {
 export const Alphanumeric: Story = {
 	render: () => (
 		<div className='flex flex-col gap-3'>
-			<p className='text-sm text-gray-500'>Enter your 6-character invite code</p>
+			<p className='text-sm text-[#9ca3af]'>Enter your 6-character invite code</p>
 			<OTP.Root
 				length={6}
 				pattern='alphanumeric'
@@ -107,11 +85,7 @@ export const Alphanumeric: Story = {
 				onComplete={(v) => console.log('complete:', v)}
 				className='flex items-center gap-2'>
 				{Array.from({ length: 6 }).map((_, i) => (
-					<OTP.Slot
-						key={i}
-						index={i}
-						className={slotCls}
-					/>
+					<OTP.Slot key={i} index={i} className={slotCls} />
 				))}
 			</OTP.Root>
 		</div>
@@ -133,17 +107,19 @@ export const WithCompletion: Story = {
 		};
 
 		const completeCls = [
-			'h-12 w-10 rounded-lg border-2 text-center text-lg font-mono font-semibold',
+			'h-12 w-10 rounded-[8px] border-2 text-center text-lg font-mono font-semibold',
 			'outline-none transition-all caret-transparent',
-			status === 'success' ? 'border-green-500 bg-green-50 text-green-700'
-			: status === 'error' ? 'border-red-400 bg-red-50 text-red-600'
-			: 'border-gray-300 bg-white text-gray-900 data-[active]:border-blue-500 data-[active]:ring-4 data-[active]:ring-blue-500/20 data-[filled]:border-gray-400',
+			status === 'success'
+				? 'border-black bg-black text-white'
+				: status === 'error'
+					? 'border-black bg-[#f5f5f5] text-black'
+					: 'border-black bg-white text-black data-[active]:ring-4 data-[active]:ring-black/20',
 		].join(' ');
 
 		return (
 			<div className='flex flex-col gap-3'>
-				<p className='text-sm text-gray-500'>
-					Try <span className='font-mono font-medium text-gray-800'>123456</span> for success
+				<p className='text-sm text-[#9ca3af]'>
+					Try <span className='font-mono font-medium text-black'>123456</span> for success
 				</p>
 				<OTP.Root
 					value={value}
@@ -152,15 +128,11 @@ export const WithCompletion: Story = {
 					length={6}
 					className='flex items-center gap-2'>
 					{Array.from({ length: 6 }).map((_, i) => (
-						<OTP.Slot
-							key={i}
-							index={i}
-							className={completeCls}
-						/>
+						<OTP.Slot key={i} index={i} className={completeCls} />
 					))}
 				</OTP.Root>
-				{status === 'success' && <p className='text-sm font-medium text-green-600'>✓ Code verified</p>}
-				{status === 'error' && <p className='text-sm font-medium text-red-500'>✗ Invalid code, try again</p>}
+				{status === 'success' && <p className='text-sm font-medium text-black'>✓ Code verified</p>}
+				{status === 'error' && <p className='text-sm font-medium text-black'>✗ Invalid code, try again</p>}
 			</div>
 		);
 	},
@@ -168,17 +140,9 @@ export const WithCompletion: Story = {
 
 export const Disabled: Story = {
 	render: () => (
-		<OTP.Root
-			length={6}
-			defaultValue='4829'
-			disabled
-			className='flex items-center gap-2'>
+		<OTP.Root length={6} defaultValue='4829' disabled className='flex items-center gap-2'>
 			{Array.from({ length: 6 }).map((_, i) => (
-				<OTP.Slot
-					key={i}
-					index={i}
-					className={slotCls}
-				/>
+				<OTP.Slot key={i} index={i} className={slotCls} />
 			))}
 		</OTP.Root>
 	),
