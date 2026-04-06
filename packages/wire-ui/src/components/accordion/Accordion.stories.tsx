@@ -46,7 +46,7 @@ const faqs = [
 ];
 
 const containerCls =
-	'w-full max-w-lg divide-y-2 divide-[#d4d4d4] rounded-[20px] border-[3px] border-black bg-white overflow-hidden';
+	'w-full max-w-lg divide-y-2 divide-black rounded-[20px] border-[3px] border-black bg-white overflow-hidden';
 
 const triggerCls =
 	'flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-black outline-none transition-colors hover:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50';
@@ -161,7 +161,7 @@ export const Flush: Story = {
 		<Accordion.Root
 			type='single'
 			collapsible
-			className='w-full max-w-lg divide-y-2 divide-[#d4d4d4]'>
+			className='w-full max-w-lg divide-y-2 divide-black'>
 			{faqs.map((faq) => (
 				<Accordion.Item
 					key={faq.value}
