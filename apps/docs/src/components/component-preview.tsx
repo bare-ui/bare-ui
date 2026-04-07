@@ -39,7 +39,10 @@ export function ComponentPreview({ code, height = 500, showConsole = false, libS
           },
         }}
         options={{
-          externalResources: ['https://cdn.tailwindcss.com'],
+          externalResources: [
+            'https://cdn.tailwindcss.com',
+            'https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap',
+          ],
         }}
         theme="auto"
       >
