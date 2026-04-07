@@ -42,24 +42,24 @@ const plans = [
 
 export default function App() {
   return (
-    <div className="p-6">
+    <div style={{ fontFamily: "'Patrick Hand', cursive" }} className="p-6">
       <Radio.Root name="plan-specs" className="space-y-2">
         {plans.map((plan) => (
           <Radio.Item
             key={plan.value}
             value={plan.value}
-            className="group relative flex cursor-pointer rounded-lg border border-gray-200 bg-white px-5 py-4 shadow-sm transition focus:outline-none data-[checked]:border-blue-500 data-[checked]:ring-2 data-[checked]:ring-blue-500/30">
+            className="group relative flex cursor-pointer rounded-[8px] border-2 border-black bg-white px-5 py-4 transition focus:outline-none data-[checked]:bg-[#f5f5f5]">
             <div className="flex w-full items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <span className="flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-gray-300 bg-white transition group-data-[checked]:border-blue-600 group-data-[checked]:bg-blue-600">
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-black bg-white transition group-data-[checked]:border-black group-data-[checked]:bg-black">
                   <Radio.Indicator className="size-2 rounded-full bg-white" />
                 </span>
                 <div>
-                  <Radio.Label className="block text-sm font-medium text-gray-900">{plan.label}</Radio.Label>
-                  <p className="text-xs text-gray-500">{plan.description}</p>
+                  <Radio.Label className="block text-sm font-medium text-black">{plan.label}</Radio.Label>
+                  <p className="text-xs text-[#9ca3af]">{plan.description}</p>
                 </div>
               </div>
-              <div className="flex shrink-0 gap-4 text-xs text-gray-500 group-data-[checked]:text-blue-600">
+              <div className="flex shrink-0 gap-4 text-xs text-[#9ca3af] group-data-[checked]:text-black">
                 <span>{plan.ram}</span>
                 <span>{plan.cpus}</span>
                 <span>{plan.disk}</span>

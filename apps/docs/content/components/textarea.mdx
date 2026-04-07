@@ -15,13 +15,13 @@ import { Textarea } from '@wire-ui/react'
 
 export default function App() {
   return (
-    <div className="p-6 flex flex-col gap-6 max-w-xs">
+    <div style={{ fontFamily: "'Patrick Hand', cursive" }} className="p-6 flex flex-col gap-6 max-w-xs">
       <Textarea.Root className="flex flex-col gap-1.5">
-        <Textarea.Label className="text-sm font-medium text-gray-700">Message</Textarea.Label>
+        <Textarea.Label className="text-sm font-medium text-black">Message</Textarea.Label>
         <Textarea.Field
           placeholder="Type your message here..."
           rows={4}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          className="w-full rounded-[8px] border-2 border-black px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
         />
       </Textarea.Root>
 
@@ -29,13 +29,13 @@ export default function App() {
         isRequired
         errorMessage={{ required: 'This field is required' }}
         className="flex flex-col gap-1.5">
-        <Textarea.Label className="text-sm font-medium text-gray-700">Feedback</Textarea.Label>
+        <Textarea.Label className="text-sm font-medium text-black">Feedback</Textarea.Label>
         <Textarea.Field
           placeholder="Your feedback is important..."
           rows={4}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          className="w-full rounded-[8px] border-2 border-black px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
         />
-        <Textarea.Error className="text-xs text-red-500" />
+        <Textarea.Error className="text-xs text-black" />
       </Textarea.Root>
     </div>
   )

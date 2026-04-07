@@ -16,14 +16,14 @@ import { useState } from 'react'
 
 const frameworks = ['React', 'Vue', 'Angular', 'Svelte', 'Solid']
 
-const triggerCls = 'flex w-full items-center justify-between gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm outline-none transition data-[state=open]:border-blue-500 data-[state=open]:ring-1 data-[state=open]:ring-blue-500 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[hover]:bg-gray-50'
+const triggerCls = 'flex w-full items-center justify-between gap-2 rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm outline-none transition data-[state=open]:ring-2 data-[state=open]:ring-blue-500 data-[state=open]:ring-offset-1 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[hover]:bg-[#f5f5f5]'
 
-const contentCls = 'absolute z-50 mt-1 w-full overflow-hidden rounded-md border border-gray-200 bg-white py-1 shadow-lg'
+const contentCls = 'absolute z-50 mt-1 w-full overflow-hidden rounded-[20px] border-[3px] border-black bg-white py-1'
 
-const itemCls = 'flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-gray-700 outline-none transition data-[hover]:bg-gray-100 data-[selected]:font-medium data-[selected]:text-blue-600 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40'
+const itemCls = 'flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-black outline-none transition data-[hover]:bg-[#f5f5f5] data-[selected]:font-medium data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40'
 
 const ChevronIcon = () => (
-  <svg className="size-4 shrink-0 text-gray-400 transition-transform data-[state=open]:rotate-180" viewBox="0 0 20 20" fill="currentColor">
+  <svg className="size-4 shrink-0 text-[#9ca3af] transition-transform data-[state=open]:rotate-180" viewBox="0 0 20 20" fill="currentColor">
     <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
   </svg>
 )
@@ -38,19 +38,19 @@ export default function App() {
   const [value, setValue] = useState('')
 
   return (
-    <div className="p-6 flex justify-center">
+    <div style={{ fontFamily: "'Patrick Hand', cursive" }} className="p-6 flex justify-center">
       <div className="w-64">
         <Select.Root value={value} onChange={setValue}>
           <div className="relative">
             <Select.Trigger className={triggerCls}>
-              <Select.Value placeholder="Select a framework" className="data-[placeholder]:text-gray-400" />
+              <Select.Value placeholder="Select a framework" className="data-[placeholder]:text-[#9ca3af]" />
               <ChevronIcon />
             </Select.Trigger>
             <Select.Content className={contentCls}>
               {frameworks.map((fw) => (
                 <Select.Item key={fw} value={fw.toLowerCase()} className={itemCls}>
                   <span className="flex-1">{fw}</span>
-                  <span className="invisible text-blue-600 data-[selected]:visible">
+                  <span className="invisible text-black data-[selected]:visible">
                     <CheckIcon />
                   </span>
                 </Select.Item>
