@@ -6,8 +6,8 @@ import s from './page.module.css'
 const FEATURES = [
   {
     icon: '🎨',
-    title: 'Unstyled by default',
-    desc: 'Zero CSS shipped. No design opinions baked in. You own every pixel of your design system.',
+    title: 'Wireframe primitives',
+    desc: 'Think of each component as a wireframe — pure structure and behaviour with zero CSS. You draw the final picture.',
   },
   {
     icon: '📡',
@@ -74,17 +74,16 @@ export default function HomePage() {
       <section className={s.hero}>
         <div className={s.heroBadge}>
           <span>⚡</span>
-          React 19 · Headless · Zero CSS
+          Wireframe primitives · Zero CSS · Framework agnostic
         </div>
 
         <h1 className={s.heroTitle}>
-          Core building blocks<br />
-          for your <span>design system</span>
+          The wireframe for<br />
+          your <span>design system</span>
         </h1>
 
         <p className={s.heroSub}>
-          Unstyled, accessible React 19 primitives. Style everything with your
-          own CSS using <code>data-*</code> attributes that reflect interactive state.
+          Lightweight, unstyled primitives — like a wireframe that ships to production. Zero CSS, zero opinions. Just behaviour and accessibility, ready for your styles via <code>data-*</code> attributes.
         </p>
 
         <div className={s.heroCtas}>
@@ -138,8 +137,8 @@ export default function App() {
         <p className={s.sectionLabel}>Built by</p>
         <h2 className={s.sectionHeading}>The person behind wire-ui</h2>
         <p className={s.sectionSub}>
-          Designed and built by a senior frontend engineer who got tired of
-          fighting component library styles.
+          Designed and built by a frontend engineer who got tired of
+          fighting component library styles — so he built wireframe primitives instead.
         </p>
 
         <div className={s.authorCard}>

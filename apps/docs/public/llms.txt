@@ -1,6 +1,6 @@
 # Wire UI
 
-> A headless, unstyled React 19 component library. Style everything with your own CSS using data-* attributes that reflect interactive state.
+> A headless, unstyled component library. Style everything with your own CSS using data-* attributes that reflect interactive state.
 
 Wire UI provides behavior primitives for React applications. Every component handles interaction states, accessibility, and complex behaviors while shipping zero CSS. Style them with Tailwind, CSS Modules, plain CSS — anything that supports attribute selectors.
 
@@ -23,7 +23,6 @@ Wire UI provides behavior primitives for React applications. Every component han
 - [Alert](https://wire-ui.vercel.app/docs/components/alert): Dismissible alert with auto-dismiss support
 - [Badge](https://wire-ui.vercel.app/docs/components/badge): Numeric count badge capped at 9+
 - [ProgressBar](https://wire-ui.vercel.app/docs/components/progress-bar): Accessible progress indicator with role="progressbar" and ARIA attributes
-- [Spinner](https://wire-ui.vercel.app/docs/components/spinner): Animated loading indicator with size and color props
 - [Timeago](https://wire-ui.vercel.app/docs/components/timeago): Relative or formatted timestamp that updates live
 - [Tooltip](https://wire-ui.vercel.app/docs/components/tooltip): Hover/focus tooltip with configurable delay and side
 

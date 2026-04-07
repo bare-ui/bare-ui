@@ -1,6 +1,6 @@
 # Wire UI — Full Documentation
 
-> A headless, unstyled React 19 component library. Style everything with your own CSS using data-* attributes that reflect interactive state.
+> A headless, unstyled component library. Style everything with your own CSS using data-* attributes that reflect interactive state.
 
 Wire UI provides behavior primitives for React applications. Components handle interaction states, accessibility, and complex behaviors while shipping zero CSS. Style them with Tailwind, CSS Modules, or plain CSS — anything that supports attribute selectors.
 
@@ -34,7 +34,7 @@ GitHub: https://github.com/wire-ui/wire-ui
 npm install @wire-ui/react
 ```
 
-Wire UI has no production dependencies. React 19 is a peer dependency.
+Wire UI has no production dependencies. React is a peer dependency.
 
 ### Styling Approach
 
@@ -673,20 +673,6 @@ import { Select } from '@wire-ui/react'
   </Select.Content>
 </Select.Root>
 ```
-
----
-
-### Spinner
-
-Animated 12-dot loading indicator. Renders role="status" with aria-label="Loading".
-
-```tsx
-import { Spinner } from '@wire-ui/react'
-
-<Spinner size="medium" color="#6366f1" />
-```
-
-Props: size ("small" | "medium" | "large"), color (CSS color string).
 
 ---
 

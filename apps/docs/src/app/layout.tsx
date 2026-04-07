@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     default: 'Wire UI',
   },
   description:
-    'A headless, unstyled React 19 component library. Style everything with your own CSS using data-* attributes.',
+    'A headless, unstyled component library. Style everything with your own CSS using data-* attributes.',
   icons: {
     icon: [
       { url: '/images/favicon/favicon.ico' },

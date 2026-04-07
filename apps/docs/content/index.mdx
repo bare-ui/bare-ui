@@ -1,23 +1,25 @@
 ---
 title: Introduction
-description: A headless, unstyled React 19 component library.
+description: Wireframe primitives — unstyled, lightweight, zero CSS.
 ---
 
 import { Cards } from 'nextra/components'
 
 # Wire UI
 
-A headless, unstyled React 19 component library. Components ship with zero CSS — style them entirely with your own classes and CSS by targeting `data-*` attributes that reflect interactive state.
+Wireframe primitives for modern JavaScript frameworks. Each component is like a wireframe that ships to production — pure structure, behaviour, and accessibility with zero CSS. You bring the design; Wire UI handles everything else.
 
 ## Why Wire UI?
 
-Most component libraries bundle design decisions you can't escape. Wire UI takes the opposite approach: every component is a behaviour primitive. You get the logic, accessibility, and state tracking — nothing else.
+Most component libraries bundle design decisions you can't escape. Wire UI takes the opposite approach: every component is a bare wireframe — a lightweight behaviour primitive with no visual opinion. You get the interaction logic, keyboard handling, ARIA attributes, and state tracking. Nothing else. No stylesheets, no CSS variables, no theming layer.
+
+Think of it as starting from a wireframe instead of a finished design. You sketch the final look with your own CSS, Tailwind classes, or whatever styling approach you prefer — targeting `data-*` attributes that reflect every interactive state.
 
 ```tsx
-// Wire UI ships no styles. This is all you get:
+// Wire UI ships no styles — just the wireframe:
 <Button onClick={handleClick}>Save</Button>
 
-// Style it however you want using data-* attributes:
+// You paint the wireframe with your own styles:
 <Button className="
   px-4 py-2 rounded bg-blue-600 text-white
   [data-hover]:bg-blue-700
@@ -31,7 +33,7 @@ Most component libraries bundle design decisions you can't escape. Wire UI takes
 
 ## Core principles
 
-**Unstyled by default.** No CSS shipped. No design opinions. You own the design system.
+**Wireframe primitives.** Every component is a lightweight, unstyled building block — zero CSS shipped, zero design opinions. Like a wireframe, it gives you the structure and leaves the visual design entirely to you.
 
 **State via `data-*` attributes.** Every interactive state (hover, focus, active, disabled, open/closed) is exposed as a data attribute — empty string when active, absent when not. Style with CSS attribute selectors.
 
