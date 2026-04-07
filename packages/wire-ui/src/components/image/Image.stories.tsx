@@ -15,7 +15,7 @@ const meta = {
 } satisfies Meta<typeof Image>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 // ---------------------------------------------------------------------------
 // Wireframe placeholder — grey box with diagonal X cross (no network request)

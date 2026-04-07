@@ -20,8 +20,6 @@ const meta = {
 		controls: {
 			include: ['value', 'defaultValue', 'max', 'disabled', 'readOnly', 'onChange', 'starClassName', 'className'],
 		},
-	},
-	parameters: {
 		docs: {
 			description: {
 				component: 'Star rating with hover preview, read-only, and disabled modes.',
