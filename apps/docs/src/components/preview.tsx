@@ -3,7 +3,7 @@
 export function Preview({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="my-6 overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700"
+      className="my-6 rounded-lg border border-gray-200 dark:border-gray-700"
       style={{
         fontFamily: "'Patrick Hand', cursive",
         backgroundColor: '#ffffff',

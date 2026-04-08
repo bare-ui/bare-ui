@@ -3,23 +3,52 @@
 import { useState } from 'react'
 import { Modal } from '@wire-ui/react'
 
-export function ModalPreview() {
-  const [open, setOpen] = useState(false)
-  const [confirmed, setConfirmed] = useState(false)
+const CloseIcon = () => (
+  <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+    <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+  </svg>
+)
 
-  const handleConfirm = () => {
-    setConfirmed(true)
-    setOpen(false)
-  }
+export function Basic() {
+  const [open, setOpen] = useState(false)
 
   return (
-    <div className="p-6 flex flex-col items-start gap-3">
+    <div className="p-6">
+      <button
+        onClick={() => setOpen(true)}
+        className="inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]">
+        Show Notification
+      </button>
+
+      <Modal.Root open={open} onOpenChange={setOpen}>
+        <Modal.Portal>
+          <Modal.Overlay className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <Modal.Content className="w-full max-w-md overflow-hidden rounded-[20px] border-[3px] border-black bg-white p-6">
+              <h2 className="mb-2 text-base font-semibold text-black">Notification</h2>
+              <p className="mb-6 text-sm text-[#6b7280]">
+                Your changes have been saved successfully. You can continue working or close this dialog.
+              </p>
+              <Modal.Close className="w-full rounded-[8px] border-2 border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]">
+                Close
+              </Modal.Close>
+            </Modal.Content>
+          </Modal.Overlay>
+        </Modal.Portal>
+      </Modal.Root>
+    </div>
+  )
+}
+
+export function Composed() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div className="p-6">
       <button
         onClick={() => setOpen(true)}
         className="inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]">
         Delete Account
       </button>
-      {confirmed && <p className="text-sm text-black">&#10003; Action confirmed</p>}
 
       <Modal.Root open={open} onOpenChange={setOpen}>
         <Modal.Portal>
@@ -39,9 +68,58 @@ export function ModalPreview() {
                   Cancel
                 </Modal.Close>
                 <button
-                  onClick={handleConfirm}
+                  onClick={() => setOpen(false)}
                   className="flex-1 rounded-[8px] border-2 border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]">
                   Delete
+                </button>
+              </div>
+            </Modal.Content>
+          </Modal.Overlay>
+        </Modal.Portal>
+      </Modal.Root>
+    </div>
+  )
+}
+
+export function Complex() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div className="p-6">
+      <button
+        onClick={() => setOpen(true)}
+        className="inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]">
+        Edit Profile
+      </button>
+
+      <Modal.Root open={open} onOpenChange={setOpen}>
+        <Modal.Portal>
+          <Modal.Overlay className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <Modal.Content className="w-full max-w-md overflow-hidden rounded-[20px] border-[3px] border-black bg-white">
+              <div className="flex items-center justify-between border-b-2 border-black px-6 py-4">
+                <h2 className="text-base font-semibold text-black">Edit Profile</h2>
+                <Modal.Close className="rounded-[8px] p-1 text-[#6b7280] hover:bg-[#f5f5f5] hover:text-black">
+                  <CloseIcon />
+                </Modal.Close>
+              </div>
+              <div className="flex flex-col gap-4 px-6 py-4">
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-black">Name</label>
+                  <input type="text" placeholder="Jane Doe" className="w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm" />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-black">Email</label>
+                  <input type="email" placeholder="jane@example.com" className="w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm" />
+                </div>
+              </div>
+              <div className="flex gap-3 border-t-2 border-black px-6 py-4">
+                <Modal.Close className="flex-1 rounded-[8px] border-2 border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]">
+                  Cancel
+                </Modal.Close>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="flex-1 rounded-[8px] border-2 border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]">
+                  Save
                 </button>
               </div>
             </Modal.Content>

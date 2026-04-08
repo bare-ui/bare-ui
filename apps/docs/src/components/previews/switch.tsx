@@ -3,10 +3,54 @@
 import { Switch } from '@wire-ui/react'
 import { useState } from 'react'
 
-const trackCls = 'relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-black bg-[#e5e5e5] transition-colors outline-none data-[checked]:bg-black data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[focus-visible]:ring-2 data-[focus-visible]:ring-black data-[focus-visible]:ring-offset-2'
-const thumbCls = 'pointer-events-none inline-block size-5 translate-x-0 rounded-full border-2 border-black bg-white transition-transform data-[checked]:translate-x-5'
+const trackCls =
+  'relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-black bg-[#e5e5e5] transition-colors outline-none data-[checked]:bg-black data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[focus-visible]:ring-2 data-[focus-visible]:ring-black data-[focus-visible]:ring-offset-2'
+const thumbCls =
+  'pointer-events-none inline-block size-5 translate-x-0 rounded-full border-2 border-black bg-white transition-transform data-[checked]:translate-x-5'
 
-export function SwitchPreview() {
+export function SwitchBasic() {
+  const [enabled, setEnabled] = useState(false)
+
+  return (
+    <div className="flex justify-center p-6">
+      <div className="flex items-center gap-3">
+        <label className="text-sm font-medium text-black">Enable notifications</label>
+        <Switch.Root checked={enabled} onChange={() => setEnabled(!enabled)} className={trackCls}>
+          <Switch.Thumb className={thumbCls} />
+        </Switch.Root>
+      </div>
+    </div>
+  )
+}
+
+export function SwitchComposed() {
+  const [notifications, setNotifications] = useState(true)
+  const [emails, setEmails] = useState(false)
+  const [marketing, setMarketing] = useState(false)
+
+  const items = [
+    { label: 'Push notifications', value: notifications, onChange: () => setNotifications(!notifications) },
+    { label: 'Email updates', value: emails, onChange: () => setEmails(!emails) },
+    { label: 'Marketing emails', value: marketing, onChange: () => setMarketing(!marketing) },
+  ]
+
+  return (
+    <div className="flex justify-center p-6">
+      <div className="w-80 divide-y divide-[#d4d4d4] rounded-[8px] border-2 border-black bg-white">
+        {items.map(({ label, value, onChange }) => (
+          <div key={label} className="flex items-center justify-between px-4 py-3">
+            <p className="text-sm font-medium text-black">{label}</p>
+            <Switch.Root checked={value} onChange={onChange} className={trackCls}>
+              <Switch.Thumb className={thumbCls} />
+            </Switch.Root>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export function SwitchComplex() {
   const [notifications, setNotifications] = useState(true)
   const [emails, setEmails] = useState(false)
   const [marketing, setMarketing] = useState(false)
@@ -18,7 +62,7 @@ export function SwitchPreview() {
   ]
 
   return (
-    <div className="p-6 flex justify-center">
+    <div className="flex justify-center p-6">
       <div className="w-80 divide-y divide-[#d4d4d4] rounded-[20px] border-[3px] border-black bg-white">
         {items.map(({ label, desc, value, onChange }) => (
           <div key={label} className="flex items-center justify-between px-4 py-3">

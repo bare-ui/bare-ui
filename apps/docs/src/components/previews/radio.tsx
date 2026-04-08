@@ -29,10 +29,57 @@ const plans = [
   },
 ]
 
-export function RadioPreview() {
+export function RadioBasic() {
   return (
     <div className="p-6">
-      <Radio.Root name="plan-specs" className="space-y-2">
+      <Radio.Root name="plan-basic" className="space-y-2">
+        {plans.map((plan) => (
+          <Radio.Item
+            key={plan.value}
+            value={plan.value}
+            className="group relative flex cursor-pointer rounded-[8px] border-2 border-black bg-white px-5 py-4 transition focus:outline-none data-[checked]:bg-[#f5f5f5]">
+            <div className="flex w-full items-center gap-3">
+              <span className="flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-black bg-white transition group-data-[checked]:bg-black">
+                <Radio.Indicator className="size-2 rounded-full bg-white" />
+              </span>
+              <Radio.Label className="text-sm font-medium text-black">{plan.label}</Radio.Label>
+            </div>
+          </Radio.Item>
+        ))}
+      </Radio.Root>
+    </div>
+  )
+}
+
+export function RadioComposed() {
+  return (
+    <div className="p-6">
+      <Radio.Root name="plan-composed" className="space-y-2">
+        {plans.map((plan) => (
+          <Radio.Item
+            key={plan.value}
+            value={plan.value}
+            className="group relative flex cursor-pointer rounded-[8px] border-2 border-black bg-white px-5 py-4 transition focus:outline-none data-[checked]:bg-[#f5f5f5]">
+            <div className="flex w-full items-center gap-3">
+              <span className="flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-black bg-white transition group-data-[checked]:bg-black">
+                <Radio.Indicator className="size-2 rounded-full bg-white" />
+              </span>
+              <div>
+                <Radio.Label className="block text-sm font-medium text-black">{plan.label}</Radio.Label>
+                <p className="text-xs text-[#6b7280]">{plan.description}</p>
+              </div>
+            </div>
+          </Radio.Item>
+        ))}
+      </Radio.Root>
+    </div>
+  )
+}
+
+export function RadioComplex() {
+  return (
+    <div className="p-6">
+      <Radio.Root name="plan-complex" className="space-y-2">
         {plans.map((plan) => (
           <Radio.Item
             key={plan.value}

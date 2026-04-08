@@ -1,6 +1,7 @@
 'use client'
 
 import { Password } from '@wire-ui/react'
+import { useState } from 'react'
 
 const fieldCls = 'w-full rounded-[8px] bg-white border-2 border-black px-3 py-2 pr-10 text-sm outline-none transition focus:ring-2 focus:ring-blue-500 focus:ring-offset-1'
 const toggleCls = 'group absolute inset-y-0 right-0 flex items-center px-3 text-[#6b7280] outline-none transition hover:text-black data-[visible]:text-black'
@@ -19,42 +20,87 @@ const EyeOffIcon = () => (
   </svg>
 )
 
-export function PasswordPreview() {
+const ToggleButton = () => (
+  <Password.Toggle className={toggleCls}>
+    <span className="group-data-[visible]:hidden"><EyeIcon /></span>
+    <span className="hidden group-data-[visible]:block"><EyeOffIcon /></span>
+  </Password.Toggle>
+)
+
+export function PasswordBasic() {
   return (
-    <div className="p-6 flex flex-col gap-6 max-w-xs">
-      <Password.Root className="flex flex-col gap-1.5">
+    <div className="p-6 flex items-center justify-center">
+      <Password.Root className="flex w-full max-w-xs flex-col gap-1.5">
         <Password.Label className="text-sm font-medium text-black">Password</Password.Label>
         <div className="relative">
           <Password.Field placeholder="••••••••" className={fieldCls} />
-          <Password.Toggle className={toggleCls}>
-            <span className="group-data-[visible]:hidden"><EyeIcon /></span>
-            <span className="hidden group-data-[visible]:block"><EyeOffIcon /></span>
-          </Password.Toggle>
+          <ToggleButton />
         </div>
       </Password.Root>
+    </div>
+  )
+}
 
-      <div className="flex flex-col gap-4">
-        <p className="text-xs font-medium uppercase tracking-wide text-[#6b7280]">Confirm password</p>
-        <Password.Root className="flex flex-col gap-1.5">
-          <Password.Label className="text-sm font-medium text-black">New password</Password.Label>
-          <div className="relative">
-            <Password.Field placeholder="••••••••" className={fieldCls} />
-            <Password.Toggle className={toggleCls}>
-              <span className="group-data-[visible]:hidden"><EyeIcon /></span>
-              <span className="hidden group-data-[visible]:block"><EyeOffIcon /></span>
-            </Password.Toggle>
-          </div>
-        </Password.Root>
-        <Password.Root className="flex flex-col gap-1.5">
-          <Password.Label className="text-sm font-medium text-black">Confirm password</Password.Label>
-          <div className="relative">
-            <Password.Field placeholder="••••••••" className={fieldCls} />
-            <Password.Toggle className={toggleCls}>
-              <span className="group-data-[visible]:hidden"><EyeIcon /></span>
-              <span className="hidden group-data-[visible]:block"><EyeOffIcon /></span>
-            </Password.Toggle>
-          </div>
-        </Password.Root>
+export function PasswordComposed() {
+  return (
+    <div className="p-6 flex flex-col gap-4 max-w-xs mx-auto">
+      <Password.Root className="flex flex-col gap-1.5">
+        <Password.Label className="text-sm font-medium text-black">New password</Password.Label>
+        <div className="relative">
+          <Password.Field placeholder="••••••••" className={fieldCls} />
+          <ToggleButton />
+        </div>
+      </Password.Root>
+      <Password.Root className="flex flex-col gap-1.5">
+        <Password.Label className="text-sm font-medium text-black">Confirm password</Password.Label>
+        <div className="relative">
+          <Password.Field placeholder="••••••••" className={fieldCls} />
+          <ToggleButton />
+        </div>
+      </Password.Root>
+    </div>
+  )
+}
+
+function getStrength(len: number): number {
+  if (len >= 12) return 4
+  if (len >= 8) return 3
+  if (len >= 4) return 2
+  if (len > 0) return 1
+  return 0
+}
+
+const strengthLabels = ['', 'Weak', 'Fair', 'Good', 'Strong']
+
+export function PasswordComplex() {
+  const [pw, setPw] = useState('')
+  const strength = getStrength(pw.length)
+
+  return (
+    <div className="p-6 flex flex-col gap-4 max-w-xs mx-auto">
+      <Password.Root className="flex flex-col gap-1.5">
+        <Password.Label className="text-sm font-medium text-black">Password</Password.Label>
+        <div className="relative">
+          <Password.Field
+            placeholder="••••••••"
+            className={fieldCls}
+            onChange={(e) => setPw(e.target.value)}
+          />
+          <ToggleButton />
+        </div>
+      </Password.Root>
+      <div className="flex flex-col gap-1.5">
+        <div className="flex gap-1.5">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className={`h-1 flex-1 rounded-full ${i <= strength ? 'bg-black' : 'bg-[#e5e5e5]'}`}
+            />
+          ))}
+        </div>
+        {strength > 0 && (
+          <p className="text-xs text-[#6b7280]">{strengthLabels[strength]}</p>
+        )}
       </div>
     </div>
   )
