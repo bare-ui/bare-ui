@@ -6,4 +6,6 @@ export default {
   'data-attributes': 'Data Attributes',
   ai: 'AI',
   author: 'Author',
+  license: 'License',
+  'code-of-conduct': 'Code of Conduct',
 }
