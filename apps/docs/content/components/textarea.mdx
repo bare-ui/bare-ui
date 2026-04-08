@@ -8,19 +8,66 @@ description: Compound multi-line text input with consumer-controlled error state
 
 Same compound API as Input, but renders a `<textarea>`. Controlled, uncontrolled, and consumer-controlled error state.
 
-## Preview
+### Basic
 
-<Preview><TextareaPreview /></Preview>
-
-## Anatomy
+<Preview><TextareaBasic /></Preview>
 
 ```tsx
 import { Textarea } from '@wire-ui/react'
 
-<Textarea.Root value={value} onChange={setValue}>
-  <Textarea.Label>Message</Textarea.Label>
-  <Textarea.Field placeholder="Write something..." rows={4} />
-  <Textarea.Error />
+<Textarea.Root className="flex flex-col gap-1.5">
+  <Textarea.Label className="text-sm font-medium text-black">Message</Textarea.Label>
+  <Textarea.Field
+    placeholder="Type your message here..."
+    rows={4}
+    className="w-full rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+  />
+</Textarea.Root>
+```
+
+### With validation
+
+<Preview><TextareaComposed /></Preview>
+
+```tsx
+import { Textarea } from '@wire-ui/react'
+
+<Textarea.Root
+  isRequired
+  errorMessage={{ required: 'This field is required' }}
+  className="flex flex-col gap-1.5">
+  <Textarea.Label className="text-sm font-medium text-black">Feedback</Textarea.Label>
+  <Textarea.Field
+    placeholder="Your feedback is important..."
+    rows={4}
+    className="w-full rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+  />
+  <Textarea.Error className="text-xs text-black" />
+</Textarea.Root>
+```
+
+### With character count
+
+<Preview><TextareaComplex /></Preview>
+
+```tsx
+import { Textarea } from '@wire-ui/react'
+import { useState } from 'react'
+
+const [value, setValue] = useState('')
+
+<Textarea.Root className="flex flex-col gap-1.5">
+  <Textarea.Label className="text-sm font-medium text-black">Bio</Textarea.Label>
+  <p className="text-xs text-[#6b7280]">Write a short bio about yourself.</p>
+  <Textarea.Field
+    placeholder="Tell us about yourself..."
+    value={value}
+    onChange={(e) => setValue(e.target.value)}
+    maxLength={200}
+    rows={4}
+    className="w-full rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+  />
+  <p className="text-right text-xs text-[#6b7280]">{value.length}/200</p>
 </Textarea.Root>
 ```
 

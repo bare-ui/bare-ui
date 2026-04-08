@@ -8,17 +8,60 @@ description: Unstyled container with optional data-color and data-size attribute
 
 A simple unstyled container element. Pass `data-color` and `data-size` to drive your design token styles.
 
-## Preview
+### Basic
 
-<Preview><CardPreview /></Preview>
-
-## Usage
+<Preview><CardBasic /></Preview>
 
 ```tsx
 import { Card } from '@wire-ui/react'
 
-<Card data-color="blue" data-size="large" className="p-4 rounded-xl border">
-  Card content
+<Card className="w-full max-w-sm rounded-[8px] border-2 border-black bg-white p-5">
+  <h3 className="text-sm font-semibold text-black mb-1">Card Title</h3>
+  <p className="text-sm text-[#6b7280]">
+    This is a basic card component with a title and description. Use it to group related content together.
+  </p>
+</Card>
+```
+
+### With avatar
+
+<Preview><CardComposed /></Preview>
+
+```tsx
+import { Card, Avatar } from '@wire-ui/react'
+
+<Card className="w-full max-w-sm rounded-[8px] border-2 border-black bg-white p-4 flex items-center gap-4">
+  <Avatar.Root className="relative inline-flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-black bg-[#f5f5f5]">
+    <Avatar.Fallback className="text-sm font-semibold text-black select-none">W</Avatar.Fallback>
+  </Avatar.Root>
+  <div>
+    <h3 className="text-sm font-semibold text-black">Wire UI</h3>
+    <p className="text-xs text-[#6b7280]">Wireframe primitives for modern frameworks</p>
+  </div>
+</Card>
+```
+
+### Product card
+
+<Preview><CardComplex /></Preview>
+
+```tsx
+import { Card, Button } from '@wire-ui/react'
+
+<Card className="w-full max-w-sm overflow-hidden rounded-[20px] border-[3px] border-black bg-white">
+  <img src="/product.jpg" alt="Product" className="w-full h-[180px] object-cover bg-[#f5f5f5]" />
+  <div className="p-5">
+    <h3 className="text-sm font-semibold text-black mb-1">Product Name</h3>
+    <p className="text-sm text-[#6b7280] mb-4">
+      A short description of the product with key details about what makes it special.
+    </p>
+    <div className="flex items-center justify-between">
+      <span className="text-base font-bold text-black">$49.99</span>
+      <Button className="inline-flex cursor-pointer items-center justify-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white transition-colors [data-hover]:bg-[#333]">
+        Add to Cart
+      </Button>
+    </div>
+  </div>
 </Card>
 ```
 

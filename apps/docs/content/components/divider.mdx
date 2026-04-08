@@ -8,23 +8,50 @@ description: Horizontal or vertical separator line.
 
 Horizontal or vertical separator. Decorative by default (`aria-hidden`). Pass `decorative={false}` for a semantic separator.
 
-## Preview
+### Horizontal
 
-<Preview><DividerPreview /></Preview>
-
-## Usage
+<Preview><DividerBasic /></Preview>
 
 ```tsx
 import { Divider } from '@wire-ui/react'
 
-// Decorative (default)
-<Divider />
+<div className="flex flex-col gap-3">
+  <p className="text-sm text-black">Item one</p>
+  <Divider className="h-[2px] w-full bg-black" />
+  <p className="text-sm text-black">Item two</p>
+  <Divider className="h-[2px] w-full bg-black" />
+  <p className="text-sm text-black">Item three</p>
+</div>
+```
 
-// Semantic separator
-<Divider decorative={false} aria-label="Section break" />
+### Vertical
 
-// Vertical
-<Divider orientation="vertical" />
+<Preview><DividerComposed /></Preview>
+
+```tsx
+import { Divider } from '@wire-ui/react'
+
+<div className="flex h-6 items-center gap-3">
+  <span className="text-sm text-black">Home</span>
+  <Divider orientation="vertical" className="h-full w-[2px] bg-black" />
+  <span className="text-sm text-black">About</span>
+  <Divider orientation="vertical" className="h-full w-[2px] bg-black" />
+  <span className="text-sm text-black">Contact</span>
+</div>
+```
+
+### With label
+
+<Preview><DividerComplex /></Preview>
+
+```tsx
+import { Divider } from '@wire-ui/react'
+
+<div className="flex w-64 items-center gap-3">
+  <Divider className="h-[2px] flex-1 bg-black" />
+  <span className="text-xs font-medium text-[#6b7280]">OR</span>
+  <Divider className="h-[2px] flex-1 bg-black" />
+</div>
 ```
 
 ## Props

@@ -8,28 +8,101 @@ description: Accessible select menu with groups, separators, and a custom trigge
 
 Accessible select menu with groups, separators, and a fully custom trigger element.
 
-## Preview
+### Basic
 
-<Preview><SelectPreview /></Preview>
-
-## Anatomy
+<Preview><SelectBasic /></Preview>
 
 ```tsx
 import { Select } from '@wire-ui/react'
 
-<Select.Root value={value} onValueChange={setValue}>
-  <Select.Trigger>
-    <Select.Value placeholder="Pick an option" />
-  </Select.Trigger>
-  <Select.Content>
-    <Select.Group>
-      <Select.GroupLabel>Group name</Select.GroupLabel>
-      <Select.Item value="a">Option A</Select.Item>
-      <Select.Item value="b">Option B</Select.Item>
-    </Select.Group>
-    <Select.Separator />
-    <Select.Item value="c">Option C</Select.Item>
-  </Select.Content>
+<Select.Root value={value} onChange={setValue}>
+  <div className="relative">
+    <Select.Trigger className="flex w-full items-center justify-between gap-2 rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none transition data-[state=open]:ring-2 data-[state=open]:ring-blue-500 data-[state=open]:ring-offset-1 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[hover]:bg-[#f5f5f5]">
+      <Select.Value placeholder="Select a framework" className="data-[placeholder]:text-[#6b7280]" />
+    </Select.Trigger>
+    <Select.Content className="absolute z-50 mt-1 w-full overflow-hidden rounded-[20px] border-[3px] border-black bg-white py-1">
+      {['React', 'Vue', 'Angular', 'Svelte', 'Solid'].map((fw) => (
+        <Select.Item
+          key={fw}
+          value={fw.toLowerCase()}
+          className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-black outline-none transition data-[hover]:bg-[#f5f5f5] data-[selected]:font-medium data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40">
+          <span className="flex-1">{fw}</span>
+        </Select.Item>
+      ))}
+    </Select.Content>
+  </div>
+</Select.Root>
+```
+
+### With checkmarks
+
+<Preview><SelectComposed /></Preview>
+
+```tsx
+import { Select } from '@wire-ui/react'
+
+<Select.Root value={value} onChange={setValue}>
+  <div className="relative">
+    <Select.Trigger className="flex w-full items-center justify-between gap-2 rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none transition data-[state=open]:ring-2 data-[state=open]:ring-blue-500 data-[state=open]:ring-offset-1 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[hover]:bg-[#f5f5f5]">
+      <Select.Value placeholder="Select a framework" className="data-[placeholder]:text-[#6b7280]" />
+    </Select.Trigger>
+    <Select.Content className="absolute z-50 mt-1 w-full overflow-hidden rounded-[20px] border-[3px] border-black bg-white py-1">
+      {['React', 'Vue', 'Angular', 'Svelte', 'Solid'].map((fw) => (
+        <Select.Item
+          key={fw}
+          value={fw.toLowerCase()}
+          className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-black outline-none transition data-[hover]:bg-[#f5f5f5] data-[selected]:font-medium data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40">
+          <span className="flex-1">{fw}</span>
+          <span className="invisible text-black data-[selected]:visible">&#10003;</span>
+        </Select.Item>
+      ))}
+    </Select.Content>
+  </div>
+</Select.Root>
+```
+
+### With groups
+
+<Preview><SelectComplex /></Preview>
+
+```tsx
+import { Select } from '@wire-ui/react'
+
+<Select.Root value={value} onChange={setValue}>
+  <div className="relative">
+    <Select.Trigger className="flex w-full items-center justify-between gap-2 rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none transition data-[state=open]:ring-2 data-[state=open]:ring-blue-500 data-[state=open]:ring-offset-1 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[hover]:bg-[#f5f5f5]">
+      <Select.Value placeholder="Select a framework" className="data-[placeholder]:text-[#6b7280]" />
+    </Select.Trigger>
+    <Select.Content className="absolute z-50 mt-1 w-full overflow-hidden rounded-[20px] border-[3px] border-black bg-white py-1">
+      <Select.Group>
+        <Select.GroupLabel className="px-3 py-1.5 text-xs font-semibold text-[#6b7280]">Frontend</Select.GroupLabel>
+        <Select.Item value="react" className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-black outline-none transition data-[hover]:bg-[#f5f5f5] data-[selected]:font-medium data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40">
+          <span className="flex-1">React</span>
+          <span className="invisible text-black data-[selected]:visible">&#10003;</span>
+        </Select.Item>
+        <Select.Item value="vue" className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-black outline-none transition data-[hover]:bg-[#f5f5f5] data-[selected]:font-medium data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40">
+          <span className="flex-1">Vue</span>
+          <span className="invisible text-black data-[selected]:visible">&#10003;</span>
+        </Select.Item>
+        <Select.Item value="angular" className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-black outline-none transition data-[hover]:bg-[#f5f5f5] data-[selected]:font-medium data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40">
+          <span className="flex-1">Angular</span>
+          <span className="invisible text-black data-[selected]:visible">&#10003;</span>
+        </Select.Item>
+      </Select.Group>
+      <Select.Separator className="my-1 h-px bg-black" />
+      <Select.Group>
+        <Select.GroupLabel className="px-3 py-1.5 text-xs font-semibold text-[#6b7280]">Other</Select.GroupLabel>
+        <Select.Item value="svelte" className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-black outline-none transition data-[hover]:bg-[#f5f5f5] data-[selected]:font-medium data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40">
+          <span className="flex-1">Svelte</span>
+          <span className="invisible text-black data-[selected]:visible">&#10003;</span>
+        </Select.Item>
+        <Select.Item value="solid" disabled className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-black outline-none transition data-[hover]:bg-[#f5f5f5] data-[selected]:font-medium data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40">
+          <span className="flex-1">Solid</span>
+          <span className="invisible text-black data-[selected]:visible">&#10003;</span>
+        </Select.Item>
+      </Select.Group>
+    </Select.Content>
+  </div>
 </Select.Root>
 ```
 

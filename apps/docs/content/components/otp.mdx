@@ -8,23 +8,73 @@ description: One-time password input with individual slots, auto-advance, and on
 
 One-time password input with individual slot elements. Auto-advances on type, handles Backspace, fires `onComplete` when all slots are filled. Supports alphanumeric mode.
 
-## Preview
+### Basic
 
-<Preview><OtpPreview /></Preview>
-
-## Anatomy
+<Preview><OtpBasic /></Preview>
 
 ```tsx
 import { OTP } from '@wire-ui/react'
 
-<OTP.Root length={6} onComplete={(code) => console.log(code)}>
-  <OTP.Slot index={0} />
-  <OTP.Slot index={1} />
-  <OTP.Slot index={2} />
-  <OTP.Separator />
-  <OTP.Slot index={3} />
-  <OTP.Slot index={4} />
-  <OTP.Slot index={5} />
+<OTP.Root length={6} className="flex items-center gap-2">
+  {Array.from({ length: 6 }).map((_, i) => (
+    <OTP.Slot
+      key={i}
+      index={i}
+      className="h-12 w-10 rounded-[8px] border-2 border-black bg-white text-center text-lg font-mono font-semibold text-black outline-none transition-all caret-transparent data-[active]:ring-4 data-[active]:ring-black/20"
+    />
+  ))}
+</OTP.Root>
+```
+
+### With separator
+
+<Preview><OtpComposed /></Preview>
+
+```tsx
+import { OTP } from '@wire-ui/react'
+
+<OTP.Root length={6} className="flex items-center gap-2">
+  {[0, 1, 2].map((i) => (
+    <OTP.Slot
+      key={i}
+      index={i}
+      className="h-12 w-10 rounded-[8px] border-2 border-black bg-white text-center text-lg font-mono font-semibold text-black outline-none transition-all caret-transparent data-[active]:ring-4 data-[active]:ring-black/20"
+    />
+  ))}
+  <OTP.Separator className="text-xl font-light text-[#6b7280]" />
+  {[3, 4, 5].map((i) => (
+    <OTP.Slot
+      key={i}
+      index={i}
+      className="h-12 w-10 rounded-[8px] border-2 border-black bg-white text-center text-lg font-mono font-semibold text-black outline-none transition-all caret-transparent data-[active]:ring-4 data-[active]:ring-black/20"
+    />
+  ))}
+</OTP.Root>
+```
+
+### With completion
+
+<Preview><OtpComplex /></Preview>
+
+```tsx
+import { OTP } from '@wire-ui/react'
+import { useState } from 'react'
+
+const [value, setValue] = useState('')
+
+<OTP.Root
+  value={value}
+  onChange={setValue}
+  onComplete={(code) => verify(code)}
+  length={6}
+  className="flex items-center gap-2">
+  {Array.from({ length: 6 }).map((_, i) => (
+    <OTP.Slot
+      key={i}
+      index={i}
+      className="h-12 w-10 rounded-[8px] border-2 border-black bg-white text-center text-lg font-mono font-semibold text-black outline-none transition-all caret-transparent data-[active]:ring-4 data-[active]:ring-black/20"
+    />
+  ))}
 </OTP.Root>
 ```
 

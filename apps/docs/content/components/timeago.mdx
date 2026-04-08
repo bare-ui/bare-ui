@@ -8,23 +8,65 @@ description: Relative or formatted timestamp that updates live.
 
 Relative or formatted timestamp. In `isDuration` mode it updates live via a `setInterval`. Accepts `Date`, ISO string, or numeric timestamp.
 
-## Preview
+### Basic
 
-<Preview><TimeagoPreview /></Preview>
-
-## Usage
+<Preview><TimeagoBasic /></Preview>
 
 ```tsx
 import { Timeago } from '@wire-ui/react'
 
-// Live relative time ("5 minutes ago", "2 hours ago", "Just now")
-<Timeago datetime={new Date()} isDuration />
+<div>
+  <span className="text-sm font-medium text-[#6b7280]">Duration: </span>
+  <Timeago datetime={new Date(Date.now() - 5 * 60 * 1000)} isDuration className="text-sm text-black" />
+</div>
+```
 
-// Formatted date ("Today, 09:00" / "15 Jun 2025, 09:00")
-<Timeago datetime="2025-06-15T09:00:00" />
+### Formats
 
-// Time only ("09:00")
-<Timeago datetime={new Date()} timeOnly />
+<Preview><TimeagoComposed /></Preview>
+
+```tsx
+import { Timeago } from '@wire-ui/react'
+
+const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
+
+<div>
+  <span className="text-sm font-medium text-[#6b7280]">Duration: </span>
+  <Timeago datetime={fiveMinutesAgo} isDuration className="text-sm text-black" />
+</div>
+<div>
+  <span className="text-sm font-medium text-[#6b7280]">Full date/time: </span>
+  <Timeago datetime={fiveMinutesAgo} className="text-sm text-black" />
+</div>
+<div>
+  <span className="text-sm font-medium text-[#6b7280]">Time only: </span>
+  <Timeago datetime={fiveMinutesAgo} timeOnly className="text-sm text-black" />
+</div>
+```
+
+### Timeline
+
+<Preview><TimeagoComplex /></Preview>
+
+```tsx
+import { Timeago } from '@wire-ui/react'
+
+const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
+const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)
+const lastYear = new Date('2025-06-15T10:30:00')
+
+<div>
+  <span className="text-sm font-medium text-[#6b7280]">3 days ago: </span>
+  <Timeago datetime={threeDaysAgo} className="text-sm text-black" />
+</div>
+<div>
+  <span className="text-sm font-medium text-[#6b7280]">2 weeks ago: </span>
+  <Timeago datetime={twoWeeksAgo} className="text-sm text-black" />
+</div>
+<div>
+  <span className="text-sm font-medium text-[#6b7280]">Last year: </span>
+  <Timeago datetime={lastYear} className="text-sm text-black" />
+</div>
 ```
 
 ## Props
