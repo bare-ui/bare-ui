@@ -1,0 +1,63 @@
+---
+title: SKILL.md
+description: Machine-readable documentation for AI coding agents.
+---
+
+import { Callout } from 'nextra/components'
+
+# SKILL.md
+
+Wire UI ships a `SKILL.md` file — a machine-readable documentation format designed specifically for AI coding agents. While `llms.txt` provides a reference index, `SKILL.md` provides **actionable workflows, decision trees, and guardrails** that help AI agents write correct Wire UI code.
+
+## What is SKILL.md?
+
+`SKILL.md` is an open standard for structuring product documentation for AI agents. It goes beyond API references by including:
+
+- **Decision trees** — "Need a dropdown selection? Use `Select`. Need a search with results? Use `Search`."
+- **Anti-patterns** — common mistakes AI agents should avoid
+- **Workflow guidance** — step-by-step patterns for compound components and validation
+- **Guardrails** — constraints like "Button defaults to `type='button'`" and "validation is always consumer-controlled"
+
+<Callout type="info">
+  SKILL.md complements `llms-full.txt` — it does not replace it. Use both for the best AI-assisted development experience.
+</Callout>
+
+## Available File
+
+| File | Description |
+|---|---|
+| [`SKILL.md`](https://github.com/wire-ui/wire-ui/blob/main/SKILL.md) | Complete AI agent skill with decision trees, anti-patterns, and all component APIs |
+
+## Usage with AI Tools
+
+### Claude Code
+
+Claude Code automatically reads `SKILL.md` from your project root when it is present. No configuration needed — just clone the repo and start coding.
+
+### Cursor
+
+1. Open **Cursor Settings → Features → Docs**
+2. Add the raw GitHub URL for `SKILL.md`
+3. Reference it with `@wire-ui` in chat
+
+### Windsurf
+
+Reference the file in your prompt:
+
+```
+@https://raw.githubusercontent.com/wire-ui/wire-ui/main/SKILL.md
+```
+
+### Other AI Tools
+
+Any AI coding tool that reads project files will pick up `SKILL.md` from the repo root. For tools that accept URLs, use the raw GitHub link above.
+
+## What's Inside
+
+The SKILL.md file includes:
+
+- **Core concepts** — data attributes, compound components, asChild, consumer-owned validation
+- **Complete component reference** — all 27 components with props, parts, and data attributes
+- **Hooks** — `useInteractiveState` and `useClickOutside`
+- **Decision trees** — choosing form components, overlays, and styling approaches
+- **Anti-patterns** — 7 common mistakes with explanations
