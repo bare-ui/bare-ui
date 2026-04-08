@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 /* Prevent dark-mode FOUC: set html background before React hydrates.
    We listen to both system preference AND the explicit .dark / .light class
    that next-themes (Nextra) and our own ThemeToggle add to <html>. */
