@@ -78,13 +78,12 @@ export function PasswordComplex() {
 
   return (
     <div className="p-6 flex flex-col gap-4 max-w-xs mx-auto">
-      <Password.Root className="flex flex-col gap-1.5">
+      <Password.Root value={pw} onChange={setPw} className="flex flex-col gap-1.5">
         <Password.Label className="text-sm font-medium text-black">Password</Password.Label>
         <div className="relative">
           <Password.Field
             placeholder="••••••••"
             className={fieldCls}
-            onChange={(e) => setPw(e.target.value)}
           />
           <ToggleButton />
         </div>
