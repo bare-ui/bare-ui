@@ -1,8 +1,8 @@
 # Wire UI
 
-> A headless, unstyled component library. Style everything with your own CSS using data-* attributes that reflect interactive state.
+> AI-native unstyled primitives framework. Headless, compound components with AI-integrated docs. Zero CSS — style via data-* attributes.
 
-Wire UI provides behavior primitives for React applications. Every component handles interaction states, accessibility, and complex behaviors while shipping zero CSS. Style them with Tailwind, CSS Modules, plain CSS — anything that supports attribute selectors.
+Wire UI provides AI-native, headless compound components. Every component handles interaction states, accessibility, and complex behaviors while shipping zero CSS. Style them with Tailwind, CSS Modules, plain CSS — anything that supports attribute selectors.
 
 ## Getting Started
 

@@ -1,25 +1,25 @@
 ---
 title: Introduction
-description: Wireframe primitives — unstyled, lightweight, zero CSS.
+description: AI-native unstyled primitives framework. Headless, compound components with zero CSS.
 ---
 
 import { Cards } from 'nextra/components'
 
 # Wire UI
 
-Wireframe primitives for modern JavaScript frameworks. Each component is like a wireframe that ships to production — pure structure, behaviour, and accessibility with zero CSS. You bring the design; Wire UI handles everything else.
+AI-native unstyled primitives framework. Headless, compound components with AI-integrated docs. Zero CSS shipped — style everything through `data-*` attributes that reflect interactive state.
 
 ## Why Wire UI?
 
-Most component libraries bundle design decisions you can't escape. Wire UI takes the opposite approach: every component is a bare wireframe — a lightweight behaviour primitive with no visual opinion. You get the interaction logic, keyboard handling, ARIA attributes, and state tracking. Nothing else. No stylesheets, no CSS variables, no theming layer.
+Most component libraries bundle design decisions you can't escape. Wire UI takes the opposite approach: every component is a headless, unstyled primitive — pure behaviour, accessibility, and state tracking with no visual opinion. You get the interaction logic, keyboard handling, and ARIA attributes. Nothing else.
 
-Think of it as starting from a wireframe instead of a finished design. You sketch the final look with your own CSS, Tailwind classes, or whatever styling approach you prefer — targeting `data-*` attributes that reflect every interactive state.
+Style with your own CSS, Tailwind classes, or whatever approach you prefer — targeting `data-*` attributes that expose every interactive state.
 
 ```tsx
-// Wire UI ships no styles — just the wireframe:
+// Wire UI ships no styles — just unstyled primitives:
 <Button onClick={handleClick}>Save</Button>
 
-// You paint the wireframe with your own styles:
+// Style via data-* attributes with any CSS approach:
 <Button className="
   px-4 py-2 rounded bg-blue-600 text-white
   [data-hover]:bg-blue-700
@@ -33,13 +33,13 @@ Think of it as starting from a wireframe instead of a finished design. You sketc
 
 ## Core principles
 
-**Wireframe primitives.** Every component is a lightweight, unstyled building block — zero CSS shipped, zero design opinions. Like a wireframe, it gives you the structure and leaves the visual design entirely to you.
+**AI-native.** AI-integrated docs with `llms.txt`, machine-readable API references, and MCP server support. Built for AI-assisted development workflows from the ground up.
 
-**State via `data-*` attributes.** Every interactive state (hover, focus, active, disabled, open/closed) is exposed as a data attribute — empty string when active, absent when not. Style with CSS attribute selectors.
+**Unstyled primitives.** Zero CSS shipped, zero design opinions. Every component is a bare building block — you own every pixel of your design system.
 
 **Compound components.** Complex widgets follow the `Component.Part` pattern. You compose the markup, control the order, and add whatever wrapper elements you need.
 
-**Consumer-owned validation.** Form components expose `invalidType` and `errorMessage` props but perform no validation internally. Set `invalidType` when your validation logic decides it's invalid — the component renders the error state.
+**State via `data-*` attributes.** Every interactive state (hover, focus, active, disabled, open/closed) is exposed as a data attribute. Style with CSS attribute selectors.
 
 **`asChild` for polymorphism.** Pass `asChild` to Button to merge all props onto your own child element — great for router links and icon buttons.
 

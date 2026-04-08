@@ -5,7 +5,7 @@
 <h3 align="center">Wire UI</h3>
 
 <p align="center">
-  Headless, unstyled React 19 primitives. Style everything with your own CSS.
+  AI-native unstyled primitives framework. Headless, compound components with zero CSS.
 </p>
 
 <p align="center">
@@ -19,12 +19,12 @@
 
 ## What is Wire UI?
 
-Wire UI is a headless component library for React 19. Every component ships with **zero CSS** — style everything using your own classes by targeting `data-*` attributes that reflect interactive state.
+Wire UI is an AI-native, headless component library. Every component ships with **zero CSS** — style everything using your own classes by targeting `data-*` attributes that reflect interactive state. AI-integrated docs with `llms.txt` and machine-readable API references make it built for AI-assisted workflows.
 
-- **Unstyled by default.** No colors, spacing, or fonts baked in. You own every pixel of your design.
-- **State via `data-*` attributes.** Hover, focus, pressed, disabled, open — all exposed as `data-hover`, `data-focus-visible`, `data-active`, etc. Style them with `[data-hover]:bg-gray-100` in Tailwind or `[data-hover] { ... }` in plain CSS.
+- **AI-native.** AI-integrated docs with `llms.txt`, machine-readable API references, and MCP server support. Built for AI-assisted development.
+- **Unstyled primitives.** No colors, spacing, or fonts baked in. You own every pixel of your design.
 - **Compound components.** Complex widgets follow the `Component.Part` pattern, giving you full control over markup structure and element nesting.
-- **Controlled & uncontrolled.** Every stateful component works both ways.
+- **State via `data-*` attributes.** Hover, focus, pressed, disabled, open — all exposed as `data-hover`, `data-focus-visible`, `data-active`, etc.
 - **`asChild` polymorphism.** Merge all behaviour onto your own element — perfect for router links, icon buttons, and custom wrappers.
 - **Consumer-owned validation.** Form components expose `invalidType` and `errorMessage` but never validate internally. Your logic, your rules.
 
@@ -120,7 +120,6 @@ export default function App() {
 | `List` | Ordered/unordered list with optional dividers and striping |
 | `ProgressBar` | Accessible progress indicator |
 | `Rating` | Interactive or read-only star rating |
-| `Spinner` | Animated 12-dot loading indicator |
 | `Timeago` | Relative or formatted timestamp that updates live |
 
 ---

@@ -16,6 +16,7 @@
 	"files": [
 		"dist"
 	],
+	"description": "AI-native unstyled primitives for your design system. Headless, compound components with zero CSS — style via data-* attributes.",
 	"sideEffects": false,
 	"homepage": "https://wire-ui.com",
 	"repository": {
@@ -33,6 +34,8 @@
 		"components",
 		"ui",
 		"accessible",
+		"ai-native",
+		"compound-components",
 		"data-attributes",
 		"design-system"
 	],

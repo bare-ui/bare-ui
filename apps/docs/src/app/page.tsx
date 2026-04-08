@@ -5,14 +5,14 @@ import s from './page.module.css'
 
 const FEATURES = [
   {
-    icon: '🎨',
-    title: 'Wireframe primitives',
-    desc: 'Think of each component as a wireframe — pure structure and behaviour with zero CSS. You draw the final picture.',
+    icon: '🤖',
+    title: 'AI-native',
+    desc: 'AI-integrated docs with llms.txt, machine-readable API references, and MCP server support. Built for AI-assisted workflows.',
   },
   {
-    icon: '📡',
-    title: 'State via data-* attributes',
-    desc: 'Every interactive state — hover, focus, active, disabled, open — exposed as a data attribute. Style with plain CSS.',
+    icon: '🎨',
+    title: 'Unstyled primitives',
+    desc: 'Zero CSS shipped. No design opinions. Every component is a bare building block — you own every pixel.',
   },
   {
     icon: '🧩',
@@ -20,9 +20,9 @@ const FEATURES = [
     desc: 'Complex widgets follow the Component.Part pattern so you control markup order and nesting.',
   },
   {
-    icon: '🔷',
-    title: 'TypeScript first',
-    desc: 'Full type safety across every component and prop. Autocomplete, narrowing, and no any escapes.',
+    icon: '📡',
+    title: 'State via data-* attributes',
+    desc: 'Every interactive state — hover, focus, active, disabled, open — exposed as a data attribute. Style with plain CSS.',
   },
   {
     icon: '🔁',
@@ -74,16 +74,16 @@ export default function HomePage() {
       <section className={s.hero}>
         <div className={s.heroBadge}>
           <span>⚡</span>
-          Wireframe primitives · Zero CSS · Framework agnostic
+          AI-native · Unstyled · Compound components
         </div>
 
         <h1 className={s.heroTitle}>
-          The wireframe for<br />
-          your <span>design system</span>
+          The <span>AI-native</span> unstyled<br />
+          primitives framework
         </h1>
 
         <p className={s.heroSub}>
-          Lightweight, unstyled primitives — like a wireframe that ships to production. Zero CSS, zero opinions. Just behaviour and accessibility, ready for your styles via <code>data-*</code> attributes.
+          Headless, compound components with AI-integrated docs. Zero CSS shipped — style everything through <code>data-*</code> attributes that reflect interactive state.
         </p>
 
         <div className={s.heroCtas}>
@@ -109,21 +109,28 @@ export default function HomePage() {
             <span className={s.codeWindowFile}>App.tsx</span>
           </div>
           <pre className={s.codeBlock}>
-            <code>{`import { Button } from '@wire-ui/react'
+            <code>{`import { Avatar } from '@wire-ui/react'
 
 export default function App() {
   return (
-    <Button
+    <Avatar.Root
       className="
-        px-4 py-2 rounded-lg bg-indigo-600 text-white font-medium
-        [data-hover]:bg-indigo-700
-        [data-active]:scale-95
-        [data-focus-visible]:ring-2 [data-focus-visible]:ring-indigo-500
-        [data-disabled]:opacity-40 [data-disabled]:cursor-not-allowed
+        relative inline-flex size-14 shrink-0
+        items-center justify-center overflow-hidden
+        rounded-full border-2 border-black bg-[#f5f5f5]
       "
     >
-      Save changes
-    </Button>
+      <Avatar.Image
+        src="/avatar.jpg"
+        alt="Jane Doe"
+        className="size-full object-cover"
+      />
+      <Avatar.Fallback
+        className="text-sm font-semibold text-black"
+      >
+        JD
+      </Avatar.Fallback>
+    </Avatar.Root>
   )
 }`}</code>
           </pre>
@@ -138,7 +145,7 @@ export default function App() {
         <h2 className={s.sectionHeading}>The person behind wire-ui</h2>
         <p className={s.sectionSub}>
           Designed and built by a frontend engineer who got tired of
-          fighting component library styles — so he built wireframe primitives instead.
+          fighting component library styles — so he built an AI-native unstyled primitives framework instead.
         </p>
 
         <div className={s.authorCard}>
@@ -197,38 +204,44 @@ export default function App() {
               <span className={`${s.dot} ${s.dotRed}`} />
               <span className={`${s.dot} ${s.dotYellow}`} />
               <span className={`${s.dot} ${s.dotGreen}`} />
-              <span className={s.codeWindowFile}>Modal.tsx</span>
+              <span className={s.codeWindowFile}>DeleteModal.tsx</span>
             </div>
             <pre className={s.codeBlock}>
               <code>{`import { Modal } from '@wire-ui/react'
+import { useState } from 'react'
 
-<Modal>
-  {/* Trigger — any element */}
-  <Modal.Trigger asChild>
-    <button className="btn">Open</button>
-  </Modal.Trigger>
+function App() {
+  const [open, setOpen] = useState(false)
 
-  {/* Backdrop */}
-  <Modal.Backdrop className="
-    fixed inset-0 bg-black/50
-    [data-open]:opacity-100
-    [data-closed]:opacity-0
-  " />
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>
+        Delete Account
+      </button>
 
-  {/* Panel */}
-  <Modal.Panel className="
-    fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-    bg-white rounded-xl shadow-xl p-6 w-full max-w-md
-    [data-open]:scale-100
-    [data-closed]:scale-95
-  ">
-    <Modal.Title>Are you sure?</Modal.Title>
-    <Modal.Description>This cannot be undone.</Modal.Description>
-    <Modal.Close asChild>
-      <button className="btn-danger">Confirm</button>
-    </Modal.Close>
-  </Modal.Panel>
-</Modal>`}</code>
+      <Modal.Root open={open} onOpenChange={setOpen}>
+        <Modal.Portal>
+          <Modal.Overlay className="
+            fixed inset-0 z-50 flex items-center
+            justify-center bg-black/50 p-4
+          ">
+            <Modal.Content className="
+              w-full max-w-md rounded-[20px]
+              border-[3px] border-black bg-white p-6
+            ">
+              <h2>Delete Account</h2>
+              <p>This action cannot be undone.</p>
+              <div className="flex gap-3">
+                <Modal.Close>Cancel</Modal.Close>
+                <button>Delete</button>
+              </div>
+            </Modal.Content>
+          </Modal.Overlay>
+        </Modal.Portal>
+      </Modal.Root>
+    </>
+  )
+}`}</code>
             </pre>
           </div>
         </div>

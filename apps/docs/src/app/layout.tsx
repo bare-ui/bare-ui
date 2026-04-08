@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     default: 'Wire UI',
   },
   description:
-    'A headless, unstyled component library. Style everything with your own CSS using data-* attributes.',
+    'AI-native unstyled primitives framework. Headless, compound components with AI-integrated docs. Zero CSS — style via data-* attributes.',
   icons: {
     icon: [
       { url: '/images/favicon/favicon.ico' },

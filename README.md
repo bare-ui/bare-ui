@@ -5,7 +5,7 @@
 <h3 align="center">Wire UI</h3>
 
 <p align="center">
-  Headless, unstyled React 19 primitives. Style everything with your own CSS.
+  AI-native unstyled primitives framework. Headless, compound components with zero CSS.
 </p>
 
 <p align="center">
@@ -19,7 +19,7 @@
 
 ## Overview
 
-Wire UI is a headless component library for React 19. Every component ships with **zero CSS** — interactive states are exposed through `data-*` attributes so you style them exactly the way you want, using Tailwind, CSS Modules, plain CSS, or any other approach.
+Wire UI is an AI-native, headless component library. Every component ships with **zero CSS** — interactive states are exposed through `data-*` attributes so you style them exactly the way you want, using Tailwind, CSS Modules, plain CSS, or any other approach. AI-integrated docs with `llms.txt` and machine-readable API references make it built for AI-assisted workflows.
 
 ```tsx
 <Button
@@ -37,7 +37,7 @@ Wire UI is a headless component library for React 19. Every component ships with
 
 | Package | Version | Description |
 |---|---|---|
-| [`@wire-ui/react`](./packages/wire-ui) | [![npm](https://img.shields.io/npm/v/@wire-ui/react?style=flat-square)](https://www.npmjs.com/package/@wire-ui/react) | React 19 component library |
+| [`@wire-ui/react`](./packages/wire-ui) | [![npm](https://img.shields.io/npm/v/@wire-ui/react?style=flat-square)](https://www.npmjs.com/package/@wire-ui/react) | AI-native unstyled component library |
 
 ## Repository structure
 
