@@ -1,0 +1,50 @@
+{
+  "name": "@wire-ui/mcp",
+  "version": "0.1.0",
+  "description": "MCP server for Wire UI — AI-native unstyled primitives framework",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "wire-ui-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://wire-ui.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wire-ui/wire-ui.git",
+    "directory": "packages/mcp"
+  },
+  "bugs": {
+    "url": "https://github.com/wire-ui/wire-ui/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "wire-ui",
+    "ai-native",
+    "headless",
+    "components"
+  ],
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "prepublishOnly": "npm run build",
+    "dev": "tsup --watch",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.12.0",
+    "prettier": "^3.8.1",
+    "tsup": "^8.5.0",
+    "typescript": "~5.9.3"
+  }
+}
