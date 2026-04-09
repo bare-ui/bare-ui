@@ -55,8 +55,8 @@ export default function HomePage() {
           <span className={s.navLogoText}>Wire UI</span>
         </Link>
         <div className={s.navLinks}>
-          <Link href="/docs" className={s.navLink}>Docs</Link>
-          <Link href="/docs/components/button" className={s.navLink}>Components</Link>
+          <Link href="/docs" className={s.navLink}>Learn</Link>
+          <Link href="/docs/components/accordion" className={s.navLink}>Components</Link>
           <a
             href="https://github.com/wire-ui/wire-ui"
             target="_blank"
@@ -87,7 +87,7 @@ export default function HomePage() {
         </p>
 
         <div className={s.heroCtas}>
-          <Link href="/docs/getting-started" className={s.ctaPrimary}>
+          <Link href="/docs" className={s.ctaPrimary}>
             Get started →
           </Link>
           <a
