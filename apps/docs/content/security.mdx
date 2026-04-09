@@ -1,0 +1,79 @@
+---
+title: Security
+description: Wire UI security policies and reporting procedures.
+---
+
+# Security
+
+Wire UI takes security seriously. This page outlines our security practices and how to report vulnerabilities.
+
+## Reporting Vulnerabilities
+
+If you discover a security vulnerability in Wire UI, please report it responsibly.
+
+**Do not** open a public GitHub issue for security vulnerabilities. Instead:
+
+1. Email **security@wire-ui.com** with a description of the vulnerability
+2. Include steps to reproduce the issue if possible
+3. Allow reasonable time for a fix before public disclosure
+
+We aim to acknowledge reports within 48 hours and provide a fix timeline within 7 days.
+
+## Security Practices
+
+### No runtime dependencies
+
+`@wire-ui/react` ships with **zero runtime dependencies**. The only peer dependencies are React and React DOM. This minimizes the attack surface — there are no transitive dependencies that could introduce supply chain vulnerabilities.
+
+### No CSS or external resources
+
+Wire UI ships no CSS, no fonts, no images, and makes no network requests. Components are pure JavaScript/TypeScript. This eliminates entire classes of vulnerabilities related to external resource loading, CSS injection, and CORS issues.
+
+### No `dangerouslySetInnerHTML`
+
+Wire UI components never use `dangerouslySetInnerHTML` or insert raw HTML. All rendering uses React's standard JSX, which automatically escapes content and prevents XSS attacks.
+
+### No `eval` or dynamic code execution
+
+The library never uses `eval()`, `Function()`, or any form of dynamic code execution. All code paths are statically analyzable.
+
+### Content Security Policy (CSP) compatible
+
+Wire UI is fully compatible with strict Content Security Policy headers. Since there are no inline styles, inline scripts, or external resources, you can use the strictest CSP without any Wire UI-specific exceptions:
+
+```
+Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'
+```
+
+### Data attributes are safe
+
+Wire UI exposes interactive state via `data-*` attributes (e.g., `data-hover`, `data-state`). These are standard HTML attributes — they cannot execute code and are safe by design. Their values are always empty strings or predefined constants (`"open"`, `"closed"`, `"checked"`, etc.), never user input.
+
+## Third-Party Dependencies
+
+### `@wire-ui/react`
+
+| Dependency | Type | Purpose |
+|---|---|---|
+| `react` | peer | React 19+ |
+| `react-dom` | peer | React DOM 19+ |
+
+No runtime `dependencies` — only peer dependencies.
+
+### `@wire-ui/mcp`
+
+| Dependency | Type | Purpose |
+|---|---|---|
+| `@modelcontextprotocol/sdk` | runtime | MCP protocol implementation |
+| `zod` | runtime | Input validation for MCP tools |
+
+The MCP server is a development tool and is not included in your production bundle.
+
+## Supported Versions
+
+Security fixes are applied to the latest minor version only. We recommend always using the latest version of Wire UI.
+
+| Version | Supported |
+|---|---|
+| Latest | Yes |
+| Older | No |
