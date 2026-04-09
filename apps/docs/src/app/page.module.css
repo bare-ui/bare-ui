@@ -21,15 +21,17 @@
   top: 0;
   left: 0;
   right: 0;
+  bottom: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.04;
+  opacity: 0.25;
+  overflow: hidden;
 }
 
 @media (prefers-color-scheme: dark) {
-  :global(html:not(.light)) .pageBackground { opacity: 0.04; }
+  :global(html:not(.light)) .pageBackground { opacity: 0.06; }
 }
-:global(html.dark) .pageBackground { opacity: 0.04; }
+:global(html.dark) .pageBackground { opacity: 0.06; }
 
 .page > *:not(.pageBackground) {
   position: relative;
@@ -291,6 +293,23 @@
   background: rgba(0, 0, 0, 0.04);
   transform: translateY(-1px);
 }
+
+.ctaBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.06);
+  opacity: 0.7;
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(html:not(.light)) .ctaBadge { background: rgba(255,255,255,0.08); }
+}
+:global(html.dark) .ctaBadge { background: rgba(255,255,255,0.08); }
 
 @media (prefers-color-scheme: dark) {
   :global(html:not(.light)) .ctaSecondary { border-color: rgba(255,255,255,0.12); }

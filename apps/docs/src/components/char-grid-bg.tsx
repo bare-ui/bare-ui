@@ -32,7 +32,9 @@ export function CharGridBg({ className }: { className?: string }) {
 		const draw = () => {
 			const dpr = window.devicePixelRatio || 1;
 			const w = window.innerWidth;
-			const h = document.documentElement.scrollHeight;
+			// Match the parent container height (which is set by CSS bottom:0)
+			const parent = canvas.parentElement;
+			const h = parent ? parent.offsetHeight : document.documentElement.scrollHeight;
 
 			canvas.width = w * dpr;
 			canvas.height = h * dpr;
@@ -74,10 +76,30 @@ export function CharGridBg({ className }: { className?: string }) {
 			}
 		};
 
-		// Small delay so scrollHeight is accurate after hydration
-		requestAnimationFrame(draw);
+		// Draw after layout settles
+		requestAnimationFrame(() => {
+			requestAnimationFrame(draw);
+		});
+
+		// Redraw on resize
 		window.addEventListener("resize", draw);
-		return () => window.removeEventListener("resize", draw);
+
+		// Redraw when theme changes (class mutations on <html>)
+		const observer = new MutationObserver(draw);
+		observer.observe(document.documentElement, {
+			attributes: true,
+			attributeFilter: ["class"],
+		});
+
+		// Redraw when system color scheme changes
+		const mq = window.matchMedia("(prefers-color-scheme: dark)");
+		mq.addEventListener("change", draw);
+
+		return () => {
+			window.removeEventListener("resize", draw);
+			observer.disconnect();
+			mq.removeEventListener("change", draw);
+		};
 	}, []);
 
 	return <canvas ref={canvasRef} className={className} />;
