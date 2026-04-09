@@ -1,0 +1,62 @@
+---
+title: Browser Support
+description: Wire UI browser compatibility and requirements.
+---
+
+# Browser Support
+
+Wire UI supports all modern browsers that support React 19 and standard CSS attribute selectors.
+
+## Supported Browsers
+
+| Browser | Minimum Version |
+|---|---|
+| Chrome | 91+ |
+| Firefox | 90+ |
+| Safari | 15+ |
+| Edge | 91+ |
+| iOS Safari | 15+ |
+| Chrome Android | 91+ |
+
+## Why These Versions?
+
+Wire UI relies on:
+
+- **React 19** — requires modern JavaScript engine features (ES2020+)
+- **CSS attribute selectors** — `[data-hover]`, `[data-state="open"]` — supported in all browsers since IE7, but modern syntax like `:focus-visible` requires the versions listed above
+- **`:focus-visible`** pseudo-class — Wire UI's `data-focus-visible` attribute mirrors this CSS standard, which was fully supported starting in 2021
+
+## No Polyfills Needed
+
+Wire UI does not require any polyfills. If your project supports the browsers listed above, everything works out of the box.
+
+## Internet Explorer
+
+Wire UI does **not** support Internet Explorer. IE was retired by Microsoft in June 2022, and React 19 does not support it either.
+
+## Server-Side Rendering
+
+Wire UI is compatible with:
+
+- **Next.js** (App Router and Pages Router)
+- **Remix**
+- **Astro** (with React integration)
+- Any React 19 SSR framework
+
+All components render correctly during SSR. Interactive state attributes (`data-hover`, `data-active`, etc.) are added on the client after hydration — they do not cause hydration mismatches.
+
+## Mobile Support
+
+All Wire UI components work on mobile browsers with touch events. Touch interactions correctly trigger:
+
+- `data-hover` on touch start
+- `data-active` on press
+- `data-focus-visible` on keyboard navigation (external keyboard)
+
+## Accessibility
+
+Wire UI uses standard ARIA attributes and semantic HTML. Screen reader compatibility is tested against:
+
+- **NVDA** (Windows)
+- **VoiceOver** (macOS / iOS)
+- **TalkBack** (Android)
