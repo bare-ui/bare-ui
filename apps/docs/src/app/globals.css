@@ -5,6 +5,7 @@
    that next-themes (Nextra) and our own ThemeToggle add to <html>. */
 
 html {
+  --nextra-content-width: 90rem;
   background-color: #ffffff;
 }
 
