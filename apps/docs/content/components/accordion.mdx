@@ -18,9 +18,9 @@ Collapsible sections. Supports `single` (one item open at a time) and `multiple`
   <FeatureItem>Supports disabled state per item or globally.</FeatureItem>
 </FeatureList>
 
-### Basic
+### Example
 
-<Preview><AccordionBasic /></Preview>
+<Preview><AccordionPreview /></Preview>
 
 ```tsx
 import { Accordion } from '@wire-ui/react'
@@ -45,108 +45,6 @@ import { Accordion } from '@wire-ui/react'
     </Accordion.Trigger>
     <Accordion.Content className="px-5 pb-4 text-sm leading-relaxed text-[#6b7280]">
       A headless component library. Zero styles shipped — you bring your own via className and data-attribute selectors.
-    </Accordion.Content>
-  </Accordion.Item>
-  <Accordion.Item value="item-2">
-    <Accordion.Trigger className="flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-black outline-none transition-colors hover:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50">
-      How is it different from Headless UI?
-      <svg
-        className="size-4 shrink-0 text-black transition-transform duration-200 data-[state=open]:rotate-180"
-        data-state="inherit"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-      </svg>
-    </Accordion.Trigger>
-    <Accordion.Content className="px-5 pb-4 text-sm leading-relaxed text-[#6b7280]">
-      wire-ui uses the asChild pattern, exports useInteractiveState publicly, and uses data-focus-visible (keyboard only) instead of data-focus.
-    </Accordion.Content>
-  </Accordion.Item>
-</Accordion.Root>
-```
-
-### Multiple with animation
-
-<Preview><AccordionComposed /></Preview>
-
-```tsx
-import { Accordion } from '@wire-ui/react'
-
-<Accordion.Root
-  type="multiple"
-  defaultValue={['item-1', 'item-2']}
-  className="w-full max-w-lg divide-y-2 divide-black rounded-[20px] border-[3px] border-black bg-white overflow-hidden"
->
-  <Accordion.Item value="item-1">
-    <Accordion.Trigger className="flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-black outline-none transition-colors hover:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50">
-      What is wire-ui?
-      <svg
-        className="size-4 shrink-0 text-black transition-transform duration-200 data-[state=open]:rotate-180"
-        data-state="inherit"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-      </svg>
-    </Accordion.Trigger>
-    <Accordion.Content forceMount className="px-5 pb-4 text-sm leading-relaxed text-[#6b7280]">
-      A headless component library. Zero styles shipped — you bring your own via className and data-attribute selectors.
-    </Accordion.Content>
-  </Accordion.Item>
-  <Accordion.Item value="item-2">
-    <Accordion.Trigger className="flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-black outline-none transition-colors hover:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50">
-      How is it different from Headless UI?
-      <svg
-        className="size-4 shrink-0 text-black transition-transform duration-200 data-[state=open]:rotate-180"
-        data-state="inherit"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-      </svg>
-    </Accordion.Trigger>
-    <Accordion.Content forceMount className="px-5 pb-4 text-sm leading-relaxed text-[#6b7280]">
-      wire-ui uses the asChild pattern, exports useInteractiveState publicly, and uses data-focus-visible (keyboard only) instead of data-focus.
-    </Accordion.Content>
-  </Accordion.Item>
-</Accordion.Root>
-```
-
-### With icons and actions
-
-<Preview><AccordionComplex /></Preview>
-
-```tsx
-import { Accordion } from '@wire-ui/react'
-
-<Accordion.Root
-  type="single"
-  collapsible
-  defaultValue="item-1"
-  className="w-full max-w-lg divide-y-2 divide-black rounded-[20px] border-[3px] border-black bg-white overflow-hidden"
->
-  <Accordion.Item value="item-1">
-    <Accordion.Trigger className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm font-medium text-black outline-none transition-colors hover:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50">
-      <span className="text-xl">📦</span>
-      <div className="flex-1">
-        <p className="text-sm font-medium text-black">Getting Started</p>
-        <p className="text-xs text-[#6b7280] font-normal">Learn the basics of wire-ui</p>
-      </div>
-      <svg
-        className="size-4 shrink-0 text-black transition-transform duration-200 data-[state=open]:rotate-180"
-        data-state="inherit"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-      </svg>
-    </Accordion.Trigger>
-    <Accordion.Content className="px-5 pb-4 text-sm leading-relaxed text-[#6b7280]">
-      <p className="mb-2">Install the package, import your first component, and style it with Tailwind classes and data-attribute selectors.</p>
-      <button className="text-xs font-medium text-black hover:underline">
-        Learn more →
-      </button>
     </Accordion.Content>
   </Accordion.Item>
 </Accordion.Root>

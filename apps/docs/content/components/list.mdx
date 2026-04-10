@@ -16,55 +16,9 @@ Ordered or unordered list container. Variant attributes (`data-type`, `data-stri
   <FeatureItem>Accepts all standard list HTML attributes.</FeatureItem>
 </FeatureList>
 
-### Basic
+### Example
 
-<Preview><ListBasic /></Preview>
-
-```tsx
-import { List } from '@wire-ui/react'
-
-<List className="w-72 divide-y-2 divide-black overflow-hidden rounded-[8px] border-2 border-black bg-white">
-  <li className="px-4 py-3 text-sm text-black">Profile settings</li>
-  <li className="px-4 py-3 text-sm text-black">Notifications</li>
-  <li className="px-4 py-3 text-sm text-black">Privacy controls</li>
-  <li className="px-4 py-3 text-sm text-black">Help center</li>
-</List>
-```
-
-### With icons
-
-<Preview><ListComposed /></Preview>
-
-```tsx
-import { List } from '@wire-ui/react'
-
-<List className="w-72 divide-y divide-[#d4d4d4] overflow-hidden rounded-[8px] border-2 border-black bg-white">
-  <li className="flex cursor-pointer items-center gap-3 px-4 py-3 text-sm text-black hover:bg-[#f5f5f5]">
-    <span className="text-xl">👤</span>
-    <div>
-      <p className="text-sm font-medium text-black">Profile</p>
-      <p className="text-xs text-[#6b7280]">Manage your account</p>
-    </div>
-    <svg className="ml-auto h-4 w-4 text-[#6b7280]" viewBox="0 0 20 20" fill="currentColor">
-      <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
-    </svg>
-  </li>
-  <li className="flex cursor-pointer items-center gap-3 px-4 py-3 text-sm text-black hover:bg-[#f5f5f5]">
-    <span className="text-xl">🔔</span>
-    <div>
-      <p className="text-sm font-medium text-black">Notifications</p>
-      <p className="text-xs text-[#6b7280]">Configure alerts</p>
-    </div>
-    <svg className="ml-auto h-4 w-4 text-[#6b7280]" viewBox="0 0 20 20" fill="currentColor">
-      <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
-    </svg>
-  </li>
-</List>
-```
-
-### Checklist
-
-<Preview><ListComplex /></Preview>
+<Preview><ListPreview /></Preview>
 
 ```tsx
 import { List } from '@wire-ui/react'

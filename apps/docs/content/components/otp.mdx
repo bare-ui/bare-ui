@@ -18,64 +18,24 @@ One-time password input with individual slot elements. Auto-advances on type, ha
   <FeatureItem>Supports disabled state.</FeatureItem>
 </FeatureList>
 
-### Basic
+### Example
 
-<Preview><OtpBasic /></Preview>
-
-```tsx
-import { OTP } from '@wire-ui/react'
-
-<OTP.Root length={6} className="flex items-center gap-2">
-  {Array.from({ length: 6 }).map((_, i) => (
-    <OTP.Slot
-      key={i}
-      index={i}
-      className="h-12 w-10 rounded-[8px] border-2 border-black bg-white text-center text-lg font-mono font-semibold text-black outline-none transition-all caret-transparent data-[active]:ring-4 data-[active]:ring-black/20"
-    />
-  ))}
-</OTP.Root>
-```
-
-### With separator
-
-<Preview><OtpComposed /></Preview>
-
-```tsx
-import { OTP } from '@wire-ui/react'
-
-<OTP.Root length={6} className="flex items-center gap-2">
-  {[0, 1, 2].map((i) => (
-    <OTP.Slot
-      key={i}
-      index={i}
-      className="h-12 w-10 rounded-[8px] border-2 border-black bg-white text-center text-lg font-mono font-semibold text-black outline-none transition-all caret-transparent data-[active]:ring-4 data-[active]:ring-black/20"
-    />
-  ))}
-  <OTP.Separator className="text-xl font-light text-[#6b7280]" />
-  {[3, 4, 5].map((i) => (
-    <OTP.Slot
-      key={i}
-      index={i}
-      className="h-12 w-10 rounded-[8px] border-2 border-black bg-white text-center text-lg font-mono font-semibold text-black outline-none transition-all caret-transparent data-[active]:ring-4 data-[active]:ring-black/20"
-    />
-  ))}
-</OTP.Root>
-```
-
-### With completion
-
-<Preview><OtpComplex /></Preview>
+<Preview><OtpPreview /></Preview>
 
 ```tsx
 import { OTP } from '@wire-ui/react'
 import { useState } from 'react'
 
 const [value, setValue] = useState('')
+const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
 
 <OTP.Root
   value={value}
   onChange={setValue}
-  onComplete={(code) => verify(code)}
+  onComplete={(code) => {
+    // Verify the code and set status
+    verify(code).then(() => setStatus('success')).catch(() => setStatus('error'))
+  }}
   length={6}
   className="flex items-center gap-2">
   {Array.from({ length: 6 }).map((_, i) => (
@@ -86,6 +46,8 @@ const [value, setValue] = useState('')
     />
   ))}
 </OTP.Root>
+{status === 'success' && <p className="text-sm text-green-600">Verified!</p>}
+{status === 'error' && <p className="text-sm text-red-600">Invalid code. Try again.</p>}
 ```
 
 ## Styling

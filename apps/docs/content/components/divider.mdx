@@ -16,13 +16,14 @@ Horizontal or vertical separator. Decorative by default (`aria-hidden`). Pass `d
   <FeatureItem>Semantic separator mode with role="separator".</FeatureItem>
 </FeatureList>
 
-### Horizontal
+### Example
 
-<Preview><DividerBasic /></Preview>
+<Preview><DividerPreview /></Preview>
 
 ```tsx
 import { Divider } from '@wire-ui/react'
 
+{/* Horizontal */}
 <div className="flex flex-col gap-3">
   <p className="text-sm text-black">Item one</p>
   <Divider className="h-[2px] w-full bg-black" />
@@ -30,15 +31,8 @@ import { Divider } from '@wire-ui/react'
   <Divider className="h-[2px] w-full bg-black" />
   <p className="text-sm text-black">Item three</p>
 </div>
-```
 
-### Vertical
-
-<Preview><DividerComposed /></Preview>
-
-```tsx
-import { Divider } from '@wire-ui/react'
-
+{/* Vertical */}
 <div className="flex h-6 items-center gap-3">
   <span className="text-sm text-black">Home</span>
   <Divider orientation="vertical" className="h-full w-[2px] bg-black" />
@@ -46,15 +40,8 @@ import { Divider } from '@wire-ui/react'
   <Divider orientation="vertical" className="h-full w-[2px] bg-black" />
   <span className="text-sm text-black">Contact</span>
 </div>
-```
 
-### With label
-
-<Preview><DividerComplex /></Preview>
-
-```tsx
-import { Divider } from '@wire-ui/react'
-
+{/* With label */}
 <div className="flex w-64 items-center gap-3">
   <Divider className="h-[2px] flex-1 bg-black" />
   <span className="text-xs font-medium text-[#6b7280]">OR</span>
