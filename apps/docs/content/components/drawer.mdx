@@ -173,6 +173,38 @@ const [open, setOpen] = useState(false)
 </Drawer.Root>
 ```
 
+## Styling
+
+Drawer sets `data-state` on Overlay and Content. Use it to animate slide-in/out and overlay fade.
+
+```tsx
+<Drawer.Overlay className="
+  bg-black/50
+  data-[state=closed]:opacity-0
+  transition-opacity
+" />
+
+<Drawer.Content className="
+  translate-x-full
+  data-[state=open]:translate-x-0
+  transition-transform
+" />
+```
+
+## Using data attributes
+
+Both Overlay and Content receive `data-state` with values `"open"` or `"closed"`.
+
+```css
+/* Slide in from right */
+[data-state="open"]   { transform: translateX(0); }
+[data-state="closed"] { transform: translateX(100%); }
+
+/* Overlay fade */
+[data-state="open"]   { opacity: 1; }
+[data-state="closed"] { opacity: 0; }
+```
+
 ## Root props
 
 | Prop | Type | Default | Description |

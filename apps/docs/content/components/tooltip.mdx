@@ -105,6 +105,30 @@ const contentCls = 'rounded-[8px] border-2 border-black bg-[#f5f5f5] px-2.5 py-1
 </Tooltip.Root>
 ```
 
+## Styling
+
+Tooltip Content receives `data-state` and `data-side`. Use them to control visibility and position-aware styling.
+
+```tsx
+<Tooltip.Content className="
+  data-[state=closed]:hidden
+  data-[side=top]:mb-2
+  data-[side=bottom]:mt-2
+  data-[side=left]:mr-2
+  data-[side=right]:ml-2
+" />
+```
+
+## Using data attributes
+
+Content sets `data-state` (`"open"` / `"closed"`) and `data-side` (`"top"` / `"bottom"` / `"left"` / `"right"`).
+
+```css
+[data-state="closed"] { display: none; }
+[data-side="top"]     { margin-bottom: 8px; }
+[data-side="bottom"]  { margin-top: 8px; }
+```
+
 ## Root props
 
 | Prop | Type | Default | Description |

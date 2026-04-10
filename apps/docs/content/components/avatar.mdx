@@ -92,6 +92,34 @@ const users = [
 </div>
 ```
 
+## Styling
+
+Avatar Image exposes `data-status` to track the image loading lifecycle. Fallback renders automatically when status is `"error"` or `src` is empty.
+
+```tsx
+<Avatar.Root className="rounded-full overflow-hidden">
+  <Avatar.Image className="
+    size-full object-cover
+    data-[status=loading]:opacity-0
+    data-[status=loaded]:opacity-100
+    transition-opacity
+  " />
+  <Avatar.Fallback className="text-sm font-medium">JD</Avatar.Fallback>
+</Avatar.Root>
+```
+
+## Using data attributes
+
+Avatar.Image sets `data-status` with values `"loading"`, `"loaded"`, or `"error"`.
+
+```css
+/* Hide image while loading */
+[data-status="loading"] { opacity: 0; }
+[data-status="loaded"]  { opacity: 1; }
+
+/* Fallback renders when status is "error" or src is empty */
+```
+
 ## Image data attributes
 
 | Attribute | Values |

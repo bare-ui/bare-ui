@@ -89,6 +89,27 @@ import { Dropdown } from '@wire-ui/react'
 </Dropdown.Root>
 ```
 
+## Styling
+
+Dropdown sets `data-state` on the Menu element. The menu is always in the DOM — use `data-state` to show/hide it.
+
+```tsx
+<Dropdown.Menu className="
+  data-[state=closed]:hidden
+  data-[state=open]:block
+" />
+```
+
+## Using data attributes
+
+Menu receives `data-state` (`"open"` / `"closed"`). Trigger sets `aria-expanded` automatically.
+
+```css
+/* Show/hide menu */
+[data-state="closed"] { display: none; }
+[data-state="open"]   { display: block; }
+```
+
 ## Root props
 
 | Prop | Type | Default | Description |

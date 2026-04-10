@@ -95,6 +95,34 @@ import { Input } from '@wire-ui/react'
 </Input.Root>
 ```
 
+## Styling
+
+Input exposes validation and focus states via data attributes on the Field element. Style error, success, and active states using attribute selectors.
+
+```tsx
+<Input.Field className="
+  border-2 border-black
+  data-[active]:border-blue-500
+  data-[invalid]:border-red-500
+  data-[success]:border-green-500
+" />
+```
+
+## Using data attributes
+
+Input.Field reflects the current state through data attributes set by the Root component.
+
+```css
+/* Active (focused) */
+input[data-active]  { border-color: #3b82f6; }
+
+/* Invalid (consumer-controlled via invalidType) */
+input[data-invalid] { border-color: #ef4444; }
+
+/* Success (consumer-controlled via isSuccess) */
+input[data-success] { border-color: #22c55e; }
+```
+
 ## Root props
 
 | Prop | Type | Default | Description |

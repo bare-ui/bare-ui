@@ -88,6 +88,34 @@ const [value, setValue] = useState('')
 </OTP.Root>
 ```
 
+## Styling
+
+OTP Slots expose `data-active`, `data-filled`, and `data-complete`. The Root also sets `data-complete` when all slots are filled.
+
+```tsx
+<OTP.Slot className="
+  border-2 border-black bg-white
+  data-[active]:ring-4 data-[active]:ring-black/20
+  data-[complete]:bg-black data-[complete]:text-white
+  data-[disabled]:bg-gray-100 data-[disabled]:opacity-50
+" />
+```
+
+## Using data attributes
+
+Slots set `data-active` (focused), `data-filled` (has value), and `data-complete` (all slots filled). Root sets `data-complete`.
+
+```css
+/* Active slot glow */
+[data-active] { box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1); }
+
+/* Filled slot */
+[data-filled] { border-color: #000; }
+
+/* All complete */
+[data-complete] { background: #000; color: #fff; }
+```
+
 ## Root props
 
 | Prop | Type | Default | Description |

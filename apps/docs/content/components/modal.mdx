@@ -148,6 +148,38 @@ const [open, setOpen] = useState(false)
 </Modal.Root>
 ```
 
+## Styling
+
+Modal sets `data-state` on both Overlay and Content. Use it to control visibility and add enter/exit animations.
+
+```tsx
+<Modal.Overlay className="
+  data-[state=open]:opacity-100
+  data-[state=closed]:opacity-0
+  transition-opacity
+" />
+
+<Modal.Content className="
+  data-[state=open]:scale-100
+  data-[state=closed]:scale-95
+  transition-transform
+" />
+```
+
+## Using data attributes
+
+Both Overlay and Content receive `data-state` with values `"open"` or `"closed"`.
+
+```css
+/* Fade in/out overlay */
+[data-state="open"]   { opacity: 1; }
+[data-state="closed"] { opacity: 0; pointer-events: none; }
+
+/* Scale content */
+[data-state="open"]   { transform: scale(1); }
+[data-state="closed"] { transform: scale(0.95); }
+```
+
 ## Root props
 
 | Prop | Type | Default | Description |

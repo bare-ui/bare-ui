@@ -86,6 +86,35 @@ import { Rating } from '@wire-ui/react'
 </div>
 ```
 
+## Styling
+
+Rating stars expose `data-filled` (at or below current value) and `data-highlighted` (hover preview). Style both via `starClassName`.
+
+```tsx
+<Rating
+  starClassName="
+    text-gray-300
+    data-[filled]:text-black
+    data-[highlighted]:text-black
+    data-[disabled]:opacity-50
+    hover:scale-110
+  "
+/>
+```
+
+## Using data attributes
+
+Each star element sets `data-filled` and `data-highlighted` independently. `data-disabled` is set when the Rating is disabled.
+
+```css
+/* Unfilled star */
+.star { color: #e5e5e5; }
+
+/* Filled or hovered */
+.star[data-filled],
+.star[data-highlighted] { color: #000; }
+```
+
 ## Props
 
 | Prop | Type | Default | Description |

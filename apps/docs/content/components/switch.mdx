@@ -85,6 +85,40 @@ import { Switch } from '@wire-ui/react'
 </div>
 ```
 
+## Styling
+
+Switch uses `data-state` (value `"checked"` or `"unchecked"`) on both Root and Thumb. Use `data-checked` as a shorthand for the checked state.
+
+```tsx
+<Switch.Root className="
+  bg-gray-200
+  data-[checked]:bg-black
+  data-[disabled]:opacity-50
+  data-[focus-visible]:ring-2
+">
+  <Switch.Thumb className="
+    bg-white translate-x-0
+    data-[checked]:translate-x-5
+  " />
+</Switch.Root>
+```
+
+## Using data attributes
+
+Switch sets `data-state` (`"checked"` / `"unchecked"`) and `data-disabled` on Root and Thumb.
+
+```css
+/* Track background */
+[data-state="checked"]   { background: #000; }
+[data-state="unchecked"] { background: #e5e5e5; }
+
+/* Thumb position */
+.thumb[data-state="checked"] { transform: translateX(20px); }
+
+/* Disabled */
+[data-disabled] { opacity: 0.5; cursor: not-allowed; }
+```
+
 ## Root props
 
 | Prop | Type | Default | Description |

@@ -115,6 +115,40 @@ import { Select } from '@wire-ui/react'
 </Select.Root>
 ```
 
+## Styling
+
+Select uses `data-state` on the Trigger to indicate open/closed, and `data-selected`, `data-hover`, `data-disabled` on items.
+
+```tsx
+<Select.Trigger className="
+  border-2 border-black
+  data-[state=open]:ring-2 data-[state=open]:ring-blue-500
+  data-[hover]:bg-gray-50
+  data-[disabled]:opacity-50
+" />
+
+<Select.Item className="
+  data-[hover]:bg-gray-100
+  data-[selected]:font-medium
+  data-[disabled]:opacity-40
+" />
+```
+
+## Using data attributes
+
+Trigger receives `data-state` (`"open"` / `"closed"`). Items receive `data-selected`, `data-hover`, and `data-disabled`.
+
+```css
+/* Open trigger */
+[data-state="open"] { box-shadow: 0 0 0 2px #6366f1; }
+
+/* Selected item */
+[data-selected] { font-weight: 600; }
+
+/* Hovered item */
+[data-hover] { background: #f5f5f5; }
+```
+
 ## Root props
 
 | Prop | Type | Default | Description |

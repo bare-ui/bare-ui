@@ -78,6 +78,26 @@ const lastYear = new Date('2025-06-15T10:30:00')
 </div>
 ```
 
+## Styling
+
+Timeago renders a `<time>` element. The `datetime` HTML attribute always holds the original ISO timestamp for machine readability. Style it like any inline text element.
+
+```tsx
+<Timeago
+  datetime={new Date()}
+  isDuration
+  className="text-sm text-black font-medium"
+/>
+```
+
+## Using data attributes
+
+Timeago does not expose interactive data attributes. The `<time>` element's `datetime` attribute contains the ISO timestamp.
+
+```css
+time { font-variant-numeric: tabular-nums; }
+```
+
 ## Props
 
 | Prop | Type | Default | Description |

@@ -111,6 +111,40 @@ import { Radio } from '@wire-ui/react'
 </Radio.Root>
 ```
 
+## Styling
+
+Radio items expose `data-checked` and `data-disabled`. Use the `group` utility in Tailwind to style child elements based on the parent's state.
+
+```tsx
+<Radio.Item className="
+  group border-2 border-black
+  data-[checked]:bg-gray-50
+">
+  <span className="
+    border-2 border-black rounded-full
+    group-data-[checked]:bg-black
+  ">
+    <Radio.Indicator className="size-2 rounded-full bg-white" />
+  </span>
+  <Radio.Label>Option</Radio.Label>
+</Radio.Item>
+```
+
+## Using data attributes
+
+Radio.Item sets `data-checked` when selected and `data-disabled` when disabled.
+
+```css
+/* Selected item */
+[data-checked] { background: #f5f5f5; }
+
+/* Radio dot */
+[data-checked] .dot { background: #000; }
+
+/* Disabled */
+[data-disabled] { opacity: 0.5; cursor: not-allowed; }
+```
+
 ## Root props
 
 | Prop | Type | Default | Description |

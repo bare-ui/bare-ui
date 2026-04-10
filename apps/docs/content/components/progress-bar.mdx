@@ -62,6 +62,33 @@ import { ProgressBar } from '@wire-ui/react'
 </div>
 ```
 
+## Styling
+
+ProgressBar renders a track with an inner fill element marked by `data-part="fill"`. Style the fill using child selectors.
+
+```tsx
+<ProgressBar percentage={65} className="
+  h-2 rounded-full bg-gray-200
+  [&_[data-part=fill]]:h-full
+  [&_[data-part=fill]]:rounded-full
+  [&_[data-part=fill]]:bg-black
+  [&_[data-part=fill]]:transition-[width]
+" />
+```
+
+## Using data attributes
+
+The inner fill element has `data-part="fill"`. The root element has `role="progressbar"`, `aria-valuenow`, `aria-valuemin`, and `aria-valuemax`.
+
+```css
+[data-part="fill"] {
+  height: 100%;
+  border-radius: inherit;
+  background: #000;
+  transition: width 300ms;
+}
+```
+
 ## Props
 
 | Prop | Type | Default | Description |

@@ -65,6 +65,34 @@ import { Button } from '@wire-ui/react'
 </Button>
 ```
 
+## Styling
+
+Button tracks all interactive states — hover, focus, active, disabled — via data attributes. Style each state using CSS attribute selectors with Tailwind, CSS Modules, or plain CSS.
+
+```tsx
+<Button className="
+  bg-white text-black
+  [data-hover]:bg-black [data-hover]:text-white
+  [data-active]:scale-95
+  [data-focus-visible]:ring-2 [data-focus-visible]:ring-blue-500
+  [data-disabled]:opacity-50 [data-disabled]:cursor-not-allowed
+">
+  Click me
+</Button>
+```
+
+## Using data attributes
+
+Button exposes interactive state as data attributes on the rendered element. Attributes are present (empty string) when active and absent when inactive.
+
+```css
+/* Plain CSS */
+button[data-hover]         { background: #000; color: #fff; }
+button[data-active]        { transform: scale(0.95); }
+button[data-focus-visible] { outline: 2px solid #6366f1; }
+button[data-disabled]      { opacity: 0.5; cursor: not-allowed; }
+```
+
 ## Props
 
 | Prop | Type | Default | Description |

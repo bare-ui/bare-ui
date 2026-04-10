@@ -62,6 +62,30 @@ import { Divider } from '@wire-ui/react'
 </div>
 ```
 
+## Styling
+
+Divider renders as a simple `<div>`. Style it with background color and dimensions based on orientation.
+
+```tsx
+{/* Horizontal */}
+<Divider className="h-[2px] w-full bg-black" />
+
+{/* Vertical */}
+<Divider orientation="vertical" className="h-full w-[2px] bg-black" />
+```
+
+## Using data attributes
+
+Divider does not expose interactive data attributes. When `decorative={false}`, it renders with `role="separator"` and `aria-orientation`.
+
+```css
+/* Style based on orientation */
+[role="separator"][aria-orientation="vertical"] {
+  width: 2px;
+  height: 100%;
+}
+```
+
 ## Props
 
 | Prop | Type | Default | Description |

@@ -91,6 +91,29 @@ import { Alert } from '@wire-ui/react'
 </Alert.Root>
 ```
 
+## Styling
+
+Alert uses `data-status` to indicate the alert type. Style each status variant using attribute selectors.
+
+```tsx
+<Alert.Root className="
+  border-2 border-black
+  data-[status=success]:border-green-500
+  data-[status=warning]:border-yellow-500
+  data-[status=danger]:border-red-500
+" />
+```
+
+## Using data attributes
+
+Root sets `data-status` from the `status` prop. Values: `"success"`, `"warning"`, `"danger"`, or absent for default.
+
+```css
+[data-status="success"] { border-color: #22c55e; }
+[data-status="warning"] { border-color: #eab308; }
+[data-status="danger"]  { border-color: #ef4444; }
+```
+
 ## Root props
 
 | Prop | Type | Default | Description |

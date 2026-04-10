@@ -80,6 +80,27 @@ const [value, setValue] = useState('')
 </Textarea.Root>
 ```
 
+## Styling
+
+Textarea Field exposes the same data attributes as Input — `data-active`, `data-invalid`, and `data-success`.
+
+```tsx
+<Textarea.Field className="
+  border-2 border-black
+  data-[active]:border-blue-500
+  data-[invalid]:border-red-500
+" />
+```
+
+## Using data attributes
+
+Textarea.Field reflects focus and validation state through data attributes.
+
+```css
+textarea[data-active]  { border-color: #3b82f6; }
+textarea[data-invalid] { border-color: #ef4444; }
+```
+
 ## Root props
 
 | Prop | Type | Default | Description |

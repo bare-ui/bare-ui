@@ -90,6 +90,27 @@ import { List } from '@wire-ui/react'
 </List>
 ```
 
+## Styling
+
+List passes variant attributes (`data-type`, `data-striped`, `data-divider`, `data-size`) as CSS hooks. Style them with attribute selectors.
+
+```tsx
+<List data-striped data-divider data-size="medium" className="
+  [data-striped]>[li:nth-child(odd)]:bg-gray-50
+  [data-divider]>li+li:border-t
+" />
+```
+
+## Using data attributes
+
+List sets `data-type`, `data-striped`, `data-divider`, and `data-size` from their respective HTML attributes.
+
+```css
+[data-striped] li:nth-child(odd) { background: #f5f5f5; }
+[data-divider] li + li { border-top: 1px solid #e5e5e5; }
+[data-size="small"] li { padding: 0.5rem 1rem; }
+```
+
 ## Props
 
 | Prop | Type | Default | Description |

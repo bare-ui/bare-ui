@@ -107,6 +107,33 @@ import { Search } from '@wire-ui/react'
 </Search.Root>
 ```
 
+## Styling
+
+Search exposes `data-loading` on Root and `data-highlighted` on items for keyboard navigation state.
+
+```tsx
+<Search.Root className="
+  data-[loading]:opacity-50
+">
+  <Search.Input className="border-2 border-black" />
+  <Search.Item className="
+    data-[highlighted]:bg-gray-100
+  " />
+</Search.Root>
+```
+
+## Using data attributes
+
+Root sets `data-loading` when the `loading` prop is true. Items set `data-highlighted` when focused via keyboard.
+
+```css
+/* Loading state */
+[data-loading] { opacity: 0.6; }
+
+/* Keyboard-highlighted item */
+[data-highlighted] { background: #f5f5f5; }
+```
+
 ## Root props
 
 | Prop | Type | Default | Description |

@@ -92,6 +92,25 @@ import { Badge } from '@wire-ui/react'
 </nav>
 ```
 
+## Styling
+
+Badge renders as a `<span>` with `data-count` holding the raw numeric value. It displays "9+" when count exceeds 9 and renders nothing for 0 or negative.
+
+```tsx
+<Badge count={12} className="
+  rounded-full bg-black text-white text-xs font-bold px-1.5 py-0.5
+" />
+```
+
+## Using data attributes
+
+Badge sets `data-count` with the raw numeric value, even when the display shows "9+".
+
+```css
+/* Style based on count threshold */
+[data-count] { background: #000; color: #fff; }
+```
+
 ## Props
 
 | Prop | Type | Description |

@@ -111,6 +111,34 @@ import { Image } from '@wire-ui/react'
 </div>
 ```
 
+## Styling
+
+Image sets `data-loaded` on the `<img>` element after a successful load and `data-position` on the wrapper.
+
+```tsx
+<Image
+  src="/photo.jpg"
+  position="center"
+  className="
+    [data-position=left]:justify-start
+    [data-position=center]:justify-center
+    [data-position=right]:justify-end
+  "
+/>
+```
+
+## Using data attributes
+
+The wrapper element receives `data-position` from the `position` prop. The `<img>` element receives `data-loaded` after the load event fires.
+
+```css
+/* Hide loader after load */
+img[data-loaded] + .loader { display: none; }
+
+/* Position variants */
+[data-position="center"] { display: flex; justify-content: center; }
+```
+
 ## Props
 
 | Prop | Type | Default | Description |

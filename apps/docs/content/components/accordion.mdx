@@ -152,6 +152,42 @@ import { Accordion } from '@wire-ui/react'
 </Accordion.Root>
 ```
 
+## Styling
+
+Accordion uses `data-state` on Item, Trigger, and Content to indicate open/closed state. Use this to style the active section, rotate chevron icons, or animate content height.
+
+```tsx
+<Accordion.Trigger className="
+  text-black
+  data-[state=open]:font-bold
+  data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed
+">
+  Section title
+</Accordion.Trigger>
+
+<Accordion.Content className="
+  data-[state=closed]:hidden
+">
+  Content here
+</Accordion.Content>
+```
+
+## Using data attributes
+
+Accordion sets `data-state` on Item, Trigger, and Content elements. The value is `"open"` or `"closed"`.
+
+```css
+/* Rotate chevron when open */
+[data-state="open"] svg { transform: rotate(180deg); }
+
+/* Animate content */
+[data-state="closed"] .content { display: none; }
+[data-state="open"] .content   { display: block; }
+
+/* Disabled trigger */
+[data-disabled] { opacity: 0.5; cursor: not-allowed; }
+```
+
 ## Root props (single)
 
 | Prop | Type | Default | Description |
