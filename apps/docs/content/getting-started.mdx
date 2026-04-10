@@ -48,9 +48,7 @@ export function SaveButton() {
 Wire UI ships no CSS. All interactive state is exposed through `data-*` attributes. Target them with any CSS approach you prefer.
 
 <Tabs items={['Tailwind CSS', 'CSS Modules', 'Plain CSS']}>
-
-<div>
-
+  <Tabs.Tab>
 ```tsx
 <Button className="
   px-4 py-2 rounded bg-blue-600 text-white transition-all
@@ -62,11 +60,8 @@ Wire UI ships no CSS. All interactive state is exposed through `data-*` attribut
   Submit
 </Button>
 ```
-
-</div>
-
-<div>
-
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```css
 /* button.module.css */
 .button {
@@ -85,20 +80,15 @@ Wire UI ships no CSS. All interactive state is exposed through `data-*` attribut
 import styles from './button.module.css'
 <Button className={styles.button}>Submit</Button>
 ```
-
-</div>
-
-<div>
-
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```css
 .button[data-hover]         { background: #1d4ed8; }
 .button[data-active]        { transform: scale(0.95); }
 .button[data-focus-visible] { outline: 2px solid #2563eb; }
 .button[data-disabled]      { opacity: 0.5; cursor: not-allowed; }
 ```
-
-</div>
-
+  </Tabs.Tab>
 </Tabs>
 
 ## Compound components
