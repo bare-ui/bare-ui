@@ -68,13 +68,20 @@ export default function HomePage() {
 						Components
 					</Link>
 					<a
+						href="https://www.npmjs.com/package/@wire-ui/react"
+						target="_blank"
+						rel="noopener noreferrer"
+						className={`${s.navLink} ${s.navLinkGh}`}
+					>
+						<NpmIcon size={20} />
+					</a>
+					<a
 						href="https://github.com/wire-ui/wire-ui"
 						target="_blank"
 						rel="noopener noreferrer"
 						className={`${s.navLink} ${s.navLinkGh}`}
 					>
-						<GitHubIcon />
-						GitHub
+						<GitHubIcon size={20} />
 					</a>
 					<ThemeToggle className={s.themeToggle} />
 				</div>
@@ -119,7 +126,7 @@ export default function HomePage() {
 							rel="noopener noreferrer"
 							className={s.ctaSecondary}
 						>
-							<GitHubIcon /> GitHub
+							<GitHubIcon />
 							<span className={s.ctaBadge}>
 								★ <GitHubStars />
 							</span>
@@ -130,7 +137,7 @@ export default function HomePage() {
 							rel="noopener noreferrer"
 							className={s.ctaSecondary}
 						>
-							<NpmIcon /> npm
+							<NpmIcon />
 							<span className={s.ctaBadge}>
 								↓ <NpmDownloads />
 							</span>
