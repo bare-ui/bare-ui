@@ -3,6 +3,7 @@ title: Select
 description: Accessible select menu with groups, separators, and a custom trigger.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # Select
 
@@ -21,6 +22,26 @@ Accessible select menu with groups, separators, and a fully custom trigger eleme
 
 <Preview><SelectPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { Select } from '@wire-ui/react'
+
+<Select.Root value={value} onChange={setValue}>
+  <Select.Trigger>
+    <Select.Value placeholder="Select a framework" />
+  </Select.Trigger>
+  <Select.Content>
+    {['React', 'Vue', 'Angular', 'Svelte', 'Solid'].map((fw) => (
+      <Select.Item key={fw} value={fw.toLowerCase()}>
+        {fw}
+      </Select.Item>
+    ))}
+  </Select.Content>
+</Select.Root>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { Select } from '@wire-ui/react'
 
@@ -42,6 +63,8 @@ import { Select } from '@wire-ui/react'
   </div>
 </Select.Root>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

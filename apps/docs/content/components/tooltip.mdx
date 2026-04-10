@@ -3,6 +3,7 @@ title: Tooltip
 description: Hover/focus tooltip with configurable delay and side.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # Tooltip
 
@@ -22,6 +23,22 @@ Hover/focus tooltip. Configurable delay and side. Controlled and uncontrolled.
 
 <Preview><TooltipPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { Tooltip } from '@wire-ui/react'
+
+<Tooltip.Root delayDuration={0}>
+  <Tooltip.Trigger>
+    <button>Hover me</button>
+  </Tooltip.Trigger>
+  <Tooltip.Content side="top">
+    Tooltip on top
+  </Tooltip.Content>
+</Tooltip.Root>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { Tooltip } from '@wire-ui/react'
 
@@ -38,6 +55,8 @@ import { Tooltip } from '@wire-ui/react'
   </Tooltip.Content>
 </Tooltip.Root>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

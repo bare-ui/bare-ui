@@ -3,6 +3,7 @@ title: Input
 description: Compound text input with consumer-controlled error state.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # Input
 
@@ -22,6 +23,18 @@ Compound component for text inputs. Works controlled and uncontrolled. Validatio
 
 <Preview><InputPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { Input } from '@wire-ui/react'
+
+<Input.Root>
+  <Input.Label>Full Name</Input.Label>
+  <Input.Field placeholder="John Doe" />
+</Input.Root>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { Input } from '@wire-ui/react'
 
@@ -33,6 +46,8 @@ import { Input } from '@wire-ui/react'
   />
 </Input.Root>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

@@ -3,6 +3,7 @@ title: OTP
 description: One-time password input with individual slots, auto-advance, and onComplete callback.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # OTP
 
@@ -22,6 +23,19 @@ One-time password input with individual slot elements. Auto-advances on type, ha
 
 <Preview><OtpPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { OTP } from '@wire-ui/react'
+
+<OTP.Root length={6} onComplete={(code) => console.log(code)}>
+  {Array.from({ length: 6 }).map((_, i) => (
+    <OTP.Slot key={i} index={i} />
+  ))}
+</OTP.Root>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { OTP } from '@wire-ui/react'
 import { useState } from 'react'
@@ -49,6 +63,8 @@ const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
 {status === 'success' && <p className="text-sm text-green-600">Verified!</p>}
 {status === 'error' && <p className="text-sm text-red-600">Invalid code. Try again.</p>}
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

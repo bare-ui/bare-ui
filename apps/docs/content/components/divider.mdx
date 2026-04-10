@@ -3,6 +3,7 @@ title: Divider
 description: Horizontal or vertical separator line.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # Divider
 
@@ -20,6 +21,38 @@ Horizontal or vertical separator. Decorative by default (`aria-hidden`). Pass `d
 
 <Preview><DividerPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { Divider } from '@wire-ui/react'
+
+{/* Horizontal */}
+<div>
+  <p>Item one</p>
+  <Divider />
+  <p>Item two</p>
+  <Divider />
+  <p>Item three</p>
+</div>
+
+{/* Vertical */}
+<div>
+  <span>Home</span>
+  <Divider orientation="vertical" />
+  <span>About</span>
+  <Divider orientation="vertical" />
+  <span>Contact</span>
+</div>
+
+{/* With label */}
+<div>
+  <Divider />
+  <span>OR</span>
+  <Divider />
+</div>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { Divider } from '@wire-ui/react'
 
@@ -48,6 +81,8 @@ import { Divider } from '@wire-ui/react'
   <Divider className="h-[2px] flex-1 bg-black" />
 </div>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

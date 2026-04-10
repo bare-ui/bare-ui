@@ -3,6 +3,7 @@ title: Timeago
 description: Relative or formatted timestamp that updates live.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # Timeago
 
@@ -21,6 +22,28 @@ Relative or formatted timestamp. In `isDuration` mode it updates live via a `set
 
 <Preview><TimeagoPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { Timeago } from '@wire-ui/react'
+
+const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
+
+<div>
+  <span>Duration: </span>
+  <Timeago datetime={fiveMinutesAgo} isDuration />
+</div>
+<div>
+  <span>Full date/time: </span>
+  <Timeago datetime={fiveMinutesAgo} />
+</div>
+<div>
+  <span>Time only: </span>
+  <Timeago datetime={fiveMinutesAgo} timeOnly />
+</div>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { Timeago } from '@wire-ui/react'
 
@@ -39,6 +62,8 @@ const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
   <Timeago datetime={fiveMinutesAgo} timeOnly className="text-sm text-black" />
 </div>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

@@ -3,6 +3,7 @@ title: Drawer
 description: Side-panel overlay with portal rendering and close behaviours.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # Drawer
 
@@ -22,6 +23,36 @@ Side-panel overlay. Same structure as Modal. Closes on overlay click or Escape k
 
 <Preview><DrawerPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { useState } from 'react'
+import { Drawer } from '@wire-ui/react'
+
+const [open, setOpen] = useState(false)
+
+<button onClick={() => setOpen(true)}>
+  Open Drawer
+</button>
+
+<Drawer.Root open={open} onOpenChange={setOpen}>
+  <Drawer.Portal>
+    <Drawer.Overlay>
+      <Drawer.Content>
+        <Drawer.Header>
+          <span>Drawer Title</span>
+          <Drawer.Close>✕</Drawer.Close>
+        </Drawer.Header>
+        <div>
+          <p>This is a simple drawer with some content.</p>
+        </div>
+      </Drawer.Content>
+    </Drawer.Overlay>
+  </Drawer.Portal>
+</Drawer.Root>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { useState } from 'react'
 import { Drawer } from '@wire-ui/react'
@@ -54,6 +85,8 @@ const [open, setOpen] = useState(false)
   </Drawer.Portal>
 </Drawer.Root>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

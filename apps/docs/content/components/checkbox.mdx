@@ -3,6 +3,7 @@ title: Checkbox
 description: Multi-select checkbox group with controlled state.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # Checkbox
 
@@ -21,6 +22,24 @@ Multi-select checkbox group. Controlled via `value: (string | number)[]` and `on
 
 <Preview><CheckboxPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { Checkbox } from '@wire-ui/react'
+
+<Checkbox.Root name="agreements">
+  <Checkbox.Item value="terms">
+    <Checkbox.Indicator>
+      <svg viewBox="0 0 12 12" fill="none">
+        <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" />
+      </svg>
+    </Checkbox.Indicator>
+    <Checkbox.Label>Terms of Service</Checkbox.Label>
+  </Checkbox.Item>
+</Checkbox.Root>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { Checkbox } from '@wire-ui/react'
 
@@ -40,6 +59,8 @@ import { Checkbox } from '@wire-ui/react'
   </Checkbox.Item>
 </Checkbox.Root>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

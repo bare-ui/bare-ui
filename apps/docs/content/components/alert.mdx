@@ -3,6 +3,7 @@ title: Alert
 description: Dismissible alert with auto-dismiss support.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # Alert
 
@@ -21,6 +22,25 @@ Dismissible alert with optional auto-dismiss timer. Status variants applied via 
 
 <Preview><AlertPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { Alert } from '@wire-ui/react'
+
+<Alert.Root status="warning">
+  <div>
+    <Alert.Title>Warning</Alert.Title>
+    <Alert.Description>Your session is about to expire. Please save your work.</Alert.Description>
+  </div>
+  <Alert.Dismiss>
+    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </Alert.Dismiss>
+</Alert.Root>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { Alert } from '@wire-ui/react'
 
@@ -36,6 +56,8 @@ import { Alert } from '@wire-ui/react'
   </Alert.Dismiss>
 </Alert.Root>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

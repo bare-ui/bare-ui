@@ -3,6 +3,7 @@ title: ProgressBar
 description: Accessible progress indicator with role="progressbar" and ARIA attributes.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # ProgressBar
 
@@ -20,6 +21,22 @@ Accessible progress indicator. Renders `role="progressbar"` with `aria-valuenow`
 
 <Preview><ProgressBarPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { ProgressBar } from '@wire-ui/react'
+
+<div>
+  <div>
+    <span>Storage used</span>
+    <span>68%</span>
+  </div>
+  <ProgressBar percentage={68} />
+  <p>6.8 GB of 10 GB used</p>
+</div>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { ProgressBar } from '@wire-ui/react'
 
@@ -32,6 +49,8 @@ import { ProgressBar } from '@wire-ui/react'
   <p className="mt-1 text-xs text-[#6b7280]">6.8 GB of 10 GB used</p>
 </div>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

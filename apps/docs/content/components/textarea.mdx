@@ -3,6 +3,7 @@ title: Textarea
 description: Compound multi-line text input with consumer-controlled error state.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # Textarea
 
@@ -21,6 +22,18 @@ Same compound API as Input, but renders a `<textarea>`. Controlled, uncontrolled
 
 <Preview><TextareaPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { Textarea } from '@wire-ui/react'
+
+<Textarea.Root>
+  <Textarea.Label>Message</Textarea.Label>
+  <Textarea.Field placeholder="Type your message here..." rows={4} />
+</Textarea.Root>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { Textarea } from '@wire-ui/react'
 
@@ -33,6 +46,8 @@ import { Textarea } from '@wire-ui/react'
   />
 </Textarea.Root>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

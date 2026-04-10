@@ -3,6 +3,7 @@ title: Image
 description: Image wrapper with a loader placeholder shown until the image loads.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # Image
 
@@ -21,11 +22,22 @@ Image wrapper with a loader placeholder. The placeholder is shown until the imag
 
 <Preview><ImagePreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
 ```tsx
 import { Image } from '@wire-ui/react'
 
 <Image src="/photo.jpg" alt="A sample photo" />
 ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```tsx
+import { Image } from '@wire-ui/react'
+
+<Image src="/photo.jpg" alt="A sample photo" />
+```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

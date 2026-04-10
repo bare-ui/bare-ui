@@ -3,6 +3,7 @@ title: Button
 description: A native button with full interactive state tracking and asChild polymorphism.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # Button
 
@@ -21,6 +22,15 @@ A native `<button>` with full interactive state tracking. Use `asChild` to rende
 
 <Preview><ButtonPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { Button } from '@wire-ui/react'
+
+<Button>Styled Button</Button>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { Button } from '@wire-ui/react'
 
@@ -28,6 +38,8 @@ import { Button } from '@wire-ui/react'
   Styled Button
 </Button>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

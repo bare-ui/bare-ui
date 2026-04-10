@@ -3,6 +3,7 @@ title: List
 description: Ordered or unordered list with optional striped rows and dividers.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # List
 
@@ -20,6 +21,27 @@ Ordered or unordered list container. Variant attributes (`data-type`, `data-stri
 
 <Preview><ListPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { List } from '@wire-ui/react'
+
+<List>
+  {[
+    { label: 'Design mockups', done: true },
+    { label: 'Write unit tests', done: true },
+    { label: 'Implement API', done: false },
+    { label: 'Deploy to staging', done: false },
+  ].map(({ label, done }) => (
+    <li key={label}>
+      <span>{done ? '✓' : '○'}</span>
+      <span>{label}</span>
+    </li>
+  ))}
+</List>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { List } from '@wire-ui/react'
 
@@ -43,6 +65,8 @@ import { List } from '@wire-ui/react'
   ))}
 </List>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

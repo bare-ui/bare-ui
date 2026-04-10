@@ -3,6 +3,7 @@ title: Badge
 description: Numeric count badge capped at 9+.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # Badge
 
@@ -20,6 +21,15 @@ Numeric count badge. Caps display at `9+` for large counts. Renders nothing when
 
 <Preview><BadgePreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { Badge } from '@wire-ui/react'
+
+<Badge count={3} />
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { Badge } from '@wire-ui/react'
 
@@ -32,6 +42,8 @@ import { Badge } from '@wire-ui/react'
   <Badge count={3} className="absolute -right-1 -top-1 inline-flex min-w-[20px] items-center justify-center rounded-full border-2 border-black bg-black px-1.5 py-0.5 text-xs font-bold leading-none text-white" />
 </div>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

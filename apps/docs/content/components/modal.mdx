@@ -3,6 +3,7 @@ title: Modal
 description: Dialog with portal rendering, overlay-click and Escape key close.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # Modal
 
@@ -22,6 +23,35 @@ Compound modal dialog. Renders into a portal, closes on overlay click or Escape 
 
 <Preview><ModalPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { useState } from 'react'
+import { Modal } from '@wire-ui/react'
+
+const [open, setOpen] = useState(false)
+
+<button onClick={() => setOpen(true)}>Delete Account</button>
+
+<Modal.Root open={open} onOpenChange={setOpen}>
+  <Modal.Portal>
+    <Modal.Overlay>
+      <Modal.Content>
+        <h2>Delete Account</h2>
+        <p>
+          Are you sure you want to delete your account? All of your data will be permanently removed. This action cannot be undone.
+        </p>
+        <div>
+          <Modal.Close>Cancel</Modal.Close>
+          <button onClick={() => setOpen(false)}>Delete</button>
+        </div>
+      </Modal.Content>
+    </Modal.Overlay>
+  </Modal.Portal>
+</Modal.Root>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { useState } from 'react'
 import { Modal } from '@wire-ui/react'
@@ -62,6 +92,8 @@ const [open, setOpen] = useState(false)
   </Modal.Portal>
 </Modal.Root>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

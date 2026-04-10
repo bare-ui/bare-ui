@@ -3,6 +3,7 @@ title: Dropdown
 description: Trigger and menu pattern with keyboard and click-outside support.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # Dropdown
 
@@ -21,6 +22,22 @@ Trigger + menu pattern. Closes on Escape key, outside click, and menu item selec
 
 <Preview><DropdownPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { Dropdown } from '@wire-ui/react'
+
+<Dropdown.Root>
+  <Dropdown.Trigger>Open Menu</Dropdown.Trigger>
+  <Dropdown.Menu>
+    <div>Profile</div>
+    <div>Settings</div>
+    <div>Sign out</div>
+  </Dropdown.Menu>
+</Dropdown.Root>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { Dropdown } from '@wire-ui/react'
 
@@ -35,6 +52,8 @@ import { Dropdown } from '@wire-ui/react'
   </Dropdown.Menu>
 </Dropdown.Root>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

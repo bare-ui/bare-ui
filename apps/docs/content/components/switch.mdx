@@ -3,6 +3,7 @@ title: Switch
 description: Toggle on/off with a thumb element and data-state.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # Switch
 
@@ -21,6 +22,26 @@ Toggle component with a thumb element. Accessible — renders as a `<button role
 
 <Preview><SwitchPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { Switch } from '@wire-ui/react'
+
+{[
+  { label: 'Push notifications', value: pushEnabled, onChange: setPushEnabled },
+  { label: 'Email updates', value: emailEnabled, onChange: setEmailEnabled },
+  { label: 'Marketing', value: marketingEnabled, onChange: setMarketingEnabled },
+].map(({ label, value, onChange }) => (
+  <div key={label}>
+    <p>{label}</p>
+    <Switch.Root checked={value} onChange={onChange}>
+      <Switch.Thumb />
+    </Switch.Root>
+  </div>
+))}
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { Switch } from '@wire-ui/react'
 
@@ -42,6 +63,8 @@ import { Switch } from '@wire-ui/react'
   ))}
 </div>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

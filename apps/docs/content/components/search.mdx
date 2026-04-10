@@ -3,6 +3,7 @@ title: Search
 description: Search input with dropdown results, keyboard navigation, and loading state.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # Search
 
@@ -21,6 +22,27 @@ Search input with a dropdown results list. Keyboard navigation with Arrow keys, 
 
 <Preview><SearchPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { Search } from '@wire-ui/react'
+
+<Search.Root
+  value={query}
+  onSearchChange={setQuery}
+  onSelect={(option) => alert('Selected: ' + option.title)}>
+  <Search.Input placeholder="Search frameworks..." />
+  <Search.Content>
+    {filtered.map((item) => (
+      <Search.Item key={item.id} option={item}>
+        {item.title}
+      </Search.Item>
+    ))}
+  </Search.Content>
+</Search.Root>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { Search } from '@wire-ui/react'
 
@@ -45,6 +67,8 @@ import { Search } from '@wire-ui/react'
   </Search.Content>
 </Search.Root>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

@@ -3,6 +3,7 @@ title: Card
 description: Unstyled container with optional data-color and data-size attributes.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # Card
 
@@ -20,6 +21,23 @@ A simple unstyled container element. Pass `data-color` and `data-size` to drive 
 
 <Preview><CardPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { Card, Avatar } from '@wire-ui/react'
+
+<Card>
+  <Avatar.Root>
+    <Avatar.Fallback>W</Avatar.Fallback>
+  </Avatar.Root>
+  <div>
+    <h3>Wire UI</h3>
+    <p>Wireframe primitives for modern frameworks</p>
+  </div>
+</Card>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { Card, Avatar } from '@wire-ui/react'
 
@@ -33,6 +51,8 @@ import { Card, Avatar } from '@wire-ui/react'
   </div>
 </Card>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

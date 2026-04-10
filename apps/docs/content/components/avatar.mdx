@@ -3,6 +3,7 @@ title: Avatar
 description: Image with a fallback for loading errors or missing sources.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # Avatar
 
@@ -21,6 +22,26 @@ Image with a lazy-loading fallback. Fallback renders automatically when `src` is
 
 <Preview><AvatarPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { Avatar } from '@wire-ui/react'
+
+<div>
+  <Avatar.Root>
+    <Avatar.Image src="https://i.pravatar.cc/150?img=3" alt="Jane Doe" />
+    <Avatar.Fallback>JD</Avatar.Fallback>
+  </Avatar.Root>
+  <Avatar.Root>
+    <Avatar.Fallback>AB</Avatar.Fallback>
+  </Avatar.Root>
+  <Avatar.Root>
+    <Avatar.Fallback>+9</Avatar.Fallback>
+  </Avatar.Root>
+</div>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { Avatar } from '@wire-ui/react'
 
@@ -37,6 +58,8 @@ import { Avatar } from '@wire-ui/react'
   </Avatar.Root>
 </div>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 

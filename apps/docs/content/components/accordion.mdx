@@ -3,6 +3,7 @@ title: Accordion
 description: Collapsible sections with single or multiple selection types.
 ---
 
+import { Tabs } from 'nextra/components'
 
 # Accordion
 
@@ -22,6 +23,22 @@ Collapsible sections. Supports `single` (one item open at a time) and `multiple`
 
 <Preview><AccordionPreview /></Preview>
 
+<Tabs items={['Raw', 'Styled']}>
+  <Tabs.Tab>
+```tsx
+import { Accordion } from '@wire-ui/react'
+
+<Accordion.Root type="single" collapsible defaultValue="item-1">
+  <Accordion.Item value="item-1">
+    <Accordion.Trigger>What is wire-ui?</Accordion.Trigger>
+    <Accordion.Content>
+      A headless component library. Zero styles shipped — you bring your own via className and data-attribute selectors.
+    </Accordion.Content>
+  </Accordion.Item>
+</Accordion.Root>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```tsx
 import { Accordion } from '@wire-ui/react'
 
@@ -49,6 +66,8 @@ import { Accordion } from '@wire-ui/react'
   </Accordion.Item>
 </Accordion.Root>
 ```
+  </Tabs.Tab>
+</Tabs>
 
 ## Styling
 
