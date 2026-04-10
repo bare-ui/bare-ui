@@ -1,4 +1,5 @@
 import { useMDXComponents as getDocsMDXComponents } from 'nextra-theme-docs'
+import { FeatureList, FeatureItem } from './components/feature-list'
 import { LicenseText } from './components/license-text'
 import { Preview } from './components/preview'
 import { AccordionBasic, AccordionComposed, AccordionComplex } from './components/previews/accordion'
@@ -29,6 +30,8 @@ import { Basic as TooltipBasic, Composed as TooltipComposed, Complex as TooltipC
 
 export function useMDXComponents(components?: Record<string, React.FC>) {
   return getDocsMDXComponents({
+    FeatureList,
+    FeatureItem,
     LicenseText,
     Preview,
     AccordionBasic, AccordionComposed, AccordionComplex,

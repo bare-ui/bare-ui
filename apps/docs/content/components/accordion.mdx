@@ -8,6 +8,16 @@ description: Collapsible sections with single or multiple selection types.
 
 Collapsible sections. Supports `single` (one item open at a time) and `multiple` (many open at once). Controlled and uncontrolled.
 
+## Features
+
+<FeatureList>
+  <FeatureItem>Can expand one or multiple items.</FeatureItem>
+  <FeatureItem>Full keyboard navigation.</FeatureItem>
+  <FeatureItem>Can be controlled or uncontrolled.</FeatureItem>
+  <FeatureItem>Supports animation with forceMount and CSS transitions.</FeatureItem>
+  <FeatureItem>Supports disabled state per item or globally.</FeatureItem>
+</FeatureList>
+
 ### Basic
 
 <Preview><AccordionBasic /></Preview>
@@ -178,3 +188,12 @@ import { Accordion } from '@wire-ui/react'
 | `data-disabled` | Item, Trigger | Present when disabled |
 
 Trigger also sets `aria-expanded`.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Space</kbd> | Opens/closes the focused collapsible. |
+| <kbd>Enter</kbd> | Opens/closes the focused collapsible. |
+| <kbd>Tab</kbd> | Moves focus to the next trigger. |
+| <kbd>Shift+Tab</kbd> | Moves focus to the previous trigger. |

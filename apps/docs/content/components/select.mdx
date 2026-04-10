@@ -8,6 +8,15 @@ description: Accessible select menu with groups, separators, and a custom trigge
 
 Accessible select menu with groups, separators, and a fully custom trigger element.
 
+## Features
+
+<FeatureList>
+  <FeatureItem>Accessible select with full keyboard navigation.</FeatureItem>
+  <FeatureItem>Supports groups, separators, and custom trigger.</FeatureItem>
+  <FeatureItem>Can be controlled or uncontrolled.</FeatureItem>
+  <FeatureItem>Supports disabled state per item or globally.</FeatureItem>
+</FeatureList>
+
 ### Basic
 
 <Preview><SelectBasic /></Preview>
@@ -128,3 +137,13 @@ import { Select } from '@wire-ui/react'
 |---|---|
 | `data-selected` | This item is currently selected |
 | `data-disabled` | Item is disabled |
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Space</kbd> | Opens the select menu when trigger is focused. Selects the focused item when menu is open. |
+| <kbd>Enter</kbd> | Opens the select menu when trigger is focused. Selects the focused item when menu is open. |
+| <kbd>ArrowDown</kbd> | Opens the menu or moves focus to the next item. |
+| <kbd>ArrowUp</kbd> | Moves focus to the previous item. |
+| <kbd>Escape</kbd> | Closes the menu and returns focus to the trigger. |

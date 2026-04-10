@@ -8,6 +8,16 @@ description: One-time password input with individual slots, auto-advance, and on
 
 One-time password input with individual slot elements. Auto-advances on type, handles Backspace, fires `onComplete` when all slots are filled. Supports alphanumeric mode.
 
+## Features
+
+<FeatureList>
+  <FeatureItem>Auto-advance on type with Backspace support.</FeatureItem>
+  <FeatureItem>onComplete callback when all slots are filled.</FeatureItem>
+  <FeatureItem>Supports alphanumeric mode.</FeatureItem>
+  <FeatureItem>Can be controlled or uncontrolled.</FeatureItem>
+  <FeatureItem>Supports disabled state.</FeatureItem>
+</FeatureList>
+
 ### Basic
 
 <Preview><OtpBasic /></Preview>
@@ -101,3 +111,14 @@ const [value, setValue] = useState('')
 | Attribute | When present |
 |---|---|
 | `data-complete` | All slots are filled |
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>0-9</kbd> | Enters a digit and auto-advances to the next slot. |
+| <kbd>a-z</kbd> | Enters a letter when alphanumeric mode is enabled. |
+| <kbd>Backspace</kbd> | Clears the current slot and moves focus to the previous slot. |
+| <kbd>ArrowLeft</kbd> | Moves focus to the previous slot. |
+| <kbd>ArrowRight</kbd> | Moves focus to the next slot. |
+| <kbd>Tab</kbd> | Moves focus out of the OTP input. |

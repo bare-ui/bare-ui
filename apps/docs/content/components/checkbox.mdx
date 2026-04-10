@@ -8,6 +8,15 @@ description: Multi-select checkbox group with controlled state.
 
 Multi-select checkbox group. Controlled via `value: (string | number)[]` and `onChange`.
 
+## Features
+
+<FeatureList>
+  <FeatureItem>Multi-select group with controlled state.</FeatureItem>
+  <FeatureItem>Full keyboard navigation.</FeatureItem>
+  <FeatureItem>Can be controlled or uncontrolled.</FeatureItem>
+  <FeatureItem>Supports disabled state per item or globally.</FeatureItem>
+</FeatureList>
+
 ### Basic
 
 <Preview><CheckboxBasic /></Preview>
@@ -115,3 +124,11 @@ import { Checkbox } from '@wire-ui/react'
 |---|---|
 | `data-state` | `"checked"` / `"unchecked"` |
 | `data-disabled` | Present when disabled |
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Space</kbd> | Toggles the focused checkbox. |
+| <kbd>Tab</kbd> | Moves focus to the next checkbox item. |
+| <kbd>Shift+Tab</kbd> | Moves focus to the previous checkbox item. |

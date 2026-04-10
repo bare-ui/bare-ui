@@ -8,6 +8,16 @@ description: Side-panel overlay with portal rendering and close behaviours.
 
 Side-panel overlay. Same structure as Modal. Closes on overlay click or Escape key. Includes an optional `Drawer.Header` sub-component.
 
+## Features
+
+<FeatureList>
+  <FeatureItem>Portal rendering outside the document tree.</FeatureItem>
+  <FeatureItem>Closes on Escape key and overlay click.</FeatureItem>
+  <FeatureItem>Can be controlled or uncontrolled.</FeatureItem>
+  <FeatureItem>Header sub-component with close button.</FeatureItem>
+  <FeatureItem>data-state reflects open/closed state.</FeatureItem>
+</FeatureList>
+
 ### Basic
 
 <Preview><DrawerBasic /></Preview>
@@ -179,3 +189,11 @@ const [open, setOpen] = useState(false)
 |---|---|
 | `"open"` | Drawer is open |
 | `"closed"` | Drawer is closed |
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Escape</kbd> | Closes the drawer. |
+| <kbd>Tab</kbd> | Moves focus to the next focusable element inside the drawer. |
+| <kbd>Shift+Tab</kbd> | Moves focus to the previous focusable element inside the drawer. |

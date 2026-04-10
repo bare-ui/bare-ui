@@ -8,6 +8,15 @@ description: Trigger and menu pattern with keyboard and click-outside support.
 
 Trigger + menu pattern. Closes on Escape key, outside click, and menu item selection. Controlled and uncontrolled.
 
+## Features
+
+<FeatureList>
+  <FeatureItem>Closes on Escape key, outside click, and item selection.</FeatureItem>
+  <FeatureItem>Can be controlled or uncontrolled.</FeatureItem>
+  <FeatureItem>data-state reflects open/closed state.</FeatureItem>
+  <FeatureItem>Trigger sets aria-expanded automatically.</FeatureItem>
+</FeatureList>
+
 ### Basic
 
 <Preview><DropdownBasic /></Preview>
@@ -106,3 +115,12 @@ The menu is always rendered in the DOM — use `data-state` to hide it:
 /* Or with Tailwind: */
 /* className="[data-state=closed]:hidden" */
 ```
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Enter</kbd> | Opens the menu when trigger is focused. Selects the focused item when menu is open. |
+| <kbd>Space</kbd> | Opens the menu when trigger is focused. |
+| <kbd>Escape</kbd> | Closes the menu and returns focus to the trigger. |
+| <kbd>Tab</kbd> | Moves focus out of the menu and closes it. |

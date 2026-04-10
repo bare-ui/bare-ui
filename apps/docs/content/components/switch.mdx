@@ -8,6 +8,15 @@ description: Toggle on/off with a thumb element and data-state.
 
 Toggle component with a thumb element. Accessible — renders as a `<button role="switch">` with `aria-checked`.
 
+## Features
+
+<FeatureList>
+  <FeatureItem>Renders as button with role="switch" and aria-checked.</FeatureItem>
+  <FeatureItem>Can be controlled or uncontrolled.</FeatureItem>
+  <FeatureItem>Keyboard toggle with Space key.</FeatureItem>
+  <FeatureItem>Supports disabled state.</FeatureItem>
+</FeatureList>
+
 ### Basic
 
 <Preview><SwitchBasic /></Preview>
@@ -96,3 +105,10 @@ import { Switch } from '@wire-ui/react'
 
 - `role="switch"` with `aria-checked` reflects the current state
 - Keyboard: Space toggles the switch
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Space</kbd> | Toggles the switch on/off. |
+| <kbd>Tab</kbd> | Moves focus to the switch. |

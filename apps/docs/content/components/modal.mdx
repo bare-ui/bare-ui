@@ -8,6 +8,16 @@ description: Dialog with portal rendering, overlay-click and Escape key close.
 
 Compound modal dialog. Renders into a portal, closes on overlay click or Escape key. Supports controlled and uncontrolled state.
 
+## Features
+
+<FeatureList>
+  <FeatureItem>Portal rendering outside the document tree.</FeatureItem>
+  <FeatureItem>Closes on Escape key and overlay click.</FeatureItem>
+  <FeatureItem>Can be controlled or uncontrolled.</FeatureItem>
+  <FeatureItem>Renders with role="dialog" and aria-modal.</FeatureItem>
+  <FeatureItem>data-state reflects open/closed state.</FeatureItem>
+</FeatureList>
+
 ### Basic
 
 <Preview><ModalBasic /></Preview>
@@ -171,3 +181,11 @@ Use `data-state` with CSS transitions:
 [data-state="open"]   { animation: fadeIn 150ms ease; }
 [data-state="closed"] { animation: fadeOut 150ms ease; }
 ```
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Escape</kbd> | Closes the modal. |
+| <kbd>Tab</kbd> | Moves focus to the next focusable element inside the modal. |
+| <kbd>Shift+Tab</kbd> | Moves focus to the previous focusable element inside the modal. |

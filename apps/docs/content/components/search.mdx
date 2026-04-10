@@ -8,6 +8,15 @@ description: Search input with dropdown results, keyboard navigation, and loadin
 
 Search input with a dropdown results list. Keyboard navigation with Arrow keys, Enter to select, Escape to close. Supports loading state and empty state.
 
+## Features
+
+<FeatureList>
+  <FeatureItem>Keyboard navigation with Arrow keys, Enter, and Escape.</FeatureItem>
+  <FeatureItem>Loading state support via data-loading.</FeatureItem>
+  <FeatureItem>Empty state rendering.</FeatureItem>
+  <FeatureItem>Debounced search with configurable delay.</FeatureItem>
+</FeatureList>
+
 ### Basic
 
 <Preview><SearchBasic /></Preview>
@@ -137,3 +146,12 @@ type SearchOption = {
 | `ArrowUp` | Move highlight up |
 | `Enter` | Select highlighted item |
 | `Escape` | Close dropdown, clear highlight |
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>ArrowDown</kbd> | Moves highlight to the next result item. |
+| <kbd>ArrowUp</kbd> | Moves highlight to the previous result item. |
+| <kbd>Enter</kbd> | Selects the highlighted item. |
+| <kbd>Escape</kbd> | Closes the dropdown and clears the highlight. |

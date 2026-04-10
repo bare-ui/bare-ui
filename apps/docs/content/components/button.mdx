@@ -8,6 +8,15 @@ description: A native button with full interactive state tracking and asChild po
 
 A native `<button>` with full interactive state tracking. Use `asChild` to render as any element while keeping all behaviour and data attributes.
 
+## Features
+
+<FeatureList>
+  <FeatureItem>Full interactive state tracking via data attributes.</FeatureItem>
+  <FeatureItem>asChild polymorphism to render as any element.</FeatureItem>
+  <FeatureItem>Auto-focus support with data-autofocus.</FeatureItem>
+  <FeatureItem>Defaults to type="button" to prevent accidental form submission.</FeatureItem>
+</FeatureList>
+
 ### Basic
 
 <Preview><ButtonBasic /></Preview>
@@ -97,3 +106,11 @@ import { Button } from '@wire-ui/react'
 - Renders as `<button>` by default — correct semantics and keyboard behaviour out of the box.
 - `type="button"` prevents accidental form submission.
 - `data-focus-visible` uses `element.matches(':focus-visible')` — only keyboard navigation triggers it, not mouse clicks.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Space</kbd> | Activates the button. |
+| <kbd>Enter</kbd> | Activates the button. |
+| <kbd>Tab</kbd> | Moves focus to the button. |
