@@ -10,39 +10,44 @@ Renders an SVG from a consumer-supplied icon map. wire-ui ships **no SVG assets*
 ## Features
 
 <FeatureList>
-  <FeatureItem>Renders consumer-supplied SVG strings by name.</FeatureItem>
-  <FeatureItem>Ships no SVG assets — you bring your own icon map.</FeatureItem>
-  <FeatureItem>Accessible with optional label for role="img".</FeatureItem>
-  <FeatureItem>Size variants via data-size attribute.</FeatureItem>
+	<FeatureItem>Renders consumer-supplied SVG strings by name.</FeatureItem>
+	<FeatureItem>
+		Ships no SVG assets — you bring your own icon map.
+	</FeatureItem>
+	<FeatureItem>Accessible with optional label for role="img".</FeatureItem>
+	<FeatureItem>Size variants via data-size attribute.</FeatureItem>
 </FeatureList>
 
 ### Example
 
-<Preview><IconPreview /></Preview>
+<Preview>
+	<IconPreview />
+</Preview>
 
 ```tsx
 import { Icon } from '@wire-ui/react'
 
+// Reusable across Accordion (caret-down), Alert (warning), Modal/Drawer (x)
 const icons = {
-  home: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>',
-  star: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>',
-  heart: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>',
+  'caret-down': '<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>',
+  'warning': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>',
+  'x': '<svg viewBox="0 0 20 20" fill="currentColor"><path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" /></svg>',
 }
 
-<Icon type="home" icons={icons} size="medium" />
-<Icon type="star" icons={icons} size="medium" />
-<Icon type="heart" icons={icons} size="medium" />
+<Icon type="caret-down" icons={icons} size="medium" />
+<Icon type="warning" icons={icons} size="medium" />
+<Icon type="x" icons={icons} size="medium" />
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `type` | `string` | required | Key into `icons` map |
-| `icons` | `Record<string, string>` | required | Map of name → SVG string |
-| `size` | `Size` | `'medium'` | Sets `data-size` |
-| `label` | `string` | — | If provided: `role="img"` + `aria-label`; otherwise `aria-hidden="true"` |
-| `className` | `string` | — | Applied to the wrapper element |
+| Prop        | Type                     | Default    | Description                                                              |
+| ----------- | ------------------------ | ---------- | ------------------------------------------------------------------------ |
+| `type`      | `string`                 | required   | Key into `icons` map                                                     |
+| `icons`     | `Record<string, string>` | required   | Map of name → SVG string                                                 |
+| `size`      | `Size`                   | `'medium'` | Sets `data-size`                                                         |
+| `label`     | `string`                 | —          | If provided: `role="img"` + `aria-label`; otherwise `aria-hidden="true"` |
+| `className` | `string`                 | —          | Applied to the wrapper element                                           |
 
 ## Size values
 
@@ -51,9 +56,18 @@ const icons = {
 Use `data-size` to set dimensions:
 
 ```css
-[data-size="small"]  { width: 1rem;    height: 1rem; }
-[data-size="medium"] { width: 1.25rem; height: 1.25rem; }
-[data-size="large"]  { width: 1.5rem;  height: 1.5rem; }
+[data-size="small"] {
+	width: 1rem;
+	height: 1rem;
+}
+[data-size="medium"] {
+	width: 1.25rem;
+	height: 1.25rem;
+}
+[data-size="large"] {
+	width: 1.5rem;
+	height: 1.5rem;
+}
 ```
 
 ## Typical icon map setup
@@ -61,20 +75,22 @@ Use `data-size` to set dimensions:
 ```ts
 // icons.ts
 export const icons = {
-  arrow_right: '<svg viewBox="0 0 24 24">...</svg>',
-  check: '<svg viewBox="0 0 24 24">...</svg>',
-  x: '<svg viewBox="0 0 24 24">...</svg>',
-}
+	"caret-down": '<svg viewBox="0 0 20 20">...</svg>',
+	warning: '<svg viewBox="0 0 24 24">...</svg>',
+	x: '<svg viewBox="0 0 20 20">...</svg>',
+};
 ```
 
 Pass the map once from a parent or via context to avoid prop-drilling:
 
 ```tsx
 // Use a wrapper component in your design system
-import { Icon as BareIcon } from '@wire-ui/react'
-import { icons } from './icons'
+import { Icon as BareIcon } from "@wire-ui/react";
+import { icons } from "./icons";
 
-export function Icon(props: Omit<React.ComponentProps<typeof BareIcon>, 'icons'>) {
-  return <BareIcon icons={icons} {...props} />
+export function Icon(
+	props: Omit<React.ComponentProps<typeof BareIcon>, "icons">,
+) {
+	return <BareIcon icons={icons} {...props} />;
 }
 ```

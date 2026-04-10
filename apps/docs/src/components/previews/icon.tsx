@@ -1,19 +1,36 @@
-'use client'
+"use client";
 
-import { Icon } from '@wire-ui/react'
+import { Icon } from "@wire-ui/react";
 
 const icons = {
-  home: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>',
-  star: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>',
-  heart: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>',
-}
+	"caret-down":
+		'<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>',
+	warning:
+		'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>',
+	x: '<svg viewBox="0 0 20 20" fill="currentColor"><path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" /></svg>',
+};
 
 export function IconPreview() {
-  return (
-    <div className="p-6 flex items-center justify-center gap-6">
-      <Icon type="home" icons={icons} size="large" className="[data-size=large]:size-8 text-black" />
-      <Icon type="star" icons={icons} size="large" className="[data-size=large]:size-8 text-black" />
-      <Icon type="heart" icons={icons} size="large" className="[data-size=large]:size-8 text-black" />
-    </div>
-  )
+	return (
+		<div className="p-6 flex items-center justify-center gap-8">
+			<Icon
+				type="caret-down"
+				icons={icons}
+				size="small"
+				className="[data-size=small]:size-4 text-black"
+			/>
+			<Icon
+				type="warning"
+				icons={icons}
+				size="small"
+				className="[data-size=small]:size-4 text-black"
+			/>
+			<Icon
+				type="x"
+				icons={icons}
+				size="small"
+				className="[data-size=small]:size-4 text-black"
+			/>
+		</div>
+	);
 }
