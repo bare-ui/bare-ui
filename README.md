@@ -53,6 +53,10 @@ wire-ui/
 
 Full documentation is available at [wire-ui.com](https://wire-ui.com).
 
+## Community
+
+- Follow on X: [@wireuijs](https://x.com/wireuijs)
+
 ## Authors
 
 - Jerald Austero ([@jaoaustero](https://github.com/jaoaustero))

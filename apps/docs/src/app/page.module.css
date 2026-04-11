@@ -528,6 +528,13 @@
   display: block;
 }
 
+.communityCards {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 .ghCard {
   display: inline-flex;
   align-items: center;
@@ -558,12 +565,12 @@
 .ghCardLeft {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .ghIcon {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
   background: #0a0a0a;
   display: flex;
@@ -577,8 +584,8 @@
 }
 :global(html.dark) .ghIcon { background: rgba(255,255,255,0.1); }
 
-.ghCardTitle { font-size: 0.9rem; font-weight: 700; }
-.ghCardSub   { font-size: 0.775rem; opacity: 0.5; margin-top: 1px; }
+.ghCardTitle { font-size: 0.9rem; font-weight: 700; text-align: left; }
+.ghCardSub   { font-size: 0.775rem; opacity: 0.5; margin-top: 1px; text-align: left; }
 
 .ghArrow {
   font-size: 1rem;

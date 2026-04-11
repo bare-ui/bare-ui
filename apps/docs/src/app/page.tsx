@@ -77,6 +77,14 @@ export default function HomePage() {
 						<NpmIcon size={20} />
 					</a>
 					<a
+						href="https://x.com/wireuijs"
+						target="_blank"
+						rel="noopener noreferrer"
+						className={`${s.navLink} ${s.navLinkGh}`}
+					>
+						<XIcon size={18} />
+					</a>
+					<a
 						href="https://github.com/wire-ui/wire-ui"
 						target="_blank"
 						rel="noopener noreferrer"
@@ -253,23 +261,42 @@ function App() {
 				</h2>
 				<p className={s.sectionSub}>Join our fast-growing community</p>
 
-				<a
-					href="https://github.com/wire-ui/wire-ui"
-					target="_blank"
-					rel="noopener noreferrer"
-					className={s.ghCard}
-				>
-					<div className={s.ghCardLeft}>
-						<div className={s.ghIcon}>
-							<GitHubIcon color="#fff" size={20} />
+				<div className={s.communityCards}>
+					<a
+						href="https://github.com/wire-ui/wire-ui"
+						target="_blank"
+						rel="noopener noreferrer"
+						className={s.ghCard}
+					>
+						<div className={s.ghCardLeft}>
+							<div className={s.ghIcon}>
+								<GitHubIcon color="#fff" size={20} />
+							</div>
+							<div>
+								<div className={s.ghCardTitle}>GitHub</div>
+								<div className={s.ghCardSub}>wire-ui/wire-ui</div>
+							</div>
 						</div>
-						<div>
-							<div className={s.ghCardTitle}>GitHub</div>
-							<div className={s.ghCardSub}>wire-ui/wire-ui</div>
+						<span className={s.ghArrow}>→</span>
+					</a>
+					<a
+						href="https://x.com/wireuijs"
+						target="_blank"
+						rel="noopener noreferrer"
+						className={s.ghCard}
+					>
+						<div className={s.ghCardLeft}>
+							<div className={s.ghIcon}>
+								<XIcon size={18} />
+							</div>
+							<div>
+								<div className={s.ghCardTitle}>X (Twitter)</div>
+								<div className={s.ghCardSub}>@wireuijs</div>
+							</div>
 						</div>
-					</div>
-					<span className={s.ghArrow}>→</span>
-				</a>
+						<span className={s.ghArrow}>→</span>
+					</a>
+				</div>
 			</section>
 
 			{/* ── Footer ───────────────────────────────────────────── */}
@@ -306,6 +333,14 @@ function NpmIcon({ size = 16 }: { size?: number }) {
 	return (
 		<svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
 			<path d="M0 7.334v8h6.666v1.332H12v-1.332h12v-8H0zm6.666 6.664H5.334v-4H3.999v4H1.335V8.667h5.331v5.331zm4 0v1.336H8.001V8.667h5.334v5.332h-2.669v-.001zm12.001 0h-1.33v-4h-1.336v4h-1.335v-4h-1.33v4h-2.671V8.667h8.002v5.331zM10.665 10H12v2.667h-1.335V10z" />
+		</svg>
+	);
+}
+
+function XIcon({ size = 16 }: { size?: number }) {
+	return (
+		<svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+			<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
 		</svg>
 	);
 }

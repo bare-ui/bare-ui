@@ -290,6 +290,10 @@ npm run format
 
 ---
 
+## Community
+
+- Follow on X: [@wireuijs](https://x.com/wireuijs)
+
 ## Authors
 
 - Jerald Austero ([@jaoaustero](https://github.com/jaoaustero))

@@ -107,6 +107,15 @@ export function MobileMenuButton({
 								npm
 							</a>
 							<a
+								href="https://x.com/wireuijs"
+								target="_blank"
+								rel="noopener noreferrer"
+								style={linkStyle}
+								onClick={() => setOpen(false)}
+							>
+								X (Twitter)
+							</a>
+							<a
 								href="https://github.com/wire-ui/wire-ui"
 								target="_blank"
 								rel="noopener noreferrer"
