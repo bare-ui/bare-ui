@@ -6,22 +6,57 @@
 
 html {
   --nextra-content-width: 90rem;
+  --mobile-menu-bg: rgba(255, 255, 255, 0.95);
   background-color: #ffffff;
 }
 
 /* System dark — unless the user has explicitly forced light */
 @media (prefers-color-scheme: dark) {
   html:not(.light) {
+    --mobile-menu-bg: rgba(10, 10, 10, 0.95);
     background-color: #0a0a0a;
   }
 }
 
 /* Explicit dark class (next-themes / our toggle) — always wins */
 html.dark {
+  --mobile-menu-bg: rgba(10, 10, 10, 0.95);
   background-color: #0a0a0a;
 }
 
 /* Explicit light class — overrides the media query above */
 html.light {
   background-color: #ffffff;
+}
+
+/* ── Banner — remove side padding when dismiss button is hidden ── */
+.nextra-banner {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* ── Hide framework switcher on mobile ── */
+.framework-switcher-desktop {
+  display: flex;
+}
+
+@media (max-width: 767px) {
+  .framework-switcher-desktop {
+    display: none;
+  }
+}
+
+/* ── Docs mobile nav fix — ensure solid background on mobile menu ── */
+.nextra-mobile-nav {
+  background-color: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) .nextra-mobile-nav {
+    background-color: #0a0a0a;
+  }
+}
+
+html.dark .nextra-mobile-nav {
+  background-color: #0a0a0a;
 }

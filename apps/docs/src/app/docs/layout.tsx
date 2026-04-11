@@ -54,7 +54,9 @@ export default async function DocsLayout({
 						/>
 						<span className={s.logoText}>Wire UI</span>
 					</div>
-					<FrameworkSwitcher />
+					<div className="framework-switcher-desktop">
+						<FrameworkSwitcher />
+					</div>
 				</div>
 			}
 			projectLink="https://github.com/wire-ui/wire-ui"

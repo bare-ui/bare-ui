@@ -5,6 +5,7 @@ import { ScrambleText } from "../components/scramble-text";
 import { Hero3DWrapper } from "../components/hero-3d-wrapper";
 import { CharGridBg } from "../components/char-grid-bg";
 import { GitHubStars, NpmDownloads } from "../components/stats-badges";
+import { MobileMenuButton } from "../components/mobile-nav";
 import s from "./page.module.css";
 
 const FEATURES = [
@@ -84,6 +85,10 @@ export default function HomePage() {
 						<GitHubIcon size={20} />
 					</a>
 					<ThemeToggle className={s.themeToggle} />
+				</div>
+				<div className={s.mobileNav}>
+					<ThemeToggle className={s.themeToggle} />
+					<MobileMenuButton className={s.mobileMenuBtn} />
 				</div>
 			</nav>
 

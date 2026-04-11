@@ -148,6 +148,35 @@
 }
 :global(html.dark) .themeToggle:hover { background: rgba(255,255,255,0.07); }
 
+/* ── Mobile nav ─────────────────────────────────────────────────── */
+.mobileNav {
+  display: none;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.mobileMenuBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+
+.mobileMenuBtn:hover { opacity: 1; }
+
+@media (max-width: 700px) {
+  .navLinks { display: none; }
+  .mobileNav { display: flex; }
+}
+
 /* ── Shared section wrapper ───────────────────────────────────── */
 .section {
   max-width: 1400px;
