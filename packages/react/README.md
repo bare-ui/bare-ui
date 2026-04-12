@@ -12,7 +12,7 @@
   <a href="https://www.npmjs.com/package/@wire-ui/react"><img src="https://img.shields.io/npm/v/@wire-ui/react?style=flat-square&colorA=0a0a0a&colorB=0a0a0a" alt="npm version" /></a>
   <a href="https://www.npmjs.com/package/@wire-ui/react"><img src="https://img.shields.io/npm/dm/@wire-ui/react?style=flat-square&colorA=0a0a0a&colorB=0a0a0a" alt="npm downloads" /></a>
   <img src="https://img.shields.io/badge/react-%3E%3D19.0.0-blue?style=flat-square&colorA=0a0a0a&colorB=0a0a0a" alt="react >= 19" />
-  <a href="https://github.com/wire-ui/wire-ui/blob/main/packages/wire-ui/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square&colorA=0a0a0a&colorB=0a0a0a" alt="MIT license" /></a>
+  <a href="https://github.com/wire-ui/wire-ui/blob/main/packages/react/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square&colorA=0a0a0a&colorB=0a0a0a" alt="MIT license" /></a>
 </p>
 
 ---
