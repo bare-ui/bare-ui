@@ -11,7 +11,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/@wire-ui/react"><img src="https://img.shields.io/npm/v/@wire-ui/react?style=flat-square&colorA=0a0a0a&colorB=0a0a0a" alt="npm version" /></a>
   <a href="https://www.npmjs.com/package/@wire-ui/react"><img src="https://img.shields.io/npm/dm/@wire-ui/react?style=flat-square&colorA=0a0a0a&colorB=0a0a0a" alt="npm downloads" /></a>
-  <a href="https://github.com/wire-ui/wire-ui/blob/main/packages/wire-ui/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square&colorA=0a0a0a&colorB=0a0a0a" alt="MIT license" /></a>
+  <a href="https://github.com/wire-ui/wire-ui/blob/main/packages/react/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square&colorA=0a0a0a&colorB=0a0a0a" alt="MIT license" /></a>
   <img src="https://img.shields.io/badge/react-%3E%3D19.0.0-blue?style=flat-square&colorA=0a0a0a&colorB=0a0a0a" alt="react >= 19" />
 </p>
 
@@ -35,9 +35,10 @@ Wire UI is an AI-native, headless component library. Every component ships with 
 
 ## Packages
 
-| Package | Version | Description |
-|---|---|---|
-| [`@wire-ui/react`](./packages/wire-ui) | [![npm](https://img.shields.io/npm/v/@wire-ui/react?style=flat-square)](https://www.npmjs.com/package/@wire-ui/react) | AI-native unstyled component library |
+| Package                              | Version                                                                                                               | Description                                     |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| [`@wire-ui/react`](./packages/react) | [![npm](https://img.shields.io/npm/v/@wire-ui/react?style=flat-square)](https://www.npmjs.com/package/@wire-ui/react) | AI-native unstyled component library (React 19) |
+| [`@wire-ui/vue`](./packages/vue)     | [![npm](https://img.shields.io/npm/v/@wire-ui/vue?style=flat-square)](https://www.npmjs.com/package/@wire-ui/vue)     | AI-native unstyled component library (Vue 3)    |
 
 ## Repository structure
 
@@ -46,7 +47,9 @@ wire-ui/
 ├── apps/
 │   └── docs/          # Nextra v4 documentation site
 └── packages/
-    └── wire-ui/       # @wire-ui/react — the npm package
+    ├── react/         # @wire-ui/react — React 19 component library
+    ├── vue/           # @wire-ui/vue — Vue 3 component library
+    └── mcp/           # @wire-ui/mcp — MCP server for AI integration
 ```
 
 ## Documentation
@@ -67,4 +70,4 @@ See the [contributing guide](./CONTRIBUTING.md) for local development instructio
 
 ## License
 
-MIT License © 2025 Wire UI. See [LICENSE](./packages/wire-ui/LICENSE) for details.
+MIT License © 2025 Wire UI. See [LICENSE](./packages/react/LICENSE) for details.

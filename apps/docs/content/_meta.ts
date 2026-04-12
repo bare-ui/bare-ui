@@ -10,7 +10,7 @@ export default {
   'browser-support': 'Browser Support',
   changelog: {
     title: 'Changelog',
-    href: 'https://github.com/wire-ui/wire-ui/blob/main/packages/wire-ui/CHANGELOG.md',
+    href: 'https://github.com/wire-ui/wire-ui/blob/main/packages/react/CHANGELOG.md',
   },
   '-- ai': {
     type: 'separator',
