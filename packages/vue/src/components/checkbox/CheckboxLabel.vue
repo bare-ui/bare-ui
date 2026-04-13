@@ -1,0 +1,13 @@
+<script setup lang="ts">
+import { useCheckboxItemContext } from './keys'
+
+defineOptions({ name: 'CheckboxLabel' })
+
+const itemCtx = useCheckboxItemContext()
+</script>
+
+<template>
+  <label :data-disabled="itemCtx.disabled ? '' : undefined">
+    <slot />
+  </label>
+</template>
