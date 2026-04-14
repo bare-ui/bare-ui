@@ -17,92 +17,66 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const WireframePlaceholder = ({ height = 160 }: { height?: number }) => (
+	<div
+		style={{
+			width: '100%',
+			height,
+			position: 'relative',
+			background: '#f5f5f5',
+			overflow: 'hidden',
+		}}>
+		<svg
+			viewBox='0 0 100 100'
+			preserveAspectRatio='none'
+			style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
+			<line x1='0' y1='0' x2='100' y2='100' stroke='#000' strokeWidth='2' vectorEffect='non-scaling-stroke' />
+			<line x1='100' y1='0' x2='0' y2='100' stroke='#000' strokeWidth='2' vectorEffect='non-scaling-stroke' />
+		</svg>
+	</div>
+);
+
 export const Default: Story = {
-	args: {
-		children: 'This is a default card with some content inside.',
-		className: 'rounded-[8px] border-2 border-black bg-white p-4 text-sm text-black',
-	},
-};
-
-export const Primary: Story = {
-	args: {
-		color: 'primary',
-		children: 'This is a primary card.',
-		className: 'rounded-[8px] border-2 border-black bg-[#f5f5f5] p-4 text-sm text-black',
-	},
-};
-
-export const Inverse: Story = {
-	args: {
-		color: 'inverse',
-		children: 'This is an inverse card.',
-		className: 'rounded-[8px] border-2 border-black bg-black p-4 text-sm text-white',
-	},
-};
-
-export const Colors: Story = {
 	render: () => (
-		<div className='flex flex-col gap-4'>
-			<Card color='default' className='rounded-[8px] border-2 border-black bg-white p-4 text-sm text-black'>
-				Default color card
-			</Card>
-			<Card color='primary' className='rounded-[8px] border-2 border-black bg-[#f5f5f5] p-4 text-sm text-black'>
-				Primary color card
-			</Card>
-			<Card color='inverse' className='rounded-[8px] border-2 border-black bg-black p-4 text-sm text-white'>
-				Inverse color card
-			</Card>
-		</div>
+		<Card className='w-full max-w-sm rounded-[8px] border-2 border-black bg-white p-5'>
+			<h3 className='text-sm font-semibold text-black mb-1'>Card Title</h3>
+			<p className='text-sm text-[#6b7280]'>
+				This is a basic card component with a title and description. Use it to group related content together.
+			</p>
+		</Card>
 	),
 };
 
-export const XSmall: Story = {
-	args: {
-		size: 'xsmall',
-		children: 'Extra small card',
-		className: 'rounded-[8px] border-2 border-black bg-white p-2 text-xs text-black',
-	},
-};
-
-export const Small: Story = {
-	args: {
-		size: 'small',
-		children: 'Small card',
-		className: 'rounded-[8px] border-2 border-black bg-white p-3 text-sm text-black',
-	},
-};
-
-export const Medium: Story = {
-	args: {
-		size: 'medium',
-		children: 'Medium card',
-		className: 'rounded-[20px] border-[3px] border-black bg-white p-4 text-sm text-black',
-	},
-};
-
-export const Large: Story = {
-	args: {
-		size: 'large',
-		children: 'Large card',
-		className: 'rounded-[20px] border-[3px] border-black bg-white p-6 text-base text-black',
-	},
-};
-
-export const Sizes: Story = {
+export const Composed: Story = {
 	render: () => (
-		<div className='flex flex-col gap-4'>
-			<Card size='xsmall' className='rounded-[8px] border-2 border-black bg-white p-2 text-xs text-black'>
-				Extra small
-			</Card>
-			<Card size='small' className='rounded-[8px] border-2 border-black bg-white p-3 text-sm text-black'>
-				Small
-			</Card>
-			<Card size='medium' className='rounded-[20px] border-[3px] border-black bg-white p-4 text-sm text-black'>
-				Medium
-			</Card>
-			<Card size='large' className='rounded-[20px] border-[3px] border-black bg-white p-6 text-base text-black'>
-				Large
-			</Card>
-		</div>
+		<Card className='w-full max-w-sm rounded-[8px] border-2 border-black bg-white p-4 flex items-center gap-4'>
+			<div className='relative inline-flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-black bg-[#f5f5f5]'>
+				<span className='text-sm font-semibold text-black select-none'>W</span>
+			</div>
+			<div>
+				<h3 className='text-sm font-semibold text-black'>Wire UI</h3>
+				<p className='text-xs text-[#6b7280]'>Wireframe primitives for modern frameworks</p>
+			</div>
+		</Card>
+	),
+};
+
+export const Complex: Story = {
+	render: () => (
+		<Card className='w-full max-w-sm overflow-hidden rounded-[20px] border-[3px] border-black bg-white'>
+			<WireframePlaceholder height={180} />
+			<div className='p-5'>
+				<h3 className='text-sm font-semibold text-black mb-1'>Product Name</h3>
+				<p className='text-sm text-[#6b7280] mb-4'>
+					A short description of the product with key details about what makes it special.
+				</p>
+				<div className='flex items-center justify-between'>
+					<span className='text-base font-bold text-black'>$49.99</span>
+					<button className='inline-flex cursor-pointer items-center justify-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#333]'>
+						Add to Cart
+					</button>
+				</div>
+			</div>
+		</Card>
 	),
 };

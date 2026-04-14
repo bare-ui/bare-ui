@@ -18,30 +18,54 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// ---------------------------------------------------------------------------
-// Sample data
-// ---------------------------------------------------------------------------
-
 const faqs = [
 	{
 		value: 'item-1',
 		question: 'What is wire-ui?',
-		answer: 'wire-ui is a headless React 19 component library. It ships zero styles — you bring your own via className and data-attribute selectors.',
+		answer: 'A headless component library. Zero styles shipped — you bring your own via className and data-attribute selectors.',
 	},
 	{
 		value: 'item-2',
 		question: 'How is it different from Headless UI?',
-		answer: 'wire-ui uses the asChild pattern instead of the as prop, exports useInteractiveState publicly, and uses data-focus-visible (keyboard only) instead of data-focus.',
+		answer: 'wire-ui uses the asChild pattern, exports useInteractiveState publicly, and uses data-focus-visible (keyboard only) instead of data-focus.',
 	},
 	{
 		value: 'item-3',
 		question: 'Does it support animations?',
-		answer: 'Yes — pass forceMount to Accordion.Content and use CSS transitions on data-state. The grid-template-rows trick gives smooth height animations with pure Tailwind.',
+		answer: 'Yes — pass forceMount to Accordion.Content and use CSS transitions on data-state. The grid-template-rows trick gives smooth height animations.',
 	},
+];
+
+const multipleFaqs = [
+	...faqs,
 	{
 		value: 'item-4',
 		question: 'Can multiple items be open at once?',
 		answer: 'Yes — use type="multiple" on Accordion.Root. With type="single" only one item is open at a time.',
+	},
+];
+
+const richFaqs = [
+	{
+		value: 'item-1',
+		icon: '📦',
+		question: 'Getting Started',
+		description: 'Learn the basics of wire-ui',
+		answer: 'Install the package, import your first component, and style it with Tailwind classes and data-attribute selectors.',
+	},
+	{
+		value: 'item-2',
+		icon: '🎨',
+		question: 'Theming',
+		description: 'Customize the look and feel',
+		answer: 'wire-ui is headless — you own all the styles. Use CSS variables, Tailwind, or any styling solution you prefer.',
+	},
+	{
+		value: 'item-3',
+		icon: '⚡',
+		question: 'Performance',
+		description: 'Optimized for speed',
+		answer: 'Tree-shakeable exports, zero runtime CSS, and minimal re-renders. Only ship what you use.',
 	},
 ];
 
@@ -51,13 +75,9 @@ const containerCls =
 const triggerCls =
 	'flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-black outline-none transition-colors hover:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50';
 
-const chevronCls = 'size-4 shrink-0 text-black transition-transform duration-200 data-[state=open]:rotate-180';
-
-const contentCls = 'px-5 pb-4 text-sm leading-relaxed text-[#9ca3af]';
-
 const ChevronDown = () => (
 	<svg
-		className={chevronCls}
+		className='size-4 shrink-0 text-black transition-transform duration-200 data-[state=open]:rotate-180'
 		data-state='inherit'
 		viewBox='0 0 20 20'
 		fill='currentColor'>
@@ -69,10 +89,6 @@ const ChevronDown = () => (
 	</svg>
 );
 
-// ---------------------------------------------------------------------------
-// Default — single, collapsible, bordered
-// ---------------------------------------------------------------------------
-
 export const Default: Story = {
 	render: () => (
 		<Accordion.Root
@@ -81,96 +97,12 @@ export const Default: Story = {
 			defaultValue='item-1'
 			className={containerCls}>
 			{faqs.map((faq) => (
-				<Accordion.Item
-					key={faq.value}
-					value={faq.value}>
+				<Accordion.Item key={faq.value} value={faq.value}>
 					<Accordion.Trigger className={triggerCls}>
 						{faq.question}
 						<ChevronDown />
 					</Accordion.Trigger>
-					<Accordion.Content className={contentCls}>{faq.answer}</Accordion.Content>
-				</Accordion.Item>
-			))}
-		</Accordion.Root>
-	),
-};
-
-// ---------------------------------------------------------------------------
-// Multiple — all can be open simultaneously
-// ---------------------------------------------------------------------------
-
-export const Multiple: Story = {
-	render: () => (
-		<Accordion.Root
-			type='multiple'
-			defaultValue={['item-1', 'item-3']}
-			className={containerCls}>
-			{faqs.map((faq) => (
-				<Accordion.Item
-					key={faq.value}
-					value={faq.value}>
-					<Accordion.Trigger className={triggerCls}>
-						{faq.question}
-						<ChevronDown />
-					</Accordion.Trigger>
-					<Accordion.Content className={contentCls}>{faq.answer}</Accordion.Content>
-				</Accordion.Item>
-			))}
-		</Accordion.Root>
-	),
-};
-
-// ---------------------------------------------------------------------------
-// Animated — smooth height transition via CSS grid trick + forceMount
-// ---------------------------------------------------------------------------
-
-export const Animated: Story = {
-	render: () => (
-		<Accordion.Root
-			type='single'
-			collapsible
-			className={containerCls}>
-			{faqs.map((faq) => (
-				<Accordion.Item
-					key={faq.value}
-					value={faq.value}>
-					<Accordion.Trigger className={triggerCls}>
-						{faq.question}
-						<ChevronDown />
-					</Accordion.Trigger>
-					{/* forceMount keeps DOM mounted — CSS grid trick animates height */}
-					<Accordion.Content
-						forceMount
-						className='grid transition-all duration-300 ease-in-out data-[state=open]:grid-rows-[1fr] data-[state=closed]:grid-rows-[0fr]'>
-						<div className='overflow-hidden'>
-							<p className='px-5 pb-4 text-sm leading-relaxed text-[#9ca3af]'>{faq.answer}</p>
-						</div>
-					</Accordion.Content>
-				</Accordion.Item>
-			))}
-		</Accordion.Root>
-	),
-};
-
-// ---------------------------------------------------------------------------
-// Flush — no outer border, full-width separators
-// ---------------------------------------------------------------------------
-
-export const Flush: Story = {
-	render: () => (
-		<Accordion.Root
-			type='single'
-			collapsible
-			className='w-full max-w-lg divide-y-2 divide-black'>
-			{faqs.map((faq) => (
-				<Accordion.Item
-					key={faq.value}
-					value={faq.value}>
-					<Accordion.Trigger className='flex w-full items-center justify-between py-4 text-left text-sm font-medium text-black outline-none transition-colors hover:text-black data-[state=open]:text-black'>
-						{faq.question}
-						<ChevronDown />
-					</Accordion.Trigger>
-					<Accordion.Content className='pb-4 text-sm leading-relaxed text-[#9ca3af]'>
+					<Accordion.Content className='px-5 pb-4 text-sm leading-relaxed text-[#6b7280]'>
 						{faq.answer}
 					</Accordion.Content>
 				</Accordion.Item>
@@ -179,52 +111,59 @@ export const Flush: Story = {
 	),
 };
 
-// ---------------------------------------------------------------------------
-// Disabled — one item disabled, whole group disabled
-// ---------------------------------------------------------------------------
-
-export const Disabled: Story = {
+export const Composed: Story = {
 	render: () => (
-		<div className='flex w-full max-w-lg flex-col gap-6'>
-			<div>
-				<p className='mb-2 text-xs font-medium uppercase tracking-wide text-[#9ca3af]'>Single item disabled</p>
-				<Accordion.Root
-					type='single'
-					collapsible
-					className={containerCls}>
-					{faqs.slice(0, 3).map((faq, i) => (
-						<Accordion.Item
-							key={faq.value}
-							value={faq.value}
-							disabled={i === 1}>
-							<Accordion.Trigger className='flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-black outline-none hover:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40'>
-								{faq.question}
-							</Accordion.Trigger>
-							<Accordion.Content className='px-5 pb-4 text-sm text-[#9ca3af]'>
-								{faq.answer}
-							</Accordion.Content>
-						</Accordion.Item>
-					))}
-				</Accordion.Root>
-			</div>
+		<>
+			<style>
+				{
+					'[data-state=closed] > .accordion-body { grid-template-rows: 0fr; } [data-state=open] > .accordion-body { grid-template-rows: 1fr; } .accordion-body { display: grid; transition: grid-template-rows 200ms; } .accordion-body > div { overflow: hidden; }'
+				}
+			</style>
+			<Accordion.Root
+				type='multiple'
+				defaultValue={['item-1', 'item-2']}
+				className={containerCls}>
+				{multipleFaqs.map((faq) => (
+					<Accordion.Item key={faq.value} value={faq.value}>
+						<Accordion.Trigger className={triggerCls}>
+							{faq.question}
+							<ChevronDown />
+						</Accordion.Trigger>
+						<Accordion.Content forceMount className='px-5 pb-4 text-sm leading-relaxed text-[#6b7280]'>
+							<div className='accordion-body'>
+								<div>{faq.answer}</div>
+							</div>
+						</Accordion.Content>
+					</Accordion.Item>
+				))}
+			</Accordion.Root>
+		</>
+	),
+};
 
-			<div>
-				<p className='mb-2 text-xs font-medium uppercase tracking-wide text-[#9ca3af]'>All disabled</p>
-				<Accordion.Root
-					type='single'
-					disabled
-					className={[containerCls, 'opacity-60'].join(' ')}>
-					{faqs.slice(0, 3).map((faq) => (
-						<Accordion.Item
-							key={faq.value}
-							value={faq.value}>
-							<Accordion.Trigger className='flex w-full cursor-not-allowed items-center justify-between px-5 py-4 text-left text-sm font-medium text-black outline-none'>
-								{faq.question}
-							</Accordion.Trigger>
-						</Accordion.Item>
-					))}
-				</Accordion.Root>
-			</div>
-		</div>
+export const Complex: Story = {
+	render: () => (
+		<Accordion.Root
+			type='single'
+			collapsible
+			defaultValue='item-1'
+			className={containerCls}>
+			{richFaqs.map((faq) => (
+				<Accordion.Item key={faq.value} value={faq.value}>
+					<Accordion.Trigger className='flex w-full items-center gap-3 px-5 py-4 text-left text-sm font-medium text-black outline-none transition-colors hover:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50'>
+						<span className='text-xl'>{faq.icon}</span>
+						<div className='flex-1'>
+							<p className='text-sm font-medium text-black'>{faq.question}</p>
+							<p className='text-xs text-[#6b7280] font-normal'>{faq.description}</p>
+						</div>
+						<ChevronDown />
+					</Accordion.Trigger>
+					<Accordion.Content className='px-5 pb-4 text-sm leading-relaxed text-[#6b7280]'>
+						<p className='mb-2'>{faq.answer}</p>
+						<button className='text-xs font-medium text-black hover:underline'>Learn more →</button>
+					</Accordion.Content>
+				</Accordion.Item>
+			))}
+		</Accordion.Root>
 	),
 };

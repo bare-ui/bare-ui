@@ -17,10 +17,6 @@ const meta = {
 export default meta;
 type Story = StoryObj;
 
-// ---------------------------------------------------------------------------
-// Wireframe placeholder — grey box with diagonal X cross (no network request)
-// ---------------------------------------------------------------------------
-
 const WireframePlaceholder = ({ width = 400, height = 240 }: { width?: number; height?: number }) => (
 	<div
 		style={{
@@ -42,29 +38,41 @@ const WireframePlaceholder = ({ width = 400, height = 240 }: { width?: number; h
 );
 
 export const Default: Story = {
-	render: () => <WireframePlaceholder />,
+	render: () => <WireframePlaceholder width={400} height={240} />,
 };
 
-export const PositionLeft: Story = {
+export const Composed: Story = {
 	render: () => (
-		<div className='flex justify-start'>
-			<WireframePlaceholder width={320} height={200} />
+		<div className='flex flex-col gap-6'>
+			<div>
+				<p className='text-xs font-medium uppercase tracking-wide text-[#6b7280] mb-2'>Left</p>
+				<div className='flex justify-start'>
+					<WireframePlaceholder width={320} height={200} />
+				</div>
+			</div>
+			<div>
+				<p className='text-xs font-medium uppercase tracking-wide text-[#6b7280] mb-2'>Center</p>
+				<div className='flex justify-center'>
+					<WireframePlaceholder width={320} height={200} />
+				</div>
+			</div>
+			<div>
+				<p className='text-xs font-medium uppercase tracking-wide text-[#6b7280] mb-2'>Right</p>
+				<div className='flex justify-end'>
+					<WireframePlaceholder width={320} height={200} />
+				</div>
+			</div>
 		</div>
 	),
 };
 
-export const PositionCenter: Story = {
+export const Complex: Story = {
 	render: () => (
-		<div className='flex justify-center'>
-			<WireframePlaceholder width={320} height={200} />
-		</div>
-	),
-};
-
-export const PositionRight: Story = {
-	render: () => (
-		<div className='flex justify-end'>
-			<WireframePlaceholder width={320} height={200} />
+		<div className='grid grid-cols-2 gap-4'>
+			<WireframePlaceholder width={200} height={150} />
+			<WireframePlaceholder width={200} height={150} />
+			<WireframePlaceholder width={200} height={150} />
+			<WireframePlaceholder width={200} height={150} />
 		</div>
 	),
 };
