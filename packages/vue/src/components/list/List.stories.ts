@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 import { h } from 'vue';
-import { List } from './List';
+import { List } from '.';
 
 const meta = {
 	title: 'Components/List',

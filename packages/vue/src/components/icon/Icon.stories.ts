@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 import { h } from 'vue';
-import { Icon } from './Icon';
+import { Icon } from '.';
 
 const sampleIcons = {
 	alert: '<svg viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2z" fill="currentColor"/></svg>',

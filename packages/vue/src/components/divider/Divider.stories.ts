@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 import { h } from 'vue';
-import { Divider } from './Divider';
+import { Divider } from '.';
 
 const meta = {
 	title: 'Components/Divider',

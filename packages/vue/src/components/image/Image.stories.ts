@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 import { h } from 'vue';
-import { Image } from './Image';
+import { Image } from '.';
 
 const meta = {
 	title: 'Components/Image',

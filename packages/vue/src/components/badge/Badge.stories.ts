@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 import { h } from 'vue';
-import { Badge } from './Badge';
+import { Badge } from '.';
 
 const meta = {
 	title: 'Components/Badge',
