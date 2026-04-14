@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Select } from './Select';
 
 const meta = {
-	title: 'Components/Select',
+	title: 'Forms/Select',
 	component: Select.Root,
 	tags: ['autodocs'],
 	parameters: {

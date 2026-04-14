@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Radio } from './Radio';
 
 const meta = {
-	title: 'Components/Radio',
+	title: 'Forms/Radio',
 	component: Radio.Root,
 	tags: ['autodocs'],
 	parameters: {

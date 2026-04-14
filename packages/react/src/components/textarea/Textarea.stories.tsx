@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Textarea } from './Textarea';
 
 const meta = {
-	title: 'Components/Textarea',
+	title: 'Forms/Textarea',
 	component: Textarea.Root,
 	tags: ['autodocs'],
 	parameters: {

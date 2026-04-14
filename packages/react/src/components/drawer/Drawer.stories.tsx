@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Drawer } from './Drawer';
 
 const meta = {
-	title: 'Components/Drawer',
+	title: 'Overlays/Drawer',
 	component: Drawer.Root,
 	tags: ['autodocs'],
 	parameters: {

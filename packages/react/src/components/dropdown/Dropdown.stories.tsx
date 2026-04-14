@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Dropdown } from './Dropdown';
 
 const meta = {
-	title: 'Components/Dropdown',
+	title: 'Overlays/Dropdown',
 	component: Dropdown.Root,
 	tags: ['autodocs'],
 	parameters: {

@@ -2,7 +2,7 @@ import type { StoryObj } from '@storybook/react-vite';
 import { Avatar } from './Avatar';
 
 export default {
-	title: 'Components/Avatar',
+	title: 'Media/Avatar',
 	component: Avatar,
 	tags: ['autodocs'],
 };

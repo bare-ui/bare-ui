@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Image } from './Image';
 
 const meta = {
-	title: 'Components/Image',
+	title: 'Media/Image',
 	component: Image,
 	tags: ['autodocs'],
 	parameters: {

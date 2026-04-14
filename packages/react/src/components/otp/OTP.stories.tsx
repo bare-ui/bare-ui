@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { OTP } from './OTP';
 
 const meta = {
-	title: 'Components/OTP',
+	title: 'Forms/OTP',
 	component: OTP.Root,
 	tags: ['autodocs'],
 	parameters: {

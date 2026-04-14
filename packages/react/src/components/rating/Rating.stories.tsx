@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Rating } from './Rating';
 
 const meta = {
-	title: 'Components/Rating',
+	title: 'Feedback/Rating',
 	component: Rating,
 	tags: ['autodocs'],
 	parameters: {

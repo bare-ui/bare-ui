@@ -4,7 +4,7 @@ import { Search } from './Search';
 import type { SearchOption } from './Search.types';
 
 const meta = {
-	title: 'Components/Search',
+	title: 'Overlays/Search',
 	component: Search.Root,
 	tags: ['autodocs'],
 	parameters: {

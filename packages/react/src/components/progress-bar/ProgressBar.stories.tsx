@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ProgressBar } from './ProgressBar';
 
 const meta = {
-	title: 'Components/ProgressBar',
+	title: 'Feedback/ProgressBar',
 	component: ProgressBar,
 	tags: ['autodocs'],
 	parameters: {

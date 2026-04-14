@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Timeago } from './Timeago';
 
 const meta = {
-	title: 'Components/Timeago',
+	title: 'Media/Timeago',
 	component: Timeago,
 	tags: ['autodocs'],
 	parameters: {
