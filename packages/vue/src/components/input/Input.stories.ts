@@ -3,7 +3,7 @@ import { h } from 'vue';
 import { Input } from '.';
 
 const meta = {
-	title: 'Components/Input',
+	title: 'Forms/Input',
 	component: Input.Root,
 	tags: ['autodocs'],
 	parameters: {
@@ -18,39 +18,19 @@ const meta = {
 export default meta;
 
 const fieldCls =
-	'w-full rounded-[8px] border-2 border-black px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1';
+	'w-full rounded-[8px] bg-white border-2 border-black px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1';
 
 export const Default: StoryObj = {
 	render: () => ({
 		setup: () => () =>
-			h(Input.Root, { class: 'w-72' }, () => [
-				h(Input.Field, { placeholder: 'Enter text...', class: fieldCls }),
-			]),
-	}),
-};
-
-export const WithLabel: StoryObj = {
-	render: () => ({
-		setup: () => () =>
-			h(Input.Root, { class: 'flex w-72 flex-col gap-1.5' }, () => [
+			h(Input.Root, { class: 'flex w-full max-w-xs flex-col gap-1.5' }, () => [
 				h(Input.Label, { class: 'text-sm font-medium text-black' }, () => 'Full Name'),
 				h(Input.Field, { placeholder: 'John Doe', class: fieldCls }),
 			]),
 	}),
 };
 
-export const Required: StoryObj = {
-	render: () => ({
-		setup: () => () =>
-			h(Input.Root, { isRequired: true, class: 'flex w-72 flex-col gap-1.5' }, () => [
-				h(Input.Label, { class: 'text-sm font-medium text-black' }, () => 'Username'),
-				h(Input.Field, { placeholder: 'Required field', class: fieldCls }),
-				h(Input.Error, { class: 'text-xs text-black' }, () => 'This field is required'),
-			]),
-	}),
-};
-
-export const WithError: StoryObj = {
+export const Composed: StoryObj = {
 	render: () => ({
 		setup: () => () =>
 			h(
@@ -59,7 +39,7 @@ export const WithError: StoryObj = {
 					invalidType: 'email',
 					defaultValue: 'not-an-email',
 					errorMessage: { email: 'Please enter a valid email address' },
-					class: 'flex w-72 flex-col gap-1.5',
+					class: 'flex w-full max-w-xs flex-col gap-1.5',
 				},
 				() => [
 					h(Input.Label, { class: 'text-sm font-medium text-black' }, () => 'Email'),
@@ -67,5 +47,36 @@ export const WithError: StoryObj = {
 					h(Input.Error, { class: 'text-xs text-black' }),
 				],
 			),
+	}),
+};
+
+export const Complex: StoryObj = {
+	render: () => ({
+		setup: () => () =>
+			h('div', { class: 'flex flex-col gap-6 max-w-xs' }, [
+				h(Input.Root, { class: 'flex flex-col gap-1.5' }, () => [
+					h(Input.Label, { class: 'text-sm font-medium text-black' }, () => 'Full Name'),
+					h(Input.Field, { placeholder: 'John Doe', class: fieldCls }),
+				]),
+				h(
+					Input.Root,
+					{
+						invalidType: 'email',
+						defaultValue: 'not-an-email',
+						errorMessage: { email: 'Please enter a valid email address' },
+						class: 'flex flex-col gap-1.5',
+					},
+					() => [
+						h(Input.Label, { class: 'text-sm font-medium text-black' }, () => 'Email'),
+						h(Input.Field, { type: 'email', class: fieldCls }),
+						h(Input.Error, { class: 'text-xs text-black' }),
+					],
+				),
+				h(Input.Root, { isSuccess: true, defaultValue: 'available_user', class: 'flex flex-col gap-1.5' }, () => [
+					h(Input.Label, { class: 'text-sm font-medium text-black' }, () => 'Username'),
+					h(Input.Field, { class: fieldCls }),
+					h('span', { class: 'text-xs text-black' }, 'Username is available'),
+				]),
+			]),
 	}),
 };

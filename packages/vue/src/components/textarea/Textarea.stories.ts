@@ -1,45 +1,38 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
-import { h } from 'vue';
+import { h, ref } from 'vue';
 import { Textarea } from '.';
 
 const meta = {
-	title: 'Components/Textarea',
+	title: 'Forms/Textarea',
 	component: Textarea.Root,
 	tags: ['autodocs'],
 	parameters: {
 		docs: {
 			description: {
-				component: 'Compound multi-line text input with consumer-controlled error state.',
+				component: 'Compound textarea with label, validation, and error display.',
 			},
 		},
 	},
 } satisfies Meta<typeof Textarea.Root>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
-const fieldCls =
-	'w-full rounded-[8px] border-2 border-black px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1';
-
-export const Default: StoryObj = {
+export const Default: Story = {
 	render: () => ({
 		setup: () => () =>
-			h(Textarea.Root, { class: 'w-80' }, () => [
-				h(Textarea.Field, { placeholder: 'Write something...', rows: 4, class: fieldCls }),
-			]),
-	}),
-};
-
-export const WithLabel: StoryObj = {
-	render: () => ({
-		setup: () => () =>
-			h(Textarea.Root, { class: 'flex w-80 flex-col gap-1.5' }, () => [
+			h(Textarea.Root, { class: 'flex max-w-xs flex-col gap-1.5' }, () => [
 				h(Textarea.Label, { class: 'text-sm font-medium text-black' }, () => 'Message'),
-				h(Textarea.Field, { placeholder: 'Type your message here...', rows: 4, class: fieldCls }),
+				h(Textarea.Field, {
+					placeholder: 'Type your message here...',
+					rows: 4,
+					class: 'w-full rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1',
+				}),
 			]),
 	}),
 };
 
-export const Required: StoryObj = {
+export const Composed: Story = {
 	render: () => ({
 		setup: () => () =>
 			h(
@@ -47,13 +40,45 @@ export const Required: StoryObj = {
 				{
 					isRequired: true,
 					errorMessage: { required: 'This field is required' },
-					class: 'flex w-80 flex-col gap-1.5',
+					class: 'flex max-w-xs flex-col gap-1.5',
 				},
 				() => [
 					h(Textarea.Label, { class: 'text-sm font-medium text-black' }, () => 'Feedback'),
-					h(Textarea.Field, { placeholder: 'Your feedback is important...', rows: 4, class: fieldCls }),
+					h(Textarea.Field, {
+						placeholder: 'Your feedback is important...',
+						rows: 4,
+						class: 'w-full rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1',
+					}),
 					h(Textarea.Error, { class: 'text-xs text-black' }),
 				],
 			),
+	}),
+};
+
+export const Complex: Story = {
+	render: () => ({
+		setup() {
+			const value = ref('');
+			return () =>
+				h(
+					Textarea.Root,
+					{
+						value: value.value,
+						onChange: (v: string) => (value.value = v),
+						class: 'flex max-w-xs flex-col gap-1.5',
+					},
+					() => [
+						h(Textarea.Label, { class: 'text-sm font-medium text-black' }, () => 'Bio'),
+						h('p', { class: 'text-xs text-[#6b7280]' }, 'Write a short bio about yourself.'),
+						h(Textarea.Field, {
+							placeholder: 'Tell us about yourself...',
+							rows: 4,
+							maxlength: 200,
+							class: 'w-full rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1',
+						}),
+						h('p', { class: 'text-right text-xs text-[#6b7280]' }, `${value.value.length}/200`),
+					],
+				);
+		},
 	}),
 };

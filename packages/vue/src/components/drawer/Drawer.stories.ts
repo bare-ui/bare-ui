@@ -1,15 +1,15 @@
-import type { Meta, StoryObj } from '@storybook/vue3-vite';
 import { h, ref } from 'vue';
+import type { Meta, StoryObj } from '@storybook/vue3-vite';
 import { Drawer } from '.';
 
 const meta = {
-	title: 'Components/Drawer',
+	title: 'Overlays/Drawer',
 	component: Drawer.Root,
 	tags: ['autodocs'],
 	parameters: {
 		docs: {
 			description: {
-				component: 'Slide-out panel with portal rendering, overlay-click and Escape key close.',
+				component: 'Side-panel overlay with portal rendering and close behaviours.',
 			},
 		},
 	},
@@ -18,61 +18,261 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const triggerBtnCls =
-	'inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]';
-
-const outlineBtnCls =
-	'inline-flex items-center rounded-[8px] border-2 border-black px-4 py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]';
+const CloseIcon = () =>
+	h('svg', { class: 'h-5 w-5', viewBox: '0 0 20 20', fill: 'currentColor' }, [
+		h('path', {
+			d: 'M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z',
+		}),
+	]);
 
 export const Default: Story = {
 	render: () => ({
-		setup: () => {
+		setup() {
 			const open = ref(false);
 
 			return () =>
-				h('div', null, [
+				h('div', {}, [
 					h(
 						'button',
-						{ class: triggerBtnCls, onClick: () => (open.value = true) },
+						{
+							onClick: () => (open.value = true),
+							class: 'inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
+						},
 						'Open Drawer',
 					),
-					h(Drawer.Root, { open: open.value, onOpenChange: (v: boolean) => (open.value = v) }, () =>
-						h(Drawer.Portal, null, () =>
-							h(
-								Drawer.Overlay,
-								{ class: 'fixed inset-0 z-50 flex justify-end bg-black/50' },
-								() =>
-									h(
-										Drawer.Content,
-										{ class: 'h-full w-full max-w-sm border-l-[3px] border-black bg-white' },
-										() => [
-											h(
-												Drawer.Header,
-												{ class: 'flex items-center justify-between border-b border-[#d4d4d4] px-6 py-4' },
-												() => [
-													h('h2', { class: 'text-base font-semibold text-black' }, 'Drawer Title'),
-													h(
-														Drawer.Close,
-														{ class: 'rounded p-1 text-[#9ca3af] hover:bg-[#f5f5f5] hover:text-black' },
-														() => '\u00D7',
-													),
-												],
-											),
-											h('div', { class: 'p-6' }, [
+					h(Drawer.Root, { open: open.value, onOpenChange: (v: boolean) => (open.value = v) }, () => [
+						h(Drawer.Portal, () => [
+							h(Drawer.Overlay, { class: 'fixed inset-0 z-50 bg-black/50' }, () => [
+								h(
+									Drawer.Content,
+									{
+										class: 'fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r-[3px] border-black bg-white',
+									},
+									() => [
+										h(
+											Drawer.Header,
+											{ class: 'flex items-center justify-between px-4 py-4' },
+											() => [
+												h('span', { class: 'text-lg font-bold text-black' }, 'Drawer Title'),
 												h(
-													'p',
-													{ class: 'mb-6 text-sm text-[#9ca3af]' },
-													'This is a basic drawer panel. Press Escape or click outside to close.',
+													Drawer.Close,
+													{
+														class: 'rounded-[8px] p-1 text-[#6b7280] hover:bg-[#f5f5f5] hover:text-black',
+													},
+													() => h(CloseIcon),
 												),
-												h('div', { class: 'flex gap-3' }, [
-													h(Drawer.Close, { class: outlineBtnCls }, () => 'Close'),
+											],
+										),
+										h('div', { class: 'flex-1 px-4 py-2' }, [
+											h(
+												'p',
+												{ class: 'text-sm text-[#6b7280]' },
+												'This is a simple drawer with some content. You can place any text or elements here. Close it using the button above.',
+											),
+										]),
+									],
+								),
+							]),
+						]),
+					]),
+				]);
+		},
+	}),
+};
+
+export const Composed: Story = {
+	render: () => ({
+		setup() {
+			const open = ref(false);
+			const active = ref('Dashboard');
+
+			const navItems = [
+				{ label: 'Dashboard', icon: '\u{1F3E0}' },
+				{ label: 'Analytics', icon: '\u{1F4CA}' },
+				{ label: 'Projects', icon: '\u{1F4C1}' },
+				{ label: 'Team', icon: '\u{1F465}' },
+				{ label: 'Messages', icon: '\u{1F4AC}' },
+				{ label: 'Settings', icon: '\u2699\uFE0F' },
+			];
+
+			return () =>
+				h('div', {}, [
+					h(
+						'button',
+						{
+							onClick: () => (open.value = true),
+							class: 'inline-flex items-center gap-2 rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
+						},
+						'\u2630 Menu',
+					),
+					h(Drawer.Root, { open: open.value, onOpenChange: (v: boolean) => (open.value = v) }, () => [
+						h(Drawer.Portal, () => [
+							h(Drawer.Overlay, { class: 'fixed inset-0 z-50 bg-black/50' }, () => [
+								h(
+									Drawer.Content,
+									{
+										class: 'fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r-[3px] border-black bg-white',
+									},
+									() => [
+										h(
+											Drawer.Header,
+											{ class: 'flex items-center justify-between px-4 py-4' },
+											() => [
+												h('span', { class: 'text-lg font-bold text-black' }, 'Navigation'),
+												h(
+													Drawer.Close,
+													{
+														class: 'rounded-[8px] p-1 text-[#6b7280] hover:bg-[#f5f5f5] hover:text-black',
+													},
+													() => h(CloseIcon),
+												),
+											],
+										),
+										h(
+											'nav',
+											{ class: 'flex-1 overflow-y-auto px-2 py-2' },
+											navItems.map(({ label, icon }) =>
+												h(
+													'button',
+													{
+														key: label,
+														onClick: () => {
+															active.value = label;
+															open.value = false;
+														},
+														class: [
+															'flex w-full items-center gap-3 rounded-[8px] px-3 py-2.5 text-sm font-medium transition-colors',
+															active.value === label
+																? 'bg-black text-white'
+																: 'text-black hover:bg-[#f5f5f5]',
+														].join(' '),
+													},
+													[h('span', { class: 'text-base' }, icon), label],
+												),
+											),
+										),
+									],
+								),
+							]),
+						]),
+					]),
+				]);
+		},
+	}),
+};
+
+export const Complex: Story = {
+	render: () => ({
+		setup() {
+			const open = ref(false);
+
+			return () =>
+				h('div', {}, [
+					h(
+						'button',
+						{
+							onClick: () => (open.value = true),
+							class: 'inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
+						},
+						'Edit Profile',
+					),
+					h(Drawer.Root, { open: open.value, onOpenChange: (v: boolean) => (open.value = v) }, () => [
+						h(Drawer.Portal, () => [
+							h(Drawer.Overlay, { class: 'fixed inset-0 z-50 bg-black/50' }, () => [
+								h(
+									Drawer.Content,
+									{
+										class: 'fixed left-0 top-0 z-50 flex h-full w-80 flex-col border-r-[3px] border-black bg-white',
+									},
+									() => [
+										h(
+											Drawer.Header,
+											{ class: 'flex items-center justify-between border-b-2 border-black px-4 py-4' },
+											() => [
+												h('span', { class: 'text-lg font-bold text-black' }, 'Edit Profile'),
+												h(
+													Drawer.Close,
+													{
+														class: 'rounded-[8px] p-1 text-[#6b7280] hover:bg-[#f5f5f5] hover:text-black',
+													},
+													() => h(CloseIcon),
+												),
+											],
+										),
+										h('div', { class: 'flex-1 overflow-y-auto px-4 py-4' }, [
+											h('div', { class: 'flex flex-col gap-4' }, [
+												h('div', {}, [
+													h(
+														'label',
+														{ class: 'mb-1 block text-sm font-medium text-black' },
+														'First Name',
+													),
+													h('input', {
+														type: 'text',
+														placeholder: 'Jane',
+														class: 'w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm',
+													}),
+												]),
+												h('div', {}, [
+													h(
+														'label',
+														{ class: 'mb-1 block text-sm font-medium text-black' },
+														'Last Name',
+													),
+													h('input', {
+														type: 'text',
+														placeholder: 'Doe',
+														class: 'w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm',
+													}),
+												]),
+												h('div', {}, [
+													h(
+														'label',
+														{ class: 'mb-1 block text-sm font-medium text-black' },
+														'Email',
+													),
+													h('input', {
+														type: 'email',
+														placeholder: 'jane@example.com',
+														class: 'w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm',
+													}),
+												]),
+												h('div', {}, [
+													h(
+														'label',
+														{ class: 'mb-1 block text-sm font-medium text-black' },
+														'Notes',
+													),
+													h('textarea', {
+														placeholder: 'Add notes...',
+														rows: 4,
+														class: 'w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm resize-none',
+													}),
 												]),
 											]),
-										],
-									),
-							),
-						),
-					),
+										]),
+										h('div', { class: 'flex gap-3 border-t-2 border-black px-4 py-4' }, [
+											h(
+												Drawer.Close,
+												{
+													class: 'flex-1 rounded-[8px] border-2 border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]',
+												},
+												() => 'Cancel',
+											),
+											h(
+												'button',
+												{
+													onClick: () => (open.value = false),
+													class: 'flex-1 rounded-[8px] border-2 border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]',
+												},
+												'Save',
+											),
+										]),
+									],
+								),
+							]),
+						]),
+					]),
 				]);
 		},
 	}),

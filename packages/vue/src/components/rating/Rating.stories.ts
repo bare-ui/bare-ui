@@ -3,13 +3,13 @@ import { h, ref } from 'vue';
 import { Rating } from '.';
 
 const meta = {
-	title: 'Components/Rating',
+	title: 'Feedback/Rating',
 	component: Rating,
 	tags: ['autodocs'],
 	parameters: {
 		docs: {
 			description: {
-				component: 'Star rating with hover preview, read-only, and disabled modes.',
+				component: 'Interactive star rating with read-only and disabled states.',
 			},
 		},
 	},
@@ -23,36 +23,76 @@ const starCls =
 
 export const Default: Story = {
 	render: () => ({
-		setup: () => () =>
-			h(Rating, {
-				defaultValue: 3,
-				onChange: (v: number) => console.log('rating:', v),
-				class: 'flex gap-0.5',
-				starClassName: starCls,
-			}),
+		setup: () => () => h(Rating, { defaultValue: 3, class: 'flex gap-0.5', starClassName: starCls }),
 	}),
 };
 
-export const ReadOnly: Story = {
+export const Composed: Story = {
 	render: () => ({
-		setup: () => () =>
-			h(Rating, {
-				value: 4,
-				readOnly: true,
-				class: 'flex gap-0.5',
-				starClassName: 'size-6 cursor-default text-[#e5e5e5] data-[filled]:text-black',
-			}),
+		setup() {
+			const value = ref(0);
+			const labels = ['', 'Terrible', 'Bad', 'Okay', 'Good', 'Excellent'];
+
+			return () =>
+				h('div', { class: 'flex flex-col items-start gap-2' }, [
+					h(Rating, {
+						value: value.value,
+						onChange: (v: number) => {
+							value.value = v;
+						},
+						class: 'flex gap-0.5',
+						starClassName: starCls,
+					}),
+					h(
+						'p',
+						{ class: 'text-sm text-[#6b7280]' },
+						value.value > 0
+							? [h('span', { class: 'font-medium text-black' }, labels[value.value])]
+							: 'Select a rating',
+					),
+				]);
+		},
 	}),
 };
 
-export const Disabled: Story = {
+export const Complex: Story = {
 	render: () => ({
 		setup: () => () =>
-			h(Rating, {
-				defaultValue: 2,
-				disabled: true,
-				class: 'flex gap-0.5',
-				starClassName: 'size-6 cursor-default text-[#e5e5e5] data-[filled]:text-black data-[disabled]:opacity-40',
-			}),
+			h('div', { class: 'flex flex-col gap-6 items-center' }, [
+				h('div', { class: 'flex items-center gap-2' }, [
+					h(Rating, {
+						value: 4,
+						readOnly: true,
+						class: 'flex gap-0.5',
+						starClassName: 'size-4 cursor-default text-[#e5e5e5] data-[filled]:text-black',
+					}),
+					h('span', { class: 'text-sm font-medium text-black' }, '4.0'),
+					h('span', { class: 'text-sm text-[#6b7280]' }, '(128 reviews)'),
+				]),
+				h('div', { class: 'flex flex-col gap-4' }, [
+					h('div', { class: 'flex items-center gap-3' }, [
+						h('span', { class: 'w-12 text-xs text-[#6b7280]' }, 'Small'),
+						h(Rating, {
+							defaultValue: 3,
+							class: 'flex gap-0.5',
+							starClassName:
+								'size-4 cursor-pointer text-[#e5e5e5] transition-colors data-[highlighted]:text-black data-[filled]:text-black',
+						}),
+					]),
+					h('div', { class: 'flex items-center gap-3' }, [
+						h('span', { class: 'w-12 text-xs text-[#6b7280]' }, 'Medium'),
+						h(Rating, { defaultValue: 3, class: 'flex gap-0.5', starClassName: starCls }),
+					]),
+					h('div', { class: 'flex items-center gap-3' }, [
+						h('span', { class: 'w-12 text-xs text-[#6b7280]' }, 'Large'),
+						h(Rating, {
+							defaultValue: 3,
+							class: 'flex gap-0.5',
+							starClassName:
+								'size-9 cursor-pointer text-[#e5e5e5] transition-colors data-[highlighted]:text-black data-[filled]:text-black',
+						}),
+					]),
+				]),
+			]),
 	}),
 };

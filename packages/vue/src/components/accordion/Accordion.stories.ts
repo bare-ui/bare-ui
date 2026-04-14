@@ -1,11 +1,12 @@
-import type { Meta, StoryObj } from '@storybook/vue3-vite';
 import { h } from 'vue';
+import type { Meta, StoryObj } from '@storybook/vue3-vite';
 import { Accordion } from '.';
 
 const meta = {
-	title: 'Components/Accordion',
+	title: 'Layout/Accordion',
 	component: Accordion.Root,
 	tags: ['autodocs'],
+	args: { type: 'single' as const },
 	parameters: {
 		docs: {
 			description: {
@@ -18,30 +19,54 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// ---------------------------------------------------------------------------
-// Sample data
-// ---------------------------------------------------------------------------
-
 const faqs = [
 	{
 		value: 'item-1',
 		question: 'What is wire-ui?',
-		answer: 'wire-ui is a headless Vue 3 component library. It ships zero styles — you bring your own via class and data-attribute selectors.',
+		answer: 'A headless component library. Zero styles shipped \u2014 you bring your own via className and data-attribute selectors.',
 	},
 	{
 		value: 'item-2',
 		question: 'How is it different from Headless UI?',
-		answer: 'wire-ui uses the asChild pattern instead of the as prop, exports useInteractiveState publicly, and uses data-focus-visible (keyboard only) instead of data-focus.',
+		answer: 'wire-ui uses the asChild pattern, exports useInteractiveState publicly, and uses data-focus-visible (keyboard only) instead of data-focus.',
 	},
 	{
 		value: 'item-3',
 		question: 'Does it support animations?',
-		answer: 'Yes — pass forceMount to Accordion.Content and use CSS transitions on data-state. The grid-template-rows trick gives smooth height animations with pure Tailwind.',
+		answer: 'Yes \u2014 pass forceMount to Accordion.Content and use CSS transitions on data-state. The grid-template-rows trick gives smooth height animations.',
 	},
+];
+
+const multipleFaqs = [
+	...faqs,
 	{
 		value: 'item-4',
 		question: 'Can multiple items be open at once?',
-		answer: 'Yes — use type="multiple" on Accordion.Root. With type="single" only one item is open at a time.',
+		answer: 'Yes \u2014 use type="multiple" on Accordion.Root. With type="single" only one item is open at a time.',
+	},
+];
+
+const richFaqs = [
+	{
+		value: 'item-1',
+		icon: '\u{1F4E6}',
+		question: 'Getting Started',
+		description: 'Learn the basics of wire-ui',
+		answer: 'Install the package, import your first component, and style it with Tailwind classes and data-attribute selectors.',
+	},
+	{
+		value: 'item-2',
+		icon: '\u{1F3A8}',
+		question: 'Theming',
+		description: 'Customize the look and feel',
+		answer: 'wire-ui is headless \u2014 you own all the styles. Use CSS variables, Tailwind, or any styling solution you prefer.',
+	},
+	{
+		value: 'item-3',
+		icon: '\u26A1',
+		question: 'Performance',
+		description: 'Optimized for speed',
+		answer: 'Tree-shakeable exports, zero runtime CSS, and minimal re-renders. Only ship what you use.',
 	},
 ];
 
@@ -51,15 +76,11 @@ const containerCls =
 const triggerCls =
 	'flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-black outline-none transition-colors hover:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50';
 
-const chevronCls = 'size-4 shrink-0 text-black transition-transform duration-200 data-[state=open]:rotate-180';
-
-const contentCls = 'px-5 pb-4 text-sm leading-relaxed text-[#9ca3af]';
-
 const ChevronDown = () =>
 	h(
 		'svg',
 		{
-			class: chevronCls,
+			class: 'size-4 shrink-0 text-black transition-transform duration-200 data-[state=open]:rotate-180',
 			'data-state': 'inherit',
 			viewBox: '0 0 20 20',
 			fill: 'currentColor',
@@ -73,142 +94,95 @@ const ChevronDown = () =>
 		],
 	);
 
-// ---------------------------------------------------------------------------
-// Default — single, collapsible, bordered
-// ---------------------------------------------------------------------------
-
 export const Default: Story = {
 	render: () => ({
 		setup: () => () =>
-			h(Accordion.Root, { type: 'single', collapsible: true, defaultValue: 'item-1', class: containerCls }, () =>
-				faqs.map((faq) =>
-					h(Accordion.Item, { key: faq.value, value: faq.value }, () => [
-						h(Accordion.Trigger, { class: triggerCls }, () => [faq.question, ChevronDown()]),
-						h(Accordion.Content, { class: contentCls }, () => faq.answer),
-					]),
-				),
+			h(
+				Accordion.Root,
+				{ type: 'single', collapsible: true, defaultValue: 'item-1', class: containerCls },
+				() =>
+					faqs.map((faq) =>
+						h(Accordion.Item, { key: faq.value, value: faq.value }, () => [
+							h(Accordion.Trigger, { class: triggerCls }, () => [faq.question, h(ChevronDown)]),
+							h(
+								Accordion.Content,
+								{ class: 'px-5 pb-4 text-sm leading-relaxed text-[#6b7280]' },
+								() => faq.answer,
+							),
+						]),
+					),
 			),
 	}),
 };
 
-// ---------------------------------------------------------------------------
-// Multiple — all can be open simultaneously
-// ---------------------------------------------------------------------------
-
-export const Multiple: Story = {
+export const Composed: Story = {
 	render: () => ({
 		setup: () => () =>
-			h(Accordion.Root, { type: 'multiple', defaultValue: ['item-1', 'item-3'], class: containerCls }, () =>
-				faqs.map((faq) =>
-					h(Accordion.Item, { key: faq.value, value: faq.value }, () => [
-						h(Accordion.Trigger, { class: triggerCls }, () => [faq.question, ChevronDown()]),
-						h(Accordion.Content, { class: contentCls }, () => faq.answer),
-					]),
+			h('div', {}, [
+				h(
+					'style',
+					{},
+					'[data-state=closed] > .accordion-body { grid-template-rows: 0fr; } [data-state=open] > .accordion-body { grid-template-rows: 1fr; } .accordion-body { display: grid; transition: grid-template-rows 200ms; } .accordion-body > div { overflow: hidden; }',
 				),
-			),
-	}),
-};
-
-// ---------------------------------------------------------------------------
-// Animated — smooth height transition via CSS grid trick + forceMount
-// ---------------------------------------------------------------------------
-
-export const Animated: Story = {
-	render: () => ({
-		setup: () => () =>
-			h(Accordion.Root, { type: 'single', collapsible: true, class: containerCls }, () =>
-				faqs.map((faq) =>
-					h(Accordion.Item, { key: faq.value, value: faq.value }, () => [
-						h(Accordion.Trigger, { class: triggerCls }, () => [faq.question, ChevronDown()]),
-						h(
-							Accordion.Content,
-							{
-								forceMount: true,
-								class: 'grid transition-all duration-300 ease-in-out data-[state=open]:grid-rows-[1fr] data-[state=closed]:grid-rows-[0fr]',
-							},
-							() =>
-								h('div', { class: 'overflow-hidden' }, [
-									h('p', { class: 'px-5 pb-4 text-sm leading-relaxed text-[#9ca3af]' }, faq.answer),
-								]),
-						),
-					]),
-				),
-			),
-	}),
-};
-
-// ---------------------------------------------------------------------------
-// Flush — no outer border, full-width separators
-// ---------------------------------------------------------------------------
-
-export const Flush: Story = {
-	render: () => ({
-		setup: () => () =>
-			h(Accordion.Root, { type: 'single', collapsible: true, class: 'w-full max-w-lg divide-y-2 divide-black' }, () =>
-				faqs.map((faq) =>
-					h(Accordion.Item, { key: faq.value, value: faq.value }, () => [
-						h(
-							Accordion.Trigger,
-							{
-								class: 'flex w-full items-center justify-between py-4 text-left text-sm font-medium text-black outline-none transition-colors hover:text-black data-[state=open]:text-black',
-							},
-							() => [faq.question, ChevronDown()],
-						),
-						h(
-							Accordion.Content,
-							{ class: 'pb-4 text-sm leading-relaxed text-[#9ca3af]' },
-							() => faq.answer,
-						),
-					]),
-				),
-			),
-	}),
-};
-
-// ---------------------------------------------------------------------------
-// Disabled — one item disabled, whole group disabled
-// ---------------------------------------------------------------------------
-
-export const Disabled: Story = {
-	render: () => ({
-		setup: () => () =>
-			h('div', { class: 'flex w-full max-w-lg flex-col gap-6' }, [
-				h('div', {}, [
-					h('p', { class: 'mb-2 text-xs font-medium uppercase tracking-wide text-[#9ca3af]' }, 'Single item disabled'),
-					h(Accordion.Root, { type: 'single', collapsible: true, class: containerCls }, () =>
-						faqs.slice(0, 3).map((faq, i) =>
-							h(Accordion.Item, { key: faq.value, value: faq.value, disabled: i === 1 }, () => [
+				h(
+					Accordion.Root,
+					{ type: 'multiple', defaultValue: ['item-1', 'item-2'], class: containerCls },
+					() =>
+						multipleFaqs.map((faq) =>
+							h(Accordion.Item, { key: faq.value, value: faq.value }, () => [
+								h(Accordion.Trigger, { class: triggerCls }, () => [faq.question, h(ChevronDown)]),
 								h(
-									Accordion.Trigger,
+									Accordion.Content,
 									{
-										class: 'flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-black outline-none hover:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40',
+										forceMount: true,
+										class: 'px-5 pb-4 text-sm leading-relaxed text-[#6b7280]',
 									},
-									() => faq.question,
+									() => [h('div', { class: 'accordion-body' }, [h('div', {}, faq.answer)])],
 								),
-								h(Accordion.Content, { class: 'px-5 pb-4 text-sm text-[#9ca3af]' }, () => faq.answer),
 							]),
 						),
-					),
-				]),
-				h('div', {}, [
-					h('p', { class: 'mb-2 text-xs font-medium uppercase tracking-wide text-[#9ca3af]' }, 'All disabled'),
-					h(
-						Accordion.Root,
-						{ type: 'single', disabled: true, class: [containerCls, 'opacity-60'].join(' ') },
-						() =>
-							faqs.slice(0, 3).map((faq) =>
-								h(Accordion.Item, { key: faq.value, value: faq.value }, () => [
-									h(
-										Accordion.Trigger,
-										{
-											class: 'flex w-full cursor-not-allowed items-center justify-between px-5 py-4 text-left text-sm font-medium text-black outline-none',
-										},
-										() => faq.question,
-									),
-								]),
-							),
-					),
-				]),
+				),
 			]),
+	}),
+};
+
+export const Complex: Story = {
+	render: () => ({
+		setup: () => () =>
+			h(
+				Accordion.Root,
+				{ type: 'single', collapsible: true, defaultValue: 'item-1', class: containerCls },
+				() =>
+					richFaqs.map((faq) =>
+						h(Accordion.Item, { key: faq.value, value: faq.value }, () => [
+							h(
+								Accordion.Trigger,
+								{
+									class: 'flex w-full items-center gap-3 px-5 py-4 text-left text-sm font-medium text-black outline-none transition-colors hover:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
+								},
+								() => [
+									h('span', { class: 'text-xl' }, faq.icon),
+									h('div', { class: 'flex-1' }, [
+										h('p', { class: 'text-sm font-medium text-black' }, faq.question),
+										h('p', { class: 'text-xs text-[#6b7280] font-normal' }, faq.description),
+									]),
+									h(ChevronDown),
+								],
+							),
+							h(
+								Accordion.Content,
+								{ class: 'px-5 pb-4 text-sm leading-relaxed text-[#6b7280]' },
+								() => [
+									h('p', { class: 'mb-2' }, faq.answer),
+									h(
+										'button',
+										{ class: 'text-xs font-medium text-black hover:underline' },
+										'Learn more \u2192',
+									),
+								],
+							),
+						]),
+					),
+			),
 	}),
 };
