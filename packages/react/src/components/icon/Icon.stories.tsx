@@ -5,6 +5,7 @@ const meta = {
 	title: 'Media/Icon',
 	component: Icon,
 	tags: ['autodocs'],
+	args: { type: 'x' },
 	parameters: {
 		docs: {
 			description: {
