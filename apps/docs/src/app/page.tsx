@@ -69,7 +69,7 @@ export default function HomePage() {
 						Components
 					</Link>
 					<a
-						href="https://www.npmjs.com/package/@wire-ui/react"
+						href="https://www.npmjs.com/org/wire-ui"
 						target="_blank"
 						rel="noopener noreferrer"
 						className={`${s.navLink} ${s.navLinkGh}`}
@@ -144,17 +144,34 @@ export default function HomePage() {
 								★ <GitHubStars />
 							</span>
 						</a>
+					</div>
+					<div className={s.heroFrameworks}>
 						<a
 							href="https://www.npmjs.com/package/@wire-ui/react"
 							target="_blank"
 							rel="noopener noreferrer"
-							className={s.ctaSecondary}
+							className={s.frameworkPill}
 						>
-							<NpmIcon />
+							<ReactIcon /> React
 							<span className={s.ctaBadge}>
-								↓ <NpmDownloads />
+								↓ <NpmDownloads pkg="@wire-ui/react" />
 							</span>
 						</a>
+						<a
+							href="https://www.npmjs.com/package/@wire-ui/vue"
+							target="_blank"
+							rel="noopener noreferrer"
+							className={s.frameworkPill}
+						>
+							<VueIcon /> Vue
+							<span className={s.ctaBadge}>
+								↓ <NpmDownloads pkg="@wire-ui/vue" />
+							</span>
+						</a>
+						<span className={`${s.frameworkPill} ${s.frameworkPillDisabled}`}>
+							<SolidIcon /> Solid
+							<span className={s.ctaBadge}>Soon</span>
+						</span>
 					</div>
 				</div>
 			</section>
@@ -325,6 +342,40 @@ function GitHubIcon({
 			aria-hidden
 		>
 			<path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+		</svg>
+	);
+}
+
+function ReactIcon({ size = 16 }: { size?: number }) {
+	return (
+		<svg width={size} height={size} viewBox="-11.5 -10.232 23 20.463" fill="currentColor" aria-hidden>
+			<circle r="2.05" />
+			<g stroke="currentColor" strokeWidth="1" fill="none">
+				<ellipse rx="11" ry="4.2" />
+				<ellipse rx="11" ry="4.2" transform="rotate(60)" />
+				<ellipse rx="11" ry="4.2" transform="rotate(120)" />
+			</g>
+		</svg>
+	);
+}
+
+function VueIcon({ size = 16 }: { size?: number }) {
+	return (
+		<svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+			<path d="M2 3h3.5L12 14.5 18.5 3H22L12 21 2 3z" />
+			<path d="M6.5 3H12l-6 10.5L2 3h4.5z" opacity="0.5" />
+			<path d="M17.5 3H12l6 10.5L22 3h-4.5z" opacity="0.5" />
+		</svg>
+	);
+}
+
+function SolidIcon({ size = 16 }: { size?: number }) {
+	return (
+		<svg width={size} height={size} viewBox="0 0 166 155.3" aria-hidden>
+			<path d="M163 35S110-4 69 5l-3 1c-6 2-11 5-14 9l-2 3-15 26 26 5c11 7 25 10 38 7l46 9 18-30z" fill="currentColor" opacity="0.5" />
+			<path d="M52 35l-4 1c-17 5-22 21-13 35 10 13 31 20 48 15l62-21S92 26 52 35z" fill="currentColor" opacity="0.7" />
+			<path d="M134 80a45 45 0 00-48-15L24 85 4 120l112 19 20-36c4-7 3-15-2-23z" fill="currentColor" opacity="0.85" />
+			<path d="M114 115a45 45 0 00-48-15L4 120s53 40 94 30l3-1c17-5 23-21 13-34z" fill="currentColor" />
 		</svg>
 	);
 }

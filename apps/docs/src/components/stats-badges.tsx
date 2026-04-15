@@ -26,11 +26,11 @@ export function GitHubStars() {
 	return <span>{formatNumber(stars)}</span>;
 }
 
-export function NpmDownloads() {
+export function NpmDownloads({ pkg }: { pkg: string }) {
 	const [downloads, setDownloads] = useState<number | null>(null);
 
 	useEffect(() => {
-		fetch("https://api.npmjs.org/downloads/point/last-month/@wire-ui/react")
+		fetch(`https://api.npmjs.org/downloads/point/last-month/${pkg}`)
 			.then((r) => r.json())
 			.then((data) => {
 				if (typeof data.downloads === "number") {
@@ -38,7 +38,7 @@ export function NpmDownloads() {
 				}
 			})
 			.catch(() => {});
-	}, []);
+	}, [pkg]);
 
 	if (downloads === null) return null;
 
