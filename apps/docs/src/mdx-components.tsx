@@ -1,4 +1,5 @@
 import { useMDXComponents as getDocsMDXComponents } from 'nextra-theme-docs'
+import { ForReact, ForVue, ForSolid } from './components/code-block'
 import { FeatureList, FeatureItem } from './components/feature-list'
 import { LicenseText } from './components/license-text'
 import { Preview } from './components/preview'
@@ -31,6 +32,9 @@ import { Basic as TooltipPreview } from './components/previews/tooltip'
 
 export function useMDXComponents(components?: Record<string, React.FC>) {
   return getDocsMDXComponents({
+    ForReact,
+    ForVue,
+    ForSolid,
     FeatureList,
     FeatureItem,
     LicenseText,

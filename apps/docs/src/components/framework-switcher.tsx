@@ -4,7 +4,7 @@ import { useFramework, type Framework } from '../context/framework-context'
 
 const FRAMEWORKS: { id: Framework; label: string; available: boolean }[] = [
   { id: 'react', label: 'React', available: true },
-  { id: 'vue', label: 'Vue', available: false },
+  { id: 'vue', label: 'Vue', available: true },
   { id: 'solid', label: 'Solid', available: false },
 ]
 
@@ -31,7 +31,11 @@ export function FrameworkSwitcher() {
           <button
             key={id}
             disabled={!available}
-            onClick={() => available && setFramework(id)}
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              if (available) setFramework(id)
+            }}
             title={!available ? `${label} — coming soon` : undefined}
             style={{
               display: 'flex',
