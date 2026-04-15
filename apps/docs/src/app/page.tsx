@@ -169,7 +169,9 @@ export default function HomePage() {
 								↓ <NpmDownloads pkg="@wire-ui/vue" />
 							</span>
 						</a>
-						<span className={`${s.frameworkPill} ${s.frameworkPillDisabled}`}>
+						<span
+							className={`${s.frameworkPill} ${s.frameworkPillDisabled}`}
+						>
 							<SolidIcon /> Solid
 							<span className={s.ctaBadge}>Soon</span>
 						</span>
@@ -179,11 +181,16 @@ export default function HomePage() {
 
 			<hr className={s.divider} />
 
-			{/* ── Section 2 · DX ───────────────────────────────────── */}
+			{/* ── Section 2 · AI Pipeline ────────────────────────── */}
+			<AIPipeline />
+
+			<hr className={s.divider} />
+
+			{/* ── Section 3 · DX ───────────────────────────────────── */}
 			<section className={s.section}>
-				<p className={s.sectionLabel}>Developer experience</p>
 				<div className={s.dxGrid}>
 					<div>
+						<p className={s.sectionLabel}>Developer experience</p>
 						<h2 className={s.sectionHeading}>
 							Developer experience
 							<br />
@@ -269,9 +276,6 @@ function App() {
 				</div>
 			</section>
 
-			{/* ── Section 3 · AI Pipeline ────────────────────────── */}
-			<AIPipeline />
-
 			<hr className={s.divider} />
 
 			{/* ── Section 4 · Community ────────────────────────────── */}
@@ -295,7 +299,9 @@ function App() {
 							</div>
 							<div>
 								<div className={s.ghCardTitle}>GitHub</div>
-								<div className={s.ghCardSub}>wire-ui/wire-ui</div>
+								<div className={s.ghCardSub}>
+									wire-ui/wire-ui
+								</div>
 							</div>
 						</div>
 						<span className={s.ghArrow}>→</span>
@@ -352,7 +358,13 @@ function GitHubIcon({
 
 function ReactIcon({ size = 16 }: { size?: number }) {
 	return (
-		<svg width={size} height={size} viewBox="-11.5 -10.232 23 20.463" fill="currentColor" aria-hidden>
+		<svg
+			width={size}
+			height={size}
+			viewBox="-11.5 -10.232 23 20.463"
+			fill="currentColor"
+			aria-hidden
+		>
 			<circle r="2.05" />
 			<g stroke="currentColor" strokeWidth="1" fill="none">
 				<ellipse rx="11" ry="4.2" />
@@ -365,7 +377,13 @@ function ReactIcon({ size = 16 }: { size?: number }) {
 
 function VueIcon({ size = 16 }: { size?: number }) {
 	return (
-		<svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+		<svg
+			width={size}
+			height={size}
+			viewBox="0 0 24 24"
+			fill="currentColor"
+			aria-hidden
+		>
 			<path d="M2 3h3.5L12 14.5 18.5 3H22L12 21 2 3z" />
 			<path d="M6.5 3H12l-6 10.5L2 3h4.5z" opacity="0.5" />
 			<path d="M17.5 3H12l6 10.5L22 3h-4.5z" opacity="0.5" />
@@ -376,17 +394,38 @@ function VueIcon({ size = 16 }: { size?: number }) {
 function SolidIcon({ size = 16 }: { size?: number }) {
 	return (
 		<svg width={size} height={size} viewBox="0 0 166 155.3" aria-hidden>
-			<path d="M163 35S110-4 69 5l-3 1c-6 2-11 5-14 9l-2 3-15 26 26 5c11 7 25 10 38 7l46 9 18-30z" fill="currentColor" opacity="0.5" />
-			<path d="M52 35l-4 1c-17 5-22 21-13 35 10 13 31 20 48 15l62-21S92 26 52 35z" fill="currentColor" opacity="0.7" />
-			<path d="M134 80a45 45 0 00-48-15L24 85 4 120l112 19 20-36c4-7 3-15-2-23z" fill="currentColor" opacity="0.85" />
-			<path d="M114 115a45 45 0 00-48-15L4 120s53 40 94 30l3-1c17-5 23-21 13-34z" fill="currentColor" />
+			<path
+				d="M163 35S110-4 69 5l-3 1c-6 2-11 5-14 9l-2 3-15 26 26 5c11 7 25 10 38 7l46 9 18-30z"
+				fill="currentColor"
+				opacity="0.5"
+			/>
+			<path
+				d="M52 35l-4 1c-17 5-22 21-13 35 10 13 31 20 48 15l62-21S92 26 52 35z"
+				fill="currentColor"
+				opacity="0.7"
+			/>
+			<path
+				d="M134 80a45 45 0 00-48-15L24 85 4 120l112 19 20-36c4-7 3-15-2-23z"
+				fill="currentColor"
+				opacity="0.85"
+			/>
+			<path
+				d="M114 115a45 45 0 00-48-15L4 120s53 40 94 30l3-1c17-5 23-21 13-34z"
+				fill="currentColor"
+			/>
 		</svg>
 	);
 }
 
 function NpmIcon({ size = 16 }: { size?: number }) {
 	return (
-		<svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+		<svg
+			width={size}
+			height={size}
+			viewBox="0 0 24 24"
+			fill="currentColor"
+			aria-hidden
+		>
 			<path d="M0 7.334v8h6.666v1.332H12v-1.332h12v-8H0zm6.666 6.664H5.334v-4H3.999v4H1.335V8.667h5.331v5.331zm4 0v1.336H8.001V8.667h5.334v5.332h-2.669v-.001zm12.001 0h-1.33v-4h-1.336v4h-1.335v-4h-1.33v4h-2.671V8.667h8.002v5.331zM10.665 10H12v2.667h-1.335V10z" />
 		</svg>
 	);
@@ -394,7 +433,13 @@ function NpmIcon({ size = 16 }: { size?: number }) {
 
 function XIcon({ size = 16 }: { size?: number }) {
 	return (
-		<svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+		<svg
+			width={size}
+			height={size}
+			viewBox="0 0 24 24"
+			fill="currentColor"
+			aria-hidden
+		>
 			<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
 		</svg>
 	);

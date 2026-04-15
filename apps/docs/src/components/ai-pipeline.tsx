@@ -71,60 +71,7 @@ export function AIPipeline() {
 	return (
 		<section className={s.pipelineSection} ref={sectionRef}>
 			<div className={s.pipelineGrid}>
-				{/* Left column — text + features + MCP link */}
-				<div className={s.pipelineLeft}>
-					<p className={s.pipelineSectionLabel}>
-						AI-native ecosystem
-					</p>
-					<h2 className={s.pipelineSectionHeading}>
-						Built for the AI era.
-						<br />
-						Not retrofitted.
-					</h2>
-					<p className={s.pipelineSectionSub}>
-						Wire UI was designed from day one to be consumed by
-						both humans and machines. Every component, every API
-						surface, every doc page — structured for AI to read,
-						understand, and generate production code from.
-					</p>
-
-					<div className={s.pipelineFeatures}>
-						{LEFT_FEATURES.map((f) => (
-							<div
-								key={f.title}
-								className={s.pipelineFeature}
-							>
-								<div>
-									<div
-										className={
-											s.pipelineFeatureTitle
-										}
-									>
-										{f.title}
-									</div>
-									<div
-										className={
-											s.pipelineFeatureDesc
-										}
-									>
-										{f.desc}
-									</div>
-								</div>
-							</div>
-						))}
-					</div>
-
-					<a
-						href="https://www.npmjs.com/package/@wire-ui/mcp"
-						target="_blank"
-						rel="noopener noreferrer"
-						className={s.pipelineMcpLink}
-					>
-						<McpIcon /> @wire-ui/mcp
-					</a>
-				</div>
-
-				{/* Right column — vertical pipeline */}
+				{/* Left column — vertical pipeline */}
 				<div className={s.pipelineRight}>
 					<div className={s.connectorWrap}>
 						<div className={s.connectorBg} />
@@ -148,9 +95,7 @@ export function AIPipeline() {
 							>
 								<div className={s.nodeCard}>
 									{node.icon}
-									<span className={s.nodeStep}>
-										{i + 1}
-									</span>
+									<span className={s.nodeStep}>{i + 1}</span>
 								</div>
 								<div className={s.nodeText}>
 									<div className={s.nodeLabel}>
@@ -163,6 +108,48 @@ export function AIPipeline() {
 							</div>
 						))}
 					</div>
+				</div>
+
+				{/* Left column — text + features + MCP link */}
+				<div className={s.pipelineLeft}>
+					<p className={s.pipelineSectionLabel}>
+						AI-native ecosystem
+					</p>
+					<h2 className={s.pipelineSectionHeading}>
+						Built for the AI era.
+						<br />
+						Not retrofitted.
+					</h2>
+					<p className={s.pipelineSectionSub}>
+						Wire UI was designed from day one to be consumed by both
+						humans and machines. Every component, every API surface,
+						every doc page — structured for AI to read, understand,
+						and generate production code from.
+					</p>
+
+					<div className={s.pipelineFeatures}>
+						{LEFT_FEATURES.map((f) => (
+							<div key={f.title} className={s.pipelineFeature}>
+								<div>
+									<div className={s.pipelineFeatureTitle}>
+										{f.title}
+									</div>
+									<div className={s.pipelineFeatureDesc}>
+										{f.desc}
+									</div>
+								</div>
+							</div>
+						))}
+					</div>
+
+					<a
+						href="https://www.npmjs.com/package/@wire-ui/mcp"
+						target="_blank"
+						rel="noopener noreferrer"
+						className={s.pipelineMcpLink}
+					>
+						<McpIcon /> @wire-ui/mcp
+					</a>
 				</div>
 			</div>
 		</section>
