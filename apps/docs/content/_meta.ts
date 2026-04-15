@@ -25,7 +25,7 @@ export default {
     title: 'API Reference',
   },
   components: 'Components',
-  hooks: 'Hooks',
+  hooks: 'Hooks / Composables',
   '-- resources': {
     type: 'separator',
     title: 'Resources',
