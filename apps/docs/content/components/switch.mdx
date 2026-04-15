@@ -5,6 +5,7 @@ description: Toggle on/off with a thumb element and data-state.
 
 import { Tabs } from 'nextra/components'
 
+
 # Switch
 
 Toggle component with a thumb element. Accessible — renders as a `<button role="switch">` with `aria-checked`.
@@ -24,7 +25,8 @@ Toggle component with a thumb element. Accessible — renders as a `<button role
 
 <Tabs items={['Raw', 'Styled']}>
   <Tabs.Tab>
-```tsx
+    <ForReact>
+    ```tsx
 import { Switch } from '@wire-ui/react'
 
 {[
@@ -39,9 +41,41 @@ import { Switch } from '@wire-ui/react'
     </Switch.Root>
   </div>
 ))}
-```
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { ref } from 'vue'
+import { SwitchRoot, SwitchThumb } from '@wire-ui/vue'
+
+const pushEnabled = ref(false)
+const emailEnabled = ref(false)
+const marketingEnabled = ref(false)
+
+const items = [
+  { label: 'Push notifications', model: pushEnabled },
+  { label: 'Email updates', model: emailEnabled },
+  { label: 'Marketing', model: marketingEnabled },
+]
+</script>
+
+<template>
+  <div v-for="item in items" :key="item.label">
+    <p>{{ item.label }}</p>
+    <SwitchRoot :checked="item.model.value" @change="item.model.value = $event">
+      <SwitchThumb />
+    </SwitchRoot>
+  </div>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
+    <ForReact>
 ```tsx
 import { Switch } from '@wire-ui/react'
 
@@ -63,6 +97,42 @@ import { Switch } from '@wire-ui/react'
   ))}
 </div>
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { SwitchRoot, SwitchThumb } from '@wire-ui/vue'
+
+const pushEnabled = ref(false)
+const emailEnabled = ref(false)
+const marketingEnabled = ref(false)
+
+const settings = [
+  { label: 'Push notifications', value: pushEnabled },
+  { label: 'Email updates', value: emailEnabled },
+  { label: 'Marketing', value: marketingEnabled },
+]
+</script>
+
+<template>
+  <div class="w-80 divide-y divide-[#d4d4d4] rounded-[8px] border-2 border-black bg-white">
+    <div v-for="setting in settings" :key="setting.label" class="flex items-center justify-between px-4 py-3">
+      <p class="text-sm font-medium text-black">{{ setting.label }}</p>
+      <SwitchRoot
+        :checked="setting.value.value"
+        class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-black bg-[#e5e5e5] transition-colors outline-none data-[checked]:bg-black data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[focus-visible]:ring-2 data-[focus-visible]:ring-black data-[focus-visible]:ring-offset-2"
+        @change="setting.value.value = $event">
+        <SwitchThumb class="pointer-events-none inline-block size-5 translate-x-0 rounded-full border-2 border-black bg-white transition-transform data-[checked]:translate-x-5" />
+      </SwitchRoot>
+    </div>
+  </div>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
 </Tabs>
 

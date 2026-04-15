@@ -5,6 +5,7 @@ description: Hover/focus tooltip with configurable delay and side.
 
 import { Tabs } from 'nextra/components'
 
+
 # Tooltip
 
 Hover/focus tooltip. Configurable delay and side. Controlled and uncontrolled.
@@ -25,7 +26,8 @@ Hover/focus tooltip. Configurable delay and side. Controlled and uncontrolled.
 
 <Tabs items={['Raw', 'Styled']}>
   <Tabs.Tab>
-```tsx
+    <ForReact>
+    ```tsx
 import { Tooltip } from '@wire-ui/react'
 
 <Tooltip.Root delayDuration={0}>
@@ -36,9 +38,32 @@ import { Tooltip } from '@wire-ui/react'
     Tooltip on top
   </Tooltip.Content>
 </Tooltip.Root>
-```
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Tooltip, TooltipContent, TooltipRoot, TooltipTrigger } from '@wire-ui/vue'
+</script>
+
+<template>
+    <TooltipRoot delayDuration={0}>
+      <TooltipTrigger>
+        <button>Hover me</button>
+      </TooltipTrigger>
+      <TooltipContent side="top">
+        Tooltip on top
+      </TooltipContent>
+    </TooltipRoot>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
+    <ForReact>
 ```tsx
 import { Tooltip } from '@wire-ui/react'
 
@@ -55,6 +80,32 @@ import { Tooltip } from '@wire-ui/react'
   </Tooltip.Content>
 </Tooltip.Root>
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { TooltipRoot, TooltipTrigger, TooltipContent } from '@wire-ui/vue'
+</script>
+
+<template>
+  <TooltipRoot :delay-duration="0">
+    <TooltipTrigger>
+      <button class="rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]">
+        Hover me
+      </button>
+    </TooltipTrigger>
+    <TooltipContent
+      side="top"
+      class="rounded-[8px] border-2 border-black bg-[#f5f5f5] px-2.5 py-1.5 text-xs font-medium text-black data-[state=closed]:hidden whitespace-nowrap">
+      Tooltip on top
+    </TooltipContent>
+  </TooltipRoot>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
 </Tabs>
 

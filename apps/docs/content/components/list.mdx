@@ -5,6 +5,7 @@ description: Ordered or unordered list with optional striped rows and dividers.
 
 import { Tabs } from 'nextra/components'
 
+
 # List
 
 Ordered or unordered list container. Variant attributes (`data-type`, `data-striped`, `data-divider`, `data-size`) are used as CSS hooks.
@@ -23,7 +24,8 @@ Ordered or unordered list container. Variant attributes (`data-type`, `data-stri
 
 <Tabs items={['Raw', 'Styled']}>
   <Tabs.Tab>
-```tsx
+    <ForReact>
+    ```tsx
 import { List } from '@wire-ui/react'
 
 <List>
@@ -39,9 +41,37 @@ import { List } from '@wire-ui/react'
     </li>
   ))}
 </List>
-```
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { List } from '@wire-ui/vue'
+
+const items = [
+  { label: 'Design mockups', done: true },
+  { label: 'Write unit tests', done: true },
+  { label: 'Implement API', done: false },
+  { label: 'Deploy to staging', done: false },
+]
+</script>
+
+<template>
+  <List>
+    <li v-for="item in items" :key="item.label">
+      <span>{{ item.done ? '✓' : '○' }}</span>
+      <span>{{ item.label }}</span>
+    </li>
+  </List>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
+    <ForReact>
 ```tsx
 import { List } from '@wire-ui/react'
 
@@ -65,6 +95,37 @@ import { List } from '@wire-ui/react'
   ))}
 </List>
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { List } from '@wire-ui/vue'
+
+const items = [
+  { label: 'Design mockups', done: true },
+  { label: 'Write unit tests', done: true },
+  { label: 'Implement API', done: false },
+  { label: 'Deploy to staging', done: false },
+]
+</script>
+
+<template>
+  <List class="w-64 space-y-2">
+    <li v-for="{ label, done } in items" :key="label" class="flex items-center gap-2.5 text-sm">
+      <span :class="['flex h-5 w-5 items-center justify-center rounded-full border-2', done ? 'border-black bg-black text-white' : 'border-black bg-white']">
+        <svg v-if="done" class="h-3 w-3" viewBox="0 0 12 12" fill="currentColor">
+          <path d="M3.5 6L5.5 8L8.5 4.5" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </span>
+      <span :class="done ? 'text-[#6b7280] line-through' : 'text-black'">{{ label }}</span>
+    </li>
+  </List>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
 </Tabs>
 

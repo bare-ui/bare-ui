@@ -5,6 +5,7 @@ description: Relative or formatted timestamp that updates live.
 
 import { Tabs } from 'nextra/components'
 
+
 # Timeago
 
 Relative or formatted timestamp. In `isDuration` mode it updates live via a `setInterval`. Accepts `Date`, ISO string, or numeric timestamp.
@@ -24,7 +25,8 @@ Relative or formatted timestamp. In `isDuration` mode it updates live via a `set
 
 <Tabs items={['Raw', 'Styled']}>
   <Tabs.Tab>
-```tsx
+    <ForReact>
+    ```tsx
 import { Timeago } from '@wire-ui/react'
 
 const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
@@ -41,9 +43,37 @@ const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
   <span>Time only: </span>
   <Timeago datetime={fiveMinutesAgo} timeOnly />
 </div>
-```
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Timeago } from '@wire-ui/vue'
+const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
+</script>
+
+<template>
+    <div>
+      <span>Duration: </span>
+      <Timeago datetime={fiveMinutesAgo} isDuration />
+    </div>
+    <div>
+      <span>Full date/time: </span>
+      <Timeago datetime={fiveMinutesAgo} />
+    </div>
+    <div>
+      <span>Time only: </span>
+      <Timeago datetime={fiveMinutesAgo} timeOnly />
+    </div>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
+    <ForReact>
 ```tsx
 import { Timeago } from '@wire-ui/react'
 
@@ -62,6 +92,34 @@ const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
   <Timeago datetime={fiveMinutesAgo} timeOnly className="text-sm text-black" />
 </div>
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { Timeago } from '@wire-ui/vue'
+
+const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
+</script>
+
+<template>
+  <div>
+    <span class="text-sm font-medium text-[#6b7280]">Duration: </span>
+    <Timeago :datetime="fiveMinutesAgo" is-duration class="text-sm text-black" />
+  </div>
+  <div>
+    <span class="text-sm font-medium text-[#6b7280]">Full date/time: </span>
+    <Timeago :datetime="fiveMinutesAgo" class="text-sm text-black" />
+  </div>
+  <div>
+    <span class="text-sm font-medium text-[#6b7280]">Time only: </span>
+    <Timeago :datetime="fiveMinutesAgo" time-only class="text-sm text-black" />
+  </div>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
 </Tabs>
 

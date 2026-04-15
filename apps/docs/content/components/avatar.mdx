@@ -5,6 +5,7 @@ description: Image with a fallback for loading errors or missing sources.
 
 import { Tabs } from 'nextra/components'
 
+
 # Avatar
 
 Image with a lazy-loading fallback. Fallback renders automatically when `src` is empty or the image fails to load.
@@ -24,7 +25,8 @@ Image with a lazy-loading fallback. Fallback renders automatically when `src` is
 
 <Tabs items={['Raw', 'Styled']}>
   <Tabs.Tab>
-```tsx
+    <ForReact>
+    ```tsx
 import { Avatar } from '@wire-ui/react'
 
 <div>
@@ -39,9 +41,36 @@ import { Avatar } from '@wire-ui/react'
     <Avatar.Fallback>+9</Avatar.Fallback>
   </Avatar.Root>
 </div>
-```
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Avatar, AvatarFallback, AvatarImage, AvatarRoot } from '@wire-ui/vue'
+</script>
+
+<template>
+    <div>
+      <AvatarRoot>
+        <AvatarImage src="https://i.pravatar.cc/150?img=3" alt="Jane Doe" />
+        <AvatarFallback>JD</AvatarFallback>
+      </AvatarRoot>
+      <AvatarRoot>
+        <AvatarFallback>AB</AvatarFallback>
+      </AvatarRoot>
+      <AvatarRoot>
+        <AvatarFallback>+9</AvatarFallback>
+      </AvatarRoot>
+    </div>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
+    <ForReact>
 ```tsx
 import { Avatar } from '@wire-ui/react'
 
@@ -58,6 +87,32 @@ import { Avatar } from '@wire-ui/react'
   </Avatar.Root>
 </div>
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { AvatarRoot, AvatarImage, AvatarFallback } from '@wire-ui/vue'
+</script>
+
+<template>
+  <div class="flex -space-x-2">
+    <AvatarRoot class="relative inline-flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-black bg-[#f5f5f5] ring-2 ring-white">
+      <AvatarImage src="https://i.pravatar.cc/150?img=3" alt="Jane Doe" class="size-full object-cover" />
+      <AvatarFallback class="text-sm font-medium text-black">JD</AvatarFallback>
+    </AvatarRoot>
+    <AvatarRoot class="relative inline-flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-black bg-[#f5f5f5] ring-2 ring-white">
+      <AvatarFallback class="text-sm font-medium text-black select-none">AB</AvatarFallback>
+    </AvatarRoot>
+    <AvatarRoot class="relative inline-flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-black bg-black ring-2 ring-white">
+      <AvatarFallback class="text-xs font-medium text-white">+9</AvatarFallback>
+    </AvatarRoot>
+  </div>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
 </Tabs>
 

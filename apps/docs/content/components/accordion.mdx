@@ -5,6 +5,7 @@ description: Collapsible sections with single or multiple selection types.
 
 import { Tabs } from 'nextra/components'
 
+
 # Accordion
 
 Collapsible sections. Supports `single` (one item open at a time) and `multiple` (many open at once). Controlled and uncontrolled.
@@ -25,7 +26,8 @@ Collapsible sections. Supports `single` (one item open at a time) and `multiple`
 
 <Tabs items={['Raw', 'Styled']}>
   <Tabs.Tab>
-```tsx
+    <ForReact>
+    ```tsx
 import { Accordion } from '@wire-ui/react'
 
 <Accordion.Root type="single" collapsible defaultValue="item-1">
@@ -36,9 +38,32 @@ import { Accordion } from '@wire-ui/react'
     </Accordion.Content>
   </Accordion.Item>
 </Accordion.Root>
-```
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Accordion, AccordionContent, AccordionItem, AccordionRoot, AccordionTrigger } from '@wire-ui/vue'
+</script>
+
+<template>
+    <AccordionRoot type="single" collapsible defaultValue="item-1">
+      <AccordionItem value="item-1">
+        <AccordionTrigger>What is wire-ui?</AccordionTrigger>
+        <AccordionContent>
+          A headless component library. Zero styles shipped — you bring your own via className and data-attribute selectors.
+        </AccordionContent>
+      </AccordionItem>
+    </AccordionRoot>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
+    <ForReact>
 ```tsx
 import { Accordion } from '@wire-ui/react'
 
@@ -66,6 +91,43 @@ import { Accordion } from '@wire-ui/react'
   </Accordion.Item>
 </Accordion.Root>
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { AccordionRoot, AccordionItem, AccordionTrigger, AccordionContent } from '@wire-ui/vue'
+</script>
+
+<template>
+  <AccordionRoot
+    type="single"
+    collapsible
+    default-value="item-1"
+    class="w-full max-w-lg divide-y-2 divide-black rounded-[20px] border-[3px] border-black bg-white overflow-hidden"
+  >
+    <AccordionItem value="item-1">
+      <AccordionTrigger class="flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-black outline-none transition-colors hover:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50">
+        What is wire-ui?
+        <svg
+          class="size-4 shrink-0 text-black transition-transform duration-200 data-[state=open]:rotate-180"
+          data-state="inherit"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+      </AccordionTrigger>
+      <AccordionContent class="px-5 pb-4 text-sm leading-relaxed text-[#6b7280]">
+        A headless component library. Zero styles shipped — you bring your own via className and data-attribute selectors.
+      </AccordionContent>
+    </AccordionItem>
+  </AccordionRoot>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
 </Tabs>
 

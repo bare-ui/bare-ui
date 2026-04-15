@@ -5,6 +5,7 @@ description: Dismissible alert with auto-dismiss support.
 
 import { Tabs } from 'nextra/components'
 
+
 # Alert
 
 Dismissible alert with optional auto-dismiss timer. Status variants applied via `data-status`.
@@ -24,7 +25,8 @@ Dismissible alert with optional auto-dismiss timer. Status variants applied via 
 
 <Tabs items={['Raw', 'Styled']}>
   <Tabs.Tab>
-```tsx
+    <ForReact>
+    ```tsx
 import { Alert } from '@wire-ui/react'
 
 <Alert.Root status="warning">
@@ -38,9 +40,35 @@ import { Alert } from '@wire-ui/react'
     </svg>
   </Alert.Dismiss>
 </Alert.Root>
-```
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Alert, AlertDescription, AlertDismiss, AlertRoot, AlertTitle } from '@wire-ui/vue'
+</script>
+
+<template>
+    <AlertRoot status="warning">
+      <div>
+        <AlertTitle>Warning</AlertTitle>
+        <AlertDescription>Your session is about to expire. Please save your work.</AlertDescription>
+      </div>
+      <AlertDismiss>
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </AlertDismiss>
+    </AlertRoot>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
+    <ForReact>
 ```tsx
 import { Alert } from '@wire-ui/react'
 
@@ -56,6 +84,31 @@ import { Alert } from '@wire-ui/react'
   </Alert.Dismiss>
 </Alert.Root>
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { AlertRoot, AlertTitle, AlertDescription } from '@wire-ui/vue'
+</script>
+
+<template>
+  <AlertRoot status="warning" class="flex items-start gap-3 rounded-[8px] border-2 border-black bg-[#f5f5f5] px-4 py-3 text-black">
+    <div class="flex-1">
+      <AlertTitle class="text-sm font-semibold">Warning</AlertTitle>
+      <AlertDescription class="mt-0.5 text-sm">Your session is about to expire. Please save your work.</AlertDescription>
+    </div>
+    <button class="shrink-0 rounded-[8px] p-1 text-black hover:bg-[#e5e5e5] transition-colors">
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </AlertRoot>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
 </Tabs>
 

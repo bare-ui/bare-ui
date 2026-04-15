@@ -5,6 +5,7 @@ description: One-time password input with individual slots, auto-advance, and on
 
 import { Tabs } from 'nextra/components'
 
+
 # OTP
 
 One-time password input with individual slot elements. Auto-advances on type, handles Backspace, fires `onComplete` when all slots are filled. Supports alphanumeric mode.
@@ -25,7 +26,8 @@ One-time password input with individual slot elements. Auto-advances on type, ha
 
 <Tabs items={['Raw', 'Styled']}>
   <Tabs.Tab>
-```tsx
+    <ForReact>
+    ```tsx
 import { OTP } from '@wire-ui/react'
 
 <OTP.Root length={6} onComplete={(code) => console.log(code)}>
@@ -33,9 +35,27 @@ import { OTP } from '@wire-ui/react'
     <OTP.Slot key={i} index={i} />
   ))}
 </OTP.Root>
-```
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { OTPRoot, OTPSlot } from '@wire-ui/vue'
+</script>
+
+<template>
+  <OTPRoot :length="6" @complete="(code) => console.log(code)">
+    <OTPSlot v-for="i in 6" :key="i - 1" :index="i - 1" />
+  </OTPRoot>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
+    <ForReact>
 ```tsx
 import { OTP } from '@wire-ui/react'
 import { useState } from 'react'
@@ -63,6 +83,43 @@ const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
 {status === 'success' && <p className="text-sm text-green-600">Verified!</p>}
 {status === 'error' && <p className="text-sm text-red-600">Invalid code. Try again.</p>}
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { OTPRoot, OTPSlot } from '@wire-ui/vue'
+
+const value = ref('')
+const status = ref('idle')
+
+function onComplete(code) {
+  verify(code).then(() => status.value = 'success').catch(() => status.value = 'error')
+}
+</script>
+
+<template>
+  <OTPRoot
+    :value="value"
+    :length="6"
+    class="flex items-center gap-2"
+    @change="value = $event"
+    @complete="onComplete">
+    <OTPSlot
+      v-for="i in 6"
+      :key="i - 1"
+      :index="i - 1"
+      class="h-12 w-10 rounded-[8px] border-2 border-black bg-white text-center text-lg font-mono font-semibold text-black outline-none transition-all caret-transparent data-[active]:ring-4 data-[active]:ring-black/20"
+    />
+  </OTPRoot>
+  <p v-if="status === 'success'" class="text-sm text-green-600">Verified!</p>
+  <p v-if="status === 'error'" class="text-sm text-red-600">Invalid code. Try again.</p>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
 </Tabs>
 

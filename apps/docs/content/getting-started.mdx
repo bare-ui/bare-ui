@@ -13,22 +13,47 @@ import { Steps, Tabs } from 'nextra/components'
 
 ### Install the package
 
+<ForReact>
 ```bash npm2yarn
 npm install @wire-ui/react
 ```
 
 Wire UI has no production dependencies. React is a peer dependency.
+</ForReact>
+<ForVue>
+```bash npm2yarn
+npm install @wire-ui/vue
+```
+
+Wire UI has no production dependencies. Vue is a peer dependency.
+</ForVue>
+<ForSolid>
+🚧 Solid JS support is coming soon.
+</ForSolid>
 
 ### Add peer dependencies
 
+<ForReact>
 If you don't already have React:
 
 ```bash npm2yarn
 npm install react@^19 react-dom@^19
 ```
+</ForReact>
+<ForVue>
+If you don't already have Vue:
+
+```bash npm2yarn
+npm install vue@^3.5
+```
+</ForVue>
+<ForSolid>
+🚧 Solid JS support is coming soon.
+</ForSolid>
 
 ### Use a component
 
+<ForReact>
 ```tsx
 import { Button } from '@wire-ui/react'
 
@@ -40,6 +65,23 @@ export function SaveButton() {
   )
 }
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { Button } from '@wire-ui/vue'
+</script>
+
+<template>
+  <Button type="submit" class="px-4 py-2 rounded bg-blue-600 text-white">
+    Save changes
+  </Button>
+</template>
+```
+</ForVue>
+<ForSolid>
+🚧 Solid JS support is coming soon.
+</ForSolid>
 
 </Steps>
 
@@ -49,6 +91,7 @@ Wire UI ships no CSS. All interactive state is exposed through `data-*` attribut
 
 <Tabs items={['Tailwind CSS', 'CSS Modules', 'Plain CSS']}>
   <Tabs.Tab>
+<ForReact>
 ```tsx
 <Button className="
   px-4 py-2 rounded bg-blue-600 text-white transition-all
@@ -60,6 +103,25 @@ Wire UI ships no CSS. All interactive state is exposed through `data-*` attribut
   Submit
 </Button>
 ```
+</ForReact>
+<ForVue>
+```vue
+<template>
+  <Button class="
+    px-4 py-2 rounded bg-blue-600 text-white transition-all
+    [data-hover]:bg-blue-700
+    [data-active]:scale-95
+    [data-focus-visible]:ring-2 [data-focus-visible]:ring-offset-2
+    [data-disabled]:opacity-50 [data-disabled]:cursor-not-allowed
+  ">
+    Submit
+  </Button>
+</template>
+```
+</ForVue>
+<ForSolid>
+🚧 Solid JS support is coming soon.
+</ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
 ```css
@@ -93,8 +155,9 @@ import styles from './button.module.css'
 
 ## Compound components
 
-Complex components use the `Component.Part` pattern. You compose the markup yourself:
+Complex components use a compound pattern. You compose the markup yourself:
 
+<ForReact>
 ```tsx
 import { Input } from '@wire-ui/react'
 
@@ -104,6 +167,28 @@ import { Input } from '@wire-ui/react'
   <Input.Error />
 </Input.Root>
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { InputRoot, InputField, InputLabel, InputError } from '@wire-ui/vue'
+
+const value = ref('')
+</script>
+
+<template>
+  <InputRoot v-model="value">
+    <InputLabel>Email address</InputLabel>
+    <InputField type="email" placeholder="you@example.com" />
+    <InputError />
+  </InputRoot>
+</template>
+```
+</ForVue>
+<ForSolid>
+🚧 Solid JS support is coming soon.
+</ForSolid>
 
 You control the DOM order. Need the error above the field? Swap them. Need a wrapper div between label and field? Add it. Wire UI never dictates structure.
 
@@ -111,6 +196,7 @@ You control the DOM order. Need the error above the field? Swap them. Need a wra
 
 Wire UI components do **not** validate internally. You own validation — set `invalidType` when your logic determines the field is invalid:
 
+<ForReact>
 ```tsx
 const [email, setEmail] = useState('')
 const [invalidType, setInvalidType] = useState('')
@@ -136,11 +222,49 @@ function handleSubmit(e: React.FormEvent) {
   <Input.Error />
 </Input.Root>
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { InputRoot, InputField, InputLabel, InputError } from '@wire-ui/vue'
+
+const email = ref('')
+const invalidType = ref('')
+
+function handleSubmit(e: Event) {
+  e.preventDefault()
+  if (!email.value) invalidType.value = 'required'
+  else if (!email.value.includes('@')) invalidType.value = 'email'
+  else invalidType.value = ''
+}
+</script>
+
+<template>
+  <InputRoot
+    v-model="email"
+    :invalid-type="invalidType"
+    :error-message="{
+      required: 'Email is required',
+      email: 'Enter a valid email address',
+    }"
+  >
+    <InputLabel>Email</InputLabel>
+    <InputField type="email" />
+    <InputError />
+  </InputRoot>
+</template>
+```
+</ForVue>
+<ForSolid>
+🚧 Solid JS support is coming soon.
+</ForSolid>
 
 ## TypeScript
 
 All prop types are exported:
 
+<ForReact>
 ```ts
 import type {
   ButtonProps,
@@ -154,3 +278,22 @@ import type {
   Status,
 } from '@wire-ui/react'
 ```
+</ForReact>
+<ForVue>
+```ts
+import type {
+  ButtonProps,
+  InputRootProps,
+  TextareaRootProps,
+  PasswordRootProps,
+  ModalRootProps,
+  AccordionRootProps,
+  SearchOption,
+  Size,
+  Status,
+} from '@wire-ui/vue'
+```
+</ForVue>
+<ForSolid>
+🚧 Solid JS support is coming soon.
+</ForSolid>

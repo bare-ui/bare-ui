@@ -5,6 +5,7 @@ description: Dialog with portal rendering, overlay-click and Escape key close.
 
 import { Tabs } from 'nextra/components'
 
+
 # Modal
 
 Compound modal dialog. Renders into a portal, closes on overlay click or Escape key. Supports controlled and uncontrolled state.
@@ -25,7 +26,8 @@ Compound modal dialog. Renders into a portal, closes on overlay click or Escape 
 
 <Tabs items={['Raw', 'Styled']}>
   <Tabs.Tab>
-```tsx
+    <ForReact>
+    ```tsx
 import { useState } from 'react'
 import { Modal } from '@wire-ui/react'
 
@@ -49,9 +51,45 @@ const [open, setOpen] = useState(false)
     </Modal.Overlay>
   </Modal.Portal>
 </Modal.Root>
-```
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { ref } from 'vue'
+import { ModalRoot, ModalPortal, ModalOverlay, ModalContent, ModalClose } from '@wire-ui/vue'
+
+const open = ref(false)
+</script>
+
+<template>
+  <button @click="open = true">Delete Account</button>
+
+  <ModalRoot :open="open" @open-change="open = $event">
+    <ModalPortal>
+      <ModalOverlay>
+        <ModalContent>
+          <h2>Delete Account</h2>
+          <p>
+            Are you sure you want to delete your account? All of your data will be permanently removed. This action cannot be undone.
+          </p>
+          <div>
+            <ModalClose>Cancel</ModalClose>
+            <button @click="open = false">Delete</button>
+          </div>
+        </ModalContent>
+      </ModalOverlay>
+    </ModalPortal>
+  </ModalRoot>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
+    <ForReact>
 ```tsx
 import { useState } from 'react'
 import { Modal } from '@wire-ui/react'
@@ -92,6 +130,56 @@ const [open, setOpen] = useState(false)
   </Modal.Portal>
 </Modal.Root>
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { ModalRoot, ModalPortal, ModalOverlay, ModalContent, ModalClose } from '@wire-ui/vue'
+
+const open = ref(false)
+</script>
+
+<template>
+  <button
+    class="inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]"
+    @click="open = true">
+    Delete Account
+  </button>
+
+  <ModalRoot :open="open" @open-change="open = $event">
+    <ModalPortal>
+      <ModalOverlay class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <ModalContent class="w-full max-w-md overflow-hidden rounded-[20px] border-[3px] border-black bg-white p-6">
+          <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#f5f5f5]">
+            <svg class="h-6 w-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h2 class="mb-2 text-base font-semibold text-black">Delete Account</h2>
+          <p class="mb-6 text-sm text-[#6b7280]">
+            Are you sure you want to delete your account? All of your data will be permanently removed. This action cannot be undone.
+          </p>
+          <div class="flex gap-3">
+            <ModalClose class="flex-1 rounded-[8px] border-2 border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]">
+              Cancel
+            </ModalClose>
+            <button
+              class="flex-1 rounded-[8px] border-2 border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]"
+              @click="open = false">
+              Delete
+            </button>
+          </div>
+        </ModalContent>
+      </ModalOverlay>
+    </ModalPortal>
+  </ModalRoot>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
 </Tabs>
 

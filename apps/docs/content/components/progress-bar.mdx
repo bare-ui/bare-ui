@@ -5,6 +5,7 @@ description: Accessible progress indicator with role="progressbar" and ARIA attr
 
 import { Tabs } from 'nextra/components'
 
+
 # ProgressBar
 
 Accessible progress indicator. Renders `role="progressbar"` with `aria-valuenow`, `aria-valuemin`, and `aria-valuemax`. The inner fill width is set via inline style.
@@ -23,7 +24,8 @@ Accessible progress indicator. Renders `role="progressbar"` with `aria-valuenow`
 
 <Tabs items={['Raw', 'Styled']}>
   <Tabs.Tab>
-```tsx
+    <ForReact>
+    ```tsx
 import { ProgressBar } from '@wire-ui/react'
 
 <div>
@@ -34,9 +36,32 @@ import { ProgressBar } from '@wire-ui/react'
   <ProgressBar percentage={68} />
   <p>6.8 GB of 10 GB used</p>
 </div>
-```
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { ProgressBar } from '@wire-ui/vue'
+</script>
+
+<template>
+    <div>
+      <div>
+        <span>Storage used</span>
+        <span>68%</span>
+      </div>
+      <ProgressBar percentage={68} />
+      <p>6.8 GB of 10 GB used</p>
+    </div>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
+    <ForReact>
 ```tsx
 import { ProgressBar } from '@wire-ui/react'
 
@@ -49,6 +74,28 @@ import { ProgressBar } from '@wire-ui/react'
   <p className="mt-1 text-xs text-[#6b7280]">6.8 GB of 10 GB used</p>
 </div>
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ProgressBar } from '@wire-ui/vue'
+</script>
+
+<template>
+  <div class="w-80">
+    <div class="mb-1 flex justify-between text-sm">
+      <span class="font-medium text-black">Storage used</span>
+      <span class="text-[#6b7280]">68%</span>
+    </div>
+    <ProgressBar :percentage="68" class="h-2 w-full overflow-hidden rounded-full bg-[#e5e5e5] [&_[data-part=fill]]:h-full [&_[data-part=fill]]:rounded-full [&_[data-part=fill]]:bg-black [&_[data-part=fill]]:transition-[width] [&_[data-part=fill]]:duration-300" />
+    <p class="mt-1 text-xs text-[#6b7280]">6.8 GB of 10 GB used</p>
+  </div>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
 </Tabs>
 

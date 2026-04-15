@@ -5,6 +5,7 @@ description: Side-panel overlay with portal rendering and close behaviours.
 
 import { Tabs } from 'nextra/components'
 
+
 # Drawer
 
 Side-panel overlay. Same structure as Modal. Closes on overlay click or Escape key. Includes an optional `Drawer.Header` sub-component.
@@ -25,7 +26,8 @@ Side-panel overlay. Same structure as Modal. Closes on overlay click or Escape k
 
 <Tabs items={['Raw', 'Styled']}>
   <Tabs.Tab>
-```tsx
+    <ForReact>
+    ```tsx
 import { useState } from 'react'
 import { Drawer } from '@wire-ui/react'
 
@@ -50,9 +52,44 @@ const [open, setOpen] = useState(false)
     </Drawer.Overlay>
   </Drawer.Portal>
 </Drawer.Root>
-```
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { ref } from 'vue'
+import { DrawerRoot, DrawerPortal, DrawerOverlay, DrawerContent, DrawerHeader, DrawerClose } from '@wire-ui/vue'
+
+const open = ref(false)
+</script>
+
+<template>
+  <button @click="open = true">Open Drawer</button>
+
+  <DrawerRoot :open="open" @open-change="open = $event">
+    <DrawerPortal>
+      <DrawerOverlay>
+        <DrawerContent>
+          <DrawerHeader>
+            <span>Drawer Title</span>
+            <DrawerClose>✕</DrawerClose>
+          </DrawerHeader>
+          <div>
+            <p>This is a simple drawer with some content.</p>
+          </div>
+        </DrawerContent>
+      </DrawerOverlay>
+    </DrawerPortal>
+  </DrawerRoot>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
+    <ForReact>
 ```tsx
 import { useState } from 'react'
 import { Drawer } from '@wire-ui/react'
@@ -85,6 +122,48 @@ const [open, setOpen] = useState(false)
   </Drawer.Portal>
 </Drawer.Root>
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { DrawerRoot, DrawerPortal, DrawerOverlay, DrawerContent, DrawerHeader, DrawerClose } from '@wire-ui/vue'
+
+const open = ref(false)
+</script>
+
+<template>
+  <button
+    class="inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]"
+    @click="open = true">
+    Open Drawer
+  </button>
+
+  <DrawerRoot :open="open" @open-change="open = $event">
+    <DrawerPortal>
+      <DrawerOverlay class="fixed inset-0 z-50 bg-black/50">
+        <DrawerContent class="fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r-[3px] border-black bg-white">
+          <DrawerHeader class="flex items-center justify-between px-4 py-4">
+            <span class="text-lg font-bold text-black">Drawer Title</span>
+            <DrawerClose class="rounded-[8px] p-1 text-[#6b7280] hover:bg-[#f5f5f5] hover:text-black">
+              ✕
+            </DrawerClose>
+          </DrawerHeader>
+          <div class="flex-1 px-4 py-2">
+            <p class="text-sm text-[#6b7280]">
+              This is a simple drawer with some content.
+            </p>
+          </div>
+        </DrawerContent>
+      </DrawerOverlay>
+    </DrawerPortal>
+  </DrawerRoot>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
 </Tabs>
 

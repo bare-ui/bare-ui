@@ -5,6 +5,7 @@ description: Star rating with hover preview, read-only, and disabled modes.
 
 import { Tabs } from 'nextra/components'
 
+
 # Rating
 
 Star rating component. Hover preview shows the prospective rating before clicking. Supports read-only (non-interactive) and disabled modes.
@@ -24,13 +25,30 @@ Star rating component. Hover preview shows the prospective rating before clickin
 
 <Tabs items={['Raw', 'Styled']}>
   <Tabs.Tab>
-```tsx
+    <ForReact>
+    ```tsx
 import { Rating } from '@wire-ui/react'
 
 <Rating value={4} readOnly />
-```
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Rating } from '@wire-ui/vue'
+</script>
+
+<template>
+    <Rating value={4} readOnly />
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
+    <ForReact>
 ```tsx
 import { Rating } from '@wire-ui/react'
 
@@ -40,6 +58,25 @@ import { Rating } from '@wire-ui/react'
   <span className="text-sm text-[#6b7280]">(128 reviews)</span>
 </div>
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { Rating } from '@wire-ui/vue'
+</script>
+
+<template>
+  <div class="flex items-center gap-2">
+    <Rating :value="4" read-only class="flex gap-0.5" star-class-name="size-4 cursor-default text-[#e5e5e5] data-[filled]:text-black" />
+    <span class="text-sm font-medium text-black">4.0</span>
+    <span class="text-sm text-[#6b7280]">(128 reviews)</span>
+  </div>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
 </Tabs>
 

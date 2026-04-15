@@ -9,6 +9,7 @@ description: Publicly exported hooks from Wire UI.
 
 Tracks hover, keyboard focus, and press state for any element. This is the same hook used internally by Button, Accordion.Trigger, Modal.Close, and Drawer.Close — exported so you can build your own interactive components with identical state tracking.
 
+<ForReact>
 ```tsx
 import { useInteractiveState } from '@wire-ui/react'
 
@@ -34,6 +35,38 @@ function MyCard({ disabled }: { disabled?: boolean }) {
   )
 }
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { useInteractiveState } from '@wire-ui/vue'
+
+const props = defineProps<{ disabled?: boolean }>()
+const { handlers, dataAttributes } = useInteractiveState({ disabled: () => props.disabled })
+</script>
+
+<template>
+  <div
+    tabindex="0"
+    role="button"
+    v-bind="dataAttributes"
+    v-on="handlers"
+    class="
+      rounded-lg border p-4 cursor-pointer transition-all
+      [data-hover]:bg-gray-50
+      [data-active]:scale-95
+      [data-focus-visible]:ring-2
+      [data-disabled]:opacity-50 [data-disabled]:pointer-events-none
+    "
+  >
+    Card content
+  </div>
+</template>
+```
+</ForVue>
+<ForSolid>
+🚧 Solid JS support is coming soon.
+</ForSolid>
 
 ### Returns
 
@@ -57,6 +90,7 @@ function MyCard({ disabled }: { disabled?: boolean }) {
 
 Fires a callback when the user clicks or taps outside a referenced element. Used internally by Dropdown and Search to close their menus.
 
+<ForReact>
 ```tsx
 import { useRef } from 'react'
 import { useClickOutside } from '@wire-ui/react'
@@ -73,10 +107,44 @@ function Popover() {
   )
 }
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { useClickOutside } from '@wire-ui/vue'
+
+const popoverRef = ref<HTMLDivElement | null>(null)
+const open = ref(true)
+
+useClickOutside(popoverRef, () => { open.value = false })
+</script>
+
+<template>
+  <div ref="popoverRef">
+    Popover content
+  </div>
+</template>
+```
+</ForVue>
+<ForSolid>
+🚧 Solid JS support is coming soon.
+</ForSolid>
 
 ### Parameters
 
+<ForReact>
 | Param | Type | Description |
 |---|---|---|
 | `ref` | `RefObject<HTMLElement>` | Reference to the element to watch |
 | `handler` | `() => void` | Callback fired on outside click/tap |
+</ForReact>
+<ForVue>
+| Param | Type | Description |
+|---|---|---|
+| `ref` | `Ref<HTMLElement \| null>` | Template ref to the element to watch |
+| `handler` | `() => void` | Callback fired on outside click/tap |
+</ForVue>
+<ForSolid>
+🚧 Solid JS support is coming soon.
+</ForSolid>

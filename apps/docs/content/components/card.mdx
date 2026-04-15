@@ -5,6 +5,7 @@ description: Unstyled container with optional data-color and data-size attribute
 
 import { Tabs } from 'nextra/components'
 
+
 # Card
 
 A simple unstyled container element. Pass `data-color` and `data-size` to drive your design token styles.
@@ -23,7 +24,8 @@ A simple unstyled container element. Pass `data-color` and `data-size` to drive 
 
 <Tabs items={['Raw', 'Styled']}>
   <Tabs.Tab>
-```tsx
+    <ForReact>
+    ```tsx
 import { Card, Avatar } from '@wire-ui/react'
 
 <Card>
@@ -35,9 +37,33 @@ import { Card, Avatar } from '@wire-ui/react'
     <p>Wireframe primitives for modern frameworks</p>
   </div>
 </Card>
-```
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Avatar, AvatarFallback, AvatarRoot, Card } from '@wire-ui/vue'
+</script>
+
+<template>
+    <Card>
+      <AvatarRoot>
+        <AvatarFallback>W</AvatarFallback>
+      </AvatarRoot>
+      <div>
+        <h3>Wire UI</h3>
+        <p>Wireframe primitives for modern frameworks</p>
+      </div>
+    </Card>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
+    <ForReact>
 ```tsx
 import { Card, Avatar } from '@wire-ui/react'
 
@@ -51,6 +77,29 @@ import { Card, Avatar } from '@wire-ui/react'
   </div>
 </Card>
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { Card, AvatarRoot, AvatarFallback } from '@wire-ui/vue'
+</script>
+
+<template>
+  <Card class="w-full max-w-sm rounded-[8px] border-2 border-black bg-white p-4 flex items-center gap-4">
+    <AvatarRoot class="relative inline-flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-black bg-[#f5f5f5]">
+      <AvatarFallback class="text-sm font-semibold text-black select-none">W</AvatarFallback>
+    </AvatarRoot>
+    <div>
+      <h3 class="text-sm font-semibold text-black">Wire UI</h3>
+      <p class="text-xs text-[#6b7280]">Wireframe primitives for modern frameworks</p>
+    </div>
+  </Card>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
 </Tabs>
 

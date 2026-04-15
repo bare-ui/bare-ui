@@ -5,6 +5,7 @@ description: Accessible select menu with groups, separators, and a custom trigge
 
 import { Tabs } from 'nextra/components'
 
+
 # Select
 
 Accessible select menu with groups, separators, and a fully custom trigger element.
@@ -24,7 +25,8 @@ Accessible select menu with groups, separators, and a fully custom trigger eleme
 
 <Tabs items={['Raw', 'Styled']}>
   <Tabs.Tab>
-```tsx
+    <ForReact>
+    ```tsx
 import { Select } from '@wire-ui/react'
 
 <Select.Root value={value} onChange={setValue}>
@@ -39,9 +41,38 @@ import { Select } from '@wire-ui/react'
     ))}
   </Select.Content>
 </Select.Root>
-```
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { ref } from 'vue'
+import { SelectRoot, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@wire-ui/vue'
+
+const value = ref('')
+const frameworks = ['React', 'Vue', 'Angular', 'Svelte', 'Solid']
+</script>
+
+<template>
+  <SelectRoot :value="value" @change="value = $event">
+    <SelectTrigger>
+      <SelectValue placeholder="Select a framework" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem v-for="fw in frameworks" :key="fw" :value="fw.toLowerCase()">
+        {{ fw }}
+      </SelectItem>
+    </SelectContent>
+  </SelectRoot>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
+    <ForReact>
 ```tsx
 import { Select } from '@wire-ui/react'
 
@@ -63,6 +94,40 @@ import { Select } from '@wire-ui/react'
   </div>
 </Select.Root>
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { SelectRoot, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@wire-ui/vue'
+
+const value = ref('')
+const frameworks = ['React', 'Vue', 'Angular', 'Svelte', 'Solid']
+</script>
+
+<template>
+  <SelectRoot :value="value" @change="value = $event">
+    <div class="relative">
+      <SelectTrigger class="flex w-full items-center justify-between gap-2 rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none transition data-[state=open]:ring-2 data-[state=open]:ring-blue-500 data-[state=open]:ring-offset-1 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[hover]:bg-[#f5f5f5]">
+        <SelectValue placeholder="Select a framework" class="data-[placeholder]:text-[#6b7280]" />
+      </SelectTrigger>
+      <SelectContent class="absolute z-50 mt-1 w-full overflow-hidden rounded-[20px] border-[3px] border-black bg-white py-1">
+        <SelectItem
+          v-for="fw in frameworks"
+          :key="fw"
+          :value="fw.toLowerCase()"
+          class="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-black outline-none transition data-[hover]:bg-[#f5f5f5] data-[selected]:font-medium data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40">
+          <span class="flex-1">{{ fw }}</span>
+        </SelectItem>
+      </SelectContent>
+    </div>
+  </SelectRoot>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
 </Tabs>
 

@@ -5,6 +5,7 @@ description: Compound text input with consumer-controlled error state.
 
 import { Tabs } from 'nextra/components'
 
+
 # Input
 
 Compound component for text inputs. Works controlled and uncontrolled. Validation is entirely consumer-controlled — set `invalidType` to trigger the error state.
@@ -25,16 +26,36 @@ Compound component for text inputs. Works controlled and uncontrolled. Validatio
 
 <Tabs items={['Raw', 'Styled']}>
   <Tabs.Tab>
-```tsx
+    <ForReact>
+    ```tsx
 import { Input } from '@wire-ui/react'
 
 <Input.Root>
   <Input.Label>Full Name</Input.Label>
   <Input.Field placeholder="John Doe" />
 </Input.Root>
-```
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Input, InputField, InputLabel, InputRoot } from '@wire-ui/vue'
+</script>
+
+<template>
+    <InputRoot>
+      <InputLabel>Full Name</InputLabel>
+      <InputField placeholder="John Doe" />
+    </InputRoot>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
+    <ForReact>
 ```tsx
 import { Input } from '@wire-ui/react'
 
@@ -46,6 +67,27 @@ import { Input } from '@wire-ui/react'
   />
 </Input.Root>
 ```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { InputRoot, InputField, InputLabel } from '@wire-ui/vue'
+</script>
+
+<template>
+  <InputRoot class="flex w-full max-w-xs flex-col gap-1.5">
+    <InputLabel class="text-sm font-medium text-black">Full Name</InputLabel>
+    <InputField
+      placeholder="John Doe"
+      class="w-full rounded-[8px] bg-white border-2 border-black px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+    />
+  </InputRoot>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    🚧 Solid JS support is coming soon.
+    </ForSolid>
   </Tabs.Tab>
 </Tabs>
 
