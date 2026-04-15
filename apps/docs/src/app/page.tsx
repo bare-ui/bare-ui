@@ -6,6 +6,7 @@ import { Hero3DWrapper } from "../components/hero-3d-wrapper";
 import { CharGridBg } from "../components/char-grid-bg";
 import { GitHubStars, NpmDownloads } from "../components/stats-badges";
 import { MobileMenuButton } from "../components/mobile-nav";
+import { AIPipeline } from "../components/ai-pipeline";
 import s from "./page.module.css";
 
 const FEATURES = [
@@ -267,6 +268,9 @@ function App() {
 					</div>
 				</div>
 			</section>
+
+			{/* ── Section 3 · AI Pipeline ────────────────────────── */}
+			<AIPipeline />
 
 			<hr className={s.divider} />
 

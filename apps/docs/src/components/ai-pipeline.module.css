@@ -1,0 +1,369 @@
+/* ── Pipeline Section ─────────────────────────────────────────── */
+.pipelineSection {
+  padding: 8rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.pipelineSectionLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.45;
+  margin-bottom: 1rem;
+}
+
+.pipelineSectionHeading {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 0 0 0.75rem;
+  line-height: 1.15;
+}
+
+.pipelineSectionSub {
+  font-size: 1rem;
+  opacity: 0.6;
+  max-width: 420px;
+  margin: 0 0 2.5rem;
+  line-height: 1.7;
+  text-align: left;
+}
+
+/* ── Extra content in left column ── */
+.pipelineFeatures {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.pipelineFeature {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.pipelineFeatureTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.pipelineFeatureDesc {
+  font-size: 0.78rem;
+  opacity: 0.5;
+  line-height: 1.5;
+}
+
+.pipelineMcpLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s, transform 0.15s, border-color 0.15s;
+}
+
+.pipelineMcpLink:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(99, 102, 241, 0.3);
+  transform: translateY(-1px);
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(html:not(.light)) .pipelineMcpLink { border-color: rgba(255,255,255,0.12); }
+  :global(html:not(.light)) .pipelineMcpLink:hover { background: rgba(255,255,255,0.06); border-color: rgba(99,102,241,0.4); }
+}
+:global(html.dark) .pipelineMcpLink { border-color: rgba(255,255,255,0.12); }
+:global(html.dark) .pipelineMcpLink:hover { background: rgba(255,255,255,0.06); border-color: rgba(99,102,241,0.4); }
+
+/* ── Two-column grid ────────────────────────────────────────── */
+.pipelineGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.pipelineLeft {
+  /* Text column */
+}
+
+/* ── Right column: vertical pipeline ────────────────────────── */
+.pipelineRight {
+  position: relative;
+}
+
+/* ── Vertical connector line ────────────────────────────────── */
+.connectorWrap {
+  position: absolute;
+  top: 36px;
+  bottom: 36px;
+  left: 36px;
+  width: 2px;
+  z-index: 0;
+  overflow: visible;
+}
+
+.connectorBg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 100%;
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: 1px;
+}
+
+.connectorGlow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 100%;
+  border-radius: 1px;
+  opacity: 0;
+  overflow: visible;
+  transition: opacity 0.5s;
+}
+
+.connectorGlow[data-visible="true"] {
+  opacity: 1;
+}
+
+/* Glowing orb */
+.connectorGlow::after {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(196, 181, 253, 0.9) 0%, rgba(139, 92, 246, 0.5) 25%, rgba(99, 102, 241, 0.2) 50%, transparent 70%);
+  box-shadow:
+    0 0 16px 8px rgba(139, 92, 246, 0.6),
+    0 0 36px 18px rgba(99, 102, 241, 0.3),
+    0 0 60px 30px rgba(99, 102, 241, 0.12);
+  filter: blur(4px);
+  opacity: 0;
+}
+
+.connectorGlow[data-visible="true"]::after {
+  animation: orbSlideDown 7s ease-in-out infinite;
+}
+
+/*
+  Orb keyframes — 7s total, synced with card glow peaks.
+  5 nodes at 0%, 25%, 50%, 75%, 100% of the line.
+  Orb pauses at: 12%, 28%, 44%, 60%, 76% (matching cardGlow peaks).
+*/
+@keyframes orbSlideDown {
+  0%   { top: -20px;               opacity: 0; }
+  2%   { top: -20px;               opacity: 1; }
+  /* Node 1 @ 0% — arrive at 10%, pause until 16% */
+  10%  { top: calc(0% - 20px);     opacity: 1; }
+  16%  { top: calc(0% - 20px);     opacity: 1; }
+  /* Node 2 @ 25% — arrive at 26%, pause until 32% */
+  26%  { top: calc(25% - 20px);    opacity: 1; }
+  32%  { top: calc(25% - 20px);    opacity: 1; }
+  /* Node 3 @ 50% — arrive at 42%, pause until 48% */
+  42%  { top: calc(50% - 20px);    opacity: 1; }
+  48%  { top: calc(50% - 20px);    opacity: 1; }
+  /* Node 4 @ 75% — arrive at 58%, pause until 64% */
+  58%  { top: calc(75% - 20px);    opacity: 1; }
+  64%  { top: calc(75% - 20px);    opacity: 1; }
+  /* Node 5 @ 100% — arrive at 74%, pause until 80% */
+  74%  { top: calc(100% - 20px);   opacity: 1; }
+  80%  { top: calc(100% - 20px);   opacity: 1; }
+  84%  { top: calc(100% - 20px);   opacity: 0; }
+  100% { top: -20px;               opacity: 0; }
+}
+
+/* ── Node list ──────────────────────────────────────────────── */
+.nodes {
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+  position: relative;
+  z-index: 1;
+}
+
+.node {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.node[data-visible="true"] {
+  animation: nodeAppear 0.5s ease-out forwards;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes nodeAppear {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Node card (icon) ───────────────────────────────────────── */
+.nodeCard {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  border: 1.5px solid rgba(99, 102, 241, 0.15);
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(html:not(.light)) .nodeCard {
+    background: #0a0a0a;
+    border-color: rgba(99, 102, 241, 0.2);
+  }
+}
+:global(html.dark) .nodeCard {
+  background: #0a0a0a;
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+/*
+  Card glow — each node has its own keyframe timed to the orb position.
+  7s animation, same as orb. No delay — peak is baked into the keyframe %.
+  Orb arrives: N1=12%, N2=28%, N3=44%, N4=60%, N5=76%
+*/
+.node:nth-child(1)[data-visible="true"] .nodeCard { animation: cardGlow1 7s ease-in-out infinite; }
+.node:nth-child(2)[data-visible="true"] .nodeCard { animation: cardGlow2 7s ease-in-out infinite; }
+.node:nth-child(3)[data-visible="true"] .nodeCard { animation: cardGlow3 7s ease-in-out infinite; }
+.node:nth-child(4)[data-visible="true"] .nodeCard { animation: cardGlow4 7s ease-in-out infinite; }
+.node:nth-child(5)[data-visible="true"] .nodeCard { animation: cardGlow5 7s ease-in-out infinite; }
+
+@keyframes cardGlow1 {
+  0%, 7%, 20%, 100% { border-color: rgba(99, 102, 241, 0.15); box-shadow: none; }
+  12% { border-color: rgba(139, 92, 246, 0.9); box-shadow: 0 0 12px 4px rgba(139, 92, 246, 0.6), 0 0 28px 10px rgba(99, 102, 241, 0.3), 0 0 48px 18px rgba(99, 102, 241, 0.1), inset 0 0 12px rgba(139, 92, 246, 0.1); }
+}
+@keyframes cardGlow2 {
+  0%, 23%, 36%, 100% { border-color: rgba(99, 102, 241, 0.15); box-shadow: none; }
+  28% { border-color: rgba(139, 92, 246, 0.9); box-shadow: 0 0 12px 4px rgba(139, 92, 246, 0.6), 0 0 28px 10px rgba(99, 102, 241, 0.3), 0 0 48px 18px rgba(99, 102, 241, 0.1), inset 0 0 12px rgba(139, 92, 246, 0.1); }
+}
+@keyframes cardGlow3 {
+  0%, 39%, 52%, 100% { border-color: rgba(99, 102, 241, 0.15); box-shadow: none; }
+  44% { border-color: rgba(139, 92, 246, 0.9); box-shadow: 0 0 12px 4px rgba(139, 92, 246, 0.6), 0 0 28px 10px rgba(99, 102, 241, 0.3), 0 0 48px 18px rgba(99, 102, 241, 0.1), inset 0 0 12px rgba(139, 92, 246, 0.1); }
+}
+@keyframes cardGlow4 {
+  0%, 55%, 68%, 100% { border-color: rgba(99, 102, 241, 0.15); box-shadow: none; }
+  60% { border-color: rgba(139, 92, 246, 0.9); box-shadow: 0 0 12px 4px rgba(139, 92, 246, 0.6), 0 0 28px 10px rgba(99, 102, 241, 0.3), 0 0 48px 18px rgba(99, 102, 241, 0.1), inset 0 0 12px rgba(139, 92, 246, 0.1); }
+}
+@keyframes cardGlow5 {
+  0%, 71%, 84%, 100% { border-color: rgba(99, 102, 241, 0.15); box-shadow: none; }
+  76% { border-color: rgba(139, 92, 246, 0.9); box-shadow: 0 0 12px 4px rgba(139, 92, 246, 0.6), 0 0 28px 10px rgba(99, 102, 241, 0.3), 0 0 48px 18px rgba(99, 102, 241, 0.1), inset 0 0 12px rgba(139, 92, 246, 0.1); }
+}
+
+/* Step number badge */
+.nodeStep {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #6366f1;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+/* ── Node text ──────────────────────────────────────────────── */
+.nodeText {
+  text-align: left;
+}
+
+.nodeLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  margin-bottom: 2px;
+}
+
+.nodeDesc {
+  font-size: 0.78rem;
+  opacity: 0.45;
+  line-height: 1.5;
+}
+
+/* ── Mobile layout ──────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .pipelineGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .pipelineLeft {
+    position: static;
+    text-align: center;
+  }
+
+  .pipelineSectionSub {
+    text-align: center;
+    margin: 0 auto 2rem;
+  }
+
+  .pipelineFeatures {
+    align-items: center;
+  }
+
+  .pipelineMcpLink {
+    margin: 2rem auto 0;
+  }
+}
+
+/* ── Reduced motion ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .connectorGlow::after {
+    animation: none !important;
+    opacity: 0;
+  }
+
+  .connectorGlow[data-visible="true"] {
+    opacity: 0.5;
+  }
+
+  .node:nth-child(1)[data-visible="true"] .nodeCard,
+  .node:nth-child(2)[data-visible="true"] .nodeCard,
+  .node:nth-child(3)[data-visible="true"] .nodeCard,
+  .node:nth-child(4)[data-visible="true"] .nodeCard,
+  .node:nth-child(5)[data-visible="true"] .nodeCard {
+    animation: none !important;
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.3);
+  }
+
+  .node {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+}
