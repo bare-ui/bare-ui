@@ -70,7 +70,7 @@ export default async function DocsLayout({
 			projectLink="https://github.com/wire-ui/wire-ui"
 		>
 			<a
-				href="https://www.npmjs.com/package/@wire-ui/react"
+				href="https://www.npmjs.com/org/wire-ui"
 				target="_blank"
 				rel="noopener noreferrer"
 				style={{
