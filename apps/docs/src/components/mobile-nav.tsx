@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { FrameworkSwitcher } from "./framework-switcher";
 
 function MenuIcon() {
 	return (
@@ -91,6 +92,23 @@ export function MobileMenuButton({
 							}}
 							onClick={(e) => e.stopPropagation()}
 						>
+							<div style={{
+									paddingBottom: "1rem",
+									marginBottom: "0.5rem",
+									borderBottom: "1px solid rgba(128,128,128,0.15)",
+								}}>
+									<div style={{
+										fontSize: "0.7rem",
+										fontWeight: 600,
+										textTransform: "uppercase" as const,
+										letterSpacing: "0.08em",
+										opacity: 0.4,
+										marginBottom: "0.5rem",
+									}}>
+										Framework
+									</div>
+									<FrameworkSwitcher />
+								</div>
 							<a href="/docs" style={linkStyle} onClick={() => setOpen(false)}>
 								Learn
 							</a>
@@ -98,7 +116,7 @@ export function MobileMenuButton({
 								Components
 							</a>
 							<a
-								href="https://www.npmjs.com/package/@wire-ui/react"
+								href="https://www.npmjs.com/org/wire-ui"
 								target="_blank"
 								rel="noopener noreferrer"
 								style={linkStyle}
