@@ -18,7 +18,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const fieldCls =
-	'w-full rounded-[8px] bg-white border-2 border-black px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1';
+	'w-full rounded-[8px] bg-white border border-black px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1';
 
 export const Default: Story = {
 	render: () => (

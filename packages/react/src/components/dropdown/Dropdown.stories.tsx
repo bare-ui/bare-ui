@@ -18,10 +18,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const triggerCls =
-	'inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]';
+	'inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]';
 
 const menuCls =
-	'absolute left-0 top-full z-10 mt-1 w-48 overflow-hidden rounded-[20px] border-[3px] border-black bg-white py-1';
+	'absolute left-0 top-full z-10 mt-1 w-48 overflow-hidden rounded-[20px] border border-black bg-white py-1';
 
 const itemCls = 'cursor-pointer px-4 py-2 text-sm text-black hover:bg-[#f5f5f5]';
 
@@ -45,7 +45,7 @@ export const Composed: Story = {
 			<Dropdown.Menu className={menuCls}>
 				<div className={itemCls}>Edit</div>
 				<div className={itemCls}>Duplicate</div>
-				<div className='my-1 border-t-2 border-black' />
+				<div className='my-1 border-t border-black' />
 				<div className={itemCls}>Archive</div>
 				<div className={itemCls}>Delete</div>
 			</Dropdown.Menu>
@@ -56,7 +56,7 @@ export const Composed: Story = {
 export const Complex: Story = {
 	render: () => (
 		<Dropdown.Root className='relative inline-block'>
-			<Dropdown.Trigger className='inline-flex items-center gap-2 rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]'>
+			<Dropdown.Trigger className='inline-flex items-center gap-2 rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]'>
 				<svg className='h-5 w-5' viewBox='0 0 20 20' fill='currentColor'>
 					<path
 						fillRule='evenodd'
@@ -66,7 +66,7 @@ export const Complex: Story = {
 				</svg>
 				Account
 			</Dropdown.Trigger>
-			<Dropdown.Menu className='absolute left-0 top-full z-10 mt-1 w-52 overflow-hidden rounded-[20px] border-[3px] border-black bg-white py-1'>
+			<Dropdown.Menu className='absolute left-0 top-full z-10 mt-1 w-52 overflow-hidden rounded-[20px] border border-black bg-white py-1'>
 				<div className={itemCls}>
 					<span className='mr-2'>👤</span>Profile
 				</div>
@@ -76,7 +76,7 @@ export const Complex: Story = {
 				<div className={itemCls}>
 					<span className='mr-2'>📊</span>Analytics
 				</div>
-				<div className='my-1 border-t-2 border-black' />
+				<div className='my-1 border-t border-black' />
 				<div className='cursor-pointer px-4 py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]'>
 					<span className='mr-2'>🚪</span>Sign out
 				</div>

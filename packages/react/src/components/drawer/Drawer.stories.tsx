@@ -32,14 +32,14 @@ export const Default: Story = {
 			<>
 				<button
 					onClick={() => setOpen(true)}
-					className='inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]'>
+					className='inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]'>
 					Open Drawer
 				</button>
 
 				<Drawer.Root open={open} onOpenChange={setOpen}>
 					<Drawer.Portal>
 						<Drawer.Overlay className='fixed inset-0 z-50 bg-black/50'>
-							<Drawer.Content className='fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r-[3px] border-black bg-white'>
+							<Drawer.Content className='fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r border-black bg-white'>
 								<Drawer.Header className='flex items-center justify-between px-4 py-4'>
 									<span className='text-lg font-bold text-black'>Drawer Title</span>
 									<Drawer.Close className='rounded-[8px] p-1 text-[#6b7280] hover:bg-[#f5f5f5] hover:text-black'>
@@ -79,14 +79,14 @@ export const Composed: Story = {
 			<>
 				<button
 					onClick={() => setOpen(true)}
-					className='inline-flex items-center gap-2 rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]'>
+					className='inline-flex items-center gap-2 rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]'>
 					☰ Menu
 				</button>
 
 				<Drawer.Root open={open} onOpenChange={setOpen}>
 					<Drawer.Portal>
 						<Drawer.Overlay className='fixed inset-0 z-50 bg-black/50'>
-							<Drawer.Content className='fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r-[3px] border-black bg-white'>
+							<Drawer.Content className='fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r border-black bg-white'>
 								<Drawer.Header className='flex items-center justify-between px-4 py-4'>
 									<span className='text-lg font-bold text-black'>Navigation</span>
 									<Drawer.Close className='rounded-[8px] p-1 text-[#6b7280] hover:bg-[#f5f5f5] hover:text-black'>
@@ -127,15 +127,15 @@ export const Complex: Story = {
 			<>
 				<button
 					onClick={() => setOpen(true)}
-					className='inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]'>
+					className='inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]'>
 					Edit Profile
 				</button>
 
 				<Drawer.Root open={open} onOpenChange={setOpen}>
 					<Drawer.Portal>
 						<Drawer.Overlay className='fixed inset-0 z-50 bg-black/50'>
-							<Drawer.Content className='fixed left-0 top-0 z-50 flex h-full w-80 flex-col border-r-[3px] border-black bg-white'>
-								<Drawer.Header className='flex items-center justify-between border-b-2 border-black px-4 py-4'>
+							<Drawer.Content className='fixed left-0 top-0 z-50 flex h-full w-80 flex-col border-r border-black bg-white'>
+								<Drawer.Header className='flex items-center justify-between border-b border-black px-4 py-4'>
 									<span className='text-lg font-bold text-black'>Edit Profile</span>
 									<Drawer.Close className='rounded-[8px] p-1 text-[#6b7280] hover:bg-[#f5f5f5] hover:text-black'>
 										<CloseIcon />
@@ -145,29 +145,29 @@ export const Complex: Story = {
 									<div className='flex flex-col gap-4'>
 										<div>
 											<label className='mb-1 block text-sm font-medium text-black'>First Name</label>
-											<input type='text' placeholder='Jane' className='w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm' />
+											<input type='text' placeholder='Jane' className='w-full bg-white border border-black rounded-[8px] px-3 py-2 text-sm' />
 										</div>
 										<div>
 											<label className='mb-1 block text-sm font-medium text-black'>Last Name</label>
-											<input type='text' placeholder='Doe' className='w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm' />
+											<input type='text' placeholder='Doe' className='w-full bg-white border border-black rounded-[8px] px-3 py-2 text-sm' />
 										</div>
 										<div>
 											<label className='mb-1 block text-sm font-medium text-black'>Email</label>
-											<input type='email' placeholder='jane@example.com' className='w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm' />
+											<input type='email' placeholder='jane@example.com' className='w-full bg-white border border-black rounded-[8px] px-3 py-2 text-sm' />
 										</div>
 										<div>
 											<label className='mb-1 block text-sm font-medium text-black'>Notes</label>
-											<textarea placeholder='Add notes...' rows={4} className='w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm resize-none' />
+											<textarea placeholder='Add notes...' rows={4} className='w-full bg-white border border-black rounded-[8px] px-3 py-2 text-sm resize-none' />
 										</div>
 									</div>
 								</div>
-								<div className='flex gap-3 border-t-2 border-black px-4 py-4'>
-									<Drawer.Close className='flex-1 rounded-[8px] border-2 border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]'>
+								<div className='flex gap-3 border-t border-black px-4 py-4'>
+									<Drawer.Close className='flex-1 rounded-[8px] border border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]'>
 										Cancel
 									</Drawer.Close>
 									<button
 										onClick={() => setOpen(false)}
-										className='flex-1 rounded-[8px] border-2 border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]'>
+										className='flex-1 rounded-[8px] border border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]'>
 										Save
 									</button>
 								</div>

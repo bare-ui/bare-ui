@@ -70,7 +70,7 @@ const richFaqs = [
 ];
 
 const containerCls =
-	'w-full max-w-lg divide-y-2 divide-black rounded-[20px] border-[3px] border-black bg-white overflow-hidden';
+	'w-full max-w-lg divide-y divide-black rounded-[20px] border border-black bg-white overflow-hidden';
 
 const triggerCls =
 	'flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-black outline-none transition-colors hover:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50';

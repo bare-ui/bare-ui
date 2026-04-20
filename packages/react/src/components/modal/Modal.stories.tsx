@@ -31,19 +31,19 @@ export const Default: StoryObj = {
 			<>
 				<button
 					onClick={() => setOpen(true)}
-					className='inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]'>
+					className='inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]'>
 					Show Notification
 				</button>
 
 				<Modal.Root open={open} onOpenChange={setOpen}>
 					<Modal.Portal>
 						<Modal.Overlay className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
-							<Modal.Content className='w-full max-w-md overflow-hidden rounded-[20px] border-[3px] border-black bg-white p-6'>
+							<Modal.Content className='w-full max-w-md overflow-hidden rounded-[20px] border border-black bg-white p-6'>
 								<h2 className='mb-2 text-base font-semibold text-black'>Notification</h2>
 								<p className='mb-6 text-sm text-[#6b7280]'>
 									Your changes have been saved successfully. You can continue working or close this dialog.
 								</p>
-								<Modal.Close className='w-full rounded-[8px] border-2 border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]'>
+								<Modal.Close className='w-full rounded-[8px] border border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]'>
 									Close
 								</Modal.Close>
 							</Modal.Content>
@@ -63,14 +63,14 @@ export const Composed: StoryObj = {
 			<>
 				<button
 					onClick={() => setOpen(true)}
-					className='inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]'>
+					className='inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]'>
 					Delete Account
 				</button>
 
 				<Modal.Root open={open} onOpenChange={setOpen}>
 					<Modal.Portal>
 						<Modal.Overlay className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
-							<Modal.Content className='w-full max-w-md overflow-hidden rounded-[20px] border-[3px] border-black bg-white p-6'>
+							<Modal.Content className='w-full max-w-md overflow-hidden rounded-[20px] border border-black bg-white p-6'>
 								<div className='mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#f5f5f5]'>
 									<svg className='h-6 w-6 text-black' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
 										<path
@@ -87,12 +87,12 @@ export const Composed: StoryObj = {
 									cannot be undone.
 								</p>
 								<div className='flex gap-3'>
-									<Modal.Close className='flex-1 rounded-[8px] border-2 border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]'>
+									<Modal.Close className='flex-1 rounded-[8px] border border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]'>
 										Cancel
 									</Modal.Close>
 									<button
 										onClick={() => setOpen(false)}
-										className='flex-1 rounded-[8px] border-2 border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]'>
+										className='flex-1 rounded-[8px] border border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]'>
 										Delete
 									</button>
 								</div>
@@ -113,15 +113,15 @@ export const Complex: StoryObj = {
 			<>
 				<button
 					onClick={() => setOpen(true)}
-					className='inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]'>
+					className='inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]'>
 					Edit Profile
 				</button>
 
 				<Modal.Root open={open} onOpenChange={setOpen}>
 					<Modal.Portal>
 						<Modal.Overlay className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
-							<Modal.Content className='w-full max-w-md overflow-hidden rounded-[20px] border-[3px] border-black bg-white'>
-								<div className='flex items-center justify-between border-b-2 border-black px-6 py-4'>
+							<Modal.Content className='w-full max-w-md overflow-hidden rounded-[20px] border border-black bg-white'>
+								<div className='flex items-center justify-between border-b border-black px-6 py-4'>
 									<h2 className='text-base font-semibold text-black'>Edit Profile</h2>
 									<Modal.Close className='rounded-[8px] p-1 text-[#6b7280] hover:bg-[#f5f5f5] hover:text-black'>
 										<CloseIcon />
@@ -130,20 +130,20 @@ export const Complex: StoryObj = {
 								<div className='flex flex-col gap-4 px-6 py-4'>
 									<div>
 										<label className='mb-1 block text-sm font-medium text-black'>Name</label>
-										<input type='text' placeholder='Jane Doe' className='w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm' />
+										<input type='text' placeholder='Jane Doe' className='w-full bg-white border border-black rounded-[8px] px-3 py-2 text-sm' />
 									</div>
 									<div>
 										<label className='mb-1 block text-sm font-medium text-black'>Email</label>
-										<input type='email' placeholder='jane@example.com' className='w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm' />
+										<input type='email' placeholder='jane@example.com' className='w-full bg-white border border-black rounded-[8px] px-3 py-2 text-sm' />
 									</div>
 								</div>
-								<div className='flex gap-3 border-t-2 border-black px-6 py-4'>
-									<Modal.Close className='flex-1 rounded-[8px] border-2 border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]'>
+								<div className='flex gap-3 border-t border-black px-6 py-4'>
+									<Modal.Close className='flex-1 rounded-[8px] border border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]'>
 										Cancel
 									</Modal.Close>
 									<button
 										onClick={() => setOpen(false)}
-										className='flex-1 rounded-[8px] border-2 border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]'>
+										className='flex-1 rounded-[8px] border border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]'>
 										Save
 									</button>
 								</div>

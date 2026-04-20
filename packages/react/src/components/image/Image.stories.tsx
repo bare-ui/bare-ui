@@ -19,20 +19,14 @@ type Story = StoryObj;
 
 const WireframePlaceholder = ({ width = 400, height = 240 }: { width?: number; height?: number }) => (
 	<div
-		style={{
-			width,
-			height,
-			position: 'relative',
-			background: '#f5f5f5',
-			border: '2px solid #000',
-			overflow: 'hidden',
-		}}>
+		className='relative overflow-hidden border border-black bg-[#f5f5f5] text-black'
+		style={{ width, height }}>
 		<svg
 			viewBox='0 0 100 100'
 			preserveAspectRatio='none'
 			style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
-			<line x1='0' y1='0' x2='100' y2='100' stroke='#000' strokeWidth='2' vectorEffect='non-scaling-stroke' />
-			<line x1='100' y1='0' x2='0' y2='100' stroke='#000' strokeWidth='2' vectorEffect='non-scaling-stroke' />
+			<line x1='0' y1='0' x2='100' y2='100' stroke='currentColor' strokeWidth='1' vectorEffect='non-scaling-stroke' />
+			<line x1='100' y1='0' x2='0' y2='100' stroke='currentColor' strokeWidth='1' vectorEffect='non-scaling-stroke' />
 		</svg>
 	</div>
 );

@@ -19,7 +19,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
 	render: () => (
-		<List className='w-72 divide-y-2 divide-black overflow-hidden rounded-[8px] border-2 border-black bg-white'>
+		<List className='w-72 divide-y divide-black overflow-hidden rounded-[8px] border border-black bg-white'>
 			{['Profile settings', 'Notifications', 'Privacy controls', 'Help center'].map((item) => (
 				<li key={item} className='px-4 py-3 text-sm text-black'>
 					{item}
@@ -31,7 +31,7 @@ export const Default: Story = {
 
 export const Composed: Story = {
 	render: () => (
-		<List className='w-72 divide-y divide-[#d4d4d4] overflow-hidden rounded-[8px] border-2 border-black bg-white'>
+		<List className='w-72 divide-y divide-[#2a2a2a] overflow-hidden rounded-[8px] border border-black bg-white'>
 			{[
 				{ label: 'Profile', icon: '👤', desc: 'Manage your account' },
 				{ label: 'Notifications', icon: '🔔', desc: 'Configure alerts' },
@@ -71,7 +71,7 @@ export const Complex: Story = {
 				<li key={label} className='flex items-center gap-2.5 text-sm'>
 					<span
 						className={[
-							'flex h-5 w-5 items-center justify-center rounded-full border-2',
+							'flex h-5 w-5 items-center justify-center rounded-full border',
 							done ? 'border-black bg-black text-white' : 'border-black bg-white',
 						].join(' ')}>
 						{done && (

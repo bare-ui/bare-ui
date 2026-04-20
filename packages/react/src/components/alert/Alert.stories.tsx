@@ -16,7 +16,7 @@ const meta = {
 
 export default meta;
 
-const alertCls = 'flex items-start gap-3 rounded-[8px] border-2 border-black bg-[#f5f5f5] px-4 py-3 text-black';
+const alertCls = 'flex items-start gap-3 rounded-[8px] border border-black bg-[#f5f5f5] px-4 py-3 text-black';
 
 export const Default: StoryObj = {
 	render: () => (

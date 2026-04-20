@@ -20,10 +20,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const inputCls =
-	'w-full rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1';
+	'w-full rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1';
 
 const contentCls =
-	'absolute left-0 top-full z-10 mt-1 w-full rounded-[20px] border-[3px] border-black bg-white py-1';
+	'absolute left-0 top-full z-10 mt-1 w-full rounded-[20px] border border-black bg-white py-1';
 
 const mockItems: SearchOption[] = [
 	{ id: 1, title: 'React', subtitle: 'A JavaScript library for building user interfaces' },
