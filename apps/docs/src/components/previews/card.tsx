@@ -24,7 +24,7 @@ const WireframePlaceholder = ({ height = 160 }: { height?: number }) => (
 export function CardBasic() {
   return (
     <div className="p-6 flex justify-center">
-      <Card className="w-full max-w-sm rounded-[8px] border-2 border-black bg-white p-5">
+      <Card className="w-full max-w-sm rounded-[8px] border border-black bg-white p-5">
         <h3 className="text-sm font-semibold text-black mb-1">Card Title</h3>
         <p className="text-sm text-[#6b7280]">
           This is a basic card component with a title and description. Use it to group related content together.
@@ -37,8 +37,8 @@ export function CardBasic() {
 export function CardComposed() {
   return (
     <div className="p-6 flex justify-center">
-      <Card className="w-full max-w-sm rounded-[8px] border-2 border-black bg-white p-4 flex items-center gap-4">
-        <Avatar.Root className="relative inline-flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-black bg-[#f5f5f5]">
+      <Card className="w-full max-w-sm rounded-[8px] border border-black bg-white p-4 flex items-center gap-4">
+        <Avatar.Root className="relative inline-flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-black bg-[#f5f5f5]">
           <Avatar.Fallback className="text-sm font-semibold text-black select-none">W</Avatar.Fallback>
         </Avatar.Root>
         <div>
@@ -53,7 +53,7 @@ export function CardComposed() {
 export function CardComplex() {
   return (
     <div className="p-6 flex justify-center">
-      <Card className="w-full max-w-sm overflow-hidden rounded-[20px] border-[3px] border-black bg-white">
+      <Card className="w-full max-w-sm overflow-hidden rounded-[20px] border border-black bg-white">
         <WireframePlaceholder height={180} />
         <div className="p-5">
           <h3 className="text-sm font-semibold text-black mb-1">Product Name</h3>
@@ -62,7 +62,7 @@ export function CardComplex() {
           </p>
           <div className="flex items-center justify-between">
             <span className="text-base font-bold text-black">$49.99</span>
-            <Button className="inline-flex cursor-pointer items-center justify-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white transition-colors [data-hover]:bg-[#333]">
+            <Button className="inline-flex cursor-pointer items-center justify-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white transition-colors [data-hover]:bg-[#333]">
               Add to Cart
             </Button>
           </div>

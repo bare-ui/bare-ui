@@ -16,7 +16,7 @@ export function Basic() {
     <div className="p-6">
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]">
+        className="inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]">
         Open Drawer
       </button>
 
@@ -60,7 +60,7 @@ export function Composed() {
     <div className="p-6">
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]">
+        className="inline-flex items-center gap-2 rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]">
         ☰ Menu
       </button>
 
@@ -103,7 +103,7 @@ export function Complex() {
     <div className="p-6">
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]">
+        className="inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]">
         Edit Profile
       </button>
 
@@ -121,29 +121,29 @@ export function Complex() {
                 <div className="flex flex-col gap-4">
                   <div>
                     <label className="mb-1 block text-sm font-medium text-black">First Name</label>
-                    <input type="text" placeholder="Jane" className="w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm" />
+                    <input type="text" placeholder="Jane" className="w-full bg-white border border-black rounded-[8px] px-3 py-2 text-sm" />
                   </div>
                   <div>
                     <label className="mb-1 block text-sm font-medium text-black">Last Name</label>
-                    <input type="text" placeholder="Doe" className="w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm" />
+                    <input type="text" placeholder="Doe" className="w-full bg-white border border-black rounded-[8px] px-3 py-2 text-sm" />
                   </div>
                   <div>
                     <label className="mb-1 block text-sm font-medium text-black">Email</label>
-                    <input type="email" placeholder="jane@example.com" className="w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm" />
+                    <input type="email" placeholder="jane@example.com" className="w-full bg-white border border-black rounded-[8px] px-3 py-2 text-sm" />
                   </div>
                   <div>
                     <label className="mb-1 block text-sm font-medium text-black">Notes</label>
-                    <textarea placeholder="Add notes..." rows={4} className="w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm resize-none" />
+                    <textarea placeholder="Add notes..." rows={4} className="w-full bg-white border border-black rounded-[8px] px-3 py-2 text-sm resize-none" />
                   </div>
                 </div>
               </div>
               <div className="flex gap-3 border-t-2 border-black px-4 py-4">
-                <Drawer.Close className="flex-1 rounded-[8px] border-2 border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]">
+                <Drawer.Close className="flex-1 rounded-[8px] border border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]">
                   Cancel
                 </Drawer.Close>
                 <button
                   onClick={() => setOpen(false)}
-                  className="flex-1 rounded-[8px] border-2 border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]">
+                  className="flex-1 rounded-[8px] border border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]">
                   Save
                 </button>
               </div>

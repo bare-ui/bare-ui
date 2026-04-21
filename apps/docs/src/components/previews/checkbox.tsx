@@ -11,7 +11,7 @@ export function CheckboxBasic() {
             key={fruit}
             value={fruit.toLowerCase()}
             className="group flex cursor-pointer items-center gap-2">
-            <span className="flex h-5 w-5 items-center justify-center rounded border-2 border-black bg-white text-white group-data-[checked]:border-black group-data-[checked]:bg-black">
+            <span className="flex h-5 w-5 items-center justify-center rounded border border-black bg-white text-white group-data-[checked]:border-black group-data-[checked]:bg-black">
               <Checkbox.Indicator>
                 <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none">
                   <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" />
@@ -41,7 +41,7 @@ export function CheckboxComposed() {
             key={item.value}
             value={item.value}
             className="group flex cursor-pointer items-start gap-3">
-            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 border-black bg-white text-white group-data-[checked]:border-black group-data-[checked]:bg-black">
+            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border border-black bg-white text-white group-data-[checked]:border-black group-data-[checked]:bg-black">
               <Checkbox.Indicator>
                 <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none">
                   <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" />
@@ -68,7 +68,7 @@ const settingsItems = [
 export function CheckboxComplex() {
   return (
     <div className="p-6 flex items-center justify-center">
-      <div className="w-full max-w-sm rounded-[20px] border-[3px] border-black bg-white">
+      <div className="w-full max-w-sm rounded-[20px] border border-black bg-white">
         <div className="px-5 py-4">
           <p className="text-sm font-medium text-black">Settings</p>
         </div>
@@ -79,7 +79,7 @@ export function CheckboxComplex() {
               value={item.value}
               className="group flex cursor-pointer items-center justify-between px-5 py-4">
               <Checkbox.Label className="select-none text-sm text-black">{item.label}</Checkbox.Label>
-              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 border-black bg-white text-white group-data-[checked]:border-black group-data-[checked]:bg-black">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-black bg-white text-white group-data-[checked]:border-black group-data-[checked]:bg-black">
                 <Checkbox.Indicator>
                   <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none">
                     <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" />

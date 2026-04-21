@@ -256,7 +256,7 @@ function App() {
           ">
             <Modal.Content className="
               w-full max-w-md rounded-[20px]
-              border-[3px] border-black bg-white p-6
+              border border-black bg-white p-6
             ">
               <h2>Delete Account</h2>
               <p>This action cannot be undone.</p>

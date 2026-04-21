@@ -3,7 +3,7 @@
 import { Password } from '@wire-ui/react'
 import { useState } from 'react'
 
-const fieldCls = 'w-full rounded-[8px] bg-white border-2 border-black px-3 py-2 pr-10 text-sm outline-none transition focus:ring-2 focus:ring-blue-500 focus:ring-offset-1'
+const fieldCls = 'w-full rounded-[8px] bg-white border border-black px-3 py-2 pr-10 text-sm outline-none transition focus:ring-2 focus:ring-black focus:ring-offset-1'
 const toggleCls = 'group absolute inset-y-0 right-0 flex items-center px-3 text-[#6b7280] outline-none transition hover:text-black data-[visible]:text-black'
 
 const EyeIcon = () => (

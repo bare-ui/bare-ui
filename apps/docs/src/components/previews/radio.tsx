@@ -37,9 +37,9 @@ export function RadioBasic() {
           <Radio.Item
             key={plan.value}
             value={plan.value}
-            className="group relative flex cursor-pointer rounded-[8px] border-2 border-black bg-white px-5 py-4 transition focus:outline-none data-[checked]:bg-[#f5f5f5]">
+            className="group relative flex cursor-pointer rounded-[8px] border border-black bg-white px-5 py-4 transition focus:outline-none data-[checked]:bg-[#f5f5f5]">
             <div className="flex w-full items-center gap-3">
-              <span className="flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-black bg-white transition group-data-[checked]:bg-black">
+              <span className="flex size-5 shrink-0 items-center justify-center rounded-full border border-black bg-white transition group-data-[checked]:bg-black">
                 <Radio.Indicator className="size-2 rounded-full bg-white" />
               </span>
               <Radio.Label className="text-sm font-medium text-black">{plan.label}</Radio.Label>
@@ -59,9 +59,9 @@ export function RadioComposed() {
           <Radio.Item
             key={plan.value}
             value={plan.value}
-            className="group relative flex cursor-pointer rounded-[8px] border-2 border-black bg-white px-5 py-4 transition focus:outline-none data-[checked]:bg-[#f5f5f5]">
+            className="group relative flex cursor-pointer rounded-[8px] border border-black bg-white px-5 py-4 transition focus:outline-none data-[checked]:bg-[#f5f5f5]">
             <div className="flex w-full items-center gap-3">
-              <span className="flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-black bg-white transition group-data-[checked]:bg-black">
+              <span className="flex size-5 shrink-0 items-center justify-center rounded-full border border-black bg-white transition group-data-[checked]:bg-black">
                 <Radio.Indicator className="size-2 rounded-full bg-white" />
               </span>
               <div>
@@ -84,10 +84,10 @@ export function RadioComplex() {
           <Radio.Item
             key={plan.value}
             value={plan.value}
-            className="group relative flex cursor-pointer rounded-[8px] border-2 border-black bg-white px-5 py-4 transition focus:outline-none data-[checked]:bg-[#f5f5f5]">
+            className="group relative flex cursor-pointer rounded-[8px] border border-black bg-white px-5 py-4 transition focus:outline-none data-[checked]:bg-[#f5f5f5]">
             <div className="flex w-full items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <span className="flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-black bg-white transition group-data-[checked]:border-black group-data-[checked]:bg-black">
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full border border-black bg-white transition group-data-[checked]:border-black group-data-[checked]:bg-black">
                   <Radio.Indicator className="size-2 rounded-full bg-white" />
                 </span>
                 <div>

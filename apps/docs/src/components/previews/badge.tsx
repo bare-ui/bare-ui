@@ -20,7 +20,7 @@ const mailIcon = (
   </svg>
 )
 
-const badgeCls = "absolute -right-1 -top-1 inline-flex min-w-[20px] items-center justify-center rounded-full border-2 border-black bg-black px-1.5 py-0.5 text-xs font-bold leading-none text-white"
+const badgeCls = "absolute -right-1 -top-1 inline-flex min-w-[20px] items-center justify-center rounded-full border border-black bg-black px-1.5 py-0.5 text-xs font-bold leading-none text-white"
 
 export function BadgeBasic() {
   return (
@@ -70,12 +70,12 @@ const navItems = [
 export function BadgeComplex() {
   return (
     <div className="p-6 flex justify-center">
-      <nav className="w-56 rounded-[8px] border-2 border-black bg-white p-2">
+      <nav className="w-56 rounded-[8px] border border-black bg-white p-2">
         {navItems.map(({ label, count }) => (
           <a key={label} href="#" className="flex items-center justify-between rounded-[8px] px-3 py-2 text-sm text-black hover:bg-[#f5f5f5]" onClick={(e) => e.preventDefault()}>
             <span>{label}</span>
             {count > 0 && (
-              <Badge count={count} className="inline-flex min-w-[20px] items-center justify-center rounded-full border-2 border-black bg-black px-1.5 py-0.5 text-xs font-bold leading-none text-white" />
+              <Badge count={count} className="inline-flex min-w-[20px] items-center justify-center rounded-full border border-black bg-black px-1.5 py-0.5 text-xs font-bold leading-none text-white" />
             )}
           </a>
         ))}

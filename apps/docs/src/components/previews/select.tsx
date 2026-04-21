@@ -6,10 +6,10 @@ import { useState } from 'react'
 const frameworks = ['React', 'Vue', 'Angular', 'Svelte', 'Solid']
 
 const triggerCls =
-  'flex w-full items-center justify-between gap-2 rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none transition data-[state=open]:ring-2 data-[state=open]:ring-blue-500 data-[state=open]:ring-offset-1 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[hover]:bg-[#f5f5f5]'
+  'flex w-full items-center justify-between gap-2 rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none transition data-[state=open]:ring-2 data-[state=open]:ring-black data-[state=open]:ring-offset-1 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[hover]:bg-[#f5f5f5]'
 
 const contentCls =
-  'absolute z-50 mt-1 w-full overflow-hidden rounded-[20px] border-[3px] border-black bg-white py-1'
+  'absolute z-50 mt-1 w-full overflow-hidden rounded-[20px] border border-black bg-white py-1'
 
 const itemCls =
   'flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-black outline-none transition data-[hover]:bg-[#f5f5f5] data-[selected]:font-medium data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40'

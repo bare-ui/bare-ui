@@ -15,7 +15,7 @@ export function AccordionBasic() {
         type="single"
         collapsible
         defaultValue="item-1"
-        className="w-full max-w-lg divide-y-2 divide-black rounded-[20px] border-[3px] border-black bg-white overflow-hidden"
+        className="w-full max-w-lg divide-y divide-black rounded-[20px] border border-black bg-white overflow-hidden"
       >
         {faqs.map((faq) => (
           <Accordion.Item key={faq.value} value={faq.value}>
@@ -54,7 +54,7 @@ export function AccordionComposed() {
       <Accordion.Root
         type="multiple"
         defaultValue={['item-1', 'item-2']}
-        className="w-full max-w-lg divide-y-2 divide-black rounded-[20px] border-[3px] border-black bg-white overflow-hidden"
+        className="w-full max-w-lg divide-y divide-black rounded-[20px] border border-black bg-white overflow-hidden"
       >
         {multipleFaqs.map((faq) => (
           <Accordion.Item key={faq.value} value={faq.value}>
@@ -94,7 +94,7 @@ export function AccordionComplex() {
         type="single"
         collapsible
         defaultValue="item-1"
-        className="w-full max-w-lg divide-y-2 divide-black rounded-[20px] border-[3px] border-black bg-white overflow-hidden"
+        className="w-full max-w-lg divide-y divide-black rounded-[20px] border border-black bg-white overflow-hidden"
       >
         {richFaqs.map((faq) => (
           <Accordion.Item key={faq.value} value={faq.value}>

@@ -24,9 +24,9 @@ export function SearchBasic() {
         className="relative w-80">
         <Search.Input
           placeholder="Search frameworks..."
-          className="w-full rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+          className="w-full rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
         />
-        <Search.Content className="absolute left-0 top-full z-10 mt-1 w-full rounded-[20px] border-[3px] border-black bg-white py-1">
+        <Search.Content className="absolute left-0 top-full z-10 mt-1 w-full rounded-[20px] border border-black bg-white py-1">
           {filtered.map((item) => (
             <Search.Item
               key={item.id}
@@ -54,9 +54,9 @@ export function SearchComposed() {
         className="relative w-80">
         <Search.Input
           placeholder="Search frameworks..."
-          className="w-full rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+          className="w-full rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
         />
-        <Search.Content className="absolute left-0 top-full z-10 mt-1 w-full rounded-[20px] border-[3px] border-black bg-white py-1">
+        <Search.Content className="absolute left-0 top-full z-10 mt-1 w-full rounded-[20px] border border-black bg-white py-1">
           {filtered.map((item) => (
             <Search.Item
               key={item.id}
@@ -85,9 +85,9 @@ export function SearchComplex() {
         className="relative w-80">
         <Search.Input
           placeholder="Search frameworks..."
-          className="w-full rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+          className="w-full rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
         />
-        <Search.Content className="absolute left-0 top-full z-10 mt-1 w-full rounded-[20px] border-[3px] border-black bg-white py-1">
+        <Search.Content className="absolute left-0 top-full z-10 mt-1 w-full rounded-[20px] border border-black bg-white py-1">
           {filtered.map((item) => (
             <Search.Item
               key={item.id}

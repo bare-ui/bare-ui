@@ -11,7 +11,7 @@ export function TextareaBasic() {
         <Textarea.Field
           placeholder="Type your message here..."
           rows={4}
-          className="w-full rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+          className="w-full rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
         />
       </Textarea.Root>
     </div>
@@ -29,7 +29,7 @@ export function TextareaComposed() {
         <Textarea.Field
           placeholder="Your feedback is important..."
           rows={4}
-          className="w-full rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+          className="w-full rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
         />
         <Textarea.Error className="text-xs text-black" />
       </Textarea.Root>
@@ -49,7 +49,7 @@ export function TextareaComplex() {
           placeholder="Tell us about yourself..."
           rows={4}
           maxLength={200}
-          className="w-full rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+          className="w-full rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
         />
         <p className="text-right text-xs text-[#6b7280]">{value.length}/200</p>
       </Textarea.Root>

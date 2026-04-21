@@ -2,7 +2,7 @@
 
 import { Avatar } from '@wire-ui/react'
 
-const rootCls = "relative inline-flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-black bg-[#f5f5f5] ring-2 ring-white"
+const rootCls = "relative inline-flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-black bg-[#f5f5f5] ring-2 ring-white"
 
 export function AvatarPreview() {
   return (
@@ -15,7 +15,7 @@ export function AvatarPreview() {
         <Avatar.Root className={rootCls}>
           <Avatar.Fallback className="text-sm font-medium text-black select-none">JD</Avatar.Fallback>
         </Avatar.Root>
-        <Avatar.Root className="relative inline-flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-black bg-black ring-2 ring-white">
+        <Avatar.Root className="relative inline-flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-black bg-black ring-2 ring-white">
           <Avatar.Fallback className="text-xs font-medium text-white">+9</Avatar.Fallback>
         </Avatar.Root>
       </div>

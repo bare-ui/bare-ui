@@ -4,7 +4,7 @@ import { OTP } from '@wire-ui/react'
 import { useState } from 'react'
 
 const slotCls = [
-  'h-12 w-10 rounded-[8px] border-2 border-black bg-white text-center text-lg font-mono font-semibold text-black',
+  'h-12 w-10 rounded-[8px] border border-black bg-white text-center text-lg font-mono font-semibold text-black',
   'outline-none transition-all caret-transparent',
   'data-[active]:ring-4 data-[active]:ring-black/20',
 ].join(' ')
@@ -51,7 +51,7 @@ export function OtpComplex() {
   }
 
   const completeCls = [
-    'h-12 w-10 rounded-[8px] border-2 border-black text-center text-lg font-mono font-semibold',
+    'h-12 w-10 rounded-[8px] border border-black text-center text-lg font-mono font-semibold',
     'outline-none transition-all caret-transparent',
     status === 'success'
       ? 'bg-black text-white'

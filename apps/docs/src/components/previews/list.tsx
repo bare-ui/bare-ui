@@ -5,7 +5,7 @@ import { List } from '@wire-ui/react'
 export function ListBasic() {
   return (
     <div className="p-6">
-      <List className="w-72 divide-y-2 divide-black overflow-hidden rounded-[8px] border-2 border-black bg-white">
+      <List className="w-72 divide-y divide-black overflow-hidden rounded-[8px] border border-black bg-white">
         {['Profile settings', 'Notifications', 'Privacy controls', 'Help center'].map((item) => (
           <li key={item} className="px-4 py-3 text-sm text-black">
             {item}
@@ -19,7 +19,7 @@ export function ListBasic() {
 export function ListComposed() {
   return (
     <div className="p-6">
-      <List className="w-72 divide-y divide-[#d4d4d4] overflow-hidden rounded-[8px] border-2 border-black bg-white">
+      <List className="w-72 divide-y divide-[#d4d4d4] overflow-hidden rounded-[8px] border border-black bg-white">
         {[
           { label: 'Profile', icon: '👤', desc: 'Manage your account' },
           { label: 'Notifications', icon: '🔔', desc: 'Configure alerts' },
@@ -53,7 +53,7 @@ export function ListComplex() {
           { label: 'Deploy to staging', done: false },
         ].map(({ label, done }) => (
           <li key={label} className="flex items-center gap-2.5 text-sm">
-            <span className={['flex h-5 w-5 items-center justify-center rounded-full border-2', done ? 'border-black bg-black text-white' : 'border-black bg-white'].join(' ')}>
+            <span className={['flex h-5 w-5 items-center justify-center rounded-full border', done ? 'border-black bg-black text-white' : 'border-black bg-white'].join(' ')}>
               {done && (
                 <svg className="h-3 w-3" viewBox="0 0 12 12" fill="currentColor">
                   <path d="M3.5 6L5.5 8L8.5 4.5" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
