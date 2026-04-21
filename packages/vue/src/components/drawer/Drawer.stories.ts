@@ -36,7 +36,7 @@ export const Default: Story = {
 						'button',
 						{
 							onClick: () => (open.value = true),
-							class: 'inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
+							class: 'inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
 						},
 						'Open Drawer',
 					),
@@ -101,7 +101,7 @@ export const Composed: Story = {
 						'button',
 						{
 							onClick: () => (open.value = true),
-							class: 'inline-flex items-center gap-2 rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
+							class: 'inline-flex items-center gap-2 rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
 						},
 						'\u2630 Menu',
 					),
@@ -172,7 +172,7 @@ export const Complex: Story = {
 						'button',
 						{
 							onClick: () => (open.value = true),
-							class: 'inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
+							class: 'inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
 						},
 						'Edit Profile',
 					),
@@ -187,7 +187,7 @@ export const Complex: Story = {
 									() => [
 										h(
 											Drawer.Header,
-											{ class: 'flex items-center justify-between border-b-2 border-black px-4 py-4' },
+											{ class: 'flex items-center justify-between border-b border-black px-4 py-4' },
 											() => [
 												h('span', { class: 'text-lg font-bold text-black' }, 'Edit Profile'),
 												h(
@@ -210,7 +210,7 @@ export const Complex: Story = {
 													h('input', {
 														type: 'text',
 														placeholder: 'Jane',
-														class: 'w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm',
+														class: 'w-full bg-white border border-black rounded-[8px] px-3 py-2 text-sm',
 													}),
 												]),
 												h('div', {}, [
@@ -222,7 +222,7 @@ export const Complex: Story = {
 													h('input', {
 														type: 'text',
 														placeholder: 'Doe',
-														class: 'w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm',
+														class: 'w-full bg-white border border-black rounded-[8px] px-3 py-2 text-sm',
 													}),
 												]),
 												h('div', {}, [
@@ -234,7 +234,7 @@ export const Complex: Story = {
 													h('input', {
 														type: 'email',
 														placeholder: 'jane@example.com',
-														class: 'w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm',
+														class: 'w-full bg-white border border-black rounded-[8px] px-3 py-2 text-sm',
 													}),
 												]),
 												h('div', {}, [
@@ -246,16 +246,16 @@ export const Complex: Story = {
 													h('textarea', {
 														placeholder: 'Add notes...',
 														rows: 4,
-														class: 'w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm resize-none',
+														class: 'w-full bg-white border border-black rounded-[8px] px-3 py-2 text-sm resize-none',
 													}),
 												]),
 											]),
 										]),
-										h('div', { class: 'flex gap-3 border-t-2 border-black px-4 py-4' }, [
+										h('div', { class: 'flex gap-3 border-t border-black px-4 py-4' }, [
 											h(
 												Drawer.Close,
 												{
-													class: 'flex-1 rounded-[8px] border-2 border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]',
+													class: 'flex-1 rounded-[8px] border border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]',
 												},
 												() => 'Cancel',
 											),
@@ -263,7 +263,7 @@ export const Complex: Story = {
 												'button',
 												{
 													onClick: () => (open.value = false),
-													class: 'flex-1 rounded-[8px] border-2 border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]',
+													class: 'flex-1 rounded-[8px] border border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]',
 												},
 												'Save',
 											),

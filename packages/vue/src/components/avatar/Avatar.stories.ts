@@ -15,7 +15,7 @@ export const Default: StoryObj = {
 				h(
 					Avatar.Root,
 					{
-						class: 'relative inline-flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-black bg-[#f5f5f5] ring-2 ring-white',
+						class: 'relative inline-flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-black bg-[#f5f5f5] ring-2 ring-white',
 					},
 					() => [
 						h(Avatar.Image, {
@@ -29,7 +29,7 @@ export const Default: StoryObj = {
 				h(
 					Avatar.Root,
 					{
-						class: 'relative inline-flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-black bg-[#f5f5f5] ring-2 ring-white',
+						class: 'relative inline-flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-black bg-[#f5f5f5] ring-2 ring-white',
 					},
 					() => [
 						h(Avatar.Fallback, { class: 'text-sm font-medium text-black select-none' }, () => 'JD'),
@@ -38,7 +38,7 @@ export const Default: StoryObj = {
 				h(
 					Avatar.Root,
 					{
-						class: 'relative inline-flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-black bg-black ring-2 ring-white',
+						class: 'relative inline-flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-black bg-black ring-2 ring-white',
 					},
 					() => [
 						h(Avatar.Fallback, { class: 'text-xs font-medium text-white' }, () => '+9'),

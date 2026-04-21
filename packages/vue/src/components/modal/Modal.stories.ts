@@ -35,7 +35,7 @@ export const Default: StoryObj = {
 						'button',
 						{
 							onClick: () => (open.value = true),
-							class: 'inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
+							class: 'inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
 						},
 						'Show Notification',
 					),
@@ -50,7 +50,7 @@ export const Default: StoryObj = {
 									h(
 										Modal.Content,
 										{
-											class: 'w-full max-w-md overflow-hidden rounded-[20px] border-[3px] border-black bg-white p-6',
+											class: 'w-full max-w-md overflow-hidden rounded-[20px] border border-black bg-white p-6',
 										},
 										() => [
 											h('h2', { class: 'mb-2 text-base font-semibold text-black' }, 'Notification'),
@@ -62,7 +62,7 @@ export const Default: StoryObj = {
 											h(
 												Modal.Close,
 												{
-													class: 'w-full rounded-[8px] border-2 border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]',
+													class: 'w-full rounded-[8px] border border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]',
 												},
 												() => 'Close',
 											),
@@ -88,7 +88,7 @@ export const Composed: StoryObj = {
 						'button',
 						{
 							onClick: () => (open.value = true),
-							class: 'inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
+							class: 'inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
 						},
 						'Delete Account',
 					),
@@ -103,7 +103,7 @@ export const Composed: StoryObj = {
 									h(
 										Modal.Content,
 										{
-											class: 'w-full max-w-md overflow-hidden rounded-[20px] border-[3px] border-black bg-white p-6',
+											class: 'w-full max-w-md overflow-hidden rounded-[20px] border border-black bg-white p-6',
 										},
 										() => [
 											h(
@@ -141,7 +141,7 @@ export const Composed: StoryObj = {
 												h(
 													Modal.Close,
 													{
-														class: 'flex-1 rounded-[8px] border-2 border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]',
+														class: 'flex-1 rounded-[8px] border border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]',
 													},
 													() => 'Cancel',
 												),
@@ -149,7 +149,7 @@ export const Composed: StoryObj = {
 													'button',
 													{
 														onClick: () => (open.value = false),
-														class: 'flex-1 rounded-[8px] border-2 border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]',
+														class: 'flex-1 rounded-[8px] border border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]',
 													},
 													'Delete',
 												),
@@ -176,7 +176,7 @@ export const Complex: StoryObj = {
 						'button',
 						{
 							onClick: () => (open.value = true),
-							class: 'inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
+							class: 'inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
 						},
 						'Edit Profile',
 					),
@@ -191,12 +191,12 @@ export const Complex: StoryObj = {
 									h(
 										Modal.Content,
 										{
-											class: 'w-full max-w-md overflow-hidden rounded-[20px] border-[3px] border-black bg-white',
+											class: 'w-full max-w-md overflow-hidden rounded-[20px] border border-black bg-white',
 										},
 										() => [
 											h(
 												'div',
-												{ class: 'flex items-center justify-between border-b-2 border-black px-6 py-4' },
+												{ class: 'flex items-center justify-between border-b border-black px-6 py-4' },
 												[
 													h('h2', { class: 'text-base font-semibold text-black' }, 'Edit Profile'),
 													h(
@@ -214,7 +214,7 @@ export const Complex: StoryObj = {
 													h('input', {
 														type: 'text',
 														placeholder: 'Jane Doe',
-														class: 'w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm',
+														class: 'w-full bg-white border border-black rounded-[8px] px-3 py-2 text-sm',
 													}),
 												]),
 												h('div', {}, [
@@ -222,15 +222,15 @@ export const Complex: StoryObj = {
 													h('input', {
 														type: 'email',
 														placeholder: 'jane@example.com',
-														class: 'w-full bg-white border-2 border-black rounded-[8px] px-3 py-2 text-sm',
+														class: 'w-full bg-white border border-black rounded-[8px] px-3 py-2 text-sm',
 													}),
 												]),
 											]),
-											h('div', { class: 'flex gap-3 border-t-2 border-black px-6 py-4' }, [
+											h('div', { class: 'flex gap-3 border-t border-black px-6 py-4' }, [
 												h(
 													Modal.Close,
 													{
-														class: 'flex-1 rounded-[8px] border-2 border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]',
+														class: 'flex-1 rounded-[8px] border border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]',
 													},
 													() => 'Cancel',
 												),
@@ -238,7 +238,7 @@ export const Complex: StoryObj = {
 													'button',
 													{
 														onClick: () => (open.value = false),
-														class: 'flex-1 rounded-[8px] border-2 border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]',
+														class: 'flex-1 rounded-[8px] border border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]',
 													},
 													'Save',
 												),

@@ -58,7 +58,7 @@ const mailIcon = h(
 );
 
 const badgeCls =
-	'absolute -right-1 -top-1 inline-flex min-w-[20px] items-center justify-center rounded-full border-2 border-black bg-black px-1.5 py-0.5 text-xs font-bold leading-none text-white';
+	'absolute -right-1 -top-1 inline-flex min-w-[20px] items-center justify-center rounded-full border border-black bg-black px-1.5 py-0.5 text-xs font-bold leading-none text-white';
 
 export const Default: Story = {
 	render: () => ({
@@ -102,7 +102,7 @@ export const Complex: Story = {
 
 			return h(
 				'nav',
-				{ class: 'w-56 rounded-[8px] border-2 border-black bg-white p-2' },
+				{ class: 'w-56 rounded-[8px] border border-black bg-white p-2' },
 				navItems.map(({ label, count }) =>
 					h(
 						'a',
@@ -118,7 +118,7 @@ export const Complex: Story = {
 								? [
 										h(Badge, {
 											count,
-											class: 'inline-flex min-w-[20px] items-center justify-center rounded-full border-2 border-black bg-black px-1.5 py-0.5 text-xs font-bold leading-none text-white',
+											class: 'inline-flex min-w-[20px] items-center justify-center rounded-full border border-black bg-black px-1.5 py-0.5 text-xs font-bold leading-none text-white',
 										}),
 									]
 								: []),

@@ -23,7 +23,7 @@ export const Default: StoryObj = {
 			h(
 				Button,
 				{
-					class: 'inline-flex cursor-pointer items-center justify-center rounded-[8px] border-2 border-black px-4 py-2 bg-[#f5f5f5] text-sm font-medium text-black outline-none transition-colors [data-hover]:bg-black [data-hover]:text-white [data-active]:scale-95 [data-focus-visible]:ring-2 [data-focus-visible]:ring-blue-500 [data-focus-visible]:ring-offset-2 [data-disabled]:cursor-not-allowed [data-disabled]:opacity-50',
+					class: 'inline-flex cursor-pointer items-center justify-center rounded-[8px] border border-black px-4 py-2 bg-[#f5f5f5] text-sm font-medium text-black outline-none transition-colors [data-hover]:bg-black [data-hover]:text-white [data-active]:scale-95 [data-focus-visible]:ring-2 [data-focus-visible]:ring-black [data-focus-visible]:ring-offset-2 [data-disabled]:cursor-not-allowed [data-disabled]:opacity-50',
 				},
 				() => 'Styled Button',
 			),
@@ -40,7 +40,7 @@ export const Composed: StoryObj = {
 						href: 'https://example.com',
 						target: '_blank',
 						rel: 'noopener noreferrer',
-						class: 'no-underline inline-flex cursor-pointer items-center justify-center rounded-[8px] border-2 border-black px-4 py-2 bg-[#f5f5f5] text-sm font-medium text-black outline-none transition-colors [data-hover]:bg-black [data-hover]:text-white [data-active]:scale-95 [data-focus-visible]:ring-2 [data-focus-visible]:ring-blue-500 [data-focus-visible]:ring-offset-2 [data-disabled]:cursor-not-allowed [data-disabled]:opacity-50',
+						class: 'no-underline inline-flex cursor-pointer items-center justify-center rounded-[8px] border border-black px-4 py-2 bg-[#f5f5f5] text-sm font-medium text-black outline-none transition-colors [data-hover]:bg-black [data-hover]:text-white [data-active]:scale-95 [data-focus-visible]:ring-2 [data-focus-visible]:ring-black [data-focus-visible]:ring-offset-2 [data-disabled]:cursor-not-allowed [data-disabled]:opacity-50',
 					},
 					'Open example.com \u2192',
 				),
@@ -66,14 +66,14 @@ export const Complex: StoryObj = {
 					h(
 						Button,
 						{
-							class: 'cursor-pointer rounded-[8px] border-2 border-black bg-white px-4 py-2 text-sm text-black outline-none transition-colors [data-hover]:bg-black [data-hover]:text-white [data-active]:scale-95 [data-focus-visible]:ring-2 [data-focus-visible]:ring-blue-500',
+							class: 'cursor-pointer rounded-[8px] border border-black bg-white px-4 py-2 text-sm text-black outline-none transition-colors [data-hover]:bg-black [data-hover]:text-white [data-active]:scale-95 [data-focus-visible]:ring-2 [data-focus-visible]:ring-black',
 						},
 						() => 'Hover me',
 					),
 					h(
 						Button,
 						{
-							class: 'cursor-pointer rounded-[8px] border-2 border-black bg-white px-4 py-2 text-sm text-black outline-none transition-colors [data-hover]:bg-black [data-hover]:text-white [data-active]:scale-95 [data-focus-visible]:ring-2 [data-focus-visible]:ring-blue-500',
+							class: 'cursor-pointer rounded-[8px] border border-black bg-white px-4 py-2 text-sm text-black outline-none transition-colors [data-hover]:bg-black [data-hover]:text-white [data-active]:scale-95 [data-focus-visible]:ring-2 [data-focus-visible]:ring-black',
 						},
 						() => 'Tab to me',
 					),
@@ -81,7 +81,7 @@ export const Complex: StoryObj = {
 						Button,
 						{
 							disabled: true,
-							class: 'cursor-not-allowed rounded-[8px] border-2 border-black bg-white px-4 py-2 text-sm text-black outline-none [data-disabled]:opacity-50',
+							class: 'cursor-not-allowed rounded-[8px] border border-black bg-white px-4 py-2 text-sm text-black outline-none [data-disabled]:opacity-50',
 						},
 						() => 'Disabled',
 					),

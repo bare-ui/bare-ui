@@ -19,10 +19,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const triggerCls =
-	'inline-flex items-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]';
+	'inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]';
 
 const menuCls =
-	'absolute left-0 top-full z-10 mt-1 w-48 overflow-hidden rounded-[20px] border-[3px] border-black bg-white py-1';
+	'absolute left-0 top-full z-10 mt-1 w-48 overflow-hidden rounded-[20px] border border-black bg-white py-1';
 
 const itemCls = 'cursor-pointer px-4 py-2 text-sm text-black hover:bg-[#f5f5f5]';
 
@@ -48,7 +48,7 @@ export const Composed: Story = {
 				h(Dropdown.Menu, { class: menuCls }, () => [
 					h('div', { class: itemCls }, 'Edit'),
 					h('div', { class: itemCls }, 'Duplicate'),
-					h('div', { class: 'my-1 border-t-2 border-black' }),
+					h('div', { class: 'my-1 border-t border-black' }),
 					h('div', { class: itemCls }, 'Archive'),
 					h('div', { class: itemCls }, 'Delete'),
 				]),
@@ -63,7 +63,7 @@ export const Complex: Story = {
 				h(
 					Dropdown.Trigger,
 					{
-						class: 'inline-flex items-center gap-2 rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
+						class: 'inline-flex items-center gap-2 rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
 					},
 					() => [
 						h('svg', { class: 'h-5 w-5', viewBox: '0 0 20 20', fill: 'currentColor' }, [
@@ -79,13 +79,13 @@ export const Complex: Story = {
 				h(
 					Dropdown.Menu,
 					{
-						class: 'absolute left-0 top-full z-10 mt-1 w-52 overflow-hidden rounded-[20px] border-[3px] border-black bg-white py-1',
+						class: 'absolute left-0 top-full z-10 mt-1 w-52 overflow-hidden rounded-[20px] border border-black bg-white py-1',
 					},
 					() => [
 						h('div', { class: itemCls }, [h('span', { class: 'mr-2' }, '\u{1F464}'), 'Profile']),
 						h('div', { class: itemCls }, [h('span', { class: 'mr-2' }, '\u2699\uFE0F'), 'Settings']),
 						h('div', { class: itemCls }, [h('span', { class: 'mr-2' }, '\u{1F4CA}'), 'Analytics']),
-						h('div', { class: 'my-1 border-t-2 border-black' }),
+						h('div', { class: 'my-1 border-t border-black' }),
 						h(
 							'div',
 							{ class: 'cursor-pointer px-4 py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]' },

@@ -24,7 +24,7 @@ export const Default: Story = {
 			h(
 				List,
 				{
-					class: 'w-72 divide-y-2 divide-black overflow-hidden rounded-[8px] border-2 border-black bg-white',
+					class: 'w-72 divide-y divide-black overflow-hidden rounded-[8px] border border-black bg-white',
 				},
 				() =>
 					['Profile settings', 'Notifications', 'Privacy controls', 'Help center'].map((item) =>
@@ -40,7 +40,7 @@ export const Composed: Story = {
 			h(
 				List,
 				{
-					class: 'w-72 divide-y divide-[#d4d4d4] overflow-hidden rounded-[8px] border-2 border-black bg-white',
+					class: 'w-72 divide-y divide-[#2a2a2a] overflow-hidden rounded-[8px] border border-black bg-white',
 				},
 				() =>
 					[
@@ -101,7 +101,7 @@ export const Complex: Story = {
 								'span',
 								{
 									class: [
-										'flex h-5 w-5 items-center justify-center rounded-full border-2',
+										'flex h-5 w-5 items-center justify-center rounded-full border',
 										done ? 'border-black bg-black text-white' : 'border-black bg-white',
 									].join(' '),
 								},

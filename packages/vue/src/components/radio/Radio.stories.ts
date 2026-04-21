@@ -58,14 +58,14 @@ export const Default: Story = {
 							{
 								key: plan.value,
 								value: plan.value,
-								class: 'group relative flex cursor-pointer rounded-[8px] border-2 border-black bg-white px-5 py-4 transition focus:outline-none data-[checked]:bg-[#f5f5f5]',
+								class: 'group relative flex cursor-pointer rounded-[8px] border border-black bg-white px-5 py-4 transition focus:outline-none data-[checked]:bg-[#f5f5f5]',
 							},
 							() => [
 								h('div', { class: 'flex w-full items-center gap-3' }, [
 									h(
 										'span',
 										{
-											class: 'flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-black bg-white transition group-data-[checked]:bg-black',
+											class: 'flex size-5 shrink-0 items-center justify-center rounded-full border border-black bg-white transition group-data-[checked]:bg-black',
 										},
 										[h(Radio.Indicator, { class: 'size-2 rounded-full bg-white' })],
 									),
@@ -91,14 +91,14 @@ export const Composed: Story = {
 							{
 								key: plan.value,
 								value: plan.value,
-								class: 'group relative flex cursor-pointer rounded-[8px] border-2 border-black bg-white px-5 py-4 transition focus:outline-none data-[checked]:bg-[#f5f5f5]',
+								class: 'group relative flex cursor-pointer rounded-[8px] border border-black bg-white px-5 py-4 transition focus:outline-none data-[checked]:bg-[#f5f5f5]',
 							},
 							() => [
 								h('div', { class: 'flex w-full items-center gap-3' }, [
 									h(
 										'span',
 										{
-											class: 'flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-black bg-white transition group-data-[checked]:bg-black',
+											class: 'flex size-5 shrink-0 items-center justify-center rounded-full border border-black bg-white transition group-data-[checked]:bg-black',
 										},
 										[h(Radio.Indicator, { class: 'size-2 rounded-full bg-white' })],
 									),
@@ -127,7 +127,7 @@ export const Complex: Story = {
 							{
 								key: plan.value,
 								value: plan.value,
-								class: 'group relative flex cursor-pointer rounded-[8px] border-2 border-black bg-white px-5 py-4 transition focus:outline-none data-[checked]:bg-[#f5f5f5]',
+								class: 'group relative flex cursor-pointer rounded-[8px] border border-black bg-white px-5 py-4 transition focus:outline-none data-[checked]:bg-[#f5f5f5]',
 							},
 							() => [
 								h('div', { class: 'flex w-full items-center justify-between gap-4' }, [
@@ -135,7 +135,7 @@ export const Complex: Story = {
 										h(
 											'span',
 											{
-												class: 'flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-black bg-white transition group-data-[checked]:border-black group-data-[checked]:bg-black',
+												class: 'flex size-5 shrink-0 items-center justify-center rounded-full border border-black bg-white transition group-data-[checked]:border-black group-data-[checked]:bg-black',
 											},
 											[h(Radio.Indicator, { class: 'size-2 rounded-full bg-white' })],
 										),

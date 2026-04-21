@@ -18,7 +18,7 @@ const meta = {
 export default meta;
 
 const contentCls =
-	'rounded-[8px] border-2 border-black bg-[#f5f5f5] px-2.5 py-1.5 text-xs font-medium text-black data-[state=closed]:hidden whitespace-nowrap';
+	'rounded-[8px] border border-black bg-[#f5f5f5] px-2.5 py-1.5 text-xs font-medium text-black data-[state=closed]:hidden whitespace-nowrap';
 
 export const Default: StoryObj = {
 	render: () => ({
@@ -28,7 +28,7 @@ export const Default: StoryObj = {
 					h(
 						'button',
 						{
-							class: 'rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
+							class: 'rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
 						},
 						'Hover me',
 					),
@@ -47,7 +47,7 @@ export const Composed: StoryObj = {
 						h(
 							'button',
 							{
-								class: 'rounded-[8px] border-2 border-black px-4 py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]',
+								class: 'rounded-[8px] border border-black px-4 py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]',
 							},
 							'Top',
 						),
@@ -60,7 +60,7 @@ export const Composed: StoryObj = {
 							h(
 								'button',
 								{
-									class: 'rounded-[8px] border-2 border-black px-4 py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]',
+									class: 'rounded-[8px] border border-black px-4 py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]',
 								},
 								'Left',
 							),
@@ -72,7 +72,7 @@ export const Composed: StoryObj = {
 							h(
 								'button',
 								{
-									class: 'rounded-[8px] border-2 border-black px-4 py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]',
+									class: 'rounded-[8px] border border-black px-4 py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]',
 								},
 								'Right',
 							),
@@ -85,7 +85,7 @@ export const Composed: StoryObj = {
 						h(
 							'button',
 							{
-								class: 'rounded-[8px] border-2 border-black px-4 py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]',
+								class: 'rounded-[8px] border border-black px-4 py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]',
 							},
 							'Bottom',
 						),
@@ -105,7 +105,7 @@ export const Complex: StoryObj = {
 						h(
 							'button',
 							{
-								class: 'rounded-[8px] border-2 border-black px-4 py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]',
+								class: 'rounded-[8px] border border-black px-4 py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]',
 							},
 							'Outline Button',
 						),
@@ -117,7 +117,7 @@ export const Complex: StoryObj = {
 						h(
 							'button',
 							{
-								class: 'rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
+								class: 'rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]',
 							},
 							'Solid Button',
 						),

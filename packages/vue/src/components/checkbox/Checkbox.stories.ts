@@ -42,7 +42,7 @@ export const Default: Story = {
 								h(
 									'span',
 									{
-										class: 'flex h-5 w-5 items-center justify-center rounded border-2 border-black bg-white text-white group-data-[checked]:border-black group-data-[checked]:bg-black',
+										class: 'flex h-5 w-5 items-center justify-center rounded border border-black bg-white text-white group-data-[checked]:border-black group-data-[checked]:bg-black',
 									},
 									[h(Checkbox.Indicator, null, () => [checkSvg()])],
 								),
@@ -80,7 +80,7 @@ export const Composed: Story = {
 									h(
 										'span',
 										{
-											class: 'mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 border-black bg-white text-white group-data-[checked]:border-black group-data-[checked]:bg-black',
+											class: 'mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border border-black bg-white text-white group-data-[checked]:border-black group-data-[checked]:bg-black',
 										},
 										[h(Checkbox.Indicator, null, () => [checkSvg()])],
 									),
@@ -110,7 +110,7 @@ export const Complex: Story = {
 			];
 
 			return () =>
-				h('div', { class: 'w-full max-w-sm rounded-[20px] border-[3px] border-black bg-white' }, [
+				h('div', { class: 'w-full max-w-sm rounded-[20px] border border-black bg-white' }, [
 					h('div', { class: 'px-5 py-4' }, [
 						h('p', { class: 'text-sm font-medium text-black' }, 'Settings'),
 					]),
@@ -131,7 +131,7 @@ export const Complex: Story = {
 										h(
 											'span',
 											{
-												class: 'flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 border-black bg-white text-white group-data-[checked]:border-black group-data-[checked]:bg-black',
+												class: 'flex h-5 w-5 shrink-0 items-center justify-center rounded border border-black bg-white text-white group-data-[checked]:border-black group-data-[checked]:bg-black',
 											},
 											[h(Checkbox.Indicator, null, () => [checkSvg()])],
 										),

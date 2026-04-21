@@ -67,7 +67,7 @@ const WireframePlaceholder = (props: { height?: number }) => {
 export const Default: Story = {
 	render: () => ({
 		setup: () => () =>
-			h(Card, { class: 'w-full max-w-sm rounded-[8px] border-2 border-black bg-white p-5' }, () => [
+			h(Card, { class: 'w-full max-w-sm rounded-[8px] border border-black bg-white p-5' }, () => [
 				h('h3', { class: 'text-sm font-semibold text-black mb-1' }, 'Card Title'),
 				h(
 					'p',
@@ -83,12 +83,12 @@ export const Composed: Story = {
 		setup: () => () =>
 			h(
 				Card,
-				{ class: 'w-full max-w-sm rounded-[8px] border-2 border-black bg-white p-4 flex items-center gap-4' },
+				{ class: 'w-full max-w-sm rounded-[8px] border border-black bg-white p-4 flex items-center gap-4' },
 				() => [
 					h(
 						'div',
 						{
-							class: 'relative inline-flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-black bg-[#f5f5f5]',
+							class: 'relative inline-flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-black bg-[#f5f5f5]',
 						},
 						[h('span', { class: 'text-sm font-semibold text-black select-none' }, 'W')],
 					),
@@ -106,7 +106,7 @@ export const Complex: Story = {
 		setup: () => () =>
 			h(
 				Card,
-				{ class: 'w-full max-w-sm overflow-hidden rounded-[20px] border-[3px] border-black bg-white' },
+				{ class: 'w-full max-w-sm overflow-hidden rounded-[20px] border border-black bg-white' },
 				() => [
 					h(WireframePlaceholder, { height: 180 }),
 					h('div', { class: 'p-5' }, [
@@ -121,7 +121,7 @@ export const Complex: Story = {
 							h(
 								'button',
 								{
-									class: 'inline-flex cursor-pointer items-center justify-center rounded-[8px] border-2 border-black bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#333]',
+									class: 'inline-flex cursor-pointer items-center justify-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#333]',
 								},
 								'Add to Cart',
 							),
