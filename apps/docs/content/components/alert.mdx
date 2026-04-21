@@ -72,7 +72,7 @@ import { Alert, AlertDescription, AlertDismiss, AlertRoot, AlertTitle } from '@w
 ```tsx
 import { Alert } from '@wire-ui/react'
 
-<Alert.Root status="warning" className="flex items-start gap-3 rounded-[8px] border-2 border-black bg-[#f5f5f5] px-4 py-3 text-black">
+<Alert.Root status="warning" className="flex items-start gap-3 rounded-[8px] border border-black bg-[#f5f5f5] px-4 py-3 text-black">
   <div className="flex-1">
     <Alert.Title className="text-sm font-semibold">Warning</Alert.Title>
     <Alert.Description className="mt-0.5 text-sm">Your session is about to expire. Please save your work.</Alert.Description>
@@ -92,7 +92,7 @@ import { AlertRoot, AlertTitle, AlertDescription } from '@wire-ui/vue'
 </script>
 
 <template>
-  <AlertRoot status="warning" class="flex items-start gap-3 rounded-[8px] border-2 border-black bg-[#f5f5f5] px-4 py-3 text-black">
+  <AlertRoot status="warning" class="flex items-start gap-3 rounded-[8px] border border-black bg-[#f5f5f5] px-4 py-3 text-black">
     <div class="flex-1">
       <AlertTitle class="text-sm font-semibold">Warning</AlertTitle>
       <AlertDescription class="mt-0.5 text-sm">Your session is about to expire. Please save your work.</AlertDescription>
@@ -118,7 +118,7 @@ Alert uses `data-status` to indicate the alert type. Style each status variant u
 
 ```tsx
 <Alert.Root className="
-  border-2 border-black
+  border border-black
   data-[status=success]:border-green-500
   data-[status=warning]:border-yellow-500
   data-[status=danger]:border-red-500

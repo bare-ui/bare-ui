@@ -100,10 +100,10 @@ import { Radio } from '@wire-ui/react'
     <Radio.Item
       key={plan.value}
       value={plan.value}
-      className="group relative flex cursor-pointer rounded-[8px] border-2 border-black bg-white px-5 py-4 transition focus:outline-none data-[checked]:bg-[#f5f5f5]">
+      className="group relative flex cursor-pointer rounded-[8px] border border-black bg-white px-5 py-4 transition focus:outline-none data-[checked]:bg-[#f5f5f5]">
       <div className="flex w-full items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-black bg-white transition group-data-[checked]:border-black group-data-[checked]:bg-black">
+          <span className="flex size-5 shrink-0 items-center justify-center rounded-full border border-black bg-white transition group-data-[checked]:border-black group-data-[checked]:bg-black">
             <Radio.Indicator className="size-2 rounded-full bg-white" />
           </span>
           <div>
@@ -140,10 +140,10 @@ const plans = [
       v-for="plan in plans"
       :key="plan.value"
       :value="plan.value"
-      class="group relative flex cursor-pointer rounded-[8px] border-2 border-black bg-white px-5 py-4 transition focus:outline-none data-[checked]:bg-[#f5f5f5]">
+      class="group relative flex cursor-pointer rounded-[8px] border border-black bg-white px-5 py-4 transition focus:outline-none data-[checked]:bg-[#f5f5f5]">
       <div class="flex w-full items-center justify-between gap-4">
         <div class="flex items-center gap-3">
-          <span class="flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-black bg-white transition group-data-[checked]:border-black group-data-[checked]:bg-black">
+          <span class="flex size-5 shrink-0 items-center justify-center rounded-full border border-black bg-white transition group-data-[checked]:border-black group-data-[checked]:bg-black">
             <RadioIndicator class="size-2 rounded-full bg-white" />
           </span>
           <div>
@@ -174,11 +174,11 @@ Radio items expose `data-checked` and `data-disabled`. Use the `group` utility i
 
 ```tsx
 <Radio.Item className="
-  group border-2 border-black
+  group border border-black
   data-[checked]:bg-gray-50
 ">
   <span className="
-    border-2 border-black rounded-full
+    border border-black rounded-full
     group-data-[checked]:bg-black
   ">
     <Radio.Indicator className="size-2 rounded-full bg-white" />

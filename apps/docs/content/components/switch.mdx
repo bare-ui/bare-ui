@@ -79,7 +79,7 @@ const items = [
 ```tsx
 import { Switch } from '@wire-ui/react'
 
-<div className="w-80 divide-y divide-[#d4d4d4] rounded-[8px] border-2 border-black bg-white">
+<div className="w-80 divide-y divide-[#d4d4d4] rounded-[8px] border border-black bg-white">
   {[
     { label: 'Push notifications', value: pushEnabled, onChange: setPushEnabled },
     { label: 'Email updates', value: emailEnabled, onChange: setEmailEnabled },
@@ -90,8 +90,8 @@ import { Switch } from '@wire-ui/react'
       <Switch.Root
         checked={value}
         onChange={onChange}
-        className="relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-black bg-[#e5e5e5] transition-colors outline-none data-[checked]:bg-black data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[focus-visible]:ring-2 data-[focus-visible]:ring-black data-[focus-visible]:ring-offset-2">
-        <Switch.Thumb className="pointer-events-none inline-block size-5 translate-x-0 rounded-full border-2 border-black bg-white transition-transform data-[checked]:translate-x-5" />
+        className="relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-black bg-[#e5e5e5] transition-colors outline-none data-[checked]:bg-black data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[focus-visible]:ring-2 data-[focus-visible]:ring-black data-[focus-visible]:ring-offset-2">
+        <Switch.Thumb className="pointer-events-none inline-block size-5 translate-x-0 rounded-full border border-black bg-white transition-transform data-[checked]:translate-x-5" />
       </Switch.Root>
     </div>
   ))}
@@ -116,14 +116,14 @@ const settings = [
 </script>
 
 <template>
-  <div class="w-80 divide-y divide-[#d4d4d4] rounded-[8px] border-2 border-black bg-white">
+  <div class="w-80 divide-y divide-[#d4d4d4] rounded-[8px] border border-black bg-white">
     <div v-for="setting in settings" :key="setting.label" class="flex items-center justify-between px-4 py-3">
       <p class="text-sm font-medium text-black">{{ setting.label }}</p>
       <SwitchRoot
         :checked="setting.value.value"
-        class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-black bg-[#e5e5e5] transition-colors outline-none data-[checked]:bg-black data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[focus-visible]:ring-2 data-[focus-visible]:ring-black data-[focus-visible]:ring-offset-2"
+        class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-black bg-[#e5e5e5] transition-colors outline-none data-[checked]:bg-black data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[focus-visible]:ring-2 data-[focus-visible]:ring-black data-[focus-visible]:ring-offset-2"
         @change="setting.value.value = $event">
-        <SwitchThumb class="pointer-events-none inline-block size-5 translate-x-0 rounded-full border-2 border-black bg-white transition-transform data-[checked]:translate-x-5" />
+        <SwitchThumb class="pointer-events-none inline-block size-5 translate-x-0 rounded-full border border-black bg-white transition-transform data-[checked]:translate-x-5" />
       </SwitchRoot>
     </div>
   </div>

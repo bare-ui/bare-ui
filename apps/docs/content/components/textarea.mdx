@@ -63,7 +63,7 @@ import { Textarea } from '@wire-ui/react'
   <Textarea.Field
     placeholder="Type your message here..."
     rows={4}
-    className="w-full rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+    className="w-full rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
   />
 </Textarea.Root>
 ```
@@ -80,7 +80,7 @@ import { TextareaRoot, TextareaField, TextareaLabel } from '@wire-ui/vue'
     <TextareaField
       placeholder="Type your message here..."
       :rows="4"
-      class="w-full rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+      class="w-full rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
     />
   </TextareaRoot>
 </template>
@@ -98,7 +98,7 @@ Textarea Field exposes the same data attributes as Input — `data-active`, `dat
 
 ```tsx
 <Textarea.Field className="
-  border-2 border-black
+  border border-black
   data-[active]:border-blue-500
   data-[invalid]:border-red-500
 " />

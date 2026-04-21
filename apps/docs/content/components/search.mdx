@@ -85,9 +85,9 @@ import { Search } from '@wire-ui/react'
   className="relative w-80">
   <Search.Input
     placeholder="Search frameworks..."
-    className="w-full rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+    className="w-full rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
   />
-  <Search.Content className="absolute left-0 top-full z-10 mt-1 w-full rounded-[20px] border-[3px] border-black bg-white py-1">
+  <Search.Content className="absolute left-0 top-full z-10 mt-1 w-full rounded-[20px] border border-black bg-white py-1">
     {filtered.map((item) => (
       <Search.Item
         key={item.id}
@@ -117,9 +117,9 @@ const query = ref('')
     @select="(option) => alert('Selected: ' + option.title)">
     <SearchInput
       placeholder="Search frameworks..."
-      class="w-full rounded-[8px] border-2 border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+      class="w-full rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
     />
-    <SearchContent class="absolute left-0 top-full z-10 mt-1 w-full rounded-[20px] border-[3px] border-black bg-white py-1">
+    <SearchContent class="absolute left-0 top-full z-10 mt-1 w-full rounded-[20px] border border-black bg-white py-1">
       <SearchItem
         v-for="item in filtered"
         :key="item.id"
@@ -146,7 +146,7 @@ Search exposes `data-loading` on Root and `data-highlighted` on items for keyboa
 <Search.Root className="
   data-[loading]:opacity-50
 ">
-  <Search.Input className="border-2 border-black" />
+  <Search.Input className="border border-black" />
   <Search.Item className="
     data-[highlighted]:bg-gray-100
   " />

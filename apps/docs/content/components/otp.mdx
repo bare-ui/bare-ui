@@ -76,7 +76,7 @@ const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
     <OTP.Slot
       key={i}
       index={i}
-      className="h-12 w-10 rounded-[8px] border-2 border-black bg-white text-center text-lg font-mono font-semibold text-black outline-none transition-all caret-transparent data-[active]:ring-4 data-[active]:ring-black/20"
+      className="h-12 w-10 rounded-[8px] border border-black bg-white text-center text-lg font-mono font-semibold text-black outline-none transition-all caret-transparent data-[active]:ring-4 data-[active]:ring-black/20"
     />
   ))}
 </OTP.Root>
@@ -109,7 +109,7 @@ function onComplete(code) {
       v-for="i in 6"
       :key="i - 1"
       :index="i - 1"
-      class="h-12 w-10 rounded-[8px] border-2 border-black bg-white text-center text-lg font-mono font-semibold text-black outline-none transition-all caret-transparent data-[active]:ring-4 data-[active]:ring-black/20"
+      class="h-12 w-10 rounded-[8px] border border-black bg-white text-center text-lg font-mono font-semibold text-black outline-none transition-all caret-transparent data-[active]:ring-4 data-[active]:ring-black/20"
     />
   </OTPRoot>
   <p v-if="status === 'success'" class="text-sm text-green-600">Verified!</p>
@@ -129,7 +129,7 @@ OTP Slots expose `data-active`, `data-filled`, and `data-complete`. The Root als
 
 ```tsx
 <OTP.Slot className="
-  border-2 border-black bg-white
+  border border-black bg-white
   data-[active]:ring-4 data-[active]:ring-black/20
   data-[complete]:bg-black data-[complete]:text-white
   data-[disabled]:bg-gray-100 data-[disabled]:opacity-50

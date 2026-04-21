@@ -83,7 +83,7 @@ import { List } from '@wire-ui/react'
     { label: 'Deploy to staging', done: false },
   ].map(({ label, done }) => (
     <li key={label} className="flex items-center gap-2.5 text-sm">
-      <span className={['flex h-5 w-5 items-center justify-center rounded-full border-2', done ? 'border-black bg-black text-white' : 'border-black bg-white'].join(' ')}>
+      <span className={['flex h-5 w-5 items-center justify-center rounded-full border', done ? 'border-black bg-black text-white' : 'border-black bg-white'].join(' ')}>
         {done && (
           <svg className="h-3 w-3" viewBox="0 0 12 12" fill="currentColor">
             <path d="M3.5 6L5.5 8L8.5 4.5" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
@@ -112,7 +112,7 @@ const items = [
 <template>
   <List class="w-64 space-y-2">
     <li v-for="{ label, done } in items" :key="label" class="flex items-center gap-2.5 text-sm">
-      <span :class="['flex h-5 w-5 items-center justify-center rounded-full border-2', done ? 'border-black bg-black text-white' : 'border-black bg-white']">
+      <span :class="['flex h-5 w-5 items-center justify-center rounded-full border', done ? 'border-black bg-black text-white' : 'border-black bg-white']">
         <svg v-if="done" class="h-3 w-3" viewBox="0 0 12 12" fill="currentColor">
           <path d="M3.5 6L5.5 8L8.5 4.5" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
