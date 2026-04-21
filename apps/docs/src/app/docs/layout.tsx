@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { cookies } from "next/headers";
 import { Banner } from "nextra/components";
 import { Layout, Navbar } from "nextra-theme-docs";
 import { getPageMap } from "nextra/page-map";
@@ -6,6 +7,25 @@ import "nextra-theme-docs/style.css";
 import { DocsProviders } from "../../components/docs-providers";
 import { FrameworkSwitcher } from "../../components/framework-switcher";
 import s from "./logo.module.css";
+
+const FRAMEWORK_COOKIE = "wire-ui-framework";
+const DEFAULT_FRAMEWORK = "react";
+
+// Recursively prepend `/{framework}` to every `route` in the pageMap
+// so Nextra's sidebar active-state matching works with our rewritten URLs.
+// deno-lint-ignore no-explicit-any
+function prefixPageMapRoutes(items: any[], prefix: string): any[] {
+	return items.map((item) => {
+		const next = { ...item };
+		if (typeof next.route === "string" && next.route.startsWith("/docs")) {
+			next.route = `${prefix}${next.route}`;
+		}
+		if (Array.isArray(next.children)) {
+			next.children = prefixPageMapRoutes(next.children, prefix);
+		}
+		return next;
+	});
+}
 
 function XIcon() {
 	return (
@@ -34,7 +54,14 @@ export default async function DocsLayout({
 }: {
 	children: React.ReactNode;
 }) {
-	const pageMap = await getPageMap("/docs");
+	const rawPageMap = await getPageMap("/docs");
+
+	// Determine framework from cookie (set by middleware) so the sidebar's
+	// active-state matches the browser URL (/react/docs/... or /vue/docs/...)
+	const cookieStore = await cookies();
+	const framework =
+		cookieStore.get(FRAMEWORK_COOKIE)?.value || DEFAULT_FRAMEWORK;
+	const pageMap = prefixPageMapRoutes(rawPageMap, `/${framework}`);
 
 	const navbar = (
 		<Navbar
