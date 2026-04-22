@@ -1,0 +1,164 @@
+---
+title: Accessibility
+description: Wire UI's accessibility commitments and what you're responsible for.
+---
+
+# Accessibility
+
+Accessibility is a first-class concern in Wire UI. Every primitive ships with the correct ARIA attributes, keyboard behavior, and focus management — so you can build inclusive interfaces without wiring up semantics from scratch.
+
+Because Wire UI ships **zero CSS**, the responsibility split is different from styled libraries: Wire UI handles the **behavior**, you handle the **visuals**. This page explains both sides of that contract.
+
+## Standards we target
+
+Wire UI is built against:
+
+- **[WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)** — role, state, and keyboard patterns for each widget
+- **[WCAG 2.1 / 2.2 Level AA](https://www.w3.org/WAI/WCAG22/quickref/)** — the industry baseline for web accessibility
+- **Semantic HTML first** — ARIA is only added when native elements can't express the needed semantics
+
+## What Wire UI provides
+
+<FeatureList>
+  <FeatureItem>Correct ARIA roles and attributes applied automatically on every component.</FeatureItem>
+  <FeatureItem>Full keyboard navigation out of the box — no extra wiring required.</FeatureItem>
+  <FeatureItem>Focus management — Modal and Drawer trap focus while open and restore it to the trigger on close.</FeatureItem>
+  <FeatureItem>Interactive state exposed via <code>data-*</code> attributes so you can style focus, hover, active, and disabled states with plain CSS.</FeatureItem>
+  <FeatureItem><code>asChild</code> polymorphism lets you swap any component's root element without losing accessibility behavior.</FeatureItem>
+  <FeatureItem>No hidden or hardcoded behavior — every a11y-relevant prop is documented on its component page.</FeatureItem>
+</FeatureList>
+
+## What you provide
+
+<FeatureList>
+  <FeatureItem>Visible focus indicators — style <code>[data-focus-visible]</code> so keyboard users always see where focus is.</FeatureItem>
+  <FeatureItem>Color contrast meeting WCAG AA (or APCA / WCAG 3) — Wire UI ships no colors.</FeatureItem>
+  <FeatureItem>Accessible names on icon-only buttons via <code>aria-label</code>.</FeatureItem>
+  <FeatureItem>Visual affordance for <code>[data-disabled]</code> states — disabled should look disabled.</FeatureItem>
+  <FeatureItem>Respect <code>prefers-reduced-motion</code> on any animations or transitions you add.</FeatureItem>
+</FeatureList>
+
+## Keyboard navigation
+
+Every interactive Wire UI component supports keyboard operation. Here are the conventions used across the library:
+
+| Key | Typical action |
+|---|---|
+| <kbd>Tab</kbd> / <kbd>Shift</kbd> + <kbd>Tab</kbd> | Move focus to the next / previous focusable element |
+| <kbd>Enter</kbd> / <kbd>Space</kbd> | Activate a button, trigger, or selectable item |
+| <kbd>Escape</kbd> | Close an overlay (Modal, Drawer, Dropdown, Tooltip) |
+| <kbd>Arrow</kbd> keys | Navigate between items in menus, radio groups, tabs, and OTP |
+| <kbd>Home</kbd> / <kbd>End</kbd> | Jump to the first / last item in a list-like widget |
+
+Component-specific keys (for example, typeahead in Select) are documented on each component's page under **Keyboard Interactions**.
+
+## Focus management
+
+### Focus traps
+
+Modal and Drawer automatically trap focus while open — <kbd>Tab</kbd> cycles through focusable elements inside the overlay and can't escape to the page behind it. When the overlay closes, focus returns to the element that triggered it.
+
+You can customize the entry/exit points with the `initialFocus` and `finalFocus` props. See the [Modal](/docs/components/modal) documentation for details.
+
+### Focus-visible styling
+
+Wire UI exposes a `data-focus-visible` attribute that mirrors the CSS `:focus-visible` pseudo-class. Style it so keyboard users always see a focus indicator — this is **required** for WCAG 2.4.7 compliance.
+
+```tsx
+<Button
+  className="
+    rounded-[8px] border border-black px-4 py-2
+    [data-focus-visible]:ring-2
+    [data-focus-visible]:ring-black
+    [data-focus-visible]:ring-offset-2
+  "
+>
+  Click me
+</Button>
+```
+
+The focus ring appears on keyboard navigation but not on mouse click — which matches user expectation and avoids visual noise.
+
+## Accessible labels
+
+Interactive components must have an accessible name. Wire UI passes through all standard HTML labeling attributes, so you can use the approach that best fits your UI.
+
+### Icon-only buttons
+
+Buttons without visible text need an explicit `aria-label`:
+
+```tsx
+<Button aria-label="Close dialog">
+  <CloseIcon />
+</Button>
+```
+
+### Form fields
+
+Use a native `<label>` element with `htmlFor` pointing to the input's `id`:
+
+```tsx
+<label htmlFor="email">Email address</label>
+<Input.Root id="email" type="email" />
+```
+
+### Overlays
+
+Modal, Drawer, and Dropdown accept `aria-labelledby` and `aria-describedby` to connect to their title and description elements. See each overlay's docs for the recommended compound pattern.
+
+## Color contrast
+
+Because Wire UI ships no colors, meeting contrast requirements is entirely your responsibility. Target:
+
+- **4.5:1** for body text (WCAG AA)
+- **3:1** for large text (18pt+ or 14pt+ bold) and UI components
+- **3:1** for focus indicators against their background
+
+If you're evaluating newer standards, the **[APCA](https://www.myndex.com/APCA/)** algorithm — being considered for WCAG 3 — gives more perceptually accurate readings than WCAG 2's luminance math, especially for dark mode.
+
+Useful tools: browser devtools contrast pickers, Figma contrast plugins, or dedicated tools like Stark and Colour Contrast Analyser.
+
+## Reduced motion
+
+Wire UI primitives don't ship any animations. When you add transitions, gate them behind the user's motion preference:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+Or use Tailwind's `motion-safe:` / `motion-reduce:` variants:
+
+```tsx
+<Modal.Content className="motion-safe:transition-all motion-safe:duration-200">
+  ...
+</Modal.Content>
+```
+
+## Testing
+
+Wire UI is tested against the major screen readers:
+
+- **NVDA** (Windows)
+- **VoiceOver** (macOS / iOS)
+- **TalkBack** (Android)
+
+For your own applications, combine automated and manual testing:
+
+- **axe-core** or **Lighthouse** catches common issues automatically
+- **Keyboard-only navigation** — unplug your mouse and work through a full user flow
+- **Screen reader spot-checks** on critical paths (sign-in, checkout, forms)
+- **Zoom to 200%** to verify text stays readable and nothing gets clipped
+
+## Component-specific details
+
+Every component documentation page has its own **Accessibility** and **Keyboard Interactions** section with specifics for that widget. For the most complex a11y patterns, see:
+
+- [Modal](/docs/components/modal) — focus trap, labeling, Escape behavior
+- [Dropdown](/docs/components/dropdown) — menu roles, typeahead, Arrow key navigation
+- [Select](/docs/components/select) — listbox pattern, keyboard filtering
+- [OTP](/docs/components/otp) — composite input, paste handling

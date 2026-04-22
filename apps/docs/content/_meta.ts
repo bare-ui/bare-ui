@@ -6,6 +6,7 @@ export default {
   index: 'Introduction',
   'getting-started': 'Getting Started',
   faq: 'FAQ',
+  accessibility: 'Accessibility',
   'data-attributes': 'Data Attributes',
   'browser-support': 'Browser Support',
   changelog: {
