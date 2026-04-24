@@ -1,0 +1,92 @@
+{
+	"name": "@wire-ui/solid",
+	"version": "0.1.0",
+	"license": "MIT",
+	"type": "module",
+	"main": "./dist/wire-ui-solid.cjs.js",
+	"module": "./dist/wire-ui-solid.es.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"solid": "./dist/wire-ui-solid.es.js",
+			"import": "./dist/wire-ui-solid.es.js",
+			"require": "./dist/wire-ui-solid.cjs.js",
+			"types": "./dist/index.d.ts"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"description": "AI-native unstyled primitives for your design system. Headless, compound components with zero CSS — style via data-* attributes. SolidJS edition.",
+	"sideEffects": false,
+	"homepage": "https://wire-ui.com",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/wire-ui/wire-ui.git",
+		"directory": "packages/solid"
+	},
+	"bugs": {
+		"url": "https://github.com/wire-ui/wire-ui/issues"
+	},
+	"keywords": [
+		"solid",
+		"solidjs",
+		"headless",
+		"unstyled",
+		"components",
+		"ui",
+		"accessible",
+		"ai-native",
+		"compound-components",
+		"data-attributes",
+		"design-system"
+	],
+	"engines": {
+		"node": ">=20.19.0"
+	},
+	"scripts": {
+		"build": "tsc -b tsconfig.build.json && vite build",
+		"prepublishOnly": "npm run build",
+		"lint": "eslint .",
+		"storybook": "storybook dev -p 6008",
+		"build-storybook": "storybook build",
+		"format": "prettier --write \"src/**/*.{ts,tsx}\"",
+		"test": "vitest --config vitest.config.ts",
+		"test:run": "vitest run --config vitest.config.ts",
+		"test:coverage": "vitest run --coverage --config vitest.config.ts",
+		"clean": "rm -rf dist"
+	},
+	"peerDependencies": {
+		"solid-js": "^1.9.0"
+	},
+	"devDependencies": {
+		"@chromatic-com/storybook": "^5.1.1",
+		"@eslint/js": "^9.39.4",
+		"@solidjs/testing-library": "^0.8.10",
+		"@storybook/addon-a11y": "^10.3.3",
+		"@storybook/addon-docs": "^10.3.3",
+		"@storybook/addon-vitest": "^10.3.3",
+		"@tailwindcss/vite": "^4.2.2",
+		"@testing-library/jest-dom": "^6.9.1",
+		"@testing-library/user-event": "^14.6.1",
+		"@types/node": "^24.12.0",
+		"@vitest/coverage-v8": "^4.1.2",
+		"eslint": "^9.39.4",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-solid": "^0.14.5",
+		"eslint-plugin-storybook": "^10.3.3",
+		"globals": "^17.4.0",
+		"jsdom": "^29.0.1",
+		"prettier": "^3.8.1",
+		"solid-js": "^1.9.0",
+		"storybook": "^10.3.3",
+		"storybook-solidjs-vite": "^10.0.9",
+		"tailwindcss": "^4.2.2",
+		"typescript": "~5.9.3",
+		"typescript-eslint": "^8.57.0",
+		"vite": "^8.0.1",
+		"vite-plugin-dts": "^4.5.4",
+		"vite-plugin-solid": "^2.11.10",
+		"vitest": "^4.1.2"
+	}
+}
