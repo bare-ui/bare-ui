@@ -7,6 +7,7 @@ import { CharGridBg } from "../components/char-grid-bg";
 import { GitHubStars, NpmDownloads } from "../components/stats-badges";
 import { MobileMenuButton } from "../components/mobile-nav";
 import { AIPipeline } from "../components/ai-pipeline";
+import { LiveCodeWindow } from "../components/live-code-window";
 import { FeatureMatrix } from "../components/feature-matrix";
 import { METADATA } from "../data/benchmarks";
 import s from "./page.module.css";
@@ -225,56 +226,47 @@ export default function HomePage() {
 					</div>
 
 					{/* Code window — right column */}
-					<div
-						className={s.codeWindow}
+					<LiveCodeWindow
 						style={{ position: "sticky", top: "80px" }}
-					>
-						<div className={s.codeWindowBar}>
-							<span className={`${s.dot} ${s.dotRed}`} />
-							<span className={`${s.dot} ${s.dotYellow}`} />
-							<span className={`${s.dot} ${s.dotGreen}`} />
-							<span className={s.codeWindowFile}>
-								DeleteModal.tsx
-							</span>
-						</div>
-						<pre className={s.codeBlock}>
-							<code>{`import { Modal } from '@wire-ui/react'
-import { useState } from 'react'
+						code={{
+							react: `import { Dropdown } from '@wire-ui/react'
 
-function App() {
-  const [open, setOpen] = useState(false)
+export const UserMenu = () => {
+  const handleSelect = (action: string) => {
+    console.log('selected:', action)
+  }
 
   return (
-    <>
-      <button onClick={() => setOpen(true)}>
-        Delete Account
-      </button>
-
-      <Modal.Root open={open} onOpenChange={setOpen}>
-        <Modal.Portal>
-          <Modal.Overlay className="
-            fixed inset-0 z-50 flex items-center
-            justify-center bg-black/50 p-4
-          ">
-            <Modal.Content className="
-              w-full max-w-md rounded-[20px]
-              border border-black bg-white p-6
-            ">
-              <h2>Delete Account</h2>
-              <p>This action cannot be undone.</p>
-              <div className="flex gap-3">
-                <Modal.Close>Cancel</Modal.Close>
-                <button>Delete</button>
-              </div>
-            </Modal.Content>
-          </Modal.Overlay>
-        </Modal.Portal>
-      </Modal.Root>
-    </>
+    <Dropdown.Root>
+      <Dropdown.Trigger>Open Menu</Dropdown.Trigger>
+      <Dropdown.Menu>
+        <div onClick={() => handleSelect('profile')}>Profile</div>
+        <div onClick={() => handleSelect('settings')}>Settings</div>
+        <div onClick={() => handleSelect('signout')}>Sign out</div>
+      </Dropdown.Menu>
+    </Dropdown.Root>
   )
-}`}</code>
-						</pre>
-					</div>
+}`,
+							vue: `<script setup lang="ts">
+import { DropdownRoot, DropdownTrigger, DropdownMenu } from '@wire-ui/vue'
+
+const handleSelect = (action: string) => {
+  console.log('selected:', action)
+}
+</script>
+
+<template>
+  <DropdownRoot>
+    <DropdownTrigger>Open Menu</DropdownTrigger>
+    <DropdownMenu>
+      <div @click="handleSelect('profile')">Profile</div>
+      <div @click="handleSelect('settings')">Settings</div>
+      <div @click="handleSelect('signout')">Sign out</div>
+    </DropdownMenu>
+  </DropdownRoot>
+</template>`,
+						}}
+					/>
 				</div>
 			</section>
 
