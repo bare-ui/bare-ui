@@ -7,6 +7,8 @@ import { CharGridBg } from "../components/char-grid-bg";
 import { GitHubStars, NpmDownloads } from "../components/stats-badges";
 import { MobileMenuButton } from "../components/mobile-nav";
 import { AIPipeline } from "../components/ai-pipeline";
+import { FeatureMatrix } from "../components/feature-matrix";
+import { METADATA } from "../data/benchmarks";
 import s from "./page.module.css";
 
 const FEATURES = [
@@ -278,7 +280,31 @@ function App() {
 
 			<hr className={s.divider} />
 
-			{/* ── Section 4 · Community ────────────────────────────── */}
+			{/* ── Section 4 · Full Capability Matrix ──────────────── */}
+			<section className={`${s.section} ${s.matrixSection}`}>
+				<p className={s.sectionLabel}>Wire UI vs the headless landscape</p>
+				<h2 className={s.sectionHeading}>Every feature, side by side</h2>
+				<p className={s.sectionSub}>
+					Honest comparison against the major headless component
+					libraries. Where we win, where we tie, and where the field
+					beats us.
+				</p>
+				<FeatureMatrix />
+				<p className={s.matrixFootnote}>
+					Data captured {METADATA.capturedAt}. {METADATA.note}{" "}
+					<a
+						href="https://github.com/wire-ui/wire-ui/issues/new?title=Benchmark+correction&body=Which+library+or+feature+needs+updating%3F%0A%0A"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						Submit a correction →
+					</a>
+				</p>
+			</section>
+
+			<hr className={s.divider} />
+
+			{/* ── Section 5 · Community ────────────────────────────── */}
 			<section className={`${s.section} ${s.communitySection}`}>
 				<span className={s.communityEmoji}>👋</span>
 				<h2 className={s.sectionHeading}>

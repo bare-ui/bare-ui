@@ -1,0 +1,117 @@
+.matrixWrap {
+  overflow-x: auto;
+  max-width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(128, 128, 128, 0.15);
+  background: rgba(128, 128, 128, 0.02);
+}
+
+.matrix {
+  width: 100%;
+  min-width: 700px;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.matrix th,
+.matrix td {
+  padding: 0.85rem 1rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.12);
+}
+
+.matrix tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.featureCol,
+.featureCell {
+  text-align: left;
+  font-weight: 600;
+  min-width: 180px;
+  position: sticky;
+  left: 0;
+  background: var(--matrix-bg, #fff);
+  z-index: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(html:not(.light)) .featureCol,
+  :global(html:not(.light)) .featureCell {
+    background: #0a0a0a;
+  }
+}
+:global(html.dark) .featureCol,
+:global(html.dark) .featureCell {
+  background: #0a0a0a;
+}
+
+.featureCell {
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.libCol {
+  font-weight: 600;
+  font-size: 0.82rem;
+  white-space: nowrap;
+  min-width: 110px;
+}
+
+.libCol[data-highlight] {
+  color: #8b5cf6;
+  font-weight: 700;
+}
+
+.star {
+  color: #8b5cf6;
+  font-size: 0.75rem;
+  margin-left: 2px;
+}
+
+.valueCell {
+  font-weight: 500;
+}
+
+.valueCell[data-highlight] {
+  background: rgba(99, 102, 241, 0.04);
+}
+
+.yes {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.12);
+  color: #6366f1;
+}
+
+.valueCell[data-highlight] .yes {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+}
+
+.no {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+  opacity: 0.25;
+}
+
+.custom {
+  display: inline-block;
+  font-size: 0.78rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(128, 128, 128, 0.1);
+  opacity: 0.85;
+}
+
+.valueCell[data-highlight] .custom {
+  background: rgba(99, 102, 241, 0.15);
+  color: #6366f1;
+  opacity: 1;
+}

@@ -656,6 +656,31 @@
 	line-height: 1.55;
 }
 
+/* ── Matrix Section (Wire UI vs headless landscape) ──────────── */
+.matrixSection {
+	text-align: center;
+}
+
+.matrixFootnote {
+	font-size: 0.78rem;
+	opacity: 0.5;
+	margin: 1.5rem auto 0;
+	max-width: 720px;
+	line-height: 1.6;
+}
+
+.matrixFootnote a {
+	color: #6366f1;
+	text-decoration: underline;
+	text-decoration-color: rgba(99, 102, 241, 0.35);
+	text-underline-offset: 3px;
+	margin-left: 4px;
+}
+
+.matrixFootnote a:hover {
+	text-decoration-color: #6366f1;
+}
+
 /* ── Community ────────────────────────────────────────────────── */
 .communitySection {
 	text-align: center;
