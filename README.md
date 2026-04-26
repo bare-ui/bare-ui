@@ -13,6 +13,7 @@
   <a href="https://www.npmjs.com/package/@wire-ui/react"><img src="https://img.shields.io/npm/dm/@wire-ui/react?style=flat-square&colorA=0a0a0a&colorB=0a0a0a" alt="npm downloads" /></a>
   <a href="https://github.com/wire-ui/wire-ui/blob/main/packages/react/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square&colorA=0a0a0a&colorB=0a0a0a" alt="MIT license" /></a>
   <img src="https://img.shields.io/badge/react-%3E%3D19.0.0-blue?style=flat-square&colorA=0a0a0a&colorB=0a0a0a" alt="react >= 19" />
+[![SafeSkill 80/100](https://img.shields.io/badge/SafeSkill-80%2F100_Passes%20with%20Notes-yellow)](https://safeskill.dev/scan/wire-ui-wire-ui)
 </p>
 
 ---
