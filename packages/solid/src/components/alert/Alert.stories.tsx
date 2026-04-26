@@ -1,0 +1,114 @@
+import type { Meta, StoryObj } from 'storybook-solidjs-vite';
+import { Alert } from './Alert';
+
+const meta = {
+	title: 'Feedback/Alert',
+	component: Alert.Root,
+	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component: 'Dismissible alert with auto-dismiss support.',
+			},
+		},
+	},
+} satisfies Meta<typeof Alert.Root>;
+
+export default meta;
+
+const alertCls = 'flex items-start gap-3 rounded-[8px] border border-black bg-[#f5f5f5] px-4 py-3 text-black';
+
+export const Default: StoryObj = {
+	render: () => (
+		<div class='flex flex-col gap-3 max-w-lg'>
+			<Alert.Root class={alertCls}>
+				<div class='flex-1'>
+					<Alert.Title class='text-sm font-semibold'>Heads up</Alert.Title>
+					<Alert.Description class='mt-0.5 text-sm'>This is a default informational alert.</Alert.Description>
+				</div>
+			</Alert.Root>
+		</div>
+	),
+};
+
+export const Composed: StoryObj = {
+	render: () => (
+		<div class='flex flex-col gap-3 max-w-lg'>
+			<Alert.Root class={alertCls}>
+				<div class='flex-1'>
+					<Alert.Title class='text-sm font-semibold'>Default</Alert.Title>
+					<Alert.Description class='mt-0.5 text-sm'>This is a default informational alert.</Alert.Description>
+				</div>
+			</Alert.Root>
+			<Alert.Root
+				status='success'
+				class={alertCls}>
+				<div class='flex-1'>
+					<Alert.Title class='text-sm font-semibold'>Success</Alert.Title>
+					<Alert.Description class='mt-0.5 text-sm'>Your changes have been saved successfully.</Alert.Description>
+				</div>
+			</Alert.Root>
+			<Alert.Root
+				status='warning'
+				class={alertCls}>
+				<div class='flex-1'>
+					<Alert.Title class='text-sm font-semibold'>Warning</Alert.Title>
+					<Alert.Description class='mt-0.5 text-sm'>
+						Please review the information before proceeding.
+					</Alert.Description>
+				</div>
+			</Alert.Root>
+			<Alert.Root
+				status='danger'
+				class={alertCls}>
+				<div class='flex-1'>
+					<Alert.Title class='text-sm font-semibold'>Error</Alert.Title>
+					<Alert.Description class='mt-0.5 text-sm'>Something went wrong. Please try again.</Alert.Description>
+				</div>
+			</Alert.Root>
+		</div>
+	),
+};
+
+export const Complex: StoryObj = {
+	render: () => (
+		<div class='flex flex-col gap-3 max-w-lg'>
+			<Alert.Root
+				status='warning'
+				class={alertCls}>
+				<svg
+					class='h-5 w-5 shrink-0 mt-0.5'
+					fill='none'
+					viewBox='0 0 24 24'
+					stroke='currentColor'>
+					<path
+						stroke-linecap='round'
+						stroke-linejoin='round'
+						stroke-width='2'
+						d='M12 9v2m0 4h.01M10.29 3.86l-8.4 14.31A1.5 1.5 0 003.18 20h17.64a1.5 1.5 0 001.29-2.23l-8.4-14.31a1.5 1.5 0 00-2.58 0z'
+					/>
+				</svg>
+				<div class='flex-1'>
+					<Alert.Title class='text-sm font-semibold'>Warning</Alert.Title>
+					<Alert.Description class='mt-0.5 text-sm'>
+						Your session is about to expire. Please save your work.
+					</Alert.Description>
+				</div>
+				<Alert.Dismiss class='shrink-0 rounded-[8px] p-1 text-black hover:bg-[#e5e5e5] transition-colors'>
+					<svg
+						class='h-4 w-4'
+						fill='none'
+						viewBox='0 0 24 24'
+						stroke='currentColor'>
+						<path
+							stroke-linecap='round'
+							stroke-linejoin='round'
+							stroke-width='2'
+							d='M6 18L18 6M6 6l12 12'
+						/>
+					</svg>
+				</Alert.Dismiss>
+			</Alert.Root>
+		</div>
+	),
+};
