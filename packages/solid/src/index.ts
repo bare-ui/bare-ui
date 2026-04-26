@@ -1,5 +1,5 @@
 // Components
-export { Accordion, Card, Divider, List } from './components';
+export { Accordion, Alert, Badge, Card, Divider, List, ProgressBar, Rating } from './components';
 
 // Primitives
 export { createInteractiveState } from './primitives';
@@ -17,6 +17,10 @@ export type {
 	AccordionTriggerProps,
 	AccordionContentProps,
 } from './components/accordion';
+export type { AlertRootProps, AlertTitleProps, AlertDescriptionProps, AlertDismissProps } from './components/alert';
+export type { BadgeProps } from './components/badge';
 export type { CardProps } from './components/card';
 export type { DividerProps } from './components/divider';
 export type { ListProps } from './components/list';
+export type { ProgressBarProps } from './components/progress-bar';
+export type { RatingProps } from './components/rating';
