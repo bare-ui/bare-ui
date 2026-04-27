@@ -1,8 +1,17 @@
 export { Accordion } from './accordion';
 export { Alert } from './alert';
 export { Badge } from './badge';
+export { Button } from './button';
 export { Card } from './card';
+export { Checkbox } from './checkbox';
 export { Divider } from './divider';
+export { Input } from './input';
 export { List } from './list';
+export { OTP } from './otp';
+export { Password } from './password';
 export { ProgressBar } from './progress-bar';
+export { Radio } from './radio';
 export { Rating } from './rating';
+export { Select } from './select';
+export { Switch } from './switch';
+export { Textarea } from './textarea';
