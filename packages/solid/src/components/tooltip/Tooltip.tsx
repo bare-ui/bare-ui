@@ -1,0 +1,151 @@
+import { createContext, createSignal, splitProps, useContext, type JSX } from 'solid-js';
+import type {
+	TooltipContentProps,
+	TooltipContextValue,
+	TooltipRootProps,
+	TooltipTriggerProps,
+} from './Tooltip.types';
+
+// ---------------------------------------------------------------------------
+// Context
+// ---------------------------------------------------------------------------
+
+const TooltipContext = createContext<TooltipContextValue>({
+	open: false,
+	setOpen: () => {},
+});
+
+// ---------------------------------------------------------------------------
+// Root
+// ---------------------------------------------------------------------------
+
+function Root(props: TooltipRootProps) {
+	const [uncontrolledOpen, setUncontrolledOpen] = createSignal(props.defaultOpen ?? false);
+	const isControlled = () => props.open !== undefined;
+	const open = () => (isControlled() ? !!props.open : uncontrolledOpen());
+
+	let timer: ReturnType<typeof setTimeout> | null = null;
+
+	const setOpen = (value: boolean) => {
+		if (timer) {
+			clearTimeout(timer);
+			timer = null;
+		}
+		if (value) {
+			timer = setTimeout(() => {
+				if (!isControlled()) setUncontrolledOpen(true);
+				props.onOpenChange?.(true);
+			}, props.delayDuration ?? 300);
+		} else {
+			if (!isControlled()) setUncontrolledOpen(false);
+			props.onOpenChange?.(false);
+		}
+	};
+
+	const ctxValue: TooltipContextValue = {
+		get open() {
+			return open();
+		},
+		setOpen,
+	};
+
+	return (
+		<TooltipContext.Provider value={ctxValue}>
+			<span style={{ position: 'relative', display: 'inline-block' }}>{props.children}</span>
+		</TooltipContext.Provider>
+	);
+}
+
+// ---------------------------------------------------------------------------
+// Trigger
+// ---------------------------------------------------------------------------
+
+function Trigger(props: TooltipTriggerProps) {
+	const [local, rest] = splitProps(props, ['children', 'onMouseEnter', 'onMouseLeave', 'onFocus', 'onBlur']);
+	const ctx = useContext(TooltipContext);
+
+	const callUserHandler = <E,>(handler: unknown, e: E) => {
+		if (typeof handler === 'function') (handler as (event: E) => void)(e);
+	};
+
+	const handleMouseEnter: JSX.EventHandler<HTMLSpanElement, MouseEvent> = (e) => {
+		ctx.setOpen(true);
+		callUserHandler(local.onMouseEnter, e);
+	};
+	const handleMouseLeave: JSX.EventHandler<HTMLSpanElement, MouseEvent> = (e) => {
+		ctx.setOpen(false);
+		callUserHandler(local.onMouseLeave, e);
+	};
+	const handleFocus: JSX.EventHandler<HTMLSpanElement, FocusEvent> = (e) => {
+		ctx.setOpen(true);
+		callUserHandler(local.onFocus, e);
+	};
+	const handleBlur: JSX.EventHandler<HTMLSpanElement, FocusEvent> = (e) => {
+		ctx.setOpen(false);
+		callUserHandler(local.onBlur, e);
+	};
+
+	return (
+		<span
+			onMouseEnter={handleMouseEnter}
+			onMouseLeave={handleMouseLeave}
+			onFocus={handleFocus}
+			onBlur={handleBlur}
+			{...rest}>
+			{local.children}
+		</span>
+	);
+}
+
+// ---------------------------------------------------------------------------
+// Content
+// ---------------------------------------------------------------------------
+
+function Content(props: TooltipContentProps) {
+	const [local, rest] = splitProps(props, ['side', 'class', 'children', 'style']);
+	const ctx = useContext(TooltipContext);
+	const side = () => local.side ?? 'top';
+
+	const positionStyle = (): JSX.CSSProperties => {
+		const s = side();
+		const base: JSX.CSSProperties = {
+			position: 'absolute',
+			'z-index': 50,
+			'pointer-events': 'none',
+		};
+		if (s === 'top') {
+			return { ...base, bottom: '100%', left: '50%', transform: 'translateX(-50%)', 'margin-bottom': '8px' };
+		}
+		if (s === 'bottom') {
+			return { ...base, top: '100%', left: '50%', transform: 'translateX(-50%)', 'margin-top': '8px' };
+		}
+		if (s === 'left') {
+			return { ...base, right: '100%', top: '50%', transform: 'translateY(-50%)', 'margin-right': '8px' };
+		}
+		return { ...base, left: '100%', top: '50%', transform: 'translateY(-50%)', 'margin-left': '8px' };
+	};
+
+	const mergedStyle = () => {
+		const userStyle = local.style;
+		if (typeof userStyle === 'string' || !userStyle) return positionStyle();
+		return { ...positionStyle(), ...(userStyle as JSX.CSSProperties) };
+	};
+
+	return (
+		<span
+			role='tooltip'
+			data-state={ctx.open ? 'open' : 'closed'}
+			data-side={side()}
+			class={local.class}
+			style={mergedStyle()}
+			{...rest}>
+			{local.children}
+		</span>
+	);
+}
+
+// ---------------------------------------------------------------------------
+// Export
+// ---------------------------------------------------------------------------
+
+export const Tooltip = { Root, Trigger, Content };
