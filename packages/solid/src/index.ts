@@ -7,16 +7,21 @@ export {
 	Card,
 	Checkbox,
 	Divider,
+	Drawer,
+	Dropdown,
 	Input,
 	List,
+	Modal,
 	OTP,
 	Password,
 	ProgressBar,
 	Radio,
 	Rating,
+	Search,
 	Select,
 	Switch,
 	Textarea,
+	Tooltip,
 } from './components';
 
 // Primitives
@@ -46,8 +51,29 @@ export type {
 	CheckboxLabelProps,
 } from './components/checkbox';
 export type { DividerProps } from './components/divider';
+export type {
+	DrawerRootProps,
+	DrawerPortalProps,
+	DrawerOverlayProps,
+	DrawerContentProps,
+	DrawerHeaderProps,
+	DrawerCloseProps,
+} from './components/drawer';
+export type {
+	DropdownRootProps,
+	DropdownTriggerProps,
+	DropdownMenuProps,
+	DropdownPosition,
+} from './components/dropdown';
 export type { InputRootProps, InputFieldProps, InputLabelProps, InputErrorProps } from './components/input';
 export type { ListProps } from './components/list';
+export type {
+	ModalRootProps,
+	ModalPortalProps,
+	ModalOverlayProps,
+	ModalContentProps,
+	ModalCloseProps,
+} from './components/modal';
 export type { OTPRootProps, OTPSlotProps, OTPSeparatorProps } from './components/otp';
 export type {
 	PasswordRootProps,
@@ -59,6 +85,14 @@ export type {
 export type { ProgressBarProps } from './components/progress-bar';
 export type { RadioRootProps, RadioItemProps, RadioIndicatorProps, RadioLabelProps } from './components/radio';
 export type { RatingProps } from './components/rating';
+export type {
+	SearchRootProps,
+	SearchInputProps,
+	SearchContentProps,
+	SearchItemProps,
+	SearchEmptyProps,
+	SearchOption,
+} from './components/search';
 export type {
 	SelectRootProps,
 	SelectTriggerProps,
@@ -76,3 +110,4 @@ export type {
 	TextareaLabelProps,
 	TextareaErrorProps,
 } from './components/textarea';
+export type { TooltipRootProps, TooltipTriggerProps, TooltipContentProps } from './components/tooltip';
