@@ -2,6 +2,7 @@
 export {
 	Accordion,
 	Alert,
+	Avatar,
 	Badge,
 	Button,
 	Card,
@@ -9,6 +10,8 @@ export {
 	Divider,
 	Drawer,
 	Dropdown,
+	Icon,
+	Image,
 	Input,
 	List,
 	Modal,
@@ -21,8 +24,12 @@ export {
 	Select,
 	Switch,
 	Textarea,
+	Timeago,
 	Tooltip,
 } from './components';
+
+// Icon constants
+export { iconNames, iconSizes } from './components/icon';
 
 // Primitives
 export { createClickOutside, createInteractiveState } from './primitives';
@@ -41,6 +48,12 @@ export type {
 	AccordionContentProps,
 } from './components/accordion';
 export type { AlertRootProps, AlertTitleProps, AlertDescriptionProps, AlertDismissProps } from './components/alert';
+export type {
+	AvatarRootProps,
+	AvatarImageProps,
+	AvatarFallbackProps,
+	AvatarImageStatus,
+} from './components/avatar';
 export type { BadgeProps } from './components/badge';
 export type { ButtonProps } from './components/button';
 export type { CardProps } from './components/card';
@@ -65,6 +78,8 @@ export type {
 	DropdownMenuProps,
 	DropdownPosition,
 } from './components/dropdown';
+export type { IconName, IconSize, IconProps } from './components/icon';
+export type { ImageProps } from './components/image';
 export type { InputRootProps, InputFieldProps, InputLabelProps, InputErrorProps } from './components/input';
 export type { ListProps } from './components/list';
 export type {
@@ -110,4 +125,5 @@ export type {
 	TextareaLabelProps,
 	TextareaErrorProps,
 } from './components/textarea';
+export type { TimeagoProps, TimeagoFormatConfig, TimeagoPlural } from './components/timeago';
 export type { TooltipRootProps, TooltipTriggerProps, TooltipContentProps } from './components/tooltip';
