@@ -9,10 +9,10 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@wire-ui/react"><img src="https://img.shields.io/npm/v/@wire-ui/react?style=flat-square&colorA=0a0a0a&colorB=0a0a0a" alt="npm version" /></a>
-  <a href="https://www.npmjs.com/package/@wire-ui/react"><img src="https://img.shields.io/npm/dm/@wire-ui/react?style=flat-square&colorA=0a0a0a&colorB=0a0a0a" alt="npm downloads" /></a>
-  <a href="https://github.com/wire-ui/wire-ui/blob/main/packages/react/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square&colorA=0a0a0a&colorB=0a0a0a" alt="MIT license" /></a>
-  <img src="https://img.shields.io/badge/react-%3E%3D19.0.0-blue?style=flat-square&colorA=0a0a0a&colorB=0a0a0a" alt="react >= 19" />
+  <a href="https://www.npmjs.com/package/@wire-ui/react"><img src="https://img.shields.io/npm/v/@wire-ui/react?style=flat-square&label=%40wire-ui%2Freact&colorA=0a0a0a&colorB=0a0a0a" alt="@wire-ui/react npm version" /></a>
+  <a href="https://www.npmjs.com/package/@wire-ui/vue"><img src="https://img.shields.io/npm/v/@wire-ui/vue?style=flat-square&label=%40wire-ui%2Fvue&colorA=0a0a0a&colorB=0a0a0a" alt="@wire-ui/vue npm version" /></a>
+  <a href="https://www.npmjs.com/package/@wire-ui/solid"><img src="https://img.shields.io/npm/v/@wire-ui/solid?style=flat-square&label=%40wire-ui%2Fsolid&colorA=0a0a0a&colorB=0a0a0a" alt="@wire-ui/solid npm version" /></a>
+  <a href="https://github.com/wire-ui/wire-ui/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square&colorA=0a0a0a&colorB=0a0a0a" alt="MIT license" /></a>
 </p>
 
 ---
@@ -35,10 +35,12 @@ Wire UI is an AI-native, headless component library. Every component ships with 
 
 ## Packages
 
-| Package                              | Version                                                                                                               | Description                                     |
-| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| [`@wire-ui/react`](./packages/react) | [![npm](https://img.shields.io/npm/v/@wire-ui/react?style=flat-square)](https://www.npmjs.com/package/@wire-ui/react) | AI-native unstyled component library (React 19) |
-| [`@wire-ui/vue`](./packages/vue)     | [![npm](https://img.shields.io/npm/v/@wire-ui/vue?style=flat-square)](https://www.npmjs.com/package/@wire-ui/vue)     | AI-native unstyled component library (Vue 3)    |
+| Package                              | Version                                                                                                               | Description                                       |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| [`@wire-ui/react`](./packages/react) | [![npm](https://img.shields.io/npm/v/@wire-ui/react?style=flat-square)](https://www.npmjs.com/package/@wire-ui/react) | AI-native unstyled component library (React 19)   |
+| [`@wire-ui/vue`](./packages/vue)     | [![npm](https://img.shields.io/npm/v/@wire-ui/vue?style=flat-square)](https://www.npmjs.com/package/@wire-ui/vue)     | AI-native unstyled component library (Vue 3)      |
+| [`@wire-ui/solid`](./packages/solid) | [![npm](https://img.shields.io/npm/v/@wire-ui/solid?style=flat-square)](https://www.npmjs.com/package/@wire-ui/solid) | AI-native unstyled component library (SolidJS 1.9) |
+| [`@wire-ui/mcp`](./packages/mcp)     | [![npm](https://img.shields.io/npm/v/@wire-ui/mcp?style=flat-square)](https://www.npmjs.com/package/@wire-ui/mcp)     | MCP server for AI-assisted Wire UI workflows      |
 
 ## Repository structure
 
@@ -49,6 +51,7 @@ wire-ui/
 └── packages/
     ├── react/         # @wire-ui/react — React 19 component library
     ├── vue/           # @wire-ui/vue — Vue 3 component library
+    ├── solid/         # @wire-ui/solid — SolidJS 1.9 component library
     └── mcp/           # @wire-ui/mcp — MCP server for AI integration
 ```
 
@@ -70,4 +73,4 @@ See the [contributing guide](./CONTRIBUTING.md) for local development instructio
 
 ## License
 
-MIT License © 2025 Wire UI. See [LICENSE](./packages/react/LICENSE) for details.
+MIT License © 2025 Wire UI. See [LICENSE](./LICENSE) for details.
