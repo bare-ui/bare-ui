@@ -51,7 +51,16 @@ import { OTPRoot, OTPSlot } from '@wire-ui/vue'
     ```
     </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { OTP } from '@wire-ui/solid'
+import { For } from 'solid-js'
+
+<OTP.Root length={6} onComplete={(code) => console.log(code)}>
+  <For each={Array.from({ length: 6 })}>
+    {(_, i) => <OTP.Slot index={i()} />}
+  </For>
+</OTP.Root>
+    ```
     </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
@@ -118,7 +127,34 @@ function onComplete(code) {
 ```
 </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+```tsx
+import { OTP } from '@wire-ui/solid'
+import { createSignal, For, Show } from 'solid-js'
+
+const [value, setValue] = createSignal('')
+const [status, setStatus] = createSignal<'idle' | 'success' | 'error'>('idle')
+
+<OTP.Root
+  value={value()}
+  onChange={setValue}
+  onComplete={(code) => {
+    // Verify the code and set status
+    verify(code).then(() => setStatus('success')).catch(() => setStatus('error'))
+  }}
+  length={6}
+  class="flex items-center gap-2">
+  <For each={Array.from({ length: 6 })}>
+    {(_, i) => (
+      <OTP.Slot
+        index={i()}
+        class="h-12 w-10 rounded-[8px] border border-black bg-white text-center text-lg font-mono font-semibold text-black outline-none transition-all caret-transparent data-[active]:ring-4 data-[active]:ring-black/20"
+      />
+    )}
+  </For>
+</OTP.Root>
+<Show when={status() === 'success'}><p class="text-sm text-green-600">Verified!</p></Show>
+<Show when={status() === 'error'}><p class="text-sm text-red-600">Invalid code. Try again.</p></Show>
+```
     </ForSolid>
   </Tabs.Tab>
 </Tabs>

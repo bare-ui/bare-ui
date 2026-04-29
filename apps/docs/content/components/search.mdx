@@ -70,7 +70,29 @@ const filtered = ref([])
     ```
     </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { Search } from '@wire-ui/solid'
+import { createSignal, For } from 'solid-js'
+
+const [query, setQuery] = createSignal('')
+const [filtered, setFiltered] = createSignal([])
+
+<Search.Root
+  value={query()}
+  onSearchChange={setQuery}
+  onSelect={(option) => alert('Selected: ' + option.title)}>
+  <Search.Input placeholder="Search frameworks..." />
+  <Search.Content>
+    <For each={filtered()}>
+      {(item) => (
+        <Search.Item option={item}>
+          {item.title}
+        </Search.Item>
+      )}
+    </For>
+  </Search.Content>
+</Search.Root>
+    ```
     </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
@@ -133,7 +155,35 @@ const query = ref('')
 ```
 </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+```tsx
+import { Search } from '@wire-ui/solid'
+import { createSignal, For } from 'solid-js'
+
+const [query, setQuery] = createSignal('')
+const [filtered, setFiltered] = createSignal([])
+
+<Search.Root
+  value={query()}
+  onSearchChange={setQuery}
+  onSelect={(option) => alert('Selected: ' + option.title)}
+  class="relative w-80">
+  <Search.Input
+    placeholder="Search frameworks..."
+    class="w-full rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+  />
+  <Search.Content class="absolute left-0 top-full z-10 mt-1 w-full rounded-[20px] border border-black bg-white py-1">
+    <For each={filtered()}>
+      {(item) => (
+        <Search.Item
+          option={item}
+          class="cursor-pointer px-3 py-2 hover:bg-[#f5f5f5] data-[highlighted]:bg-[#f5f5f5]">
+          <div class="text-sm font-medium text-black">{item.title}</div>
+        </Search.Item>
+      )}
+    </For>
+  </Search.Content>
+</Search.Root>
+```
     </ForSolid>
   </Tabs.Tab>
 </Tabs>

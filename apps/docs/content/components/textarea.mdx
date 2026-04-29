@@ -50,7 +50,14 @@ import { Textarea, TextareaField, TextareaLabel, TextareaRoot } from '@wire-ui/v
     ```
     </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { Textarea } from '@wire-ui/solid'
+
+<Textarea.Root>
+  <Textarea.Label>Message</Textarea.Label>
+  <Textarea.Field placeholder="Type your message here..." rows={4} />
+</Textarea.Root>
+    ```
     </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
@@ -87,7 +94,18 @@ import { TextareaRoot, TextareaField, TextareaLabel } from '@wire-ui/vue'
 ```
 </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { Textarea } from '@wire-ui/solid'
+
+<Textarea.Root class="flex flex-col gap-1.5">
+  <Textarea.Label class="text-sm font-medium text-black">Message</Textarea.Label>
+  <Textarea.Field
+    placeholder="Type your message here..."
+    rows={4}
+    class="w-full rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+  />
+</Textarea.Root>
+    ```
     </ForSolid>
   </Tabs.Tab>
 </Tabs>

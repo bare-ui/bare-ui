@@ -57,7 +57,18 @@ import { ProgressBar } from '@wire-ui/vue'
     ```
     </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { ProgressBar } from '@wire-ui/solid'
+
+<div>
+  <div>
+    <span>Storage used</span>
+    <span>68%</span>
+  </div>
+  <ProgressBar percentage={68} />
+  <p>6.8 GB of 10 GB used</p>
+</div>
+    ```
     </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
@@ -94,7 +105,18 @@ import { ProgressBar } from '@wire-ui/vue'
 ```
 </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+```tsx
+import { ProgressBar } from '@wire-ui/solid'
+
+<div class="w-80">
+  <div class="mb-1 flex justify-between text-sm">
+    <span class="font-medium text-black">Storage used</span>
+    <span class="text-[#6b7280]">68%</span>
+  </div>
+  <ProgressBar percentage={68} class="h-2 w-full overflow-hidden rounded-full bg-[#e5e5e5] [&_[data-part=fill]]:h-full [&_[data-part=fill]]:rounded-full [&_[data-part=fill]]:bg-black [&_[data-part=fill]]:transition-[width] [&_[data-part=fill]]:duration-300" />
+  <p class="mt-1 text-xs text-[#6b7280]">6.8 GB of 10 GB used</p>
+</div>
+```
     </ForSolid>
   </Tabs.Tab>
 </Tabs>

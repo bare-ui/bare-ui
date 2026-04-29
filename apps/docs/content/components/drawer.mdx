@@ -85,7 +85,32 @@ const open = ref(false)
     ```
     </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { createSignal } from 'solid-js'
+import { Drawer } from '@wire-ui/solid'
+
+const [open, setOpen] = createSignal(false)
+
+<button onClick={() => setOpen(true)}>
+  Open Drawer
+</button>
+
+<Drawer.Root open={open()} onOpenChange={setOpen}>
+  <Drawer.Portal>
+    <Drawer.Overlay>
+      <Drawer.Content>
+        <Drawer.Header>
+          <span>Drawer Title</span>
+          <Drawer.Close>✕</Drawer.Close>
+        </Drawer.Header>
+        <div>
+          <p>This is a simple drawer with some content.</p>
+        </div>
+      </Drawer.Content>
+    </Drawer.Overlay>
+  </Drawer.Portal>
+</Drawer.Root>
+    ```
     </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
@@ -162,7 +187,38 @@ const open = ref(false)
 ```
 </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { createSignal } from 'solid-js'
+import { Drawer } from '@wire-ui/solid'
+
+const [open, setOpen] = createSignal(false)
+
+<button
+  onClick={() => setOpen(true)}
+  class="inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]">
+  Open Drawer
+</button>
+
+<Drawer.Root open={open()} onOpenChange={setOpen}>
+  <Drawer.Portal>
+    <Drawer.Overlay class="fixed inset-0 z-50 bg-black/50">
+      <Drawer.Content class="fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r-[3px] border-black bg-white">
+        <Drawer.Header class="flex items-center justify-between px-4 py-4">
+          <span class="text-lg font-bold text-black">Drawer Title</span>
+          <Drawer.Close class="rounded-[8px] p-1 text-[#6b7280] hover:bg-[#f5f5f5] hover:text-black">
+            ✕
+          </Drawer.Close>
+        </Drawer.Header>
+        <div class="flex-1 px-4 py-2">
+          <p class="text-sm text-[#6b7280]">
+            This is a simple drawer with some content.
+          </p>
+        </div>
+      </Drawer.Content>
+    </Drawer.Overlay>
+  </Drawer.Portal>
+</Drawer.Root>
+    ```
     </ForSolid>
   </Tabs.Tab>
 </Tabs>

@@ -28,7 +28,11 @@ npm install @wire-ui/vue
 Wire UI has no production dependencies. Vue is a peer dependency.
 </ForVue>
 <ForSolid>
-🚧 Solid JS support is coming soon.
+```bash npm2yarn
+npm install @wire-ui/solid
+```
+
+Wire UI has no production dependencies. SolidJS is a peer dependency.
 </ForSolid>
 
 ### Add peer dependencies
@@ -48,7 +52,11 @@ npm install vue@^3.5
 ```
 </ForVue>
 <ForSolid>
-🚧 Solid JS support is coming soon.
+If you don't already have SolidJS:
+
+```bash npm2yarn
+npm install solid-js@^1.9
+```
 </ForSolid>
 
 ### Use a component
@@ -80,7 +88,17 @@ import { Button } from '@wire-ui/vue'
 ```
 </ForVue>
 <ForSolid>
-🚧 Solid JS support is coming soon.
+```tsx
+import { Button } from '@wire-ui/solid'
+
+export function SaveButton() {
+  return (
+    <Button type="submit" class="px-4 py-2 rounded bg-blue-600 text-white">
+      Save changes
+    </Button>
+  )
+}
+```
 </ForSolid>
 
 </Steps>
@@ -120,7 +138,17 @@ Wire UI ships no CSS. All interactive state is exposed through `data-*` attribut
 ```
 </ForVue>
 <ForSolid>
-🚧 Solid JS support is coming soon.
+```tsx
+<Button class="
+  px-4 py-2 rounded bg-blue-600 text-white transition-all
+  [data-hover]:bg-blue-700
+  [data-active]:scale-95
+  [data-focus-visible]:ring-2 [data-focus-visible]:ring-offset-2
+  [data-disabled]:opacity-50 [data-disabled]:cursor-not-allowed
+">
+  Submit
+</Button>
+```
 </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
@@ -187,7 +215,18 @@ const value = ref('')
 ```
 </ForVue>
 <ForSolid>
-🚧 Solid JS support is coming soon.
+```tsx
+import { createSignal } from 'solid-js'
+import { Input } from '@wire-ui/solid'
+
+const [value, setValue] = createSignal('')
+
+<Input.Root value={value()} onChange={setValue}>
+  <Input.Label>Email address</Input.Label>
+  <Input.Field type="email" placeholder="you@example.com" />
+  <Input.Error />
+</Input.Root>
+```
 </ForSolid>
 
 You control the DOM order. Need the error above the field? Swap them. Need a wrapper div between label and field? Add it. Wire UI never dictates structure.
@@ -257,7 +296,34 @@ function handleSubmit(e: Event) {
 ```
 </ForVue>
 <ForSolid>
-🚧 Solid JS support is coming soon.
+```tsx
+import { createSignal } from 'solid-js'
+import { Input } from '@wire-ui/solid'
+
+const [email, setEmail] = createSignal('')
+const [invalidType, setInvalidType] = createSignal('')
+
+function handleSubmit(e: SubmitEvent) {
+  e.preventDefault()
+  if (!email()) setInvalidType('required')
+  else if (!email().includes('@')) setInvalidType('email')
+  else setInvalidType('')  // clear the error
+}
+
+<Input.Root
+  value={email()}
+  onChange={setEmail}
+  invalidType={invalidType()}
+  errorMessage={{
+    required: 'Email is required',
+    email: 'Enter a valid email address',
+  }}
+>
+  <Input.Label>Email</Input.Label>
+  <Input.Field type="email" />
+  <Input.Error />
+</Input.Root>
+```
 </ForSolid>
 
 ## TypeScript
@@ -295,5 +361,17 @@ import type {
 ```
 </ForVue>
 <ForSolid>
-🚧 Solid JS support is coming soon.
+```ts
+import type {
+  ButtonProps,
+  InputRootProps,
+  TextareaRootProps,
+  PasswordRootProps,
+  ModalRootProps,
+  AccordionRootProps,
+  SearchOption,
+  Size,
+  Status,
+} from '@wire-ui/solid'
+```
 </ForSolid>

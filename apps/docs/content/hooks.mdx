@@ -1,13 +1,19 @@
 ---
-title: Hooks / Composables
-description: Publicly exported hooks and composables from Wire UI.
+title: Hooks / Composables / Primitives
+description: Publicly exported hooks, composables, and primitives from Wire UI.
 ---
 
-# Hooks / Composables
+# Hooks / Composables / Primitives
 
-## `useInteractiveState`
+<ForReact>Wire UI exports two hooks for building your own interactive components.</ForReact>
+<ForVue>Wire UI exports two composables for building your own interactive components.</ForVue>
+<ForSolid>Wire UI exports two primitives for building your own interactive components. They follow Solid's `create*` naming convention and accept reactive option getters.</ForSolid>
 
-Tracks hover, keyboard focus, and press state for any element. This is the same hook used internally by Button, Accordion.Trigger, Modal.Close, and Drawer.Close — exported so you can build your own interactive components with identical state tracking.
+<ForReact>## `useInteractiveState`</ForReact>
+<ForVue>## `useInteractiveState`</ForVue>
+<ForSolid>## `createInteractiveState`</ForSolid>
+
+Tracks hover, keyboard focus, and press state for any element. This is the same primitive used internally by Button, Accordion.Trigger, Modal.Close, and Drawer.Close — exported so you can build your own interactive components with identical state tracking.
 
 <ForReact>
 ```tsx
@@ -65,7 +71,33 @@ const { handlers, dataAttributes } = useInteractiveState({ disabled: () => props
 ```
 </ForVue>
 <ForSolid>
-🚧 Solid JS support is coming soon.
+```tsx
+import { createInteractiveState } from '@wire-ui/solid'
+
+function MyCard(props: { disabled?: boolean }) {
+  const state = createInteractiveState({
+    get disabled() { return !!props.disabled },
+  })
+
+  return (
+    <div
+      tabIndex={0}
+      role="button"
+      {...state.handlers}
+      {...state.dataAttributes}
+      class="
+        rounded-lg border p-4 cursor-pointer transition-all
+        [data-hover]:bg-gray-50
+        [data-active]:scale-95
+        [data-focus-visible]:ring-2
+        [data-disabled]:opacity-50 [data-disabled]:pointer-events-none
+      "
+    >
+      Card content
+    </div>
+  )
+}
+```
 </ForSolid>
 
 ### Returns
@@ -86,7 +118,9 @@ const { handlers, dataAttributes } = useInteractiveState({ disabled: () => props
 
 ---
 
-## `useClickOutside`
+<ForReact>## `useClickOutside`</ForReact>
+<ForVue>## `useClickOutside`</ForVue>
+<ForSolid>## `createClickOutside`</ForSolid>
 
 Fires a callback when the user clicks or taps outside a referenced element. Used internally by Dropdown and Search to close their menus.
 
@@ -128,7 +162,23 @@ useClickOutside(popoverRef, () => { open.value = false })
 ```
 </ForVue>
 <ForSolid>
-🚧 Solid JS support is coming soon.
+```tsx
+import { createSignal } from 'solid-js'
+import { createClickOutside } from '@wire-ui/solid'
+
+function Popover() {
+  const [, setOpen] = createSignal(true)
+  let popoverEl: HTMLDivElement | undefined
+
+  createClickOutside(() => popoverEl, () => setOpen(false))
+
+  return (
+    <div ref={popoverEl}>
+      Popover content
+    </div>
+  )
+}
+```
 </ForSolid>
 
 ### Parameters
@@ -146,5 +196,8 @@ useClickOutside(popoverRef, () => { open.value = false })
 | `handler` | `() => void` | Callback fired on outside click/tap |
 </ForVue>
 <ForSolid>
-🚧 Solid JS support is coming soon.
+| Param | Type | Description |
+|---|---|---|
+| `getElement` | `() => HTMLElement \| undefined` | Accessor that returns the element to watch (so the listener picks up ref changes) |
+| `handler` | `() => void` | Callback fired on outside click/tap |
 </ForSolid>

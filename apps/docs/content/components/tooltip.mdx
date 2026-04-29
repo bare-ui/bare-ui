@@ -59,7 +59,18 @@ import { Tooltip, TooltipContent, TooltipRoot, TooltipTrigger } from '@wire-ui/v
     ```
     </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { Tooltip } from '@wire-ui/solid'
+
+<Tooltip.Root delayDuration={0}>
+  <Tooltip.Trigger>
+    <button>Hover me</button>
+  </Tooltip.Trigger>
+  <Tooltip.Content side="top">
+    Tooltip on top
+  </Tooltip.Content>
+</Tooltip.Root>
+    ```
     </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
@@ -104,7 +115,22 @@ import { TooltipRoot, TooltipTrigger, TooltipContent } from '@wire-ui/vue'
 ```
 </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { Tooltip } from '@wire-ui/solid'
+
+<Tooltip.Root delayDuration={0}>
+  <Tooltip.Trigger>
+    <button class="rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]">
+      Hover me
+    </button>
+  </Tooltip.Trigger>
+  <Tooltip.Content
+    side="top"
+    class="rounded-[8px] border border-black bg-[#f5f5f5] px-2.5 py-1.5 text-xs font-medium text-black data-[state=closed]:hidden whitespace-nowrap">
+    Tooltip on top
+  </Tooltip.Content>
+</Tooltip.Root>
+    ```
     </ForSolid>
   </Tabs.Tab>
 </Tabs>

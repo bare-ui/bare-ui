@@ -85,7 +85,31 @@ const open = ref(false)
     ```
     </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { createSignal } from 'solid-js'
+import { Modal } from '@wire-ui/solid'
+
+const [open, setOpen] = createSignal(false)
+
+<button onClick={() => setOpen(true)}>Delete Account</button>
+
+<Modal.Root open={open()} onOpenChange={setOpen}>
+  <Modal.Portal>
+    <Modal.Overlay>
+      <Modal.Content>
+        <h2>Delete Account</h2>
+        <p>
+          Are you sure you want to delete your account? All of your data will be permanently removed. This action cannot be undone.
+        </p>
+        <div>
+          <Modal.Close>Cancel</Modal.Close>
+          <button onClick={() => setOpen(false)}>Delete</button>
+        </div>
+      </Modal.Content>
+    </Modal.Overlay>
+  </Modal.Portal>
+</Modal.Root>
+    ```
     </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
@@ -178,7 +202,46 @@ const open = ref(false)
 ```
 </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+```tsx
+import { createSignal } from 'solid-js'
+import { Modal } from '@wire-ui/solid'
+
+const [open, setOpen] = createSignal(false)
+
+<button
+  onClick={() => setOpen(true)}
+  class="inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]">
+  Delete Account
+</button>
+
+<Modal.Root open={open()} onOpenChange={setOpen}>
+  <Modal.Portal>
+    <Modal.Overlay class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      <Modal.Content class="w-full max-w-md overflow-hidden rounded-[20px] border border-black bg-white p-6">
+        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#f5f5f5]">
+          <svg class="h-6 w-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <h2 class="mb-2 text-base font-semibold text-black">Delete Account</h2>
+        <p class="mb-6 text-sm text-[#6b7280]">
+          Are you sure you want to delete your account? All of your data will be permanently removed. This action cannot be undone.
+        </p>
+        <div class="flex gap-3">
+          <Modal.Close class="flex-1 rounded-[8px] border border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]">
+            Cancel
+          </Modal.Close>
+          <button
+            onClick={() => setOpen(false)}
+            class="flex-1 rounded-[8px] border border-black bg-black py-2 text-sm font-medium text-white hover:bg-[#333]">
+            Delete
+          </button>
+        </div>
+      </Modal.Content>
+    </Modal.Overlay>
+  </Modal.Portal>
+</Modal.Root>
+```
     </ForSolid>
   </Tabs.Tab>
 </Tabs>

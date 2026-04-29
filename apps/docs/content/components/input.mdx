@@ -51,7 +51,14 @@ import { Input, InputField, InputLabel, InputRoot } from '@wire-ui/vue'
     ```
     </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { Input } from '@wire-ui/solid'
+
+<Input.Root>
+  <Input.Label>Full Name</Input.Label>
+  <Input.Field placeholder="John Doe" />
+</Input.Root>
+    ```
     </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
@@ -86,7 +93,17 @@ import { InputRoot, InputField, InputLabel } from '@wire-ui/vue'
 ```
 </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+```tsx
+import { Input } from '@wire-ui/solid'
+
+<Input.Root class="flex w-full max-w-xs flex-col gap-1.5">
+  <Input.Label class="text-sm font-medium text-black">Full Name</Input.Label>
+  <Input.Field
+    placeholder="John Doe"
+    class="w-full rounded-[8px] bg-white border border-black px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+  />
+</Input.Root>
+```
     </ForSolid>
   </Tabs.Tab>
 </Tabs>

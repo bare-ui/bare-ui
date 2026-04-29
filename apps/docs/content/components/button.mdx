@@ -44,7 +44,11 @@ import { Button } from '@wire-ui/vue'
     ```
     </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { Button } from '@wire-ui/solid'
+
+<Button>Styled Button</Button>
+    ```
     </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
@@ -71,7 +75,13 @@ import { Button } from '@wire-ui/vue'
 ```
 </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+```tsx
+import { Button } from '@wire-ui/solid'
+
+<Button class="inline-flex cursor-pointer items-center justify-center rounded-[8px] border border-black px-4 py-2 bg-[#f5f5f5] text-sm font-medium text-black outline-none transition-colors [data-hover]:bg-black [data-hover]:text-white [data-active]:scale-95 [data-focus-visible]:ring-2 [data-focus-visible]:ring-black [data-focus-visible]:ring-offset-2 [data-disabled]:cursor-not-allowed [data-disabled]:opacity-50">
+  Styled Button
+</Button>
+```
     </ForSolid>
   </Tabs.Tab>
 </Tabs>

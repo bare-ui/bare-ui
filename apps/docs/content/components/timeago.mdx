@@ -69,7 +69,24 @@ const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
     ```
     </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { Timeago } from '@wire-ui/solid'
+
+const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
+
+<div>
+  <span>Duration: </span>
+  <Timeago datetime={fiveMinutesAgo} isDuration />
+</div>
+<div>
+  <span>Full date/time: </span>
+  <Timeago datetime={fiveMinutesAgo} />
+</div>
+<div>
+  <span>Time only: </span>
+  <Timeago datetime={fiveMinutesAgo} timeOnly />
+</div>
+    ```
     </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
@@ -118,7 +135,24 @@ const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
 ```
 </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { Timeago } from '@wire-ui/solid'
+
+const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
+
+<div>
+  <span class="text-sm font-medium text-[#6b7280]">Duration: </span>
+  <Timeago datetime={fiveMinutesAgo} isDuration class="text-sm text-black" />
+</div>
+<div>
+  <span class="text-sm font-medium text-[#6b7280]">Full date/time: </span>
+  <Timeago datetime={fiveMinutesAgo} class="text-sm text-black" />
+</div>
+<div>
+  <span class="text-sm font-medium text-[#6b7280]">Time only: </span>
+  <Timeago datetime={fiveMinutesAgo} timeOnly class="text-sm text-black" />
+</div>
+    ```
     </ForSolid>
   </Tabs.Tab>
 </Tabs>

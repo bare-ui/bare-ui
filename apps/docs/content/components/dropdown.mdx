@@ -58,7 +58,18 @@ import { Dropdown, DropdownMenu, DropdownRoot, DropdownTrigger } from '@wire-ui/
     ```
     </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { Dropdown } from '@wire-ui/solid'
+
+<Dropdown.Root>
+  <Dropdown.Trigger>Open Menu</Dropdown.Trigger>
+  <Dropdown.Menu>
+    <div>Profile</div>
+    <div>Settings</div>
+    <div>Sign out</div>
+  </Dropdown.Menu>
+</Dropdown.Root>
+    ```
     </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
@@ -99,7 +110,20 @@ import { DropdownRoot, DropdownTrigger, DropdownMenu } from '@wire-ui/vue'
 ```
 </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { Dropdown } from '@wire-ui/solid'
+
+<Dropdown.Root class="relative inline-block">
+  <Dropdown.Trigger class="inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]">
+    Open Menu
+  </Dropdown.Trigger>
+  <Dropdown.Menu class="absolute left-0 top-full z-10 mt-1 w-48 overflow-hidden rounded-[20px] border border-black bg-white py-1">
+    <div class="cursor-pointer px-4 py-2 text-sm text-black hover:bg-[#f5f5f5]">Profile</div>
+    <div class="cursor-pointer px-4 py-2 text-sm text-black hover:bg-[#f5f5f5]">Settings</div>
+    <div class="cursor-pointer px-4 py-2 text-sm text-black hover:bg-[#f5f5f5]">Sign out</div>
+  </Dropdown.Menu>
+</Dropdown.Root>
+    ```
     </ForSolid>
   </Tabs.Tab>
 </Tabs>

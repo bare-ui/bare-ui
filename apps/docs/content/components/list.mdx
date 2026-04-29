@@ -67,7 +67,26 @@ const items = [
     ```
     </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { List } from '@wire-ui/solid'
+import { For } from 'solid-js'
+
+<List>
+  <For each={[
+    { label: 'Design mockups', done: true },
+    { label: 'Write unit tests', done: true },
+    { label: 'Implement API', done: false },
+    { label: 'Deploy to staging', done: false },
+  ]}>
+    {({ label, done }) => (
+      <li>
+        <span>{done ? '✓' : '○'}</span>
+        <span>{label}</span>
+      </li>
+    )}
+  </For>
+</List>
+    ```
     </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
@@ -124,7 +143,32 @@ const items = [
 ```
 </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+```tsx
+import { List } from '@wire-ui/solid'
+import { For, Show } from 'solid-js'
+
+<List class="w-64 space-y-2">
+  <For each={[
+    { label: 'Design mockups', done: true },
+    { label: 'Write unit tests', done: true },
+    { label: 'Implement API', done: false },
+    { label: 'Deploy to staging', done: false },
+  ]}>
+    {({ label, done }) => (
+      <li class="flex items-center gap-2.5 text-sm">
+        <span class={['flex h-5 w-5 items-center justify-center rounded-full border', done ? 'border-black bg-black text-white' : 'border-black bg-white'].join(' ')}>
+          <Show when={done}>
+            <svg class="h-3 w-3" viewBox="0 0 12 12" fill="currentColor">
+              <path d="M3.5 6L5.5 8L8.5 4.5" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </Show>
+        </span>
+        <span class={done ? 'text-[#6b7280] line-through' : 'text-black'}>{label}</span>
+      </li>
+    )}
+  </For>
+</List>
+```
     </ForSolid>
   </Tabs.Tab>
 </Tabs>

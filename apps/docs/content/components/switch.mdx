@@ -71,7 +71,25 @@ const items = [
     ```
     </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { Switch } from '@wire-ui/solid'
+import { For } from 'solid-js'
+
+<For each={[
+  { label: 'Push notifications', value: pushEnabled, onChange: setPushEnabled },
+  { label: 'Email updates', value: emailEnabled, onChange: setEmailEnabled },
+  { label: 'Marketing', value: marketingEnabled, onChange: setMarketingEnabled },
+]}>
+  {({ label, value, onChange }) => (
+    <div>
+      <p>{label}</p>
+      <Switch.Root checked={value()} onChange={onChange}>
+        <Switch.Thumb />
+      </Switch.Root>
+    </div>
+  )}
+</For>
+    ```
     </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
@@ -131,7 +149,30 @@ const settings = [
 ```
 </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { Switch } from '@wire-ui/solid'
+import { For } from 'solid-js'
+
+<div class="w-80 divide-y divide-[#d4d4d4] rounded-[8px] border border-black bg-white">
+  <For each={[
+    { label: 'Push notifications', value: pushEnabled, onChange: setPushEnabled },
+    { label: 'Email updates', value: emailEnabled, onChange: setEmailEnabled },
+    { label: 'Marketing', value: marketingEnabled, onChange: setMarketingEnabled },
+  ]}>
+    {({ label, value, onChange }) => (
+      <div class="flex items-center justify-between px-4 py-3">
+        <p class="text-sm font-medium text-black">{label}</p>
+        <Switch.Root
+          checked={value()}
+          onChange={onChange}
+          class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-black bg-[#e5e5e5] transition-colors outline-none data-[checked]:bg-black data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[focus-visible]:ring-2 data-[focus-visible]:ring-black data-[focus-visible]:ring-offset-2">
+          <Switch.Thumb class="pointer-events-none inline-block size-5 translate-x-0 rounded-full border border-black bg-white transition-transform data-[checked]:translate-x-5" />
+        </Switch.Root>
+      </div>
+    )}
+  </For>
+</div>
+    ```
     </ForSolid>
   </Tabs.Tab>
 </Tabs>

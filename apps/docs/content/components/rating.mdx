@@ -44,7 +44,11 @@ import { Rating } from '@wire-ui/vue'
     ```
     </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+    ```tsx
+import { Rating } from '@wire-ui/solid'
+
+<Rating value={4} readOnly />
+    ```
     </ForSolid>
   </Tabs.Tab>
   <Tabs.Tab>
@@ -75,7 +79,15 @@ import { Rating } from '@wire-ui/vue'
 ```
 </ForVue>
     <ForSolid>
-    🚧 Solid JS support is coming soon.
+```tsx
+import { Rating } from '@wire-ui/solid'
+
+<div class="flex items-center gap-2">
+  <Rating value={4} readOnly class="flex gap-0.5" starClassName="size-4 cursor-default text-[#e5e5e5] data-[filled]:text-black" />
+  <span class="text-sm font-medium text-black">4.0</span>
+  <span class="text-sm text-[#6b7280]">(128 reviews)</span>
+</div>
+```
     </ForSolid>
   </Tabs.Tab>
 </Tabs>
