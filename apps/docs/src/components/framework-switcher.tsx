@@ -6,7 +6,7 @@ import { useFramework, type Framework } from "../context/framework-context";
 const FRAMEWORKS: { id: Framework; label: string; available: boolean }[] = [
 	{ id: "react", label: "React", available: true },
 	{ id: "vue", label: "Vue", available: true },
-	{ id: "solid", label: "Solid", available: false },
+	{ id: "solid", label: "Solid", available: true },
 ];
 
 export function FrameworkSwitcher() {
