@@ -172,12 +172,17 @@ export default function HomePage() {
 								↓ <NpmDownloads pkg="@wire-ui/vue" />
 							</span>
 						</a>
-						<span
-							className={`${s.frameworkPill} ${s.frameworkPillDisabled}`}
+						<a
+							href="https://www.npmjs.com/package/@wire-ui/solid"
+							target="_blank"
+							rel="noopener noreferrer"
+							className={s.frameworkPill}
 						>
 							<SolidIcon /> Solid
-							<span className={s.ctaBadge}>Soon</span>
-						</span>
+							<span className={s.ctaBadge}>
+								↓ <NpmDownloads pkg="@wire-ui/solid" />
+							</span>
+						</a>
 					</div>
 				</div>
 			</section>
@@ -265,6 +270,24 @@ const handleSelect = (action: string) => {
     </DropdownMenu>
   </DropdownRoot>
 </template>`,
+							solid: `import { Dropdown } from '@wire-ui/solid'
+
+export const UserMenu = () => {
+  const handleSelect = (action: string) => {
+    console.log('selected:', action)
+  }
+
+  return (
+    <Dropdown.Root>
+      <Dropdown.Trigger>Open Menu</Dropdown.Trigger>
+      <Dropdown.Menu>
+        <div onClick={() => handleSelect('profile')}>Profile</div>
+        <div onClick={() => handleSelect('settings')}>Settings</div>
+        <div onClick={() => handleSelect('signout')}>Sign out</div>
+      </Dropdown.Menu>
+    </Dropdown.Root>
+  )
+}`,
 						}}
 					/>
 				</div>
