@@ -1,4 +1,6 @@
 import type { Meta, StoryObj } from 'storybook-solidjs-vite';
+import { Avatar } from '../avatar';
+import { Button } from '../button';
 import { Card } from './Card';
 
 const meta = {
@@ -64,9 +66,9 @@ export const Default: Story = {
 export const Composed: Story = {
 	render: () => (
 		<Card class='w-full max-w-sm rounded-[8px] border border-black bg-white p-4 flex items-center gap-4'>
-			<div class='relative inline-flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-black bg-[#f5f5f5]'>
-				<span class='text-sm font-semibold text-black select-none'>W</span>
-			</div>
+			<Avatar.Root class='relative inline-flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-black bg-[#f5f5f5]'>
+				<Avatar.Fallback class='text-sm font-semibold text-black select-none'>W</Avatar.Fallback>
+			</Avatar.Root>
 			<div>
 				<h3 class='text-sm font-semibold text-black'>Wire UI</h3>
 				<p class='text-xs text-[#6b7280]'>Wireframe primitives for modern frameworks</p>
@@ -86,9 +88,9 @@ export const Complex: Story = {
 				</p>
 				<div class='flex items-center justify-between'>
 					<span class='text-base font-bold text-black'>$49.99</span>
-					<button class='inline-flex cursor-pointer items-center justify-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#333]'>
+					<Button class='inline-flex cursor-pointer items-center justify-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white transition-colors [data-hover]:bg-[#333]'>
 						Add to Cart
-					</button>
+					</Button>
 				</div>
 			</div>
 		</Card>
