@@ -23,15 +23,15 @@ We aim to acknowledge reports within 48 hours and provide a fix timeline within 
 
 ### No runtime dependencies
 
-`@wire-ui/react` ships with **zero runtime dependencies**. The only peer dependencies are React and React DOM. This minimizes the attack surface — there are no transitive dependencies that could introduce supply chain vulnerabilities.
+`@wire-ui/react`, `@wire-ui/vue`, and `@wire-ui/solid` all ship with **zero runtime dependencies**. The only peer dependency is the host framework itself (React, Vue, or SolidJS). This minimizes the attack surface — there are no transitive dependencies that could introduce supply chain vulnerabilities.
 
 ### No CSS or external resources
 
 Wire UI ships no CSS, no fonts, no images, and makes no network requests. Components are pure JavaScript/TypeScript. This eliminates entire classes of vulnerabilities related to external resource loading, CSS injection, and CORS issues.
 
-### No `dangerouslySetInnerHTML`
+### No raw HTML injection
 
-Wire UI components never use `dangerouslySetInnerHTML` or insert raw HTML. All rendering uses React's standard JSX, which automatically escapes content and prevents XSS attacks.
+Wire UI components never use React's `dangerouslySetInnerHTML`, Vue's `v-html`, or any equivalent escape hatch in SolidJS. All rendering uses each framework's standard template/JSX, which automatically escapes content and prevents XSS attacks.
 
 ### No `eval` or dynamic code execution
 
@@ -57,6 +57,22 @@ Wire UI exposes interactive state via `data-*` attributes (e.g., `data-hover`, `
 |---|---|---|
 | `react` | peer | React 19+ |
 | `react-dom` | peer | React DOM 19+ |
+
+No runtime `dependencies` — only peer dependencies.
+
+### `@wire-ui/vue`
+
+| Dependency | Type | Purpose |
+|---|---|---|
+| `vue` | peer | Vue 3.5+ |
+
+No runtime `dependencies` — only peer dependencies.
+
+### `@wire-ui/solid`
+
+| Dependency | Type | Purpose |
+|---|---|---|
+| `solid-js` | peer | SolidJS 1.9+ |
 
 No runtime `dependencies` — only peer dependencies.
 

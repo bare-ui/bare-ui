@@ -111,11 +111,13 @@ Once connected, try these prompts in your AI coding tool:
 - "I need to build a form — help me choose the right Wire UI components"
 - "How do I install Wire UI?"
 - "What can I import from @wire-ui/react?"
+- "What can I import from @wire-ui/vue?"
+- "What can I import from @wire-ui/solid?"
 - "Build me a login form with Wire UI using Tailwind"
 
 ## Framework Support
 
-The MCP server currently supports **React**. When Vue and Solid packages are released, the same `@wire-ui/mcp` server will serve documentation for all frameworks — just pass the `framework` parameter. No reinstallation needed.
+The MCP server understands **React**, **Vue**, and **SolidJS** — pass the `framework` parameter (`"react"`, `"vue"`, or `"solid"`) to any tool that accepts it and you'll get framework-specific imports, component shapes, and code examples from the same `@wire-ui/mcp` install. No reinstallation needed when switching between projects.
 
 ## Related
 
