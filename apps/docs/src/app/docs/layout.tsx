@@ -11,17 +11,35 @@ import s from "./logo.module.css";
 const FRAMEWORK_COOKIE = "wire-ui-framework";
 const DEFAULT_FRAMEWORK = "react";
 
+const HOOKS_TITLE_BY_FRAMEWORK: Record<string, string> = {
+	react: "Hooks",
+	vue: "Composables",
+	solid: "Primitives",
+};
+
 // Recursively prepend `/{framework}` to every `route` in the pageMap
 // so Nextra's sidebar active-state matching works with our rewritten URLs.
+// Also rewrites the `hooks` entry title to match the active framework's
+// idiom (Hooks / Composables / Primitives).
 // deno-lint-ignore no-explicit-any
-function prefixPageMapRoutes(items: any[], prefix: string): any[] {
+function prefixPageMapRoutes(items: any[], prefix: string, framework: string): any[] {
+	const hooksTitle = HOOKS_TITLE_BY_FRAMEWORK[framework] ?? HOOKS_TITLE_BY_FRAMEWORK.react;
 	return items.map((item) => {
 		const next = { ...item };
 		if (typeof next.route === "string" && next.route.startsWith("/docs")) {
 			next.route = `${prefix}${next.route}`;
 		}
+		if (next.name === "hooks" && next.route?.endsWith("/docs/hooks")) {
+			next.title = hooksTitle;
+			if (next.frontMatter) {
+				next.frontMatter = { ...next.frontMatter, title: hooksTitle };
+			}
+		}
+		if (next.data && typeof next.data === "object" && "hooks" in next.data) {
+			next.data = { ...next.data, hooks: hooksTitle };
+		}
 		if (Array.isArray(next.children)) {
-			next.children = prefixPageMapRoutes(next.children, prefix);
+			next.children = prefixPageMapRoutes(next.children, prefix, framework);
 		}
 		return next;
 	});
@@ -61,7 +79,7 @@ export default async function DocsLayout({
 	const cookieStore = await cookies();
 	const framework =
 		cookieStore.get(FRAMEWORK_COOKIE)?.value || DEFAULT_FRAMEWORK;
-	const pageMap = prefixPageMapRoutes(rawPageMap, `/${framework}`);
+	const pageMap = prefixPageMapRoutes(rawPageMap, `/${framework}`, framework);
 
 	const navbar = (
 		<Navbar

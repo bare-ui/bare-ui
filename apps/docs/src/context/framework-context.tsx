@@ -49,18 +49,19 @@ export function FrameworkProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const setFramework = (fw: Framework) => {
-    setFrameworkState(fw)
     localStorage.setItem('wire-ui-framework', fw)
 
-    // Update cookie so middleware picks up the new framework on next navigation
+    // Update cookie so the docs layout (which reads the cookie server-side to
+    // render framework-aware sidebar entries) picks up the new framework.
     document.cookie = `wire-ui-framework=${fw};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`
 
-    // Replace framework prefix in the URL
+    // Do a full navigation so the SSR'd layout (sidebar with framework-specific
+    // hook/composable/primitive title) re-renders with the new cookie. The
+    // middleware rewrites all /{framework}/docs/* to the same internal route,
+    // so a client-side router.replace + router.refresh isn't reliable.
     const { pathname, search, hash } = window.location
     const newPath = pathname.replace(/^\/(react|vue|solid)(\/docs)/, `/${fw}$2`)
-    if (newPath !== pathname) {
-      window.history.replaceState(null, '', newPath + search + hash)
-    }
+    window.location.assign((newPath !== pathname ? newPath : pathname) + search + hash)
   }
 
   return (
