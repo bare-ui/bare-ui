@@ -17,12 +17,15 @@ export {
 	Modal,
 	OTP,
 	Password,
+	Popover,
 	ProgressBar,
 	Radio,
 	Rating,
 	Search,
 	Select,
+	Slider,
 	Switch,
+	Tabs,
 	Textarea,
 	Timeago,
 	Tooltip,
@@ -133,3 +136,25 @@ export type {
 } from './components/textarea';
 export type { TimeagoProps, TimeagoFormatConfig, TimeagoPlural } from './components/timeago';
 export type { TooltipRootProps, TooltipTriggerProps, TooltipContentProps } from './components/tooltip';
+export type {
+	PopoverRootProps,
+	PopoverTriggerProps,
+	PopoverContentProps,
+	PopoverCloseProps,
+	PopoverSide,
+	PopoverAlign,
+} from './components/popover';
+export type {
+	TabsRootProps,
+	TabsListProps,
+	TabsTriggerProps,
+	TabsContentProps,
+	TabsOrientation,
+	TabsActivationMode,
+} from './components/tabs';
+export type {
+	SliderProps,
+	SliderSingleProps,
+	SliderRangeProps,
+	SliderOrientation,
+} from './components/slider';
