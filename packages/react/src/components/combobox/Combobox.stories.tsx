@@ -7,6 +7,7 @@ const meta = {
 	title: 'Forms/Combobox',
 	component: Combobox.Root,
 	tags: ['autodocs'],
+	args: { options: [] },
 	parameters: {
 		docs: {
 			description: {
