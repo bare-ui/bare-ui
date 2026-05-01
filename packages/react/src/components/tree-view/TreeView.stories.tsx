@@ -7,6 +7,7 @@ const meta = {
 	title: 'Layout/TreeView',
 	component: TreeView.Root,
 	tags: ['autodocs'],
+	args: { nodes: [], renderItem: () => null },
 	parameters: {
 		docs: {
 			description: {
