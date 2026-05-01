@@ -1,0 +1,225 @@
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { mergeProps } from '@/utils/merge-props';
+import type {
+	ToastCloseProps,
+	ToastContextValue,
+	ToastData,
+	ToastDescriptionProps,
+	ToastProviderProps,
+	ToastRootProps,
+	ToastStatus,
+	ToastTitleProps,
+	ToastViewportProps,
+} from './Toast.types';
+
+// ---------------------------------------------------------------------------
+// Context + hook
+// ---------------------------------------------------------------------------
+
+const ToastContext = createContext<ToastContextValue | null>(null);
+
+export function useToast() {
+	const ctx = useContext(ToastContext);
+	if (!ctx) throw new globalThis.Error('useToast must be used within Toast.Provider');
+	return useMemo(
+		() => ({
+			toast: ctx.add,
+			dismiss: ctx.dismiss,
+			toasts: ctx.toasts,
+		}),
+		[ctx],
+	);
+}
+
+let toastIdCounter = 0;
+function makeId() {
+	toastIdCounter += 1;
+	return `toast-${Date.now().toString(36)}-${toastIdCounter}`;
+}
+
+// ---------------------------------------------------------------------------
+// Provider
+// ---------------------------------------------------------------------------
+
+const Provider: React.FC<ToastProviderProps> = ({ children, defaultDuration = 5000 }) => {
+	const [toasts, setToasts] = useState<ToastData[]>([]);
+
+	const dismiss = useCallback((id: string) => {
+		setToasts((prev) => prev.filter((t) => t.id !== id));
+	}, []);
+
+	const add = useCallback(
+		(input: Omit<ToastData, 'id'> & { id?: string }) => {
+			const id = input.id ?? makeId();
+			setToasts((prev) => [...prev.filter((t) => t.id !== id), { ...input, id }]);
+			return id;
+		},
+		[],
+	);
+
+	const value = useMemo<ToastContextValue>(
+		() => ({ toasts, add, dismiss, defaultDuration }),
+		[toasts, add, dismiss, defaultDuration],
+	);
+
+	return <ToastContext.Provider value={value}>{children}</ToastContext.Provider>;
+};
+Provider.displayName = 'Toast.Provider';
+
+// ---------------------------------------------------------------------------
+// Viewport — renders the active toasts via render-prop
+// ---------------------------------------------------------------------------
+
+const Viewport = React.forwardRef<HTMLDivElement, ToastViewportProps>(({ children, className, ...rest }, ref) => {
+	const ctx = useContext(ToastContext);
+	if (!ctx) throw new globalThis.Error('Toast.Viewport must be used within Toast.Provider');
+
+	return (
+		<div
+			ref={ref}
+			role='region'
+			aria-label='Notifications'
+			className={className}
+			{...rest}>
+			{ctx.toasts.map((t) => (
+				<ToastShell
+					key={t.id}
+					toast={t}
+					duration={t.duration ?? ctx.defaultDuration}
+					onDismiss={() => ctx.dismiss(t.id)}>
+					{children(t, () => ctx.dismiss(t.id))}
+				</ToastShell>
+			))}
+		</div>
+	);
+});
+Viewport.displayName = 'Toast.Viewport';
+
+// ---------------------------------------------------------------------------
+// Internal shell — manages auto-dismiss timer per toast
+// ---------------------------------------------------------------------------
+
+interface ToastShellProps {
+	toast: ToastData;
+	duration: number;
+	onDismiss: () => void;
+	children: React.ReactNode;
+}
+
+const ToastShell: React.FC<ToastShellProps> = ({ toast, duration, onDismiss, children }) => {
+	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const remainingRef = useRef<number>(duration);
+	const startRef = useRef<number>(Date.now());
+
+	const clearTimer = () => {
+		if (timerRef.current) {
+			clearTimeout(timerRef.current);
+			timerRef.current = null;
+		}
+	};
+
+	const startTimer = useCallback(() => {
+		clearTimer();
+		if (remainingRef.current <= 0) return;
+		startRef.current = Date.now();
+		timerRef.current = setTimeout(() => {
+			onDismiss();
+		}, remainingRef.current);
+	}, [onDismiss]);
+
+	useEffect(() => {
+		if (duration > 0) {
+			remainingRef.current = duration;
+			startTimer();
+		}
+		return clearTimer;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [duration, toast.id]);
+
+	const pauseOnHover = toast.pauseOnHover !== false;
+
+	const handleEnter = () => {
+		if (!pauseOnHover) return;
+		clearTimer();
+		remainingRef.current = remainingRef.current - (Date.now() - startRef.current);
+	};
+
+	const handleLeave = () => {
+		if (!pauseOnHover) return;
+		startTimer();
+	};
+
+	return (
+		<div
+			role='status'
+			aria-live='polite'
+			data-status={toast.status ?? 'default'}
+			onPointerEnter={handleEnter}
+			onPointerLeave={handleLeave}
+			onFocus={handleEnter}
+			onBlur={handleLeave}>
+			{children}
+		</div>
+	);
+};
+
+// ---------------------------------------------------------------------------
+// Optional presentational subcomponents
+// ---------------------------------------------------------------------------
+
+const Root = React.forwardRef<HTMLDivElement, ToastRootProps>(({ children, className, ...rest }, ref) => (
+	<div
+		ref={ref}
+		className={className}
+		{...rest}>
+		{children}
+	</div>
+));
+Root.displayName = 'Toast.Root';
+
+const Title = React.forwardRef<HTMLDivElement, ToastTitleProps>(({ children, className, ...rest }, ref) => (
+	<div
+		ref={ref}
+		className={className}
+		{...rest}>
+		{children}
+	</div>
+));
+Title.displayName = 'Toast.Title';
+
+const Description = React.forwardRef<HTMLDivElement, ToastDescriptionProps>(({ children, className, ...rest }, ref) => (
+	<div
+		ref={ref}
+		className={className}
+		{...rest}>
+		{children}
+	</div>
+));
+Description.displayName = 'Toast.Description';
+
+const Close = React.forwardRef<HTMLButtonElement, ToastCloseProps>(({ children, className, onClick, ...rest }, ref) => {
+	const { handlers, dataAttributes } = useInteractiveState();
+	const merged = mergeProps(rest as Record<string, unknown>, handlers as Record<string, unknown>);
+
+	return (
+		<button
+			ref={ref}
+			type='button'
+			aria-label='Close notification'
+			className={className}
+			{...dataAttributes}
+			{...merged}
+			onClick={onClick}>
+			{children}
+		</button>
+	);
+});
+Close.displayName = 'Toast.Close';
+
+// ---------------------------------------------------------------------------
+// Export
+// ---------------------------------------------------------------------------
+
+export const Toast = { Provider, Viewport, Root, Title, Description, Close };
+export type { ToastStatus, ToastData };
