@@ -16,7 +16,7 @@ const preview: Preview = {
 								margin: '0 auto',
 								padding: '32px 24px',
 								fontFamily: "'Poppins', sans-serif",
-								minHeight: '100vh',
+								minHeight: '200px',
 							},
 						},
 						[h(story())],
