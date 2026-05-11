@@ -11,7 +11,7 @@ const preview: Preview = {
 					margin: '0 auto',
 					padding: '32px 24px',
 					'font-family': "'Poppins', sans-serif",
-					'min-height': '100vh',
+					'min-height': '200px',
 				}}>
 				<Story />
 			</div>
