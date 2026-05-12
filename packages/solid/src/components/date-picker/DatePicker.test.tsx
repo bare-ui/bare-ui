@@ -1,0 +1,56 @@
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen } from '@solidjs/testing-library';
+import userEvent from '@testing-library/user-event';
+import type { ComponentProps } from 'solid-js';
+import { DatePicker } from './DatePicker';
+import { Calendar } from '../calendar/Calendar';
+
+function renderDP(props: Partial<ComponentProps<typeof DatePicker.Root>> = {}) {
+	return render(() => (
+		<DatePicker.Root {...props}>
+			<DatePicker.Trigger>
+				<DatePicker.Value placeholder='Pick a date' />
+			</DatePicker.Trigger>
+			<DatePicker.Content>
+				<DatePicker.Calendar defaultMonth={new Date(2024, 0, 15)}>
+					<Calendar.Nav>
+						<Calendar.PrevButton />
+						<Calendar.Title />
+						<Calendar.NextButton />
+					</Calendar.Nav>
+					<Calendar.Grid />
+				</DatePicker.Calendar>
+			</DatePicker.Content>
+		</DatePicker.Root>
+	));
+}
+
+describe('DatePicker', () => {
+	it('starts closed and shows placeholder', () => {
+		renderDP();
+		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+		expect(screen.getByText('Pick a date')).toBeInTheDocument();
+	});
+
+	it('opens the calendar on trigger click', async () => {
+		renderDP();
+		await userEvent.click(screen.getByRole('button'));
+		expect(screen.getByRole('dialog')).toBeInTheDocument();
+	});
+
+	it('selecting a day fires onChange and closes (closeOnSelect default)', async () => {
+		const onChange = vi.fn();
+		renderDP({ onChange });
+		await userEvent.click(screen.getByRole('button'));
+		await userEvent.click(screen.getByRole('gridcell', { name: '20' }));
+		expect(onChange).toHaveBeenCalled();
+		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+	});
+
+	it('closes on Escape', async () => {
+		renderDP();
+		await userEvent.click(screen.getByRole('button'));
+		await userEvent.keyboard('{Escape}');
+		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+	});
+});
