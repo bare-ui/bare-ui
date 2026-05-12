@@ -22,7 +22,10 @@ const props = withDefaults(
 		onOpenChange?: (open: boolean) => void
 	}>(),
 	{
+		value: undefined,
 		defaultValue: null,
+		inputValue: undefined,
+		open: undefined,
 		defaultOpen: false,
 		disabled: false,
 	},
