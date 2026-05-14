@@ -1,6 +1,9 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useClickOutside } from '@/hooks/use-click-outside';
+import { useControllableState } from '@/hooks/use-controllable-state';
+import { useDebouncedCallback } from '@/hooks/use-debounce';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	SearchContentProps,
@@ -41,66 +44,51 @@ const Root = React.forwardRef<HTMLDivElement, SearchRootProps>(
 		},
 		ref,
 	) => {
-		const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
-		const isOpenControlled = controlledOpen !== undefined;
-		const open = isOpenControlled ? controlledOpen : uncontrolledOpen;
+		const [open, setOpenState] = useControllableState({
+			value: controlledOpen,
+			defaultValue: defaultOpen,
+			onChange: onOpenChange,
+		});
 
-		const [uncontrolledValue, setUncontrolledValue] = useState(defaultSearchValue);
-		const isValueControlled = controlledValue !== undefined;
-		const searchValue = isValueControlled ? controlledValue : uncontrolledValue;
+		const [searchValue, setSearchValueState] = useControllableState({
+			value: controlledValue,
+			defaultValue: defaultSearchValue,
+			onChange: onSearchChange,
+		});
 
 		const [highlightedIndex, setHighlightedIndex] = useState(-1);
 		const [itemCount, setItemCount] = useState(0);
-		const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 		const inputRef = useRef<HTMLInputElement>(null);
 		const rootRef = useRef<HTMLDivElement>(null);
-		const combinedRef = (ref as React.RefObject<HTMLDivElement | null>) || rootRef;
-		const internalRef = ref ? combinedRef : rootRef;
+		const mergedRootRef = useMergedRefs<HTMLDivElement>(rootRef, ref);
+
+		const submitSearch = useDebouncedCallback(() => onSubmitSearch?.(), searchDelay);
 
 		const handleOpenChange = useCallback(
 			(value: boolean) => {
-				if (!isOpenControlled) {
-					setUncontrolledOpen(value);
-				}
-				onOpenChange?.(value);
+				setOpenState(value);
 				if (!value) {
 					setHighlightedIndex(-1);
 				}
 			},
-			[isOpenControlled, onOpenChange],
+			[setOpenState],
 		);
 
 		const handleSearchChange = useCallback(
 			(value: string) => {
-				if (!isValueControlled) {
-					setUncontrolledValue(value);
-				}
-				onSearchChange?.(value);
-
-				if (typingTimeoutRef.current) {
-					clearTimeout(typingTimeoutRef.current);
-				}
-
-				typingTimeoutRef.current = setTimeout(() => {
-					onSubmitSearch?.();
-				}, searchDelay);
+				setSearchValueState(value);
+				submitSearch();
 			},
-			[isValueControlled, onSearchChange, onSubmitSearch, searchDelay],
+			[setSearchValueState, submitSearch],
 		);
 
 		const handleSelect = useCallback(
 			(option: SearchOption) => {
-				if (typingTimeoutRef.current) {
-					clearTimeout(typingTimeoutRef.current);
-				}
 				onSelect?.(option);
-				if (!isValueControlled) {
-					setUncontrolledValue('');
-				}
-				onSearchChange?.('');
+				setSearchValueState('');
 				handleOpenChange(false);
 			},
-			[onSelect, isValueControlled, onSearchChange, handleOpenChange],
+			[onSelect, setSearchValueState, handleOpenChange],
 		);
 
 		const registerItem = useCallback(() => {
@@ -113,19 +101,11 @@ const Root = React.forwardRef<HTMLDivElement, SearchRootProps>(
 			setItemCount((prev) => Math.max(0, prev - 1));
 		}, []);
 
-		useClickOutside(internalRef, () => {
+		useClickOutside(rootRef, () => {
 			if (open) {
 				handleOpenChange(false);
 			}
 		});
-
-		useEffect(() => {
-			return () => {
-				if (typingTimeoutRef.current) {
-					clearTimeout(typingTimeoutRef.current);
-				}
-			};
-		}, []);
 
 		const contextValue: SearchContextValue = {
 			open,
@@ -140,15 +120,12 @@ const Root = React.forwardRef<HTMLDivElement, SearchRootProps>(
 			registerItem,
 			unregisterItem,
 			inputRef,
-			setInputNode: (node: HTMLInputElement | null) => {
-				(inputRef as React.MutableRefObject<HTMLInputElement | null>).current = node;
-			},
 		};
 
 		return (
 			<SearchContext.Provider value={contextValue}>
 				<div
-					ref={internalRef}
+					ref={mergedRootRef}
 					className={className}
 					data-loading={loading ? '' : undefined}
 					{...rest}>
@@ -164,11 +141,7 @@ Root.displayName = 'Search.Root';
 const Input = React.forwardRef<HTMLInputElement, SearchInputProps>(({ className, ...rest }, ref) => {
 	const ctx = useSearchContext();
 
-	const combinedRef = (node: HTMLInputElement | null) => {
-		ctx.setInputNode(node);
-		if (typeof ref === 'function') ref(node);
-		else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = node;
-	};
+	const mergedInputRef = useMergedRefs<HTMLInputElement>(ctx.inputRef, ref);
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		switch (e.key) {
@@ -193,7 +166,7 @@ const Input = React.forwardRef<HTMLInputElement, SearchInputProps>(({ className,
 
 	return (
 		<input
-			ref={combinedRef}
+			ref={mergedInputRef}
 			type='text'
 			value={ctx.searchValue}
 			className={className}

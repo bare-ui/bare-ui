@@ -52,5 +52,4 @@ export interface SearchContextValue {
 	registerItem: () => number;
 	unregisterItem: () => void;
 	inputRef: React.RefObject<HTMLInputElement | null>;
-	setInputNode: (node: HTMLInputElement | null) => void;
 }
