@@ -1,14 +1,6 @@
-import React, {
-	createContext,
-	useCallback,
-	useContext,
-	useEffect,
-	useId,
-	useLayoutEffect,
-	useMemo,
-	useRef,
-	useState,
-} from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useId } from '@/hooks/use-id';
+import { useMergedRefs } from '@/hooks/use-merged-refs';
 import type {
 	PanelConfig,
 	PanelGroupContextValue,
@@ -84,11 +76,7 @@ const Group = React.forwardRef<HTMLDivElement, PanelGroupProps>(
 		ref,
 	) => {
 		const containerRef = useRef<HTMLDivElement | null>(null);
-		const setMergedRef = (el: HTMLDivElement | null) => {
-			containerRef.current = el;
-			if (typeof ref === 'function') ref(el);
-			else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
-		};
+		const setMergedRef = useMergedRefs<HTMLDivElement>(containerRef, ref);
 
 		// Stable mutable registries — survive re-renders without triggering effect loops.
 		const panelsRef = useRef<PanelEntry[]>([]);
@@ -329,7 +317,7 @@ Group.displayName = 'ResizablePanels.Group';
 const Panel = React.forwardRef<HTMLDivElement, PanelProps>(
 	({ defaultSize, minSize, maxSize, children, className, style, ...rest }, ref) => {
 		const ctx = useGroupContext();
-		const id = useId();
+		const id = useId('panel');
 		const config = useMemo<PanelConfig>(
 			() => ({ defaultSize, minSize, maxSize }),
 			[defaultSize, minSize, maxSize],
@@ -381,7 +369,7 @@ interface InternalHandleProps extends PanelHandleProps {
 const Handle = React.forwardRef<HTMLDivElement, InternalHandleProps>(
 	({ disabled = false, className, style, onPointerDown, 'aria-label': ariaLabel, ...rest }, ref) => {
 		const ctx = useGroupContext();
-		const id = useId();
+		const id = useId('panel-handle');
 
 		useLayoutEffect(() => {
 			ctx.registerHandle(id);
