@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useId, useMemo, useState } from 'react';
+import React, { createContext, useContext, useMemo, useState } from 'react';
+import { useId } from '@/hooks/use-id';
 import type {
 	FormControlProps,
 	FormDescriptionProps,
@@ -42,8 +43,7 @@ Root.displayName = 'Form.Root';
 
 const Field = React.forwardRef<HTMLDivElement, FormFieldProps>(
 	({ name, invalid = false, required = false, disabled = false, children, className, ...rest }, ref) => {
-		const reactId = useId();
-		const id = name ? `${name}-${reactId}` : reactId;
+		const id = useId(name ?? 'field');
 		const descriptionId = `${id}-description`;
 		const errorId = `${id}-error`;
 
