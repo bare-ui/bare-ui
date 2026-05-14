@@ -1,14 +1,9 @@
-import React, {
-	createContext,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-} from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { useClickOutside } from '@/hooks/use-click-outside';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { useKeyboard } from '@/hooks/use-keyboard';
+import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	MenuBarContentProps,
@@ -46,19 +41,15 @@ function useMenuContext() {
 
 const Root = React.forwardRef<HTMLDivElement, MenuBarRootProps>(
 	({ value: controlledValue, defaultValue = null, onValueChange, children, className, ...rest }, ref) => {
-		const [uncontrolled, setUncontrolled] = useState<string | null>(defaultValue);
-		const isControlled = controlledValue !== undefined;
-		const openMenu = isControlled ? (controlledValue as string | null) : uncontrolled;
+		const [openMenu, setOpenMenuState] = useControllableState<string | null>({
+			value: controlledValue,
+			defaultValue,
+			onChange: onValueChange,
+		});
 
 		const orderRef = useRef<string[]>([]);
 
-		const setOpenMenu = useCallback(
-			(next: string | null) => {
-				if (!isControlled) setUncontrolled(next);
-				onValueChange?.(next);
-			},
-			[isControlled, onValueChange],
-		);
+		const setOpenMenu = useCallback((next: string | null) => setOpenMenuState(next), [setOpenMenuState]);
 
 		const registerMenu = useCallback((id: string) => {
 			if (!orderRef.current.includes(id)) orderRef.current.push(id);
@@ -71,33 +62,30 @@ const Root = React.forwardRef<HTMLDivElement, MenuBarRootProps>(
 		const getMenuOrder = useCallback(() => orderRef.current.slice(), []);
 
 		const internalRef = useRef<HTMLDivElement | null>(null);
-		const setMergedRef = (el: HTMLDivElement | null) => {
-			internalRef.current = el;
-			if (typeof ref === 'function') ref(el);
-			else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
-		};
+		const mergedRef = useMergedRefs<HTMLDivElement>(internalRef, ref);
 
 		useClickOutside(internalRef, () => {
 			if (openMenu) setOpenMenu(null);
 		});
 
-		useEffect(() => {
-			const handle = (e: KeyboardEvent) => {
-				if (e.key === 'Escape' && openMenu) setOpenMenu(null);
-			};
-			window.addEventListener('keyup', handle);
-			return () => window.removeEventListener('keyup', handle);
-		}, [openMenu, setOpenMenu]);
+		useKeyboard(
+			{
+				Escape: () => {
+					if (openMenu) setOpenMenu(null);
+				},
+			},
+			{ event: 'keyup' },
+		);
 
 		const ctx = useMemo<MenuBarContextValue>(
-			() => ({ openMenu, setOpenMenu, registerMenu, unregisterMenu, getMenuOrder }),
+			() => ({ openMenu: openMenu ?? null, setOpenMenu, registerMenu, unregisterMenu, getMenuOrder }),
 			[openMenu, setOpenMenu, registerMenu, unregisterMenu, getMenuOrder],
 		);
 
 		return (
 			<MenuBarContext.Provider value={ctx}>
 				<div
-					ref={setMergedRef}
+					ref={mergedRef}
 					role='menubar'
 					className={className}
 					{...rest}>
