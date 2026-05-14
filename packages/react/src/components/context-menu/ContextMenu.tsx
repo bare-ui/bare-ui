@@ -1,14 +1,9 @@
-import React, {
-	createContext,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-} from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { useKeyboard } from '@/hooks/use-keyboard';
+import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	ContextMenuContentProps,
@@ -52,18 +47,14 @@ const Root = React.forwardRef<HTMLDivElement, ContextMenuRootProps>(
 		},
 		ref,
 	) => {
-		const [uncontrolledOpen, setUncontrolledOpen] = useState<boolean>(defaultOpen);
-		const isControlled = controlledOpen !== undefined;
-		const open = isControlled ? (controlledOpen as boolean) : uncontrolledOpen;
+		const [open, setOpenState] = useControllableState({
+			value: controlledOpen,
+			defaultValue: defaultOpen,
+			onChange: onOpenChange,
+		});
 		const [position, setPosition] = useState({ x: 0, y: 0 });
 
-		const setOpen = useCallback(
-			(next: boolean) => {
-				if (!isControlled) setUncontrolledOpen(next);
-				onOpenChange?.(next);
-			},
-			[isControlled, onOpenChange],
-		);
+		const setOpen = useCallback((next: boolean) => setOpenState(next), [setOpenState]);
 
 		const openAt = useCallback(
 			(x: number, y: number) => {
@@ -77,11 +68,7 @@ const Root = React.forwardRef<HTMLDivElement, ContextMenuRootProps>(
 
 		const internalRef = useRef<HTMLDivElement | null>(null);
 		const contentRef = useRef<HTMLDivElement | null>(null);
-		const setMergedRef = (el: HTMLDivElement | null) => {
-			internalRef.current = el;
-			if (typeof ref === 'function') ref(el);
-			else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
-		};
+		const mergedRef = useMergedRefs<HTMLDivElement>(internalRef, ref);
 
 		// Close on any pointer activity outside the menu content. Clicks on the
 		// trigger wrapper, surrounding container, or anywhere else on the page
@@ -106,13 +93,14 @@ const Root = React.forwardRef<HTMLDivElement, ContextMenuRootProps>(
 			};
 		}, [open, close]);
 
-		useEffect(() => {
-			const handle = (e: KeyboardEvent) => {
-				if (e.key === 'Escape' && open) close();
-			};
-			window.addEventListener('keyup', handle);
-			return () => window.removeEventListener('keyup', handle);
-		}, [open, close]);
+		useKeyboard(
+			{
+				Escape: () => {
+					if (open) close();
+				},
+			},
+			{ event: 'keyup' },
+		);
 
 		// Block scroll inputs while open without hiding overflow — the scrollbar
 		// stays in place (no layout shift), but mouse wheel, trackpad, touch, and
@@ -176,7 +164,7 @@ const Root = React.forwardRef<HTMLDivElement, ContextMenuRootProps>(
 		return (
 			<ContextMenuContext.Provider value={ctx}>
 				<div
-					ref={setMergedRef}
+					ref={mergedRef}
 					className={className}
 					data-state={open ? 'open' : 'closed'}
 					{...rest}>
@@ -223,19 +211,14 @@ Trigger.displayName = 'ContextMenu.Trigger';
 const Content = React.forwardRef<HTMLDivElement, ContextMenuContentProps>(
 	({ children, className, style, ...rest }, ref) => {
 		const ctx = useContextMenuContext();
-
-		const setMergedRef = (el: HTMLDivElement | null) => {
-			ctx.contentRef.current = el;
-			if (typeof ref === 'function') ref(el);
-			else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
-		};
+		const mergedRef = useMergedRefs<HTMLDivElement>(ctx.contentRef, ref);
 
 		if (!ctx.open) return null;
 		if (typeof document === 'undefined') return null;
 
 		const node = (
 			<div
-				ref={setMergedRef}
+				ref={mergedRef}
 				role='menu'
 				className={className}
 				data-state='open'
