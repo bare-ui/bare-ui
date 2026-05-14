@@ -1,6 +1,9 @@
-import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { createContext, useContext, useRef } from 'react';
 import { useClickOutside } from '@/hooks/use-click-outside';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { useKeyboard } from '@/hooks/use-keyboard';
+import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	DropdownContextValue,
@@ -21,45 +24,32 @@ function useDropdownContext() {
 
 const Root = React.forwardRef<HTMLDivElement, DropdownRootProps>(
 	({ open: controlledOpen, defaultOpen = false, onOpenChange, children, className, ...rest }, ref) => {
-		const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
-		const isControlled = controlledOpen !== undefined;
-		const open = isControlled ? controlledOpen : uncontrolledOpen;
-
-		const rootRef = useRef<HTMLDivElement>(null);
-		const combinedRef = (ref as React.RefObject<HTMLDivElement | null>) || rootRef;
-		const internalRef = ref ? combinedRef : rootRef;
-
-		const handleOpenChange = useCallback(
-			(value: boolean) => {
-				if (!isControlled) {
-					setUncontrolledOpen(value);
-				}
-				onOpenChange?.(value);
-			},
-			[isControlled, onOpenChange],
-		);
-
-		useClickOutside(internalRef, () => {
-			if (open) {
-				handleOpenChange(false);
-			}
+		const [open, setOpen] = useControllableState({
+			value: controlledOpen,
+			defaultValue: defaultOpen,
+			onChange: onOpenChange,
 		});
 
-		useEffect(() => {
-			const handleEscape = (event: KeyboardEvent) => {
-				if (event.key === 'Escape' && open) {
-					handleOpenChange(false);
-				}
-			};
+		const rootRef = useRef<HTMLDivElement | null>(null);
+		const mergedRef = useMergedRefs<HTMLDivElement>(rootRef, ref);
 
-			window.addEventListener('keyup', handleEscape);
-			return () => window.removeEventListener('keyup', handleEscape);
-		}, [open, handleOpenChange]);
+		useClickOutside(rootRef, () => {
+			if (open) setOpen(false);
+		});
+
+		useKeyboard(
+			{
+				Escape: () => {
+					if (open) setOpen(false);
+				},
+			},
+			{ event: 'keyup' },
+		);
 
 		return (
-			<DropdownContext.Provider value={{ open, onOpenChange: handleOpenChange }}>
+			<DropdownContext.Provider value={{ open, onOpenChange: setOpen as (value: boolean) => void }}>
 				<div
-					ref={internalRef}
+					ref={mergedRef}
 					className={className}
 					{...rest}>
 					{children}
