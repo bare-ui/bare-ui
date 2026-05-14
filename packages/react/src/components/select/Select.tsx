@@ -1,6 +1,8 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useClickOutside } from '@/hooks/use-click-outside';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	SelectContentProps,
@@ -35,25 +37,27 @@ const Root = React.forwardRef<HTMLDivElement, SelectRootProps>(
 		{ value: controlledValue, defaultValue = '', onChange, disabled = false, className, children, ...rest },
 		externalRef,
 	) => {
-		const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
-		const isControlled = controlledValue !== undefined;
-		const selectedValue = isControlled ? controlledValue : uncontrolledValue;
+		const [selectedValue, setSelectedState] = useControllableState({
+			value: controlledValue,
+			defaultValue,
+			onChange,
+		});
 
 		const [open, setOpen] = useState(false);
 		const [labelMap, setLabelMap] = useState<Record<string, string>>({});
 		const [persistedLabel, setPersistedLabel] = useState('');
 
 		const internalRef = useRef<HTMLDivElement>(null);
+		const mergedRef = useMergedRefs<HTMLDivElement>(internalRef, externalRef);
 		useClickOutside(internalRef, () => setOpen(false));
 
 		const select = useCallback(
 			(value: string, label: string) => {
-				if (!isControlled) setUncontrolledValue(value);
+				setSelectedState(value);
 				setPersistedLabel(label);
-				onChange?.(value);
 				setOpen(false);
 			},
-			[isControlled, onChange],
+			[setSelectedState],
 		);
 
 		const registerItem = useCallback((value: string, label: string) => {
@@ -81,11 +85,7 @@ const Root = React.forwardRef<HTMLDivElement, SelectRootProps>(
 					unregisterItem,
 				}}>
 				<div
-					ref={(el) => {
-						internalRef.current = el;
-						if (typeof externalRef === 'function') externalRef(el);
-						else if (externalRef) externalRef.current = el;
-					}}
+					ref={mergedRef}
 					className={className}
 					data-open={open ? '' : undefined}
 					data-disabled={disabled ? '' : undefined}

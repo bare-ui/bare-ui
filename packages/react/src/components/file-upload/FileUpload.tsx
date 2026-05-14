@@ -1,5 +1,7 @@
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	FileUploadContextValue,
@@ -60,19 +62,15 @@ const Root = React.forwardRef<HTMLDivElement, FileUploadRootProps>(
 		},
 		ref,
 	) => {
-		const [uncontrolled, setUncontrolled] = useState<File[]>(defaultValue ?? []);
-		const isControlled = controlledValue !== undefined;
-		const files = isControlled ? (controlledValue as File[]) : uncontrolled;
+		const [files, setFilesState] = useControllableState<File[]>({
+			value: controlledValue,
+			defaultValue: defaultValue ?? [],
+			onChange,
+		});
 		const [isDragging, setDragging] = useState(false);
 		const inputRef = useRef<HTMLInputElement | null>(null);
 
-		const setFiles = useCallback(
-			(next: File[]) => {
-				if (!isControlled) setUncontrolled(next);
-				onChange?.(next);
-			},
-			[isControlled, onChange],
-		);
+		const setFiles = useCallback((next: File[]) => setFilesState(next), [setFilesState]);
 
 		const addFiles = useCallback(
 			(incoming: File[]) => {
@@ -162,15 +160,11 @@ Root.displayName = 'FileUpload.Root';
 const Input = React.forwardRef<HTMLInputElement, FileUploadInputProps>(({ className, style, ...rest }, ref) => {
 	const ctx = useFileUploadContext();
 
-	const setRef = (el: HTMLInputElement | null) => {
-		ctx.registerInput(el);
-		if (typeof ref === 'function') ref(el);
-		else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = el;
-	};
+	const composedRef = useMergedRefs<HTMLInputElement>(ctx.registerInput, ref);
 
 	return (
 		<input
-			ref={setRef}
+			ref={composedRef}
 			type='file'
 			multiple={ctx.multiple}
 			accept={ctx.accept}
