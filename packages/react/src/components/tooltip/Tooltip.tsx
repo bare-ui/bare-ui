@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useRef, useState } from 'react';
+import React, { createContext, useContext, useRef } from 'react';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import type { TooltipContextValue, TooltipRootProps, TooltipTriggerProps, TooltipContentProps } from './Tooltip.types';
 
 // ---------------------------------------------------------------------------
@@ -21,9 +22,11 @@ const Root = ({
 	delayDuration = 300,
 	children,
 }: TooltipRootProps) => {
-	const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
-	const isControlled = controlledOpen !== undefined;
-	const open = isControlled ? controlledOpen : uncontrolledOpen;
+	const [open, setOpenState] = useControllableState({
+		value: controlledOpen,
+		defaultValue: defaultOpen,
+		onChange: onOpenChange,
+	});
 	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	const setOpen = (value: boolean) => {
@@ -32,13 +35,9 @@ const Root = ({
 			timerRef.current = null;
 		}
 		if (value) {
-			timerRef.current = setTimeout(() => {
-				if (!isControlled) setUncontrolledOpen(true);
-				onOpenChange?.(true);
-			}, delayDuration);
+			timerRef.current = setTimeout(() => setOpenState(true), delayDuration);
 		} else {
-			if (!isControlled) setUncontrolledOpen(false);
-			onOpenChange?.(false);
+			setOpenState(false);
 		}
 	};
 

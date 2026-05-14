@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext } from 'react';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { mergeProps } from '@/utils/merge-props';
 import type { SwitchContextValue, SwitchRootProps, SwitchThumbProps } from './Switch.types';
@@ -27,17 +28,18 @@ const Root = React.forwardRef<HTMLButtonElement, SwitchRootProps>(
 		},
 		ref,
 	) => {
-		const [uncontrolledChecked, setUncontrolledChecked] = useState(defaultChecked);
-		const isControlled = controlledChecked !== undefined;
-		const checked = isControlled ? controlledChecked : uncontrolledChecked;
+		const [checked, setChecked] = useControllableState({
+			value: controlledChecked,
+			defaultValue: defaultChecked,
+			onChange,
+		});
 
 		const { handlers, dataAttributes } = useInteractiveState({ disabled });
 		const merged = mergeProps(rest as Record<string, unknown>, handlers as Record<string, unknown>);
 
 		const toggle = () => {
 			if (disabled) return;
-			if (!isControlled) setUncontrolledChecked((prev) => !prev);
-			onChange?.(!checked);
+			setChecked(!checked);
 		};
 
 		return (

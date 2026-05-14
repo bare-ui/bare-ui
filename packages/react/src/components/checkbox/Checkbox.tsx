@@ -1,4 +1,5 @@
-import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useMemo } from 'react';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { Helper } from '@/utils/helper';
 import type {
@@ -42,9 +43,11 @@ const Root = React.forwardRef<HTMLDivElement, CheckboxRootProps>(
 		},
 		ref,
 	) => {
-		const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
-		const isControlled = controlledValue !== undefined;
-		const values = isControlled ? controlledValue : uncontrolledValue;
+		const [values, setValues] = useControllableState<(string | number)[]>({
+			value: controlledValue,
+			defaultValue,
+			onChange,
+		});
 
 		const groupName = useMemo(() => name || Helper.generateUUID(), [name]);
 
@@ -66,10 +69,9 @@ const Root = React.forwardRef<HTMLDivElement, CheckboxRootProps>(
 					currentValues.splice(index, 1);
 				}
 
-				if (!isControlled) setUncontrolledValue(currentValues);
-				onChange?.(currentValues);
+				setValues(currentValues);
 			},
-			[values, isControlled, onChange],
+			[values, setValues],
 		);
 
 		return (

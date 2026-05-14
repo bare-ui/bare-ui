@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import { Helper } from '@/utils/helper';
 import type {
 	TextareaContextValue,
@@ -37,19 +38,15 @@ const Root = React.forwardRef<HTMLDivElement, TextareaRootProps>(
 		},
 		ref,
 	) => {
-		const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
-		const isControlled = controlledValue !== undefined;
-		const value = isControlled ? controlledValue : uncontrolledValue;
+		const [value, setValue] = useControllableState<string>({
+			value: controlledValue,
+			defaultValue,
+			onChange,
+		});
 		const [isActive, setIsActive] = useState(false);
 		const textareaId = useMemo(() => id || Helper.generateUUID(), [id]);
 
-		const handleChange = useCallback(
-			(newValue: string) => {
-				if (!isControlled) setUncontrolledValue(newValue);
-				onChange?.(newValue);
-			},
-			[isControlled, onChange],
-		);
+		const handleChange = useCallback((newValue: string) => setValue(newValue), [setValue]);
 
 		const handleFocus = useCallback(() => {
 			setIsActive(true);

@@ -1,4 +1,5 @@
-import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useMemo } from 'react';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { mergeProps } from '@/utils/merge-props';
 import type {
@@ -96,18 +97,19 @@ const Root = React.forwardRef<HTMLElement, PaginationRootProps>(
 		},
 		ref,
 	) => {
-		const [uncontrolled, setUncontrolled] = useState<number>(defaultPage);
-		const isControlled = controlledPage !== undefined;
-		const page = isControlled ? (controlledPage as number) : uncontrolled;
+		const [page, setPage] = useControllableState<number>({
+			value: controlledPage,
+			defaultValue: defaultPage,
+			onChange,
+		});
 
 		const goTo = useCallback(
 			(next: number) => {
 				const clamped = Math.min(Math.max(next, 1), Math.max(totalPages, 1));
 				if (clamped === page) return;
-				if (!isControlled) setUncontrolled(clamped);
-				onChange?.(clamped);
+				setPage(clamped);
 			},
-			[isControlled, onChange, page, totalPages],
+			[setPage, page, totalPages],
 		);
 
 		const prev = useCallback(() => goTo(page - 1), [goTo, page]);

@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import type {
 	TagInputContextValue,
 	TagInputFieldProps,
@@ -39,17 +40,13 @@ const Root = React.forwardRef<HTMLDivElement, TagInputRootProps>(
 		},
 		ref,
 	) => {
-		const [uncontrolled, setUncontrolled] = useState<string[]>(defaultValue ?? []);
-		const isControlled = controlledValue !== undefined;
-		const tags = isControlled ? (controlledValue as string[]) : uncontrolled;
+		const [tags, setTagsState] = useControllableState<string[]>({
+			value: controlledValue,
+			defaultValue: defaultValue ?? [],
+			onChange,
+		});
 
-		const setTags = useCallback(
-			(next: string[]) => {
-				if (!isControlled) setUncontrolled(next);
-				onChange?.(next);
-			},
-			[isControlled, onChange],
-		);
+		const setTags = useCallback((next: string[]) => setTagsState(next), [setTagsState]);
 
 		const addTag = useCallback(
 			(raw: string): boolean => {

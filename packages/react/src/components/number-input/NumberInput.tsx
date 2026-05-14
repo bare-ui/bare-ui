@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { mergeProps } from '@/utils/merge-props';
 import type {
@@ -62,18 +63,19 @@ const Root = React.forwardRef<HTMLDivElement, NumberInputRootProps>(
 		},
 		ref,
 	) => {
-		const [uncontrolled, setUncontrolled] = useState<number | null>(defaultValue);
-		const isControlled = controlledValue !== undefined;
-		const value = isControlled ? controlledValue : uncontrolled;
+		const [value, setValueState] = useControllableState<number | null>({
+			value: controlledValue,
+			defaultValue,
+			onChange,
+		});
 		const precision = precisionProp ?? decimalsOf(step);
 
 		const setValue = useCallback(
 			(next: number | null) => {
 				const normalized = next === null || Number.isNaN(next) ? null : round(clamp(next, min, max), precision);
-				if (!isControlled) setUncontrolled(normalized);
-				onChange?.(normalized);
+				setValueState(normalized);
 			},
-			[isControlled, onChange, min, max, precision],
+			[setValueState, min, max, precision],
 		);
 
 		const stepBy = useCallback(

@@ -1,4 +1,5 @@
-import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useMemo } from 'react';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { Helper } from '@/utils/helper';
 import type {
@@ -42,9 +43,11 @@ const Root = React.forwardRef<HTMLDivElement, RadioRootProps>(
 		},
 		ref,
 	) => {
-		const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
-		const isControlled = controlledValue !== undefined;
-		const selectedValue = isControlled ? controlledValue : uncontrolledValue;
+		const [selectedValue, setSelectedValue] = useControllableState<string | number>({
+			value: controlledValue,
+			defaultValue,
+			onChange,
+		});
 
 		const groupName = useMemo(() => name || Helper.generateUUID(), [name]);
 
@@ -58,10 +61,9 @@ const Root = React.forwardRef<HTMLDivElement, RadioRootProps>(
 
 		const select = useCallback(
 			(itemValue: string | number) => {
-				if (!isControlled) setUncontrolledValue(itemValue);
-				onChange?.(itemValue);
+				setSelectedValue(itemValue);
 			},
-			[isControlled, onChange],
+			[setSelectedValue],
 		);
 
 		return (

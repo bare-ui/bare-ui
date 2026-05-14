@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import type { RatingProps } from './Rating.types';
 
 // ---------------------------------------------------------------------------
@@ -51,17 +52,18 @@ const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
 		},
 		ref,
 	) => {
-		const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
+		const [selectedValue, setSelectedValue] = useControllableState<number>({
+			value: controlledValue,
+			defaultValue,
+			onChange,
+		});
 		const [hoverValue, setHoverValue] = useState(0);
 
-		const isControlled = controlledValue !== undefined;
-		const selectedValue = isControlled ? controlledValue : uncontrolledValue;
 		const displayValue = hoverValue || selectedValue;
 
 		const handleSelect = (star: number) => {
 			if (disabled || readOnly) return;
-			if (!isControlled) setUncontrolledValue(star);
-			onChange?.(star);
+			setSelectedValue(star);
 		};
 
 		return (

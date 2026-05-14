@@ -1,4 +1,5 @@
-import React, { createContext, useCallback, useContext, useState } from 'react';
+import React, { createContext, useCallback, useContext } from 'react';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { mergeProps } from '@/utils/merge-props';
 import type {
@@ -47,9 +48,11 @@ const Root = React.forwardRef<HTMLDivElement, AccordionRootProps>(
 			} = rest;
 
 			// eslint-disable-next-line react-hooks/rules-of-hooks
-			const [uncontrolledValue, setUncontrolledValue] = useState<string>(defaultValue ?? '');
-			const isControlled = controlledValue !== undefined;
-			const openValue = isControlled ? controlledValue : uncontrolledValue;
+			const [openValue, setOpenValue] = useControllableState<string>({
+				value: controlledValue,
+				defaultValue: defaultValue ?? '',
+				onChange,
+			});
 
 			// eslint-disable-next-line react-hooks/rules-of-hooks
 			const isOpen = useCallback((v: string) => openValue === v, [openValue]);
@@ -62,10 +65,9 @@ const Root = React.forwardRef<HTMLDivElement, AccordionRootProps>(
 							collapsible ? ''
 							:	openValue
 						:	v;
-					if (!isControlled) setUncontrolledValue(next);
-					onChange?.(next);
+					setOpenValue(next);
 				},
-				[openValue, collapsible, isControlled, onChange],
+				[openValue, collapsible, setOpenValue],
 			);
 
 			return (
@@ -84,9 +86,11 @@ const Root = React.forwardRef<HTMLDivElement, AccordionRootProps>(
 		const { type: _type, value: controlledValue, defaultValue, onChange, ...divRest } = rest;
 
 		// eslint-disable-next-line react-hooks/rules-of-hooks
-		const [uncontrolledValues, setUncontrolledValues] = useState<string[]>(defaultValue ?? []);
-		const isControlled = controlledValue !== undefined;
-		const openValues = isControlled ? controlledValue : uncontrolledValues;
+		const [openValues, setOpenValues] = useControllableState<string[]>({
+			value: controlledValue,
+			defaultValue: defaultValue ?? [],
+			onChange,
+		});
 
 		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const isOpen = useCallback((v: string) => openValues.includes(v), [openValues]);
@@ -95,10 +99,9 @@ const Root = React.forwardRef<HTMLDivElement, AccordionRootProps>(
 		const toggle = useCallback(
 			(v: string) => {
 				const next = openValues.includes(v) ? openValues.filter((x) => x !== v) : [...openValues, v];
-				if (!isControlled) setUncontrolledValues(next);
-				onChange?.(next);
+				setOpenValues(next);
 			},
-			[openValues, isControlled, onChange],
+			[openValues, setOpenValues],
 		);
 
 		return (
