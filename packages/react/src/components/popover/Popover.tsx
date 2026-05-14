@@ -1,15 +1,10 @@
-import React, {
-	createContext,
-	useCallback,
-	useContext,
-	useEffect,
-	useId,
-	useMemo,
-	useRef,
-	useState,
-} from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useRef } from 'react';
 import { useClickOutside } from '@/hooks/use-click-outside';
+import { useControllableState } from '@/hooks/use-controllable-state';
+import { useId } from '@/hooks/use-id';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { useKeyboard } from '@/hooks/use-keyboard';
+import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	PopoverCloseProps,
@@ -51,40 +46,32 @@ const Root = React.forwardRef<HTMLDivElement, PopoverRootProps>(
 		},
 		ref,
 	) => {
-		const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
-		const isControlled = controlledOpen !== undefined;
-		const open = isControlled ? controlledOpen : uncontrolledOpen;
+		const [open, setOpenState] = useControllableState({
+			value: controlledOpen,
+			defaultValue: defaultOpen,
+			onChange: onOpenChange,
+		});
 
 		const internalRef = useRef<HTMLDivElement | null>(null);
-		const setMergedRef = (el: HTMLDivElement | null) => {
-			internalRef.current = el;
-			if (typeof ref === 'function') ref(el);
-			else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
-		};
+		const mergedRef = useMergedRefs<HTMLDivElement>(internalRef, ref);
 
-		const setOpen = useCallback(
-			(value: boolean) => {
-				if (!isControlled) setUncontrolledOpen(value);
-				onOpenChange?.(value);
-			},
-			[isControlled, onOpenChange],
-		);
+		const setOpen = useCallback((value: boolean) => setOpenState(value), [setOpenState]);
 
 		useClickOutside(internalRef, () => {
 			if (open && closeOnOutsideClick) setOpen(false);
 		});
 
-		useEffect(() => {
-			if (!closeOnEscape) return;
-			const handle = (e: KeyboardEvent) => {
-				if (e.key === 'Escape' && open) setOpen(false);
-			};
-			window.addEventListener('keyup', handle);
-			return () => window.removeEventListener('keyup', handle);
-		}, [open, setOpen, closeOnEscape]);
+		useKeyboard(
+			{
+				Escape: () => {
+					if (open) setOpen(false);
+				},
+			},
+			{ event: 'keyup', enabled: closeOnEscape },
+		);
 
-		const triggerId = useId();
-		const contentId = useId();
+		const triggerId = useId('popover-trigger');
+		const contentId = useId('popover-content');
 
 		const ctx = useMemo<PopoverContextValue>(
 			() => ({ open, setOpen, triggerId, contentId }),
@@ -94,7 +81,7 @@ const Root = React.forwardRef<HTMLDivElement, PopoverRootProps>(
 		return (
 			<PopoverContext.Provider value={ctx}>
 				<div
-					ref={setMergedRef}
+					ref={mergedRef}
 					className={className}
 					data-state={open ? 'open' : 'closed'}
 					{...rest}>
