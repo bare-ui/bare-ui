@@ -1,14 +1,9 @@
-import React, {
-	createContext,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-} from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { useClickOutside } from '@/hooks/use-click-outside';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { useKeyboard } from '@/hooks/use-keyboard';
+import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	NavigationMenuContentProps,
@@ -59,46 +54,39 @@ const Root = React.forwardRef<HTMLElement, NavigationMenuRootProps>(
 		},
 		ref,
 	) => {
-		const [uncontrolled, setUncontrolled] = useState<string | null>(defaultValue);
-		const isControlled = controlledValue !== undefined;
-		const value = isControlled ? (controlledValue as string | null) : uncontrolled;
+		const [value, setValueState] = useControllableState<string | null>({
+			value: controlledValue,
+			defaultValue,
+			onChange: onValueChange,
+		});
 
-		const setValue = useCallback(
-			(next: string | null) => {
-				if (!isControlled) setUncontrolled(next);
-				onValueChange?.(next);
-			},
-			[isControlled, onValueChange],
-		);
+		const setValue = useCallback((next: string | null) => setValueState(next), [setValueState]);
 
 		const internalRef = useRef<HTMLElement | null>(null);
-		const setMergedRef = (el: HTMLElement | null) => {
-			internalRef.current = el;
-			if (typeof ref === 'function') ref(el);
-			else if (ref) (ref as React.MutableRefObject<HTMLElement | null>).current = el;
-		};
+		const mergedRef = useMergedRefs<HTMLElement>(internalRef, ref);
 
 		useClickOutside(internalRef as React.RefObject<HTMLElement | null>, () => {
 			if (value) setValue(null);
 		});
 
-		useEffect(() => {
-			const handle = (e: KeyboardEvent) => {
-				if (e.key === 'Escape' && value) setValue(null);
-			};
-			window.addEventListener('keyup', handle);
-			return () => window.removeEventListener('keyup', handle);
-		}, [value, setValue]);
+		useKeyboard(
+			{
+				Escape: () => {
+					if (value) setValue(null);
+				},
+			},
+			{ event: 'keyup' },
+		);
 
 		const ctx = useMemo<NavigationMenuRootContextValue>(
-			() => ({ value, setValue, delayDuration, skipDelayDuration }),
+			() => ({ value: value ?? null, setValue, delayDuration, skipDelayDuration }),
 			[value, setValue, delayDuration, skipDelayDuration],
 		);
 
 		return (
 			<RootContext.Provider value={ctx}>
 				<nav
-					ref={setMergedRef}
+					ref={mergedRef}
 					aria-label={ariaLabel}
 					className={className}
 					{...rest}>
