@@ -1,6 +1,8 @@
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
-import { Helper } from '@/utils/helper';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { useMergedRefs } from '@/hooks/use-merged-refs';
+import { Helper } from '@/utils/helper';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	PasswordContextValue,
@@ -45,21 +47,17 @@ const Root = React.forwardRef<HTMLDivElement, PasswordRootProps>(
 		},
 		ref,
 	) => {
-		const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
-		const isControlled = controlledValue !== undefined;
-		const value = isControlled ? controlledValue : uncontrolledValue;
+		const [value, setValue] = useControllableState<string>({
+			value: controlledValue,
+			defaultValue,
+			onChange,
+		});
 
 		const [visible, setVisible] = useState(false);
-		const fieldRef = useRef<HTMLInputElement>(null);
+		const fieldRef = useRef<HTMLInputElement | null>(null);
 		const inputId = useMemo(() => id ?? Helper.generateUUID(), [id]);
 
-		const handleChange = useCallback(
-			(val: string) => {
-				if (!isControlled) setUncontrolledValue(val);
-				onChange?.(val);
-			},
-			[isControlled, onChange],
-		);
+		const handleChange = useCallback((val: string) => setValue(val), [setValue]);
 
 		const handleFocus = useCallback(() => onFocus?.(), [onFocus]);
 
@@ -78,9 +76,7 @@ const Root = React.forwardRef<HTMLDivElement, PasswordRootProps>(
 					handleChange,
 					handleFocus,
 					handleBlur,
-					setFieldNode: (node) => {
-						(fieldRef as React.MutableRefObject<HTMLInputElement | null>).current = node;
-					},
+					fieldRef,
 				}}>
 				<div
 					ref={ref}
@@ -101,14 +97,11 @@ Root.displayName = 'Password.Root';
 
 const Field = React.forwardRef<HTMLInputElement, PasswordFieldProps>(({ className, ...rest }, externalRef) => {
 	const ctx = usePasswordContext();
+	const mergedRef = useMergedRefs<HTMLInputElement>(ctx.fieldRef, externalRef);
 
 	return (
 		<input
-			ref={(el) => {
-				ctx.setFieldNode(el);
-				if (typeof externalRef === 'function') externalRef(el);
-				else if (externalRef) externalRef.current = el;
-			}}
+			ref={mergedRef}
 			id={ctx.inputId}
 			value={ctx.value}
 			type={ctx.visible ? 'text' : 'password'}

@@ -11,7 +11,7 @@ export interface PasswordContextValue {
 	handleChange: (value: string) => void;
 	handleFocus: () => void;
 	handleBlur: () => void;
-	setFieldNode: (node: HTMLInputElement | null) => void;
+	fieldRef: React.RefObject<HTMLInputElement | null>;
 }
 
 export interface PasswordRootProps extends Omit<
