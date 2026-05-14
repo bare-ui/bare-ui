@@ -1,15 +1,10 @@
-import React, {
-	createContext,
-	useCallback,
-	useContext,
-	useEffect,
-	useId,
-	useMemo,
-	useRef,
-	useState,
-} from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useRef } from 'react';
 import { useClickOutside } from '@/hooks/use-click-outside';
+import { useControllableState } from '@/hooks/use-controllable-state';
+import { useId } from '@/hooks/use-id';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { useKeyboard } from '@/hooks/use-keyboard';
+import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import { Calendar } from '../calendar/Calendar';
 import type { CalendarRootProps } from '../calendar/Calendar.types';
@@ -58,55 +53,43 @@ const Root = React.forwardRef<HTMLDivElement, DatePickerRootProps>(
 		},
 		ref,
 	) => {
-		const [uncontrolledValue, setUncontrolledValue] = useState<Date | null>(defaultValue);
-		const isValueControlled = controlledValue !== undefined;
-		const value = isValueControlled ? (controlledValue as Date | null) : uncontrolledValue;
+		const [value, setValueState] = useControllableState<Date | null>({
+			value: controlledValue,
+			defaultValue,
+			onChange,
+		});
 
-		const [uncontrolledOpen, setUncontrolledOpen] = useState<boolean>(defaultOpen);
-		const isOpenControlled = controlledOpen !== undefined;
-		const open = isOpenControlled ? (controlledOpen as boolean) : uncontrolledOpen;
+		const [open, setOpenState] = useControllableState({
+			value: controlledOpen,
+			defaultValue: defaultOpen,
+			onChange: onOpenChange,
+		});
 
-		const setOpen = useCallback(
-			(next: boolean) => {
-				if (!isOpenControlled) setUncontrolledOpen(next);
-				onOpenChange?.(next);
-			},
-			[isOpenControlled, onOpenChange],
-		);
-
-		const setValue = useCallback(
-			(next: Date | null) => {
-				if (!isValueControlled) setUncontrolledValue(next);
-				onChange?.(next);
-			},
-			[isValueControlled, onChange],
-		);
+		const setOpen = useCallback((next: boolean) => setOpenState(next), [setOpenState]);
+		const setValue = useCallback((next: Date | null) => setValueState(next), [setValueState]);
 
 		const internalRef = useRef<HTMLDivElement | null>(null);
-		const setMergedRef = (el: HTMLDivElement | null) => {
-			internalRef.current = el;
-			if (typeof ref === 'function') ref(el);
-			else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
-		};
+		const mergedRef = useMergedRefs<HTMLDivElement>(internalRef, ref);
 
 		useClickOutside(internalRef, () => {
 			if (open) setOpen(false);
 		});
 
-		useEffect(() => {
-			const handle = (e: KeyboardEvent) => {
-				if (e.key === 'Escape' && open) setOpen(false);
-			};
-			window.addEventListener('keyup', handle);
-			return () => window.removeEventListener('keyup', handle);
-		}, [open, setOpen]);
+		useKeyboard(
+			{
+				Escape: () => {
+					if (open) setOpen(false);
+				},
+			},
+			{ event: 'keyup' },
+		);
 
-		const triggerId = useId();
-		const contentId = useId();
+		const triggerId = useId('date-picker-trigger');
+		const contentId = useId('date-picker-content');
 
 		const ctx = useMemo<DatePickerContextValue>(
 			() => ({
-				value,
+				value: value ?? null,
 				open,
 				disabled,
 				closeOnSelect,
@@ -123,7 +106,7 @@ const Root = React.forwardRef<HTMLDivElement, DatePickerRootProps>(
 		return (
 			<DatePickerContext.Provider value={ctx}>
 				<div
-					ref={setMergedRef}
+					ref={mergedRef}
 					className={className}
 					data-state={open ? 'open' : 'closed'}
 					data-disabled={disabled ? '' : undefined}
