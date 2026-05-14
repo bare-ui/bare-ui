@@ -1,6 +1,11 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useControllableState } from '@/hooks/use-controllable-state';
+import { useFocusTrap } from '@/hooks/use-focus-trap';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { useKeyboard } from '@/hooks/use-keyboard';
+import { useMergedRefs } from '@/hooks/use-merged-refs';
+import { useScrollLock } from '@/hooks/use-scroll-lock';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	DrawerCloseProps,
@@ -23,32 +28,25 @@ function useDrawerContext() {
 }
 
 const Root: React.FC<DrawerRootProps> = ({ open: controlledOpen, defaultOpen = false, onOpenChange, children }) => {
-	const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
-	const isControlled = controlledOpen !== undefined;
-	const open = isControlled ? controlledOpen : uncontrolledOpen;
+	const [open, setOpen] = useControllableState({
+		value: controlledOpen,
+		defaultValue: defaultOpen,
+		onChange: onOpenChange,
+	});
 
-	const handleOpenChange = useCallback(
-		(value: boolean) => {
-			if (!isControlled) {
-				setUncontrolledOpen(value);
-			}
-			onOpenChange?.(value);
+	useKeyboard({
+		Escape: () => {
+			if (open) setOpen(false);
 		},
-		[isControlled, onOpenChange],
+	});
+
+	useScrollLock(open);
+
+	return (
+		<DrawerContext.Provider value={{ open, onOpenChange: setOpen as (value: boolean) => void }}>
+			{children}
+		</DrawerContext.Provider>
 	);
-
-	useEffect(() => {
-		const handleEscape = (event: KeyboardEvent) => {
-			if (event.key === 'Escape' && open) {
-				handleOpenChange(false);
-			}
-		};
-
-		window.addEventListener('keydown', handleEscape);
-		return () => window.removeEventListener('keydown', handleEscape);
-	}, [open, handleOpenChange]);
-
-	return <DrawerContext.Provider value={{ open, onOpenChange: handleOpenChange }}>{children}</DrawerContext.Provider>;
 };
 
 Root.displayName = 'Drawer.Root';
@@ -82,12 +80,17 @@ Overlay.displayName = 'Drawer.Overlay';
 
 const Content = React.forwardRef<HTMLDivElement, DrawerContentProps>(({ children, className, ...rest }, ref) => {
 	const { open } = useDrawerContext();
+	const internalRef = useRef<HTMLDivElement | null>(null);
+	const mergedRef = useMergedRefs<HTMLDivElement>(internalRef, ref);
+
+	useFocusTrap(internalRef, { active: open });
 
 	return (
 		<div
-			ref={ref}
+			ref={mergedRef}
 			role='dialog'
 			aria-modal='true'
+			tabIndex={-1}
 			className={className}
 			data-state={open ? 'open' : 'closed'}
 			onClick={(e) => e.stopPropagation()}
