@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useMergedRefs } from '@/hooks/use-merged-refs';
 import type { SliderOrientation, SliderProps, SliderValue } from './Slider.types';
 
 // ---------------------------------------------------------------------------
@@ -105,11 +106,7 @@ const SliderImpl = React.forwardRef<HTMLDivElement, SliderProps>((props, ref) =>
 	const trackRef = useRef<HTMLDivElement | null>(null);
 	const draggingRef = useRef<{ thumbIndex: number } | null>(null);
 
-	const setMergedRef = (el: HTMLDivElement | null) => {
-		trackRef.current = el;
-		if (typeof ref === 'function') ref(el);
-		else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
-	};
+	const setMergedRef = useMergedRefs<HTMLDivElement>(trackRef, ref);
 
 	const valueFromPoint = useCallback(
 		(clientX: number, clientY: number): number => {
