@@ -1,16 +1,9 @@
-import React, {
-	createContext,
-	useCallback,
-	useContext,
-	useEffect,
-	useId,
-	useLayoutEffect,
-	useMemo,
-	useRef,
-	useState,
-} from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useClickOutside } from '@/hooks/use-click-outside';
+import { useControllableState } from '@/hooks/use-controllable-state';
+import { useId } from '@/hooks/use-id';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	ComboboxContentProps,
@@ -69,7 +62,7 @@ const Root = React.forwardRef<HTMLDivElement, ComboboxRootProps>(
 		},
 		ref,
 	) => {
-		// --- selected ---
+		// --- selected (onChange has a 2-arg signature, so kept manual) ---
 		const [uncontrolledValue, setUncontrolledValue] = useState<string | null>(defaultValue);
 		const isValueControlled = controlledValue !== undefined;
 		const selected = isValueControlled ? (controlledValue as string | null) : uncontrolledValue;
@@ -77,30 +70,23 @@ const Root = React.forwardRef<HTMLDivElement, ComboboxRootProps>(
 		// --- input text ---
 		const initialInput =
 			defaultInputValue ?? (selected ? options.find((o) => o.value === selected)?.label ?? '' : '');
-		const [uncontrolledInput, setUncontrolledInput] = useState<string>(initialInput);
-		const isInputControlled = controlledInputValue !== undefined;
-		const inputValue = isInputControlled ? (controlledInputValue as string) : uncontrolledInput;
+		const [inputValue, setInputValueState] = useControllableState<string>({
+			value: controlledInputValue,
+			defaultValue: initialInput,
+			onChange: onInputChange,
+		});
 
 		// --- open ---
-		const [uncontrolledOpen, setUncontrolledOpen] = useState<boolean>(defaultOpen);
-		const isOpenControlled = controlledOpen !== undefined;
-		const open = isOpenControlled ? (controlledOpen as boolean) : uncontrolledOpen;
+		const [open, setOpenState] = useControllableState({
+			value: controlledOpen,
+			defaultValue: defaultOpen,
+			onChange: onOpenChange,
+		});
 
-		const setOpen = useCallback(
-			(next: boolean) => {
-				if (!isOpenControlled) setUncontrolledOpen(next);
-				onOpenChange?.(next);
-			},
-			[isOpenControlled, onOpenChange],
-		);
+		const isInputControlled = controlledInputValue !== undefined;
 
-		const setInputValue = useCallback(
-			(text: string) => {
-				if (!isInputControlled) setUncontrolledInput(text);
-				onInputChange?.(text);
-			},
-			[isInputControlled, onInputChange],
-		);
+		const setOpen = useCallback((next: boolean) => setOpenState(next), [setOpenState]);
+		const setInputValue = useCallback((text: string) => setInputValueState(text), [setInputValueState]);
 
 		// --- filtered options ---
 		const filtered = useMemo(() => {
@@ -146,20 +132,15 @@ const Root = React.forwardRef<HTMLDivElement, ComboboxRootProps>(
 			(option: ComboboxOption) => {
 				if (option.disabled) return;
 				if (!isValueControlled) setUncontrolledValue(option.value);
-				if (!isInputControlled) setUncontrolledInput(option.label);
+				setInputValueState(option.label);
 				onChange?.(option.value, option);
-				onInputChange?.(option.label);
 				setOpen(false);
 			},
-			[isValueControlled, isInputControlled, onChange, onInputChange, setOpen],
+			[isValueControlled, setInputValueState, onChange, setOpen],
 		);
 
 		const internalRef = useRef<HTMLDivElement | null>(null);
-		const setMergedRef = (el: HTMLDivElement | null) => {
-			internalRef.current = el;
-			if (typeof ref === 'function') ref(el);
-			else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
-		};
+		const mergedRef = useMergedRefs<HTMLDivElement>(internalRef, ref);
 
 		useClickOutside(internalRef, () => {
 			if (open) setOpen(false);
@@ -170,10 +151,10 @@ const Root = React.forwardRef<HTMLDivElement, ComboboxRootProps>(
 		useEffect(() => {
 			if (isInputControlled || inputFocusedRef.current) return;
 			const opt = options.find((o) => o.value === selected) ?? null;
-			setUncontrolledInput(opt ? opt.label : '');
-		}, [selected, options, isInputControlled]);
+			setInputValueState(opt ? opt.label : '');
+		}, [selected, options, isInputControlled, setInputValueState]);
 
-		const baseId = useId();
+		const baseId = useId('combobox');
 		const listboxId = `${baseId}-listbox`;
 		const getOptionId = useCallback((v: string) => `${baseId}-opt-${v}`, [baseId]);
 
@@ -214,7 +195,7 @@ const Root = React.forwardRef<HTMLDivElement, ComboboxRootProps>(
 		return (
 			<ComboboxContext.Provider value={ctx}>
 				<div
-					ref={setMergedRef}
+					ref={mergedRef}
 					className={className}
 					data-state={open ? 'open' : 'closed'}
 					data-disabled={disabled ? '' : undefined}
