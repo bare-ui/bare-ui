@@ -1,12 +1,6 @@
-import React, {
-	createContext,
-	useCallback,
-	useContext,
-	useId,
-	useMemo,
-	useRef,
-	useState,
-} from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useRef } from 'react';
+import { useControllableState } from '@/hooks/use-controllable-state';
+import { useId } from '@/hooks/use-id';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { mergeProps } from '@/utils/merge-props';
 import type {
@@ -49,21 +43,17 @@ const Root = React.forwardRef<HTMLDivElement, TabsRootProps>(
 		},
 		ref,
 	) => {
-		const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue ?? '');
-		const isControlled = controlledValue !== undefined;
-		const value = isControlled ? controlledValue : uncontrolledValue;
+		const [value, setValueState] = useControllableState<string>({
+			value: controlledValue,
+			defaultValue: defaultValue ?? '',
+			onChange,
+		});
 
 		const triggersRef = useRef<Map<string, HTMLButtonElement | null>>(new Map());
 		const orderRef = useRef<string[]>([]);
-		const baseId = useId();
+		const baseId = useId('tabs');
 
-		const setValue = useCallback(
-			(next: string) => {
-				if (!isControlled) setUncontrolledValue(next);
-				onChange?.(next);
-			},
-			[isControlled, onChange],
-		);
+		const setValue = useCallback((next: string) => setValueState(next), [setValueState]);
 
 		const registerTrigger = useCallback((triggerValue: string, el: HTMLButtonElement | null) => {
 			if (el) {
