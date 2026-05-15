@@ -53,8 +53,47 @@ export {
 export { iconNames, iconSizes } from './components/icon';
 
 // Primitives
-export { createClickOutside, createInteractiveState } from './primitives';
-export type { InteractiveStateOptions, InteractiveStateResult } from './primitives';
+export {
+	createClickOutside,
+	createControllableState,
+	createDebounce,
+	createDebouncedCallback,
+	createDisclosure,
+	createFloating,
+	createFocusTrap,
+	createFocusVisible,
+	createId,
+	createIntersectionObserver,
+	createInteractiveState,
+	createKeyboard,
+	createMediaQuery,
+	createMergedRefs,
+	createReduceMotion,
+	createResizeObserver,
+	createScrollLock,
+	createThrottle,
+	createThrottledCallback,
+} from './primitives';
+export type {
+	CreateControllableStateOptions,
+	CreateDisclosureOptions,
+	CreateDisclosureResult,
+	CreateFloatingOptions,
+	CreateFloatingResult,
+	FloatingSide,
+	FloatingAlign,
+	FloatingStrategy,
+	CreateFocusTrapOptions,
+	CreateFocusVisibleResult,
+	CreateIntersectionObserverOptions,
+	InteractiveStateOptions,
+	InteractiveStateResult,
+	KeyboardMap,
+	KeyHandler,
+	KeyboardHandlerOptions,
+	CreateKeyboardOptions,
+	ElementSize,
+} from './primitives';
 
 // Types
 export type { Size, Status, HorizontalPosition, BaseFormFieldProps, BaseOption } from './types';
