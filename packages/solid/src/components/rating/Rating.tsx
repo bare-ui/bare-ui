@@ -1,4 +1,5 @@
 import { createSignal, For, splitProps } from 'solid-js';
+import { createControllableState } from '@/primitives/create-controllable-state';
 import type { RatingProps } from './Rating.types';
 
 // ---------------------------------------------------------------------------
@@ -48,11 +49,15 @@ function Rating(props: RatingProps) {
 		'starClass',
 	]);
 
-	const [uncontrolledValue, setUncontrolledValue] = createSignal(local.defaultValue ?? 0);
+	const [selectedValue, setSelectedValue] = createControllableState<number>({
+		get value() {
+			return local.value;
+		},
+		defaultValue: local.defaultValue ?? 0,
+		onChange: local.onChange,
+	});
 	const [hoverValue, setHoverValue] = createSignal(0);
 
-	const isControlled = () => local.value !== undefined;
-	const selectedValue = () => (isControlled() ? (local.value ?? 0) : uncontrolledValue());
 	const displayValue = () => hoverValue() || selectedValue();
 	const max = () => local.max ?? 5;
 	const disabled = () => !!local.disabled;
@@ -60,8 +65,7 @@ function Rating(props: RatingProps) {
 
 	const handleSelect = (star: number) => {
 		if (disabled() || readOnly()) return;
-		if (!isControlled()) setUncontrolledValue(star);
-		local.onChange?.(star);
+		setSelectedValue(star);
 	};
 
 	const stars = () => Array.from({ length: max() }, (_, i) => i + 1);
