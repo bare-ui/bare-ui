@@ -1,6 +1,9 @@
-import { createContext, createEffect, createSignal, onCleanup, onMount, Show, splitProps, useContext, type JSX } from 'solid-js';
+import { createContext, onCleanup, onMount, Show, splitProps, useContext, type JSX } from 'solid-js';
 import { createClickOutside } from '@/primitives/create-click-outside';
+import { createControllableState } from '@/primitives/create-controllable-state';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
+import { createKeyboard } from '@/primitives/create-keyboard';
+import { createMergedRefs } from '@/primitives/create-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	MenuBarContentProps,
@@ -37,18 +40,19 @@ function useMenuContext() {
 // ---------------------------------------------------------------------------
 
 function Root(props: MenuBarRootProps) {
-	const [local, rest] = splitProps(props, ['value', 'defaultValue', 'onValueChange', 'children', 'class']);
+	const [local, rest] = splitProps(props, ['value', 'defaultValue', 'onValueChange', 'children', 'class', 'ref']);
 
-	const [uncontrolled, setUncontrolled] = createSignal<string | null>(local.defaultValue ?? null);
-	const isControlled = () => local.value !== undefined;
-	const openMenu = () => (isControlled() ? (local.value as string | null) : uncontrolled());
+	const [openMenu, setOpenMenuState] = createControllableState<string | null>({
+		get value() {
+			return local.value;
+		},
+		defaultValue: local.defaultValue ?? null,
+		onChange: local.onValueChange,
+	});
+
+	const setOpenMenu = (next: string | null) => setOpenMenuState(next);
 
 	const order: string[] = [];
-
-	const setOpenMenu = (next: string | null) => {
-		if (!isControlled()) setUncontrolled(next);
-		local.onValueChange?.(next);
-	};
 
 	const registerMenu = (id: string) => {
 		if (!order.includes(id)) order.push(id);
@@ -60,6 +64,10 @@ function Root(props: MenuBarRootProps) {
 	const getMenuOrder = () => order.slice();
 
 	let rootEl: HTMLDivElement | undefined;
+	const mergedRef = createMergedRefs<HTMLDivElement>(
+		(el) => (rootEl = el),
+		local.ref as ((el: HTMLDivElement) => void) | undefined,
+	);
 
 	createClickOutside(
 		() => rootEl,
@@ -68,13 +76,14 @@ function Root(props: MenuBarRootProps) {
 		},
 	);
 
-	createEffect(() => {
-		const handle = (e: KeyboardEvent) => {
-			if (e.key === 'Escape' && openMenu()) setOpenMenu(null);
-		};
-		window.addEventListener('keyup', handle);
-		onCleanup(() => window.removeEventListener('keyup', handle));
-	});
+	createKeyboard(
+		{
+			Escape: () => {
+				if (openMenu()) setOpenMenu(null);
+			},
+		},
+		{ event: 'keyup' },
+	);
 
 	const ctxValue: MenuBarContextValue = {
 		get openMenu() {
@@ -89,7 +98,7 @@ function Root(props: MenuBarRootProps) {
 	return (
 		<MenuBarContext.Provider value={ctxValue}>
 			<div
-				ref={rootEl}
+				ref={mergedRef}
 				role='menubar'
 				class={local.class}
 				{...rest}>
