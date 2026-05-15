@@ -3,7 +3,6 @@ import {
 	createEffect,
 	createMemo,
 	createSignal,
-	createUniqueId,
 	For,
 	Show,
 	splitProps,
@@ -12,7 +11,10 @@ import {
 	type JSX,
 } from 'solid-js';
 import { createClickOutside } from '@/primitives/create-click-outside';
+import { createControllableState } from '@/primitives/create-controllable-state';
+import { createId } from '@/primitives/create-id';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
+import { createMergedRefs } from '@/primitives/create-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	ComboboxContentProps,
@@ -66,12 +68,17 @@ function Root(props: ComboboxRootProps) {
 		'onOpenChange',
 		'children',
 		'class',
+		'ref',
 	]);
 
 	// --- selected ---
-	const [uncontrolledValue, setUncontrolledValue] = createSignal<string | null>(local.defaultValue ?? null);
-	const isValueControlled = () => local.value !== undefined;
-	const selected = () => (isValueControlled() ? (local.value as string | null) : uncontrolledValue());
+	// onChange handled manually in commitOption (needs the option object alongside the value).
+	const [selected, setSelected] = createControllableState<string | null>({
+		get value() {
+			return local.value;
+		},
+		defaultValue: local.defaultValue ?? null,
+	});
 
 	// --- input text ---
 	// Initial value derived once at setup from defaultValue → label lookup.
@@ -80,24 +87,22 @@ function Root(props: ComboboxRootProps) {
 		local.defaultInputValue ??
 		// eslint-disable-next-line solid/reactivity
 		(local.defaultValue ? (local.options.find((o) => o.value === local.defaultValue)?.label ?? '') : '');
-	const [uncontrolledInput, setUncontrolledInput] = createSignal<string>(initialInput);
-	const isInputControlled = () => local.inputValue !== undefined;
-	const inputValue = () => (isInputControlled() ? (local.inputValue as string) : uncontrolledInput());
+	const [inputValue, setInputValue] = createControllableState<string>({
+		get value() {
+			return local.inputValue;
+		},
+		defaultValue: initialInput,
+		onChange: local.onInputChange,
+	});
 
 	// --- open ---
-	const [uncontrolledOpen, setUncontrolledOpen] = createSignal<boolean>(local.defaultOpen ?? false);
-	const isOpenControlled = () => local.open !== undefined;
-	const open = () => (isOpenControlled() ? (local.open as boolean) : uncontrolledOpen());
-
-	const setOpen = (next: boolean) => {
-		if (!isOpenControlled()) setUncontrolledOpen(next);
-		local.onOpenChange?.(next);
-	};
-
-	const setInputValue = (text: string) => {
-		if (!isInputControlled()) setUncontrolledInput(text);
-		local.onInputChange?.(text);
-	};
+	const [open, setOpen] = createControllableState<boolean>({
+		get value() {
+			return local.open;
+		},
+		defaultValue: local.defaultOpen ?? false,
+		onChange: local.onOpenChange,
+	});
 
 	// --- filtered options ---
 	const filterFn = () => local.filter ?? defaultFilter;
@@ -146,14 +151,17 @@ function Root(props: ComboboxRootProps) {
 
 	const commitOption = (option: ComboboxOption) => {
 		if (option.disabled) return;
-		if (!isValueControlled()) setUncontrolledValue(option.value);
-		if (!isInputControlled()) setUncontrolledInput(option.label);
+		setSelected(option.value);
+		setInputValue(option.label);
 		local.onChange?.(option.value, option);
-		local.onInputChange?.(option.label);
 		setOpen(false);
 	};
 
 	let rootEl: HTMLDivElement | undefined;
+	const mergedRef = createMergedRefs<HTMLDivElement>(
+		(el) => (rootEl = el),
+		local.ref as ((el: HTMLDivElement) => void) | undefined,
+	);
 
 	createClickOutside(
 		() => rootEl,
@@ -165,12 +173,12 @@ function Root(props: ComboboxRootProps) {
 	// Sync input text with selected option label when selection changes externally and input not focused.
 	createEffect(() => {
 		const sel = selected();
-		if (isInputControlled() || inputFocused) return;
+		if (local.inputValue !== undefined || inputFocused) return;
 		const opt = local.options.find((o) => o.value === sel) ?? null;
-		setUncontrolledInput(opt ? opt.label : '');
+		setInputValue(opt ? opt.label : '');
 	});
 
-	const baseId = createUniqueId();
+	const baseId = createId();
 	const listboxId = `${baseId}-listbox`;
 	const getOptionId = (v: string) => `${baseId}-opt-${v}`;
 
@@ -185,10 +193,10 @@ function Root(props: ComboboxRootProps) {
 			return selected();
 		},
 		get inputValue() {
-			return inputValue();
+			return inputValue() ?? '';
 		},
 		get open() {
-			return open();
+			return !!open();
 		},
 		get highlightedIndex() {
 			return highlightedIndex();
@@ -200,8 +208,8 @@ function Root(props: ComboboxRootProps) {
 			return listboxId;
 		},
 		getOptionId,
-		setOpen,
-		setInputValue,
+		setOpen: (next: boolean) => setOpen(next),
+		setInputValue: (text: string) => setInputValue(text),
 		commitOption,
 		setHighlightedIndex,
 		moveHighlight,
@@ -219,7 +227,7 @@ function Root(props: ComboboxRootProps) {
 	return (
 		<ComboboxContext.Provider value={ctxValue}>
 			<div
-				ref={rootEl}
+				ref={mergedRef}
 				class={local.class}
 				data-state={open() ? 'open' : 'closed'}
 				data-disabled={local.disabled ? '' : undefined}
