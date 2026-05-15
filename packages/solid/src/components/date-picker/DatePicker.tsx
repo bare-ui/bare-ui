@@ -1,17 +1,10 @@
-import {
-	createContext,
-	createEffect,
-	createMemo,
-	createSignal,
-	createUniqueId,
-	onCleanup,
-	Show,
-	splitProps,
-	useContext,
-	type JSX,
-} from 'solid-js';
+import { createContext, createMemo, Show, splitProps, useContext, type JSX } from 'solid-js';
 import { createClickOutside } from '@/primitives/create-click-outside';
+import { createControllableState } from '@/primitives/create-controllable-state';
+import { createId } from '@/primitives/create-id';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
+import { createKeyboard } from '@/primitives/create-keyboard';
+import { createMergedRefs } from '@/primitives/create-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import { Calendar } from '../calendar/Calendar';
 import type { CalendarRootProps } from '../calendar/Calendar.types';
@@ -55,27 +48,33 @@ function Root(props: DatePickerRootProps) {
 		'formatOptions',
 		'children',
 		'class',
+		'ref',
 	]);
 
-	const [uncontrolledValue, setUncontrolledValue] = createSignal<Date | null>(local.defaultValue ?? null);
-	const isValueControlled = () => local.value !== undefined;
-	const value = () => (isValueControlled() ? (local.value as Date | null) : uncontrolledValue());
+	const [value, setValueState] = createControllableState<Date | null>({
+		get value() {
+			return local.value;
+		},
+		defaultValue: local.defaultValue ?? null,
+		onChange: local.onChange,
+	});
 
-	const [uncontrolledOpen, setUncontrolledOpen] = createSignal<boolean>(local.defaultOpen ?? false);
-	const isOpenControlled = () => local.open !== undefined;
-	const open = () => (isOpenControlled() ? (local.open as boolean) : uncontrolledOpen());
+	const [open, setOpenState] = createControllableState<boolean>({
+		get value() {
+			return local.open;
+		},
+		defaultValue: local.defaultOpen ?? false,
+		onChange: local.onOpenChange,
+	});
 
-	const setOpen = (next: boolean) => {
-		if (!isOpenControlled()) setUncontrolledOpen(next);
-		local.onOpenChange?.(next);
-	};
-
-	const setValue = (next: Date | null) => {
-		if (!isValueControlled()) setUncontrolledValue(next);
-		local.onChange?.(next);
-	};
+	const setOpen = (next: boolean) => setOpenState(next);
+	const setValue = (next: Date | null) => setValueState(next);
 
 	let rootEl: HTMLDivElement | undefined;
+	const mergedRef = createMergedRefs<HTMLDivElement>(
+		(el) => (rootEl = el),
+		local.ref as ((el: HTMLDivElement) => void) | undefined,
+	);
 
 	createClickOutside(
 		() => rootEl,
@@ -84,23 +83,24 @@ function Root(props: DatePickerRootProps) {
 		},
 	);
 
-	createEffect(() => {
-		const handle = (e: KeyboardEvent) => {
-			if (e.key === 'Escape' && open()) setOpen(false);
-		};
-		window.addEventListener('keyup', handle);
-		onCleanup(() => window.removeEventListener('keyup', handle));
-	});
+	createKeyboard(
+		{
+			Escape: () => {
+				if (open()) setOpen(false);
+			},
+		},
+		{ event: 'keyup' },
+	);
 
-	const triggerId = createUniqueId();
-	const contentId = createUniqueId();
+	const triggerId = createId('datepicker-trigger');
+	const contentId = createId('datepicker-content');
 
 	const ctxValue: DatePickerContextValue = {
 		get value() {
-			return value();
+			return value() ?? null;
 		},
 		get open() {
-			return open();
+			return !!open();
 		},
 		get disabled() {
 			return !!local.disabled;
@@ -127,7 +127,7 @@ function Root(props: DatePickerRootProps) {
 	return (
 		<DatePickerContext.Provider value={ctxValue}>
 			<div
-				ref={rootEl}
+				ref={mergedRef}
 				class={local.class}
 				data-state={open() ? 'open' : 'closed'}
 				data-disabled={local.disabled ? '' : undefined}
