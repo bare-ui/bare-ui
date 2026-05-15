@@ -1,4 +1,5 @@
 import { createContext, createEffect, createSignal, splitProps, useContext, type JSX } from 'solid-js';
+import { createControllableState } from '@/primitives/create-controllable-state';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
 import { mergeProps } from '@/utils/merge-props';
 import type {
@@ -59,9 +60,13 @@ function Root(props: NumberInputRootProps) {
 		'class',
 	]);
 
-	const [uncontrolled, setUncontrolled] = createSignal<number | null>(local.defaultValue ?? null);
-	const isControlled = () => local.value !== undefined;
-	const value = () => (isControlled() ? (local.value ?? null) : uncontrolled());
+	const [value, setValueState] = createControllableState<number | null>({
+		get value() {
+			return local.value;
+		},
+		defaultValue: local.defaultValue ?? null,
+		onChange: local.onChange,
+	});
 
 	const min = () => local.min ?? Number.NEGATIVE_INFINITY;
 	const max = () => local.max ?? Number.POSITIVE_INFINITY;
@@ -70,8 +75,7 @@ function Root(props: NumberInputRootProps) {
 
 	const setValue = (next: number | null) => {
 		const normalized = next === null || Number.isNaN(next) ? null : round(clamp(next, min(), max()), precision());
-		if (!isControlled()) setUncontrolled(normalized);
-		local.onChange?.(normalized);
+		setValueState(normalized);
 	};
 
 	const stepBy = (delta: number) => {
