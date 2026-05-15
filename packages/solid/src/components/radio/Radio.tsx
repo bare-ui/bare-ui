@@ -1,6 +1,7 @@
-import { createContext, createMemo, createSignal, Show, splitProps, useContext, type JSX } from 'solid-js';
+import { createContext, createMemo, Show, splitProps, useContext, type JSX } from 'solid-js';
+import { createControllableState } from '@/primitives/create-controllable-state';
+import { createId } from '@/primitives/create-id';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
-import { Helper } from '@/utils/helper';
 import type {
 	RadioContextValue,
 	RadioIndicatorProps,
@@ -32,11 +33,15 @@ function useRadioItemContext() {
 function Root(props: RadioRootProps) {
 	const [local, rest] = splitProps(props, ['value', 'defaultValue', 'onChange', 'name', 'children', 'class']);
 
-	const [uncontrolledValue, setUncontrolledValue] = createSignal<string | number | undefined>(local.defaultValue);
-	const isControlled = () => local.value !== undefined;
-	const selectedValue = () => (isControlled() ? local.value : uncontrolledValue());
+	const [selectedValue, setSelectedValue] = createControllableState<string | number | undefined>({
+		get value() {
+			return local.value;
+		},
+		defaultValue: local.defaultValue,
+		onChange: local.onChange as ((v: string | number | undefined) => void) | undefined,
+	});
 
-	const groupName = createMemo(() => local.name || Helper.generateUUID());
+	const groupName = createMemo(() => local.name || createId('radio-group'));
 
 	const isSelected = (itemValue: string | number) => {
 		const sv = selectedValue();
@@ -45,8 +50,7 @@ function Root(props: RadioRootProps) {
 	};
 
 	const select = (itemValue: string | number) => {
-		if (!isControlled()) setUncontrolledValue(itemValue);
-		local.onChange?.(itemValue);
+		setSelectedValue(itemValue);
 	};
 
 	const ctxValue: RadioContextValue = {
