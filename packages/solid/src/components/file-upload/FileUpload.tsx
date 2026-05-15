@@ -1,5 +1,7 @@
 import { createContext, createSignal, For, splitProps, useContext, type JSX } from 'solid-js';
+import { createControllableState } from '@/primitives/create-controllable-state';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
+import { createMergedRefs } from '@/primitives/create-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	FileUploadContextValue,
@@ -60,16 +62,15 @@ function Root(props: FileUploadRootProps) {
 		'class',
 	]);
 
-	const [uncontrolled, setUncontrolled] = createSignal<File[]>(local.defaultValue ?? []);
-	const isControlled = () => local.value !== undefined;
-	const files = () => (isControlled() ? (local.value as File[]) : uncontrolled());
+	const [files, setFiles] = createControllableState<File[]>({
+		get value() {
+			return local.value;
+		},
+		defaultValue: local.defaultValue ?? [],
+		onChange: local.onChange,
+	});
 	const [isDragging, setDragging] = createSignal(false);
 	let inputEl: HTMLInputElement | null = null;
-
-	const setFiles = (next: File[]) => {
-		if (!isControlled()) setUncontrolled(next);
-		local.onChange?.(next);
-	};
 
 	const addFiles = (incoming: File[]) => {
 		if (local.disabled) return;
@@ -159,8 +160,12 @@ function Root(props: FileUploadRootProps) {
 // ---------------------------------------------------------------------------
 
 function Input(props: FileUploadInputProps) {
-	const [local, rest] = splitProps(props, ['class', 'style']);
+	const [local, rest] = splitProps(props, ['class', 'style', 'ref']);
 	const ctx = useFileUploadContext();
+	const mergedRef = createMergedRefs<HTMLInputElement>(
+		(el) => ctx.registerInput(el),
+		local.ref as ((el: HTMLInputElement) => void) | undefined,
+	);
 
 	const mergedStyle = (): JSX.CSSProperties | string | undefined => {
 		const ours: JSX.CSSProperties = {
@@ -180,7 +185,7 @@ function Input(props: FileUploadInputProps) {
 
 	return (
 		<input
-			ref={(el) => ctx.registerInput(el)}
+			ref={mergedRef}
 			type='file'
 			multiple={ctx.multiple}
 			accept={ctx.accept}
