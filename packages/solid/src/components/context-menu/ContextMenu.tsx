@@ -1,6 +1,9 @@
 import { createContext, createEffect, createSignal, onCleanup, Show, splitProps, useContext, type JSX } from 'solid-js';
 import { Portal } from 'solid-js/web';
+import { createControllableState } from '@/primitives/create-controllable-state';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
+import { createKeyboard } from '@/primitives/create-keyboard';
+import { createMergedRefs } from '@/primitives/create-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	ContextMenuContentProps,
@@ -37,15 +40,14 @@ function Root(props: ContextMenuRootProps) {
 		'class',
 	]);
 
-	const [uncontrolledOpen, setUncontrolledOpen] = createSignal<boolean>(local.defaultOpen ?? false);
-	const isControlled = () => local.open !== undefined;
-	const open = () => (isControlled() ? (local.open as boolean) : uncontrolledOpen());
+	const [open, setOpen] = createControllableState<boolean>({
+		get value() {
+			return local.open;
+		},
+		defaultValue: local.defaultOpen ?? false,
+		onChange: local.onOpenChange,
+	});
 	const [position, setPosition] = createSignal({ x: 0, y: 0 });
-
-	const setOpen = (next: boolean) => {
-		if (!isControlled()) setUncontrolledOpen(next);
-		local.onOpenChange?.(next);
-	};
 
 	const openAt = (x: number, y: number) => {
 		setPosition({ x, y });
@@ -77,13 +79,14 @@ function Root(props: ContextMenuRootProps) {
 		});
 	});
 
-	createEffect(() => {
-		const handle = (e: KeyboardEvent) => {
-			if (e.key === 'Escape' && open()) close();
-		};
-		window.addEventListener('keyup', handle);
-		onCleanup(() => window.removeEventListener('keyup', handle));
-	});
+	createKeyboard(
+		{
+			Escape: () => {
+				if (open()) close();
+			},
+		},
+		{ event: 'keyup' },
+	);
 
 	// Block scroll inputs while open without hiding overflow.
 	createEffect(() => {
@@ -198,8 +201,13 @@ function Trigger(props: ContextMenuTriggerProps) {
 // ---------------------------------------------------------------------------
 
 function Content(props: ContextMenuContentProps) {
-	const [local, rest] = splitProps(props, ['children', 'class', 'style']);
+	const [local, rest] = splitProps(props, ['children', 'class', 'style', 'ref']);
 	const ctx = useContextMenuContext();
+
+	const mergedRef = createMergedRefs<HTMLDivElement>(
+		(el) => ctx.setContentEl(el),
+		local.ref as ((el: HTMLDivElement) => void) | undefined,
+	);
 
 	const mergedStyle = (): JSX.CSSProperties | string | undefined => {
 		const ours: JSX.CSSProperties = {
@@ -217,7 +225,7 @@ function Content(props: ContextMenuContentProps) {
 		<Show when={ctx.open}>
 			<Portal>
 				<div
-					ref={(el) => ctx.setContentEl(el)}
+					ref={mergedRef}
 					role='menu'
 					class={local.class}
 					data-state='open'
