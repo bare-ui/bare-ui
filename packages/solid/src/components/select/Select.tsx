@@ -9,7 +9,9 @@ import {
 	type JSX,
 } from 'solid-js';
 import { createClickOutside } from '@/primitives/create-click-outside';
+import { createControllableState } from '@/primitives/create-controllable-state';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
+import { createMergedRefs } from '@/primitives/create-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	SelectContentProps,
@@ -47,26 +49,34 @@ function Root(props: SelectRootProps) {
 		'disabled',
 		'class',
 		'children',
+		'ref',
 	]);
 
-	const [uncontrolledValue, setUncontrolledValue] = createSignal(local.defaultValue ?? '');
-	const isControlled = () => local.value !== undefined;
-	const selectedValue = () => (isControlled() ? (local.value ?? '') : uncontrolledValue());
+	const [selectedValue, setSelectedValue] = createControllableState<string>({
+		get value() {
+			return local.value;
+		},
+		defaultValue: local.defaultValue ?? '',
+		onChange: local.onChange,
+	});
 
 	const [open, setOpen] = createSignal(false);
 	const [labelMap, setLabelMap] = createSignal<Record<string, string>>({});
 	const [persistedLabel, setPersistedLabel] = createSignal('');
 
 	let rootEl: HTMLDivElement | undefined;
+	const mergedRef = createMergedRefs<HTMLDivElement>(
+		(el) => (rootEl = el),
+		local.ref as ((el: HTMLDivElement) => void) | undefined,
+	);
 	createClickOutside(
 		() => rootEl,
 		() => setOpen(false),
 	);
 
 	const select = (value: string, label: string) => {
-		if (!isControlled()) setUncontrolledValue(value);
+		setSelectedValue(value);
 		setPersistedLabel(label);
-		local.onChange?.(value);
 		setOpen(false);
 	};
 
@@ -80,14 +90,14 @@ function Root(props: SelectRootProps) {
 
 	// Prefer the persisted label (set on explicit selection), fall back to the
 	// label map (covers defaultValue / controlled value on first render).
-	const selectedLabel = () => persistedLabel() || labelMap()[selectedValue()] || '';
+	const selectedLabel = () => persistedLabel() || labelMap()[selectedValue() ?? ''] || '';
 
 	const ctxValue: SelectContextValue = {
 		get open() {
 			return open();
 		},
 		get selectedValue() {
-			return selectedValue();
+			return selectedValue() ?? '';
 		},
 		get selectedLabel() {
 			return selectedLabel();
@@ -104,7 +114,7 @@ function Root(props: SelectRootProps) {
 	return (
 		<SelectContext.Provider value={ctxValue}>
 			<div
-				ref={rootEl}
+				ref={mergedRef}
 				class={local.class}
 				data-open={open() ? '' : undefined}
 				data-disabled={local.disabled ? '' : undefined}
