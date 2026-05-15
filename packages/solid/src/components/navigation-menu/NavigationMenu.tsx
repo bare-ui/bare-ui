@@ -1,6 +1,9 @@
-import { createContext, createEffect, createSignal, onCleanup, Show, splitProps, useContext, type JSX } from 'solid-js';
+import { createContext, onCleanup, Show, splitProps, useContext, type JSX } from 'solid-js';
 import { createClickOutside } from '@/primitives/create-click-outside';
+import { createControllableState } from '@/primitives/create-controllable-state';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
+import { createKeyboard } from '@/primitives/create-keyboard';
+import { createMergedRefs } from '@/primitives/create-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	NavigationMenuContentProps,
@@ -46,18 +49,24 @@ function Root(props: NavigationMenuRootProps) {
 		'children',
 		'class',
 		'aria-label',
+		'ref',
 	]);
 
-	const [uncontrolled, setUncontrolled] = createSignal<string | null>(local.defaultValue ?? null);
-	const isControlled = () => local.value !== undefined;
-	const value = () => (isControlled() ? (local.value as string | null) : uncontrolled());
+	const [value, setValueState] = createControllableState<string | null>({
+		get value() {
+			return local.value;
+		},
+		defaultValue: local.defaultValue ?? null,
+		onChange: local.onValueChange,
+	});
 
-	const setValue = (next: string | null) => {
-		if (!isControlled()) setUncontrolled(next);
-		local.onValueChange?.(next);
-	};
+	const setValue = (next: string | null) => setValueState(next);
 
 	let rootEl: HTMLElement | undefined;
+	const mergedRef = createMergedRefs<HTMLElement>(
+		(el) => (rootEl = el),
+		local.ref as ((el: HTMLElement) => void) | undefined,
+	);
 
 	// Single shared close timer. Without this, each Trigger and Content owns its
 	// own local `closeTimer` variable — so when the cursor moves from Trigger
@@ -88,13 +97,14 @@ function Root(props: NavigationMenuRootProps) {
 		},
 	);
 
-	createEffect(() => {
-		const handle = (e: KeyboardEvent) => {
-			if (e.key === 'Escape' && value()) setValue(null);
-		};
-		window.addEventListener('keyup', handle);
-		onCleanup(() => window.removeEventListener('keyup', handle));
-	});
+	createKeyboard(
+		{
+			Escape: () => {
+				if (value()) setValue(null);
+			},
+		},
+		{ event: 'keyup' },
+	);
 
 	const ctxValue: NavigationMenuRootContextValue = {
 		get value() {
@@ -114,7 +124,7 @@ function Root(props: NavigationMenuRootProps) {
 	return (
 		<RootContext.Provider value={ctxValue}>
 			<nav
-				ref={rootEl}
+				ref={mergedRef}
 				aria-label={local['aria-label'] ?? 'Main'}
 				class={local.class}
 				{...rest}>
