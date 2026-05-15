@@ -1,4 +1,5 @@
-import { createContext, createSignal, splitProps, useContext, type JSX } from 'solid-js';
+import { createContext, splitProps, useContext, type JSX } from 'solid-js';
+import { createControllableState } from '@/primitives/create-controllable-state';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
 import { mergeProps } from '@/utils/merge-props';
 import type { SwitchContextValue, SwitchRootProps, SwitchThumbProps } from './Switch.types';
@@ -24,9 +25,13 @@ function Root(props: SwitchRootProps) {
 		'onClick',
 	]);
 
-	const [uncontrolledChecked, setUncontrolledChecked] = createSignal(local.defaultChecked ?? false);
-	const isControlled = () => local.checked !== undefined;
-	const checked = () => (isControlled() ? !!local.checked : uncontrolledChecked());
+	const [checked, setChecked] = createControllableState<boolean>({
+		get value() {
+			return local.checked;
+		},
+		defaultValue: local.defaultChecked ?? false,
+		onChange: local.onChange,
+	});
 	const disabled = () => !!local.disabled;
 
 	const state = createInteractiveState({
@@ -39,9 +44,7 @@ function Root(props: SwitchRootProps) {
 
 	const toggle = () => {
 		if (disabled()) return;
-		const next = !checked();
-		if (!isControlled()) setUncontrolledChecked(next);
-		local.onChange?.(next);
+		setChecked(!checked());
 	};
 
 	const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (e) => {
@@ -54,7 +57,7 @@ function Root(props: SwitchRootProps) {
 
 	const ctxValue: SwitchContextValue = {
 		get checked() {
-			return checked();
+			return !!checked();
 		},
 		get disabled() {
 			return disabled();
