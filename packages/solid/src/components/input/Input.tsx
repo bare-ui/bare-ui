@@ -1,5 +1,6 @@
 import { createContext, createMemo, createSignal, Show, splitProps, useContext } from 'solid-js';
-import { Helper } from '@/utils/helper';
+import { createControllableState } from '@/primitives/create-controllable-state';
+import { createId } from '@/primitives/create-id';
 import type {
 	InputContextValue,
 	InputErrorProps,
@@ -34,17 +35,19 @@ function Root(props: InputRootProps) {
 		'class',
 	]);
 
-	const [uncontrolledValue, setUncontrolledValue] = createSignal(local.defaultValue ?? '');
+	const [value, setValue] = createControllableState<string>({
+		get value() {
+			return local.value;
+		},
+		defaultValue: local.defaultValue ?? '',
+		onChange: local.onChange,
+	});
 	const [isActive, setIsActive] = createSignal(false);
-	const isControlled = () => local.value !== undefined;
-	const value = () => (isControlled() ? (local.value ?? '') : uncontrolledValue());
 
-	// Memoize the generated UUID so it stays stable when `id` is unset.
-	const inputId = createMemo(() => local.id || Helper.generateUUID());
+	const inputId = createMemo(() => local.id || createId('input'));
 
 	const handleChange = (newValue: string) => {
-		if (!isControlled()) setUncontrolledValue(newValue);
-		local.onChange?.(newValue);
+		setValue(newValue);
 	};
 
 	const handleFocus = () => {
@@ -59,7 +62,7 @@ function Root(props: InputRootProps) {
 
 	const contextValue: InputContextValue = {
 		get value() {
-			return value();
+			return value() ?? '';
 		},
 		get inputId() {
 			return inputId();
