@@ -14,7 +14,9 @@
  *   return <div ref={mergedRef} />;
  * }
  */
-export function createMergedRefs<T>(...refs: ((el: T) => void | unknown)[]): (el: T) => void {
+export function createMergedRefs<T>(
+	...refs: (((el: T) => void | unknown) | null | undefined)[]
+): (el: T) => void {
 	return (el: T) => {
 		for (const ref of refs) {
 			if (typeof ref === 'function') ref(el);
