@@ -1,6 +1,7 @@
-import { createContext, createMemo, createSignal, Show, splitProps, useContext, type JSX } from 'solid-js';
+import { createContext, createMemo, Show, splitProps, useContext, type JSX } from 'solid-js';
+import { createControllableState } from '@/primitives/create-controllable-state';
+import { createId } from '@/primitives/create-id';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
-import { Helper } from '@/utils/helper';
 import type {
 	CheckboxContextValue,
 	CheckboxIndicatorProps,
@@ -32,11 +33,15 @@ function useCheckboxItemContext() {
 function Root(props: CheckboxRootProps) {
 	const [local, rest] = splitProps(props, ['value', 'defaultValue', 'onChange', 'name', 'children', 'class']);
 
-	const [uncontrolledValue, setUncontrolledValue] = createSignal<(string | number)[]>(local.defaultValue ?? []);
-	const isControlled = () => local.value !== undefined;
-	const values = () => (isControlled() ? (local.value ?? []) : uncontrolledValue());
+	const [values, setValues] = createControllableState<(string | number)[]>({
+		get value() {
+			return local.value;
+		},
+		defaultValue: local.defaultValue ?? [],
+		onChange: local.onChange,
+	});
 
-	const groupName = createMemo(() => local.name || Helper.generateUUID());
+	const groupName = createMemo(() => local.name || createId('checkbox-group'));
 
 	const isChecked = (itemValue: string | number) => values().some((v) => String(v) === String(itemValue));
 
@@ -50,8 +55,7 @@ function Root(props: CheckboxRootProps) {
 			currentValues.splice(index, 1);
 		}
 
-		if (!isControlled()) setUncontrolledValue(currentValues);
-		local.onChange?.(currentValues);
+		setValues(currentValues);
 	};
 
 	const ctxValue: CheckboxContextValue = {
