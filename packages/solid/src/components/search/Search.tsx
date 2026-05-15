@@ -1,6 +1,9 @@
 import { createContext, createSignal, onCleanup, onMount, Show, splitProps, useContext, type JSX } from 'solid-js';
 import { createClickOutside } from '@/primitives/create-click-outside';
+import { createControllableState } from '@/primitives/create-controllable-state';
+import { createDebouncedCallback } from '@/primitives/create-debounce';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
+import { createMergedRefs } from '@/primitives/create-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	SearchContentProps,
@@ -36,42 +39,49 @@ function Root(props: SearchRootProps) {
 		'searchDelay',
 		'children',
 		'class',
+		'ref',
 	]);
 
-	const [uncontrolledOpen, setUncontrolledOpen] = createSignal(local.defaultOpen ?? false);
-	const isOpenControlled = () => local.open !== undefined;
-	const open = () => (isOpenControlled() ? !!local.open : uncontrolledOpen());
+	const [open, setOpenState] = createControllableState<boolean>({
+		get value() {
+			return local.open;
+		},
+		defaultValue: local.defaultOpen ?? false,
+	});
 
-	const [uncontrolledValue, setUncontrolledValue] = createSignal(local.defaultSearchValue ?? '');
-	const isValueControlled = () => local.value !== undefined;
-	const searchValue = () => (isValueControlled() ? (local.value ?? '') : uncontrolledValue());
+	const [searchValue, setSearchValueState] = createControllableState<string>({
+		get value() {
+			return local.value;
+		},
+		defaultValue: local.defaultSearchValue ?? '',
+	});
 
 	const [highlightedIndex, setHighlightedIndex] = createSignal(-1);
 	const [itemCount, setItemCount] = createSignal(0);
-	let typingTimer: ReturnType<typeof setTimeout> | null = null;
 	let inputNode: HTMLInputElement | null = null;
 	let rootEl: HTMLDivElement | undefined;
+	const mergedRef = createMergedRefs<HTMLDivElement>(
+		(el) => (rootEl = el),
+		local.ref as ((el: HTMLDivElement) => void) | undefined,
+	);
+
+	const submitDebounced = createDebouncedCallback(() => local.onSubmitSearch?.(), local.searchDelay ?? 1000);
 
 	const handleOpenChange = (value: boolean) => {
-		if (!isOpenControlled()) setUncontrolledOpen(value);
+		setOpenState(value);
 		local.onOpenChange?.(value);
 		if (!value) setHighlightedIndex(-1);
 	};
 
 	const handleSearchChange = (value: string) => {
-		if (!isValueControlled()) setUncontrolledValue(value);
+		setSearchValueState(value);
 		local.onSearchChange?.(value);
-
-		if (typingTimer) clearTimeout(typingTimer);
-		typingTimer = setTimeout(() => {
-			local.onSubmitSearch?.();
-		}, local.searchDelay ?? 1000);
+		submitDebounced();
 	};
 
 	const handleSelect = (option: SearchOption) => {
-		if (typingTimer) clearTimeout(typingTimer);
 		local.onSelect?.(option);
-		if (!isValueControlled()) setUncontrolledValue('');
+		setSearchValueState('');
 		local.onSearchChange?.('');
 		handleOpenChange(false);
 	};
@@ -93,17 +103,13 @@ function Root(props: SearchRootProps) {
 		},
 	);
 
-	onCleanup(() => {
-		if (typingTimer) clearTimeout(typingTimer);
-	});
-
 	const ctxValue: SearchContextValue = {
 		get open() {
-			return open();
+			return !!open();
 		},
 		onOpenChange: handleOpenChange,
 		get searchValue() {
-			return searchValue();
+			return searchValue() ?? '';
 		},
 		onSearchChange: handleSearchChange,
 		onSelect: handleSelect,
@@ -128,7 +134,7 @@ function Root(props: SearchRootProps) {
 	return (
 		<SearchContext.Provider value={ctxValue}>
 			<div
-				ref={rootEl}
+				ref={mergedRef}
 				class={local.class}
 				data-loading={local.loading ? '' : undefined}
 				{...rest}>
