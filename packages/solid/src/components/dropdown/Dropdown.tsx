@@ -1,6 +1,9 @@
-import { createContext, createEffect, createSignal, onCleanup, Show, splitProps, useContext, type JSX } from 'solid-js';
+import { createContext, Show, splitProps, useContext, type JSX } from 'solid-js';
 import { createClickOutside } from '@/primitives/create-click-outside';
+import { createControllableState } from '@/primitives/create-controllable-state';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
+import { createKeyboard } from '@/primitives/create-keyboard';
+import { createMergedRefs } from '@/primitives/create-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type { DropdownContextValue, DropdownMenuProps, DropdownRootProps, DropdownTriggerProps } from './Dropdown.types';
 
@@ -15,46 +18,49 @@ function useDropdownContext() {
 }
 
 function Root(props: DropdownRootProps) {
-	const [local, rest] = splitProps(props, ['open', 'defaultOpen', 'onOpenChange', 'children', 'class']);
+	const [local, rest] = splitProps(props, ['open', 'defaultOpen', 'onOpenChange', 'children', 'class', 'ref']);
 
-	const [uncontrolledOpen, setUncontrolledOpen] = createSignal(local.defaultOpen ?? false);
-	const isControlled = () => local.open !== undefined;
-	const open = () => (isControlled() ? !!local.open : uncontrolledOpen());
-
-	const handleOpenChange = (value: boolean) => {
-		if (!isControlled()) setUncontrolledOpen(value);
-		local.onOpenChange?.(value);
-	};
+	const [open, setOpen] = createControllableState<boolean>({
+		get value() {
+			return local.open;
+		},
+		defaultValue: local.defaultOpen ?? false,
+		onChange: local.onOpenChange,
+	});
 
 	let rootEl: HTMLDivElement | undefined;
+	const mergedRef = createMergedRefs<HTMLDivElement>(
+		(el) => (rootEl = el),
+		local.ref as ((el: HTMLDivElement) => void) | undefined,
+	);
+
 	createClickOutside(
 		() => rootEl,
 		() => {
-			if (open()) handleOpenChange(false);
+			if (open()) setOpen(false);
 		},
 	);
 
-	createEffect(() => {
-		const handleEscape = (event: KeyboardEvent) => {
-			if (event.key === 'Escape' && open()) {
-				handleOpenChange(false);
-			}
-		};
-		window.addEventListener('keyup', handleEscape);
-		onCleanup(() => window.removeEventListener('keyup', handleEscape));
-	});
+	createKeyboard(
+		{
+			Escape: () => {
+				if (open()) setOpen(false);
+			},
+		},
+		{ event: 'keyup' },
+	);
 
 	const ctxValue: DropdownContextValue = {
 		get open() {
 			return open();
 		},
-		onOpenChange: handleOpenChange,
+		onOpenChange: (value: boolean) => setOpen(value),
 	};
 
 	return (
 		<DropdownContext.Provider value={ctxValue}>
 			<div
-				ref={rootEl}
+				ref={mergedRef}
 				class={local.class}
 				{...rest}>
 				{local.children}
