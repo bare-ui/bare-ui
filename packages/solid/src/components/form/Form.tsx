@@ -3,13 +3,13 @@ import {
 	createContext,
 	createEffect,
 	createSignal,
-	createUniqueId,
 	onCleanup,
 	Show,
 	splitProps,
 	useContext,
 	type JSX,
 } from 'solid-js';
+import { createId } from '@/primitives/create-id';
 import type {
 	FormControlProps,
 	FormDescriptionProps,
@@ -55,7 +55,7 @@ function Root(props: FormRootProps) {
 function Field(props: FormFieldProps) {
 	const [local, rest] = splitProps(props, ['name', 'invalid', 'required', 'disabled', 'children', 'class']);
 
-	const uniq = createUniqueId();
+	const uniq = createId();
 	const id = () => (local.name ? `${local.name}-${uniq}` : uniq);
 	const descriptionId = () => `${id()}-description`;
 	const errorId = () => `${id()}-error`;
