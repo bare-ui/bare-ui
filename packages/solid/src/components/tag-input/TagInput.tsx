@@ -1,4 +1,5 @@
 import { createContext, createSignal, For, splitProps, useContext, type JSX } from 'solid-js';
+import { createControllableState } from '@/primitives/create-controllable-state';
 import type {
 	TagInputContextValue,
 	TagInputFieldProps,
@@ -36,14 +37,13 @@ function Root(props: TagInputRootProps) {
 		'class',
 	]);
 
-	const [uncontrolled, setUncontrolled] = createSignal<string[]>(local.defaultValue ?? []);
-	const isControlled = () => local.value !== undefined;
-	const tags = () => (isControlled() ? (local.value as string[]) : uncontrolled());
-
-	const setTags = (next: string[]) => {
-		if (!isControlled()) setUncontrolled(next);
-		local.onChange?.(next);
-	};
+	const [tags, setTags] = createControllableState<string[]>({
+		get value() {
+			return local.value;
+		},
+		defaultValue: local.defaultValue ?? [],
+		onChange: local.onChange,
+	});
 
 	const addTag = (raw: string): boolean => {
 		if (local.disabled) return false;

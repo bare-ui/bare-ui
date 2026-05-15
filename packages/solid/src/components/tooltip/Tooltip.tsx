@@ -1,4 +1,5 @@
-import { createContext, createSignal, splitProps, useContext, type JSX } from 'solid-js';
+import { createContext, onCleanup, splitProps, useContext, type JSX } from 'solid-js';
+import { createControllableState } from '@/primitives/create-controllable-state';
 import type {
 	TooltipContentProps,
 	TooltipContextValue,
@@ -20,11 +21,18 @@ const TooltipContext = createContext<TooltipContextValue>({
 // ---------------------------------------------------------------------------
 
 function Root(props: TooltipRootProps) {
-	const [uncontrolledOpen, setUncontrolledOpen] = createSignal(props.defaultOpen ?? false);
-	const isControlled = () => props.open !== undefined;
-	const open = () => (isControlled() ? !!props.open : uncontrolledOpen());
+	const [open, setOpenState] = createControllableState<boolean>({
+		get value() {
+			return props.open;
+		},
+		defaultValue: props.defaultOpen ?? false,
+		onChange: props.onOpenChange,
+	});
 
 	let timer: ReturnType<typeof setTimeout> | null = null;
+	onCleanup(() => {
+		if (timer) clearTimeout(timer);
+	});
 
 	const setOpen = (value: boolean) => {
 		if (timer) {
@@ -32,19 +40,15 @@ function Root(props: TooltipRootProps) {
 			timer = null;
 		}
 		if (value) {
-			timer = setTimeout(() => {
-				if (!isControlled()) setUncontrolledOpen(true);
-				props.onOpenChange?.(true);
-			}, props.delayDuration ?? 300);
+			timer = setTimeout(() => setOpenState(true), props.delayDuration ?? 300);
 		} else {
-			if (!isControlled()) setUncontrolledOpen(false);
-			props.onOpenChange?.(false);
+			setOpenState(false);
 		}
 	};
 
 	const ctxValue: TooltipContextValue = {
 		get open() {
-			return open();
+			return !!open();
 		},
 		setOpen,
 	};
