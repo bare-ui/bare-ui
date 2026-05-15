@@ -3,13 +3,14 @@ import {
 	createEffect,
 	createMemo,
 	createSignal,
-	createUniqueId,
 	onCleanup,
 	onMount,
 	splitProps,
 	useContext,
 	type JSX,
 } from 'solid-js';
+import { createId } from '@/primitives/create-id';
+import { createMergedRefs } from '@/primitives/create-merged-refs';
 import type { PanelConfig, PanelGroupProps, PanelHandleProps, PanelOrientation, PanelProps } from './ResizablePanels.types';
 
 // ---------------------------------------------------------------------------
@@ -73,11 +74,16 @@ function Group(props: PanelGroupProps) {
 		'class',
 		'children',
 		'style',
+		'ref',
 	]);
 
 	const orientation = (): PanelOrientation => local.orientation ?? 'horizontal';
 
 	let containerEl: HTMLDivElement | undefined;
+	const mergedRef = createMergedRefs<HTMLDivElement>(
+		(el) => (containerEl = el),
+		local.ref as ((el: HTMLDivElement) => void) | undefined,
+	);
 
 	// Stable mutable registries — survive re-renders without triggering effect loops.
 	const panels: PanelEntry[] = [];
@@ -273,7 +279,7 @@ function Group(props: PanelGroupProps) {
 	return (
 		<PanelGroupContext.Provider value={ctxValue}>
 			<div
-				ref={containerEl}
+				ref={mergedRef}
 				data-orientation={orientation()}
 				class={local.class}
 				style={mergedStyle()}
@@ -291,7 +297,7 @@ function Group(props: PanelGroupProps) {
 function Panel(props: PanelProps) {
 	const [local, rest] = splitProps(props, ['defaultSize', 'minSize', 'maxSize', 'children', 'class', 'style']);
 	const ctx = useGroupContext();
-	const id = createUniqueId();
+	const id = createId();
 
 	const config = createMemo<PanelConfig>(() => ({
 		defaultSize: local.defaultSize,
@@ -360,7 +366,7 @@ function Panel(props: PanelProps) {
 function Handle(props: PanelHandleProps & { 'aria-label'?: string }) {
 	const [local, rest] = splitProps(props, ['disabled', 'class', 'style', 'onPointerDown', 'aria-label']);
 	const ctx = useGroupContext();
-	const id = createUniqueId();
+	const id = createId();
 
 	onMount(() => {
 		ctx.registerHandle(id);
