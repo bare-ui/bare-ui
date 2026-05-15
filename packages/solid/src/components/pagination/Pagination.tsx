@@ -1,4 +1,5 @@
-import { createContext, createMemo, createSignal, For, splitProps, useContext, type JSX } from 'solid-js';
+import { createContext, createMemo, For, splitProps, useContext, type JSX } from 'solid-js';
+import { createControllableState } from '@/primitives/create-controllable-state';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
 import { mergeProps } from '@/utils/merge-props';
 import type {
@@ -93,17 +94,20 @@ function Root(props: PaginationRootProps) {
 		'aria-label',
 	]);
 
-	const [uncontrolled, setUncontrolled] = createSignal<number>(local.defaultPage ?? 1);
-	const isControlled = () => local.page !== undefined;
-	const page = () => (isControlled() ? (local.page as number) : uncontrolled());
+	const [page, setPage] = createControllableState<number>({
+		get value() {
+			return local.page;
+		},
+		defaultValue: local.defaultPage ?? 1,
+		onChange: local.onChange,
+	});
 	const totalPages = () => local.totalPages;
 	const ariaLabel = () => local['aria-label'] ?? 'Pagination';
 
 	const goTo = (next: number) => {
 		const clamped = Math.min(Math.max(next, 1), Math.max(totalPages(), 1));
 		if (clamped === page()) return;
-		if (!isControlled()) setUncontrolled(clamped);
-		local.onChange?.(clamped);
+		setPage(clamped);
 	};
 
 	const prev = () => goTo(page() - 1);
