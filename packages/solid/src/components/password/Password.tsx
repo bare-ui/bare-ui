@@ -1,7 +1,8 @@
 import { createContext, createMemo, createSignal, Show, splitProps, useContext, type JSX } from 'solid-js';
+import { createControllableState } from '@/primitives/create-controllable-state';
+import { createId } from '@/primitives/create-id';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
 import { mergeProps } from '@/utils/merge-props';
-import { Helper } from '@/utils/helper';
 import type {
 	PasswordContextValue,
 	PasswordErrorProps,
@@ -42,16 +43,19 @@ function Root(props: PasswordRootProps) {
 		'children',
 	]);
 
-	const [uncontrolledValue, setUncontrolledValue] = createSignal(local.defaultValue ?? '');
-	const isControlled = () => local.value !== undefined;
-	const value = () => (isControlled() ? (local.value ?? '') : uncontrolledValue());
+	const [value, setValue] = createControllableState<string>({
+		get value() {
+			return local.value;
+		},
+		defaultValue: local.defaultValue ?? '',
+		onChange: local.onChange,
+	});
 
 	const [visible, setVisible] = createSignal(false);
-	const inputId = createMemo(() => local.id ?? Helper.generateUUID());
+	const inputId = createMemo(() => local.id ?? createId('password'));
 
 	const handleChange = (val: string) => {
-		if (!isControlled()) setUncontrolledValue(val);
-		local.onChange?.(val);
+		setValue(val);
 	};
 
 	const handleFocus = () => local.onFocus?.();
@@ -62,7 +66,7 @@ function Root(props: PasswordRootProps) {
 			return inputId();
 		},
 		get value() {
-			return value();
+			return value() ?? '';
 		},
 		get visible() {
 			return visible();
