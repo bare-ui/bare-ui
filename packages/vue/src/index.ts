@@ -49,8 +49,46 @@ export {
 } from './components';
 
 // Composables
-export { useClickOutside, useInteractiveState } from './composables';
-export type { InteractiveStateOptions, InteractiveStateResult } from './composables';
+export {
+	useClickOutside,
+	useInteractiveState,
+	useFloating,
+	useFocusTrap,
+	useScrollLock,
+	useDisclosure,
+	useControllableState,
+	useId,
+	useMediaQuery,
+	useReduceMotion,
+	useKeyboard,
+	useDebounce,
+	useDebouncedCallback,
+	useThrottle,
+	useThrottledCallback,
+	useResizeObserver,
+	useIntersectionObserver,
+	useFocusVisible,
+} from './composables';
+export type {
+	InteractiveStateOptions,
+	InteractiveStateResult,
+	UseFloatingOptions,
+	UseFloatingResult,
+	FloatingSide,
+	FloatingAlign,
+	FloatingStrategy,
+	UseFocusTrapOptions,
+	UseDisclosureOptions,
+	UseDisclosureResult,
+	UseControllableStateOptions,
+	KeyboardMap,
+	KeyHandler,
+	KeyboardHandlerOptions,
+	UseKeyboardOptions,
+	ElementSize,
+	UseIntersectionObserverOptions,
+	UseFocusVisibleResult,
+} from './composables';
 
 // Types
 export type {
