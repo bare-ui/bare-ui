@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { provide, reactive, ref, computed } from 'vue'
+import { provide, reactive, computed } from 'vue'
 import { CheckboxKey } from './keys'
-import { Helper } from '@/utils/helper'
+import { useControllableState } from '@/composables/use-controllable-state'
+import { useId } from '@/composables/use-id'
 
 defineOptions({ name: 'CheckboxRoot' })
 
@@ -14,10 +15,13 @@ const props = withDefaults(defineProps<{
   defaultValue: () => [],
 })
 
-const uncontrolledValue = ref([...props.defaultValue])
-const groupName = props.name || Helper.generateUUID()
-const isControlled = computed(() => props.value !== undefined)
-const values = computed(() => isControlled.value ? props.value! : uncontrolledValue.value)
+const values = useControllableState<(string | number)[]>({
+  value: () => props.value,
+  defaultValue: [...props.defaultValue],
+  onChange: (next) => props.onChange?.(next),
+})
+const groupName = useId('checkbox-group', props.name)
+const valuesView = computed(() => values.value)
 
 function isChecked(itemValue: string | number) {
   return values.value.some((v) => String(v) === String(itemValue))
@@ -27,17 +31,13 @@ function toggle(itemValue: string | number) {
   const currentValues = [...values.value]
   const index = currentValues.findIndex((v) => String(v) === String(itemValue))
 
-  if (index === -1) {
-    currentValues.push(itemValue)
-  } else {
-    currentValues.splice(index, 1)
-  }
+  if (index === -1) currentValues.push(itemValue)
+  else currentValues.splice(index, 1)
 
-  if (!isControlled.value) uncontrolledValue.value = currentValues
-  props.onChange?.(currentValues)
+  values.value = currentValues
 }
 
-provide(CheckboxKey, reactive({ values, name: groupName, toggle, isChecked }))
+provide(CheckboxKey, reactive({ values: valuesView, name: groupName, toggle, isChecked }))
 </script>
 
 <template>
