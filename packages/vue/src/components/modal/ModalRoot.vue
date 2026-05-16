@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { provide, reactive, ref, computed, onMounted, onUnmounted } from 'vue'
+import { provide, reactive } from 'vue'
+import { useControllableState } from '@/composables/use-controllable-state'
+import { useKeyboard } from '@/composables/use-keyboard'
+import { useScrollLock } from '@/composables/use-scroll-lock'
 import { ModalKey } from './keys'
 
 defineOptions({ name: 'ModalRoot' })
@@ -10,21 +13,23 @@ const props = withDefaults(defineProps<{
   onOpenChange?: (value: boolean) => void
 }>(), { open: undefined, defaultOpen: false, onOpenChange: undefined })
 
-const uncontrolledOpen = ref(props.defaultOpen)
-const isControlled = computed(() => props.open !== undefined)
-const isOpen = computed(() => isControlled.value ? props.open! : uncontrolledOpen.value)
+const isOpen = useControllableState<boolean>({
+  value: () => props.open,
+  defaultValue: props.defaultOpen,
+  onChange: (value) => props.onOpenChange?.(value),
+})
 
 function handleOpenChange(value: boolean) {
-  if (!isControlled.value) uncontrolledOpen.value = value
-  props.onOpenChange?.(value)
+  isOpen.value = value
 }
 
-function handleEscape(event: KeyboardEvent) {
-  if (event.key === 'Escape' && isOpen.value) handleOpenChange(false)
-}
+useScrollLock(isOpen)
 
-onMounted(() => window.addEventListener('keydown', handleEscape))
-onUnmounted(() => window.removeEventListener('keydown', handleEscape))
+useKeyboard({
+  Escape: () => {
+    if (isOpen.value) handleOpenChange(false)
+  },
+})
 
 provide(ModalKey, reactive({
   open: isOpen,
