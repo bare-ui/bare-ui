@@ -1,0 +1,15 @@
+import { type Ref } from 'vue';
+import { useMediaQuery } from './use-media-query';
+
+/**
+ * Returns `true` when the user has requested reduced motion at the OS level.
+ *
+ * Use to gate animations and transitions for accessibility.
+ *
+ * @example
+ * const reduceMotion = useReduceMotion()
+ * const duration = computed(() => (reduceMotion.value ? 0 : 200))
+ */
+export function useReduceMotion(): Ref<boolean> {
+	return useMediaQuery('(prefers-reduced-motion: reduce)');
+}
