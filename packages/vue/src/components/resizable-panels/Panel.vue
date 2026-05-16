@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, useId, watch } from 'vue'
+import { computed, onMounted, onUnmounted, watch } from 'vue'
+import { useId } from '@/composables/use-id'
 import { usePanelGroupContext } from './keys'
 
 defineOptions({ name: 'Panel' })
@@ -11,7 +12,7 @@ const props = defineProps<{
 }>()
 
 const ctx = usePanelGroupContext()
-const id = useId() ?? `panel-${Math.random().toString(36).slice(2)}`
+const id = useId('panel')
 
 const config = computed(() => ({
 	defaultSize: props.defaultSize,

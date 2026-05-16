@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, useId } from 'vue'
+import { computed, onMounted, onUnmounted } from 'vue'
+import { useId } from '@/composables/use-id'
 import { usePanelGroupContext } from './keys'
 
 defineOptions({ name: 'PanelHandle', inheritAttrs: false })
@@ -15,7 +16,7 @@ const props = withDefaults(
 )
 
 const ctx = usePanelGroupContext()
-const id = useId() ?? `handle-${Math.random().toString(36).slice(2)}`
+const id = useId('handle')
 
 onMounted(() => ctx.registerHandle(id))
 onUnmounted(() => ctx.unregisterHandle(id))
