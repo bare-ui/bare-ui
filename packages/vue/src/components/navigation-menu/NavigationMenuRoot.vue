@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, provide, ref } from 'vue'
+import { computed, provide, ref } from 'vue'
 import { useClickOutside } from '@/composables/use-click-outside'
+import { useControllableState } from '@/composables/use-controllable-state'
+import { useKeyboard } from '@/composables/use-keyboard'
 import { NavigationMenuKey } from './keys'
 
 defineOptions({ name: 'NavigationMenuRoot' })
@@ -22,15 +24,14 @@ const props = withDefaults(
 	},
 )
 
-const uncontrolled = ref<string | null>(props.defaultValue ?? null)
-const isControlled = computed(() => props.value !== undefined)
-const value = computed<string | null>(() =>
-	isControlled.value ? (props.value as string | null) : uncontrolled.value,
-)
+const value = useControllableState<string | null>({
+	value: () => props.value,
+	defaultValue: props.defaultValue ?? null,
+	onChange: (next) => props.onValueChange?.(next),
+})
 
 function setValue(next: string | null) {
-	if (!isControlled.value) uncontrolled.value = next
-	props.onValueChange?.(next)
+	value.value = next
 }
 
 const delayDuration = computed(() => props.delayDuration)
@@ -41,12 +42,10 @@ useClickOutside(rootRef, () => {
 	if (value.value) setValue(null)
 })
 
-function onKeyUp(e: KeyboardEvent) {
-	if (e.key === 'Escape' && value.value) setValue(null)
-}
-
-onMounted(() => window.addEventListener('keyup', onKeyUp))
-onUnmounted(() => window.removeEventListener('keyup', onKeyUp))
+useKeyboard(
+	{ Escape: () => { if (value.value) setValue(null) } },
+	{ event: 'keyup' },
+)
 
 provide(NavigationMenuKey, {
 	value,
