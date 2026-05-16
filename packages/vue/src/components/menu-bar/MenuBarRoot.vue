@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, provide, ref, useTemplateRef } from 'vue'
+import { provide, useTemplateRef } from 'vue'
 import { useClickOutside } from '@/composables/use-click-outside'
+import { useControllableState } from '@/composables/use-controllable-state'
+import { useKeyboard } from '@/composables/use-keyboard'
 import { MenuBarKey } from './keys'
 
 defineOptions({ name: 'MenuBarRoot' })
@@ -16,15 +18,14 @@ const props = withDefaults(
 	},
 )
 
-const uncontrolled = ref<string | null>(props.defaultValue ?? null)
-const isControlled = computed(() => props.value !== undefined)
-const openMenu = computed<string | null>(() =>
-	isControlled.value ? (props.value as string | null) : uncontrolled.value,
-)
+const openMenu = useControllableState<string | null>({
+	value: () => props.value,
+	defaultValue: props.defaultValue ?? null,
+	onChange: (next) => props.onValueChange?.(next),
+})
 
 function setOpenMenu(next: string | null) {
-	if (!isControlled.value) uncontrolled.value = next
-	props.onValueChange?.(next)
+	openMenu.value = next
 }
 
 const rootRef = useTemplateRef<HTMLDivElement>('rootRef')
@@ -32,12 +33,10 @@ useClickOutside(rootRef, () => {
 	if (openMenu.value) setOpenMenu(null)
 })
 
-function onKeyUp(e: KeyboardEvent) {
-	if (e.key === 'Escape' && openMenu.value) setOpenMenu(null)
-}
-
-onMounted(() => window.addEventListener('keyup', onKeyUp))
-onUnmounted(() => window.removeEventListener('keyup', onKeyUp))
+useKeyboard(
+	{ Escape: () => { if (openMenu.value) setOpenMenu(null) } },
+	{ event: 'keyup' },
+)
 
 provide(MenuBarKey, { openMenu, setOpenMenu })
 </script>
