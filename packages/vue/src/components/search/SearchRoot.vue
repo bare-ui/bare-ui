@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { provide, reactive, ref, computed, onUnmounted, toRef } from 'vue'
+import { provide, reactive, ref, toRef } from 'vue'
 import { useClickOutside } from '@/composables/use-click-outside'
+import { useControllableState } from '@/composables/use-controllable-state'
+import { useDebouncedCallback } from '@/composables/use-debounce'
 import { SearchKey } from './keys'
 import type { SearchOption } from './Search.types'
 
@@ -20,38 +22,39 @@ const props = withDefaults(defineProps<{
 }>(), { open: undefined, defaultOpen: false, onOpenChange: undefined, value: undefined, defaultSearchValue: '', onSearchChange: undefined, onSelect: undefined, onSubmitSearch: undefined, loading: false, searchDelay: 1000 })
 
 const rootRef = ref<HTMLElement | null>(null)
-const uncontrolledOpen = ref(props.defaultOpen)
-const uncontrolledValue = ref(props.defaultSearchValue)
 const highlightedIndex = ref(-1)
 const itemCount = ref(0)
 const inputNode = ref<HTMLInputElement | null>(null)
-let typingTimeout: ReturnType<typeof setTimeout> | null = null
 
-const isOpenControlled = computed(() => props.open !== undefined)
-const openState = computed(() => isOpenControlled.value ? props.open! : uncontrolledOpen.value)
+const openState = useControllableState<boolean>({
+  value: () => props.open,
+  defaultValue: props.defaultOpen,
+  onChange: (next) => props.onOpenChange?.(next),
+})
 
-const isValueControlled = computed(() => props.value !== undefined)
-const searchValue = computed(() => isValueControlled.value ? props.value! : uncontrolledValue.value)
+const searchValue = useControllableState<string>({
+  value: () => props.value,
+  defaultValue: props.defaultSearchValue,
+  onChange: (next) => props.onSearchChange?.(next),
+})
 
 function handleOpenChange(value: boolean) {
-  if (!isOpenControlled.value) uncontrolledOpen.value = value
-  props.onOpenChange?.(value)
+  openState.value = value
   if (!value) highlightedIndex.value = -1
 }
 
-function handleSearchChange(value: string) {
-  if (!isValueControlled.value) uncontrolledValue.value = value
-  props.onSearchChange?.(value)
+const debouncedSubmit = useDebouncedCallback(() => {
+  props.onSubmitSearch?.()
+}, props.searchDelay)
 
-  if (typingTimeout) clearTimeout(typingTimeout)
-  typingTimeout = setTimeout(() => { props.onSubmitSearch?.() }, props.searchDelay)
+function handleSearchChange(value: string) {
+  searchValue.value = value
+  debouncedSubmit()
 }
 
 function handleSelect(option: SearchOption) {
-  if (typingTimeout) clearTimeout(typingTimeout)
   props.onSelect?.(option)
-  if (!isValueControlled.value) uncontrolledValue.value = ''
-  props.onSearchChange?.('')
+  searchValue.value = ''
   handleOpenChange(false)
 }
 
@@ -66,8 +69,6 @@ function unregisterItem() {
 }
 
 useClickOutside(rootRef, () => { if (openState.value) handleOpenChange(false) })
-
-onUnmounted(() => { if (typingTimeout) clearTimeout(typingTimeout) })
 
 provide(SearchKey, reactive({
   open: openState,
