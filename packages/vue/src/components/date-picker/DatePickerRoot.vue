@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, provide, ref, useId, useTemplateRef } from 'vue'
+import { computed, provide, useTemplateRef } from 'vue'
 import { useClickOutside } from '@/composables/use-click-outside'
+import { useControllableState } from '@/composables/use-controllable-state'
+import { useId } from '@/composables/use-id'
+import { useKeyboard } from '@/composables/use-keyboard'
 import { DatePickerKey, DEFAULT_FORMAT } from './keys'
 
 defineOptions({ name: 'DatePickerRoot' })
@@ -29,17 +32,17 @@ const props = withDefaults(
 	},
 )
 
-const uncontrolledValue = ref<Date | null>(props.defaultValue ?? null)
-const isValueControlled = computed(() => props.value !== undefined)
-const value = computed<Date | null>(() =>
-	isValueControlled.value ? (props.value as Date | null) : uncontrolledValue.value,
-)
+const value = useControllableState<Date | null>({
+	value: () => props.value,
+	defaultValue: props.defaultValue ?? null,
+	onChange: (next) => props.onChange?.(next),
+})
 
-const uncontrolledOpen = ref<boolean>(props.defaultOpen)
-const isOpenControlled = computed(() => props.open !== undefined)
-const open = computed<boolean>(() =>
-	isOpenControlled.value ? (props.open as boolean) : uncontrolledOpen.value,
-)
+const open = useControllableState<boolean>({
+	value: () => props.open,
+	defaultValue: props.defaultOpen,
+	onChange: (next) => props.onOpenChange?.(next),
+})
 
 const disabled = computed(() => props.disabled)
 const closeOnSelect = computed(() => props.closeOnSelect)
@@ -47,13 +50,11 @@ const locale = computed(() => props.locale)
 const formatOptions = computed(() => props.formatOptions ?? DEFAULT_FORMAT)
 
 function setOpen(next: boolean) {
-	if (!isOpenControlled.value) uncontrolledOpen.value = next
-	props.onOpenChange?.(next)
+	open.value = next
 }
 
 function setValue(next: Date | null) {
-	if (!isValueControlled.value) uncontrolledValue.value = next
-	props.onChange?.(next)
+	value.value = next
 }
 
 const rootRef = useTemplateRef<HTMLDivElement>('rootRef')
@@ -61,15 +62,13 @@ useClickOutside(rootRef, () => {
 	if (open.value) setOpen(false)
 })
 
-function onKeyUp(e: KeyboardEvent) {
-	if (e.key === 'Escape' && open.value) setOpen(false)
-}
+useKeyboard(
+	{ Escape: () => { if (open.value) setOpen(false) } },
+	{ event: 'keyup' },
+)
 
-onMounted(() => window.addEventListener('keyup', onKeyUp))
-onUnmounted(() => window.removeEventListener('keyup', onKeyUp))
-
-const triggerId = useId() ?? `dp-trigger-${Math.random().toString(36).slice(2)}`
-const contentId = useId() ?? `dp-content-${Math.random().toString(36).slice(2)}`
+const triggerId = useId('dp-trigger')
+const contentId = useId('dp-content')
 
 provide(DatePickerKey, {
 	value,
