@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { provide, reactive, ref, computed, toRef } from 'vue'
+import { provide, reactive, ref, toRef } from 'vue'
 import { PasswordKey } from './keys'
-import { Helper } from '@/utils/helper'
+import { useControllableState } from '@/composables/use-controllable-state'
+import { useId } from '@/composables/use-id'
 
 defineOptions({ name: 'PasswordRoot' })
 
@@ -22,16 +23,16 @@ const props = withDefaults(defineProps<{
   invalidType: '',
 })
 
-const uncontrolledValue = ref(props.defaultValue)
+const currentValue = useControllableState<string>({
+  value: () => props.value,
+  defaultValue: props.defaultValue,
+  onChange: (next) => props.onChange?.(next),
+})
 const visible = ref(false)
-const inputId = props.id || Helper.generateUUID()
-
-const isControlled = computed(() => props.value !== undefined)
-const currentValue = computed(() => isControlled.value ? props.value! : uncontrolledValue.value)
+const inputId = useId('password', props.id)
 
 function handleChange(val: string) {
-  if (!isControlled.value) uncontrolledValue.value = val
-  props.onChange?.(val)
+  currentValue.value = val
 }
 
 function handleFocus() {

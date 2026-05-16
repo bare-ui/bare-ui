@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { provide, reactive, ref, computed, toRef } from 'vue'
+import { provide, reactive, ref, toRef } from 'vue'
 import { TextareaKey } from './keys'
-import { Helper } from '@/utils/helper'
+import { useControllableState } from '@/composables/use-controllable-state'
+import { useId } from '@/composables/use-id'
 
 defineOptions({ name: 'TextareaRoot' })
 
@@ -24,16 +25,16 @@ const props = withDefaults(defineProps<{
   isSuccess: false,
 })
 
-const uncontrolledValue = ref(props.defaultValue)
+const currentValue = useControllableState<string>({
+  value: () => props.value,
+  defaultValue: props.defaultValue,
+  onChange: (next) => props.onChange?.(next),
+})
 const isActive = ref(false)
-const textareaId = props.id || Helper.generateUUID()
-
-const isControlled = computed(() => props.value !== undefined)
-const currentValue = computed(() => isControlled.value ? props.value! : uncontrolledValue.value)
+const textareaId = useId('textarea', props.id)
 
 function handleChange(newValue: string) {
-  if (!isControlled.value) uncontrolledValue.value = newValue
-  props.onChange?.(newValue)
+  currentValue.value = newValue
 }
 
 function handleFocus() {

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { provide, reactive, ref, computed } from 'vue'
+import { provide, reactive, computed } from 'vue'
 import { RadioKey } from './keys'
-import { Helper } from '@/utils/helper'
+import { useControllableState } from '@/composables/use-controllable-state'
+import { useId } from '@/composables/use-id'
 
 defineOptions({ name: 'RadioRoot' })
 
@@ -12,10 +13,15 @@ const props = withDefaults(defineProps<{
   name?: string
 }>(), {})
 
-const uncontrolledValue = ref(props.defaultValue)
-const groupName = props.name || Helper.generateUUID()
-const isControlled = computed(() => props.value !== undefined)
-const selectedValue = computed(() => isControlled.value ? props.value : uncontrolledValue.value)
+const selectedValue = useControllableState<string | number | undefined>({
+  value: () => props.value,
+  defaultValue: props.defaultValue,
+  onChange: (next) => {
+    if (next !== undefined) props.onChange?.(next)
+  },
+})
+const groupName = useId('radio-group', props.name)
+const selectedValueView = computed(() => selectedValue.value)
 
 function isSelected(itemValue: string | number) {
   const sv = selectedValue.value
@@ -24,11 +30,10 @@ function isSelected(itemValue: string | number) {
 }
 
 function select(itemValue: string | number) {
-  if (!isControlled.value) uncontrolledValue.value = itemValue
-  props.onChange?.(itemValue)
+  selectedValue.value = itemValue
 }
 
-provide(RadioKey, reactive({ selectedValue, name: groupName, select, isSelected }))
+provide(RadioKey, reactive({ selectedValue: selectedValueView, name: groupName, select, isSelected }))
 </script>
 
 <template>

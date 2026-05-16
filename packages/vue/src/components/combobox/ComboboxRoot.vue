@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { computed, provide, ref, useId, watch } from 'vue'
+import { computed, provide, ref, watch } from 'vue'
 import { useClickOutside } from '@/composables/use-click-outside'
+import { useControllableState } from '@/composables/use-controllable-state'
+import { useId } from '@/composables/use-id'
 import { ComboboxKey } from './keys'
 import type { ComboboxOption } from './Combobox.types'
 
@@ -35,41 +37,40 @@ function defaultFilter(option: ComboboxOption, input: string) {
 	return option.label.toLowerCase().includes(input.trim().toLowerCase())
 }
 
-// --- selected ---
-const uncontrolledValue = ref<string | null>(props.defaultValue ?? null)
-const isValueControlled = computed(() => props.value !== undefined)
-const selected = computed<string | null>(() =>
-	isValueControlled.value ? (props.value as string | null) : uncontrolledValue.value,
-)
+const selected = useControllableState<string | null>({
+	value: () => props.value,
+	defaultValue: props.defaultValue ?? null,
+	onChange: (next) => {
+		const opt = props.options.find((o) => o.value === next) ?? null
+		props.onChange?.(next, opt)
+	},
+})
 
-// --- input text ---
 const initialInput =
 	props.defaultInputValue ??
 	(selected.value ? props.options.find((o) => o.value === selected.value)?.label ?? '' : '')
-const uncontrolledInput = ref<string>(initialInput)
-const isInputControlled = computed(() => props.inputValue !== undefined)
-const inputValue = computed<string>(() =>
-	isInputControlled.value ? (props.inputValue as string) : uncontrolledInput.value,
-)
 
-// --- open ---
-const uncontrolledOpen = ref<boolean>(props.defaultOpen)
-const isOpenControlled = computed(() => props.open !== undefined)
-const open = computed<boolean>(() =>
-	isOpenControlled.value ? (props.open as boolean) : uncontrolledOpen.value,
-)
+const inputValue = useControllableState<string>({
+	value: () => props.inputValue,
+	defaultValue: initialInput,
+	onChange: (next) => props.onInputChange?.(next),
+})
+
+const open = useControllableState<boolean>({
+	value: () => props.open,
+	defaultValue: props.defaultOpen,
+	onChange: (next) => props.onOpenChange?.(next),
+})
 
 const options = computed(() => props.options)
 const disabled = computed(() => props.disabled)
 
 function setOpen(next: boolean) {
-	if (!isOpenControlled.value) uncontrolledOpen.value = next
-	props.onOpenChange?.(next)
+	open.value = next
 }
 
 function setInputValue(text: string) {
-	if (!isInputControlled.value) uncontrolledInput.value = text
-	props.onInputChange?.(text)
+	inputValue.value = text
 }
 
 const filtered = computed(() => {
@@ -112,10 +113,8 @@ function moveHighlight(delta: number) {
 
 function commitOption(option: ComboboxOption) {
 	if (option.disabled) return
-	if (!isValueControlled.value) uncontrolledValue.value = option.value
-	if (!isInputControlled.value) uncontrolledInput.value = option.label
-	props.onChange?.(option.value, option)
-	props.onInputChange?.(option.label)
+	selected.value = option.value
+	inputValue.value = option.label
 	setOpen(false)
 }
 
@@ -124,7 +123,6 @@ useClickOutside(rootRef, () => {
 	if (open.value) setOpen(false)
 })
 
-// Sync input text with selected option label when selection changes externally and input not focused.
 const inputFocused = ref(false)
 function registerInputFocus(focused: boolean) {
 	inputFocused.value = focused
@@ -133,13 +131,13 @@ function registerInputFocus(focused: boolean) {
 watch(
 	[selected, options],
 	([s, opts]) => {
-		if (isInputControlled.value || inputFocused.value) return
+		if (props.inputValue !== undefined || inputFocused.value) return
 		const opt = opts.find((o) => o.value === s) ?? null
-		uncontrolledInput.value = opt ? opt.label : ''
+		inputValue.value = opt ? opt.label : ''
 	},
 )
 
-const baseId = useId() ?? 'combobox'
+const baseId = useId('combobox')
 const listboxId = `${baseId}-listbox`
 function getOptionId(v: string) {
 	return `${baseId}-opt-${v}`
