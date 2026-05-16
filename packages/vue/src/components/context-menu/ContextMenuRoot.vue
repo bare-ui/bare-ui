@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, provide, ref, watch } from 'vue'
+import { useControllableState } from '@/composables/use-controllable-state'
+import { useKeyboard } from '@/composables/use-keyboard'
 import { ContextMenuKey } from './keys'
 
 defineOptions({ name: 'ContextMenuRoot' })
@@ -18,17 +20,17 @@ const props = withDefaults(
 	},
 )
 
-const uncontrolledOpen = ref<boolean>(props.defaultOpen)
-const isControlled = computed(() => props.open !== undefined)
-const open = computed<boolean>(() =>
-	isControlled.value ? (props.open as boolean) : uncontrolledOpen.value,
-)
+const open = useControllableState<boolean>({
+	value: () => props.open,
+	defaultValue: props.defaultOpen,
+	onChange: (next) => props.onOpenChange?.(next),
+})
+
 const disabled = computed(() => props.disabled)
 const position = ref({ x: 0, y: 0 })
 
 function setOpen(next: boolean) {
-	if (!isControlled.value) uncontrolledOpen.value = next
-	props.onOpenChange?.(next)
+	open.value = next
 }
 
 function openAt(x: number, y: number) {
@@ -47,10 +49,6 @@ function isInsideContent(target: EventTarget | null) {
 function onPointer(e: MouseEvent | TouchEvent) {
 	if (isInsideContent(e.target)) return
 	close()
-}
-
-function onKeyUp(e: KeyboardEvent) {
-	if (e.key === 'Escape' && open.value) close()
 }
 
 function preventWheel(e: WheelEvent) {
@@ -112,15 +110,16 @@ watch(open, (v) => {
 	else detachListeners()
 })
 
+useKeyboard(
+	{ Escape: () => { if (open.value) close() } },
+	{ event: 'keyup' },
+)
+
 onMounted(() => {
-	window.addEventListener('keyup', onKeyUp)
 	if (open.value) attachListeners()
 })
 
-onUnmounted(() => {
-	window.removeEventListener('keyup', onKeyUp)
-	detachListeners()
-})
+onUnmounted(detachListeners)
 
 provide(ContextMenuKey, {
 	open,
