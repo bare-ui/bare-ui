@@ -1,0 +1,131 @@
+---
+title: useThrottle
+description: Throttle a reactive value or a callback function.
+---
+
+# <ForReact><code>useThrottle</code></ForReact><ForVue><code>useThrottle</code></ForVue><ForSolid><code>createThrottle</code></ForSolid>
+
+Two related utilities for throttling — emitting at most once per `delay` ms. Use them for derived state from high-frequency events (scroll, mousemove, drag) where you want regular sampling rather than waiting for inactivity.
+
+- <ForReact>**`useThrottle(value, delay)`**</ForReact><ForVue>**`useThrottle(source, delay)`**</ForVue><ForSolid>**`createThrottle(accessor, delay)`**</ForSolid> — throttles a value.
+- <ForReact>**`useThrottledCallback(callback, delay)`**</ForReact><ForVue>**`useThrottledCallback(callback, delay)`**</ForVue><ForSolid>**`createThrottledCallback(callback, delay)`**</ForSolid> — returns a stable, throttled callback that fires on the **leading edge**; trailing calls within the delay window are dropped.
+
+## Throttling a value
+
+<ForReact>
+```tsx
+import { useEffect, useState } from 'react'
+import { useThrottle } from '@wire-ui/react'
+
+function ScrollIndicator() {
+  const [scrollY, setScrollY] = useState(0)
+  const throttledScrollY = useThrottle(scrollY, 100)
+
+  useEffect(() => {
+    const onScroll = () => setScrollY(window.scrollY)
+    window.addEventListener('scroll', onScroll)
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  return <p>Scrolled (sampled): {Math.round(throttledScrollY)}</p>
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { onMounted, onUnmounted, ref } from 'vue'
+import { useThrottle } from '@wire-ui/vue'
+
+const scrollY = ref(0)
+const throttledScrollY = useThrottle(() => scrollY.value, 100)
+
+const onScroll = () => { scrollY.value = window.scrollY }
+onMounted(() => window.addEventListener('scroll', onScroll))
+onUnmounted(() => window.removeEventListener('scroll', onScroll))
+</script>
+
+<template>
+  <p>Scrolled (sampled): {{ Math.round(throttledScrollY) }}</p>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createSignal, onCleanup, onMount } from 'solid-js'
+import { createThrottle } from '@wire-ui/solid'
+
+function ScrollIndicator() {
+  const [scrollY, setScrollY] = createSignal(0)
+  const throttledScrollY = createThrottle(() => scrollY(), 100)
+
+  onMount(() => {
+    const onScroll = () => setScrollY(window.scrollY)
+    window.addEventListener('scroll', onScroll)
+    onCleanup(() => window.removeEventListener('scroll', onScroll))
+  })
+
+  return <p>Scrolled (sampled): {Math.round(throttledScrollY())}</p>
+}
+```
+</ForSolid>
+
+## Throttling a callback
+
+<ForReact>
+```tsx
+import { useThrottledCallback } from '@wire-ui/react'
+
+function MouseTracker() {
+  const trackPointer = useThrottledCallback((event: React.MouseEvent) => {
+    analytics.track('pointermove', { x: event.clientX, y: event.clientY })
+  }, 200)
+
+  return <div onMouseMove={trackPointer} />
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { useThrottledCallback } from '@wire-ui/vue'
+
+const trackPointer = useThrottledCallback((event: MouseEvent) => {
+  analytics.track('pointermove', { x: event.clientX, y: event.clientY })
+}, 200)
+</script>
+
+<template>
+  <div @mousemove="trackPointer" />
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createThrottledCallback } from '@wire-ui/solid'
+
+function MouseTracker() {
+  const trackPointer = createThrottledCallback((event: MouseEvent) => {
+    analytics.track('pointermove', { x: event.clientX, y: event.clientY })
+  }, 200)
+
+  return <div onMouseMove={trackPointer} />
+}
+```
+</ForSolid>
+
+## Parameters
+
+### <ForReact>`useThrottle`</ForReact><ForVue>`useThrottle`</ForVue><ForSolid>`createThrottle`</ForSolid>
+
+| Param | Type | Description |
+|---|---|---|
+| `value` | <ForReact>`T`</ForReact><ForVue>`MaybeRefOrGetter<T>`</ForVue><ForSolid>`Accessor<T>`</ForSolid> | Value to throttle. |
+| `delay` | `number` | Minimum milliseconds between emissions. |
+
+### <ForReact>`useThrottledCallback`</ForReact><ForVue>`useThrottledCallback`</ForVue><ForSolid>`createThrottledCallback`</ForSolid>
+
+| Param | Type | Description |
+|---|---|---|
+| `callback` | `(...args) => void` | Function to throttle. |
+| `delay` | `number` | Minimum milliseconds between invocations. |
