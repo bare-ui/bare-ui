@@ -1,0 +1,305 @@
+---
+title: Date Picker
+description: Trigger plus popover Calendar with a formatted value display.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Date Picker
+
+A trigger button paired with a popover Calendar. Closes on selection by default. Click-outside and Escape dismiss the popover. Uses the same `Calendar` primitives under the hood — render any `Calendar.*` parts inside `DatePicker.Calendar`.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Composes with the `Calendar` component.</FeatureItem>
+  <FeatureItem>Closes on selection by default (override with `closeOnSelect={false}`).</FeatureItem>
+  <FeatureItem>Click-outside and Escape close the popover.</FeatureItem>
+  <FeatureItem>Controlled and uncontrolled date and open state.</FeatureItem>
+  <FeatureItem>Locale-aware formatted display via Intl.DateTimeFormat.</FeatureItem>
+  <FeatureItem>data-state on root, trigger, and content for open/closed styling.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><DatePickerPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Calendar, DatePicker } from '@wire-ui/react'
+
+<DatePicker.Root>
+  <DatePicker.Trigger>
+    <DatePicker.Value placeholder="Pick a date" />
+  </DatePicker.Trigger>
+  <DatePicker.Content>
+    <DatePicker.Calendar>
+      <Calendar.Nav>
+        <Calendar.PrevButton />
+        <Calendar.Title />
+        <Calendar.NextButton />
+      </Calendar.Nav>
+      <Calendar.Grid
+        renderDay={(day) => <button {...day.props}>{day.dayOfMonth}</button>}
+        renderWeekday={(wd) => <div>{wd.short}</div>}
+      />
+    </DatePicker.Calendar>
+  </DatePicker.Content>
+</DatePicker.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import {
+  DatePickerRoot, DatePickerTrigger, DatePickerValue, DatePickerContent, DatePickerCalendar,
+  CalendarNav, CalendarPrevButton, CalendarTitle, CalendarNextButton, CalendarGrid,
+} from '@wire-ui/vue'
+</script>
+
+<template>
+  <DatePickerRoot>
+    <DatePickerTrigger>
+      <DatePickerValue placeholder="Pick a date" />
+    </DatePickerTrigger>
+    <DatePickerContent>
+      <DatePickerCalendar>
+        <CalendarNav>
+          <CalendarPrevButton />
+          <CalendarTitle />
+          <CalendarNextButton />
+        </CalendarNav>
+        <CalendarGrid>
+          <template #day="{ day }">
+            <button v-bind="day.props">{{ day.dayOfMonth }}</button>
+          </template>
+          <template #weekday="{ weekday }">
+            <div>{{ weekday.short }}</div>
+          </template>
+        </CalendarGrid>
+      </DatePickerCalendar>
+    </DatePickerContent>
+  </DatePickerRoot>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Calendar, DatePicker } from '@wire-ui/solid'
+
+<DatePicker.Root>
+  <DatePicker.Trigger>
+    <DatePicker.Value placeholder="Pick a date" />
+  </DatePicker.Trigger>
+  <DatePicker.Content>
+    <DatePicker.Calendar>
+      <Calendar.Nav>
+        <Calendar.PrevButton />
+        <Calendar.Title />
+        <Calendar.NextButton />
+      </Calendar.Nav>
+      <Calendar.Grid
+        renderDay={(day) => <button {...day.props}>{day.dayOfMonth}</button>}
+        renderWeekday={(wd) => <div>{wd.short}</div>}
+      />
+    </DatePicker.Calendar>
+  </DatePicker.Content>
+</DatePicker.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { useState } from 'react'
+import { Calendar, DatePicker } from '@wire-ui/react'
+
+const triggerCls = 'inline-flex cursor-pointer items-center justify-between gap-2 rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none hover:bg-[#f5f5f5] data-[state=open]:ring-2 data-[state=open]:ring-black data-[state=open]:ring-offset-1 w-64'
+const contentCls = 'absolute left-0 top-full z-10 mt-2 w-72 rounded-[20px] border border-black bg-white p-3'
+const dayCls = 'cursor-pointer rounded-[6px] p-1.5 text-center text-sm text-black hover:bg-[#f5f5f5] data-[selected]:bg-black data-[selected]:text-white data-[today]:font-bold data-[today]:underline data-[outside-month]:text-[#a3a3a3] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-30'
+
+function MyDatePicker() {
+  const [date, setDate] = useState<Date | null>(null)
+  return (
+    <DatePicker.Root value={date} onChange={setDate} className="relative inline-block">
+      <DatePicker.Trigger className={triggerCls}>
+        <DatePicker.Value placeholder={<span className="text-[#a3a3a3]">Pick a date</span>} />
+        <span aria-hidden>📅</span>
+      </DatePicker.Trigger>
+      <DatePicker.Content className={contentCls}>
+        <DatePicker.Calendar>
+          <Calendar.Nav className="flex items-center justify-between mb-2">
+            <Calendar.PrevButton className="cursor-pointer rounded-[6px] px-2 py-1 text-sm text-black hover:bg-[#f5f5f5] disabled:opacity-40">‹</Calendar.PrevButton>
+            <Calendar.Title className="text-sm font-semibold text-black" />
+            <Calendar.NextButton className="cursor-pointer rounded-[6px] px-2 py-1 text-sm text-black hover:bg-[#f5f5f5] disabled:opacity-40">›</Calendar.NextButton>
+          </Calendar.Nav>
+          <Calendar.Grid
+            renderDay={(day) => (
+              <button {...day.props} className={dayCls}>
+                {day.dayOfMonth}
+              </button>
+            )}
+            renderWeekday={(wd) => <div className="text-center text-xs font-medium text-[#6b7280] py-1">{wd.short}</div>}
+          />
+        </DatePicker.Calendar>
+      </DatePicker.Content>
+    </DatePicker.Root>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import {
+  DatePickerRoot, DatePickerTrigger, DatePickerValue, DatePickerContent, DatePickerCalendar,
+  CalendarNav, CalendarPrevButton, CalendarTitle, CalendarNextButton, CalendarGrid,
+} from '@wire-ui/vue'
+
+const date = ref(null)
+const triggerCls = 'inline-flex cursor-pointer items-center justify-between gap-2 rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none hover:bg-[#f5f5f5] data-[state=open]:ring-2 data-[state=open]:ring-black data-[state=open]:ring-offset-1 w-64'
+const contentCls = 'absolute left-0 top-full z-10 mt-2 w-72 rounded-[20px] border border-black bg-white p-3'
+const dayCls = 'cursor-pointer rounded-[6px] p-1.5 text-center text-sm text-black hover:bg-[#f5f5f5] data-[selected]:bg-black data-[selected]:text-white data-[today]:font-bold data-[today]:underline data-[outside-month]:text-[#a3a3a3] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-30'
+</script>
+
+<template>
+  <DatePickerRoot :value="date" @change="(d) => (date = d)" class="relative inline-block">
+    <DatePickerTrigger :class="triggerCls">
+      <DatePickerValue>
+        <template #placeholder><span class="text-[#a3a3a3]">Pick a date</span></template>
+      </DatePickerValue>
+      <span aria-hidden>📅</span>
+    </DatePickerTrigger>
+    <DatePickerContent :class="contentCls">
+      <DatePickerCalendar>
+        <CalendarNav class="flex items-center justify-between mb-2">
+          <CalendarPrevButton class="cursor-pointer rounded-[6px] px-2 py-1 text-sm text-black hover:bg-[#f5f5f5] disabled:opacity-40">‹</CalendarPrevButton>
+          <CalendarTitle class="text-sm font-semibold text-black" />
+          <CalendarNextButton class="cursor-pointer rounded-[6px] px-2 py-1 text-sm text-black hover:bg-[#f5f5f5] disabled:opacity-40">›</CalendarNextButton>
+        </CalendarNav>
+        <CalendarGrid>
+          <template #day="{ day }">
+            <button v-bind="day.props" :class="dayCls">{{ day.dayOfMonth }}</button>
+          </template>
+          <template #weekday="{ weekday }">
+            <div class="text-center text-xs font-medium text-[#6b7280] py-1">{{ weekday.short }}</div>
+          </template>
+        </CalendarGrid>
+      </DatePickerCalendar>
+    </DatePickerContent>
+  </DatePickerRoot>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { createSignal } from 'solid-js'
+import { Calendar, DatePicker } from '@wire-ui/solid'
+
+const triggerCls = 'inline-flex cursor-pointer items-center justify-between gap-2 rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none hover:bg-[#f5f5f5] data-[state=open]:ring-2 data-[state=open]:ring-black data-[state=open]:ring-offset-1 w-64'
+const contentCls = 'absolute left-0 top-full z-10 mt-2 w-72 rounded-[20px] border border-black bg-white p-3'
+const dayCls = 'cursor-pointer rounded-[6px] p-1.5 text-center text-sm text-black hover:bg-[#f5f5f5] data-[selected]:bg-black data-[selected]:text-white data-[today]:font-bold data-[today]:underline data-[outside-month]:text-[#a3a3a3] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-30'
+
+function MyDatePicker() {
+  const [date, setDate] = createSignal<Date | null>(null)
+  return (
+    <DatePicker.Root value={date()} onChange={setDate} class="relative inline-block">
+      <DatePicker.Trigger class={triggerCls}>
+        <DatePicker.Value placeholder={<span class="text-[#a3a3a3]">Pick a date</span>} />
+        <span aria-hidden>📅</span>
+      </DatePicker.Trigger>
+      <DatePicker.Content class={contentCls}>
+        <DatePicker.Calendar>
+          <Calendar.Nav class="flex items-center justify-between mb-2">
+            <Calendar.PrevButton class="cursor-pointer rounded-[6px] px-2 py-1 text-sm text-black hover:bg-[#f5f5f5] disabled:opacity-40">‹</Calendar.PrevButton>
+            <Calendar.Title class="text-sm font-semibold text-black" />
+            <Calendar.NextButton class="cursor-pointer rounded-[6px] px-2 py-1 text-sm text-black hover:bg-[#f5f5f5] disabled:opacity-40">›</Calendar.NextButton>
+          </Calendar.Nav>
+          <Calendar.Grid
+            renderDay={(day) => (
+              <button {...day.props} class={dayCls}>
+                {day.dayOfMonth}
+              </button>
+            )}
+            renderWeekday={(wd) => <div class="text-center text-xs font-medium text-[#6b7280] py-1">{wd.short}</div>}
+          />
+        </DatePicker.Calendar>
+      </DatePicker.Content>
+    </DatePicker.Root>
+  )
+}
+```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+The Root and Trigger expose `data-state="open"` / `"closed"` so you can ring-focus the trigger when the popover is open. The Content unmounts when closed.
+
+```tsx
+<DatePicker.Trigger className="
+  data-[state=open]:ring-2 data-[state=open]:ring-black
+" />
+```
+
+## Using data attributes
+
+```css
+[data-state="open"]  { /* expanded */ }
+[data-state="closed"] { /* collapsed */ }
+[data-disabled]      { opacity: 0.5; cursor: not-allowed; }
+[data-placeholder]   { color: #a3a3a3; }   /* Value with no selection */
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `Date \| null` | — | Controlled date |
+| `defaultValue` | `Date \| null` | `null` | Initial date |
+| `onChange` | `(date: Date \| null) => void` | — | Called when selection changes |
+| `open` | `boolean` | — | Controlled open state |
+| `defaultOpen` | `boolean` | `false` | Initial open state |
+| `onOpenChange` | `(open: boolean) => void` | — | Called when open state changes |
+| `disabled` | `boolean` | `false` | Disables the trigger |
+| `closeOnSelect` | `boolean` | `true` | Close the popover when a date is picked |
+| `locale` | `string` | `'en-US'` | Locale used by the Value formatter |
+| `formatOptions` | `Intl.DateTimeFormatOptions` | `{ year: 'numeric', month: 'short', day: 'numeric' }` | Format options for the Value display |
+
+## Value props
+
+| Prop | Type | Description |
+|---|---|---|
+| `placeholder` | `ReactNode` | Rendered when no date is selected |
+| `children` | `(date: Date \| null, formatted: string) => ReactNode` | Custom render function — overrides the default formatted string |
+
+## Calendar prop
+
+`DatePicker.Calendar` accepts all `Calendar.Root` props except `value` / `onChange` (which are wired internally). Use it to pass `minDate`, `maxDate`, `isDateDisabled`, `weekStartsOn`, etc.
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-state` | Root, Trigger | `"open"` / `"closed"` |
+| `data-disabled` | Root | Present when `disabled` |
+| `data-placeholder` | Value | Present when no date is selected |
+
+## Accessibility
+
+- Trigger sets `aria-haspopup="dialog"`, `aria-expanded`, and `aria-controls`.
+- Content has `role="dialog"` and `aria-labelledby` pointing to the trigger.
+- Escape closes the popover; click-outside dismisses it.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Enter</kbd> / <kbd>Space</kbd> | Opens the popover when the trigger is focused. |
+| <kbd>Escape</kbd> | Closes the popover. |
+| <kbd>Tab</kbd> | Moves focus through the grid; closes on outside focus via click-outside. |
