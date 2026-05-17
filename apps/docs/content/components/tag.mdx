@@ -1,0 +1,178 @@
+---
+title: Tag
+description: Compact label with optional remove button — for chips, filters, and status pills.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Tag
+
+A compact label. Use it for status pills, filter chips, or inline tags. The optional Remove sub-component is a native `<button>` with full interactive state tracking.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Three composable parts: Root, Label, Remove.</FeatureItem>
+  <FeatureItem>Remove tracks hover, focus, active, and disabled via data attributes.</FeatureItem>
+  <FeatureItem>Disabled state on Root applies `data-disabled` for styling.</FeatureItem>
+  <FeatureItem>Remove defaults to a sensible `aria-label` for screen readers.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><TagPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Tag } from '@wire-ui/react'
+
+<Tag.Root>
+  <Tag.Label>React</Tag.Label>
+  <Tag.Remove onClick={() => remove('react')}>×</Tag.Remove>
+</Tag.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Tag, TagRoot, TagLabel, TagRemove } from '@wire-ui/vue'
+</script>
+
+<template>
+    <TagRoot>
+      <TagLabel>React</TagLabel>
+      <TagRemove @click="remove('react')">×</TagRemove>
+    </TagRoot>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Tag } from '@wire-ui/solid'
+
+<Tag.Root>
+  <Tag.Label>React</Tag.Label>
+  <Tag.Remove onClick={() => remove('react')}>×</Tag.Remove>
+</Tag.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Tag } from '@wire-ui/react'
+
+<Tag.Root className="inline-flex items-center gap-1 rounded-full border border-black bg-[#f5f5f5] px-2.5 py-1 text-xs font-medium text-black data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed">
+  <Tag.Label>React</Tag.Label>
+  <Tag.Remove className="inline-flex size-4 items-center justify-center rounded-full text-black hover:bg-[#e5e5e5] [data-focus-visible]:ring-2 [data-focus-visible]:ring-black">
+    ×
+  </Tag.Remove>
+</Tag.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { TagRoot, TagLabel, TagRemove } from '@wire-ui/vue'
+</script>
+
+<template>
+  <TagRoot class="inline-flex items-center gap-1 rounded-full border border-black bg-[#f5f5f5] px-2.5 py-1 text-xs font-medium text-black data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed">
+    <TagLabel>React</TagLabel>
+    <TagRemove class="inline-flex size-4 items-center justify-center rounded-full text-black hover:bg-[#e5e5e5] [data-focus-visible]:ring-2 [data-focus-visible]:ring-black">
+      ×
+    </TagRemove>
+  </TagRoot>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { Tag } from '@wire-ui/solid'
+
+<Tag.Root class="inline-flex items-center gap-1 rounded-full border border-black bg-[#f5f5f5] px-2.5 py-1 text-xs font-medium text-black data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed">
+  <Tag.Label>React</Tag.Label>
+  <Tag.Remove class="inline-flex size-4 items-center justify-center rounded-full text-black hover:bg-[#e5e5e5] [data-focus-visible]:ring-2 [data-focus-visible]:ring-black">
+    ×
+  </Tag.Remove>
+</Tag.Root>
+```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Tag.Root exposes `data-disabled` when `disabled` is true. Tag.Remove tracks the full set of interactive states (`data-hover`, `data-focus-visible`, `data-active`) via data attributes.
+
+```tsx
+<Tag.Root disabled className="
+  data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed
+">
+  <Tag.Label>archived</Tag.Label>
+</Tag.Root>
+
+<Tag.Remove className="
+  [data-hover]:bg-[#e5e5e5]
+  [data-focus-visible]:ring-2 [data-focus-visible]:ring-black
+  [data-active]:scale-95
+">
+  ×
+</Tag.Remove>
+```
+
+## Using data attributes
+
+Tag.Root sets `data-disabled` when disabled. Tag.Remove exposes the same interactive-state attributes as Button.
+
+```css
+[data-disabled]       { opacity: 0.5; cursor: not-allowed; }
+[data-hover]          { background: #e5e5e5; }
+[data-focus-visible]  { outline: 2px solid black; }
+[data-active]         { transform: scale(0.95); }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `disabled` | `boolean` | `false` | Disabled state — adds `data-disabled` |
+| `...rest` | `HTMLAttributes<HTMLSpanElement>` | — | All standard HTML span attributes |
+
+## Label props
+
+| Prop | Type | Description |
+|---|---|---|
+| `...rest` | `HTMLAttributes<HTMLSpanElement>` | All standard HTML span attributes |
+
+## Remove props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `aria-label` | `string` | `'Remove'` | Accessible label for the remove button |
+| `...rest` | `ButtonHTMLAttributes<HTMLButtonElement>` | — | All standard HTML button attributes |
+
+## Data attributes
+
+| Attribute | Element | When present |
+|---|---|---|
+| `data-disabled` | Root | `disabled` prop is true |
+| `data-hover` | Remove | Mouse is over the remove button |
+| `data-focus-visible` | Remove | Remove has keyboard focus |
+| `data-active` | Remove | Remove is being pressed |
+
+## Accessibility
+
+- Remove renders as a `<button type="button">` with a sensible default `aria-label="Remove"` — always pass a more specific label when possible (e.g. `aria-label="Remove React"`).
+- Root is a `<span>` with no inherent semantics — wrap with a list or container if your tags belong to a logical group.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Tab</kbd> | Moves focus to the Remove button. |
+| <kbd>Space</kbd> | Activates the Remove button. |
+| <kbd>Enter</kbd> | Activates the Remove button. |
