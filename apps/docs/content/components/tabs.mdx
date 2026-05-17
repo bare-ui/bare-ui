@@ -1,0 +1,165 @@
+---
+title: Tabs
+description: Accessible tabs with horizontal or vertical orientation and full keyboard navigation.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Tabs
+
+Accessible tabs with horizontal/vertical orientation, automatic or manual activation, and full keyboard navigation. Currently only available in React.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Horizontal or vertical orientation — controls arrow-key navigation direction.</FeatureItem>
+  <FeatureItem>Automatic activation (focus selects) or manual (Enter/Space to activate).</FeatureItem>
+  <FeatureItem>Full keyboard navigation: arrows, Home, End.</FeatureItem>
+  <FeatureItem>Skips disabled triggers during arrow-key navigation.</FeatureItem>
+  <FeatureItem>Optional `forceMount` on Content to keep panels mounted (preserves state).</FeatureItem>
+  <FeatureItem>Controlled or uncontrolled value.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><TabsPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Tabs } from '@wire-ui/react'
+
+<Tabs.Root defaultValue="overview">
+  <Tabs.List>
+    <Tabs.Trigger value="overview">Overview</Tabs.Trigger>
+    <Tabs.Trigger value="details">Details</Tabs.Trigger>
+    <Tabs.Trigger value="reviews">Reviews</Tabs.Trigger>
+  </Tabs.List>
+  <Tabs.Content value="overview">Overview content.</Tabs.Content>
+  <Tabs.Content value="details">Details content.</Tabs.Content>
+  <Tabs.Content value="reviews">Reviews content.</Tabs.Content>
+</Tabs.Root>
+    ```
+    </ForReact>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Tabs } from '@wire-ui/react'
+
+<Tabs.Root defaultValue="overview" className="w-full max-w-lg">
+  <Tabs.List className="flex gap-1 border-b border-black">
+    <Tabs.Trigger
+      value="overview"
+      className="cursor-pointer px-4 py-2 text-sm font-medium text-black outline-none border-b-2 border-transparent -mb-px hover:bg-[#f5f5f5] data-[state=active]:border-black data-[state=active]:font-semibold data-[focus-visible]:ring-2 data-[focus-visible]:ring-black data-[disabled]:opacity-40 data-[disabled]:cursor-not-allowed">
+      Overview
+    </Tabs.Trigger>
+    <Tabs.Trigger
+      value="details"
+      className="cursor-pointer px-4 py-2 text-sm font-medium text-black outline-none border-b-2 border-transparent -mb-px hover:bg-[#f5f5f5] data-[state=active]:border-black data-[state=active]:font-semibold">
+      Details
+    </Tabs.Trigger>
+  </Tabs.List>
+  <Tabs.Content value="overview" className="mt-4 text-sm text-black outline-none">
+    Overview content.
+  </Tabs.Content>
+  <Tabs.Content value="details" className="mt-4 text-sm text-black outline-none">
+    Details content.
+  </Tabs.Content>
+</Tabs.Root>
+```
+</ForReact>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Trigger and Content expose `data-state` (`"active"` / `"inactive"`) and `data-orientation`. Trigger also exposes the full interactive state set plus `data-disabled`.
+
+```tsx
+<Tabs.Trigger className="
+  border-b-2 border-transparent
+  data-[state=active]:border-black
+  data-[state=active]:font-semibold
+  data-[disabled]:opacity-40
+  data-[focus-visible]:ring-2
+">
+  Tab
+</Tabs.Trigger>
+```
+
+For vertical tabs, switch the indicator to the side:
+
+```tsx
+<Tabs.Root orientation="vertical">
+  <Tabs.List className="flex flex-col border-r border-black">
+    <Tabs.Trigger
+      value="x"
+      className="border-r-2 border-transparent data-[state=active]:border-black"
+    />
+  </Tabs.List>
+</Tabs.Root>
+```
+
+## Using data attributes
+
+```css
+[data-state="active"]   { border-color: #000; font-weight: 600; }
+[data-state="inactive"] { /* default */ }
+[data-orientation="vertical"] { flex-direction: column; }
+[data-disabled]               { opacity: 0.4; cursor: not-allowed; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `string` | — | Controlled active tab value |
+| `defaultValue` | `string` | — | Initial active tab (uncontrolled) |
+| `onChange` | `(value: string) => void` | — | Called when the active tab changes |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout direction; controls arrow-key axis |
+| `activationMode` | `'automatic' \| 'manual'` | `'automatic'` | `automatic`: focus activates; `manual`: Enter/Space activates |
+
+## Trigger props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `string` | required | Unique value identifying this tab |
+| `disabled` | `boolean` | `false` | Disable this tab |
+
+## Content props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `string` | required | The tab value this panel is associated with |
+| `forceMount` | `boolean` | `false` | Keep mounted in the DOM and toggle visibility via `hidden` + `data-state` |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-state` | Trigger, Content | `"active"` / `"inactive"` |
+| `data-orientation` | Root, List, Trigger, Content | `"horizontal"` / `"vertical"` |
+| `data-disabled` | Trigger | Present when disabled |
+| `data-hover` / `data-active` / `data-focus-visible` | Trigger | Standard interactive states |
+
+Trigger sets `role="tab"`, `aria-selected`, `aria-controls`, and `tabIndex={0}` only for the active tab (roving tabindex). Content sets `role="tabpanel"`, `aria-labelledby`, and `tabIndex={0}`. List sets `role="tablist"` and `aria-orientation`.
+
+## Accessibility
+
+- Implements the WAI-ARIA tabs pattern with roving tabindex.
+- Arrow keys navigate; disabled triggers are skipped automatically.
+- `automatic` activation moves selection along with focus (most common). Use `manual` for tabs whose content is expensive to mount.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>ArrowRight</kbd> / <kbd>ArrowDown</kbd> | Focus next trigger (axis depends on `orientation`). |
+| <kbd>ArrowLeft</kbd> / <kbd>ArrowUp</kbd> | Focus previous trigger. |
+| <kbd>Home</kbd> | Focus the first trigger. |
+| <kbd>End</kbd> | Focus the last trigger. |
+| <kbd>Enter</kbd> / <kbd>Space</kbd> | Activates the focused tab (manual mode only). |
+| <kbd>Tab</kbd> | Moves focus into the active panel. |
