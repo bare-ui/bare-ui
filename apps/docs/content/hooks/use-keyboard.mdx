@@ -1,0 +1,106 @@
+---
+title: useKeyboard
+description: Map keyboard events to handlers with modifier-key matching.
+---
+
+# <ForReact><code>useKeyboard</code></ForReact><ForVue><code>useKeyboard</code></ForVue><ForSolid><code>createKeyboard</code></ForSolid>
+
+Subscribes to keyboard events with a map of key → handler. Keys are matched against `event.key` (case-insensitive). Pass a tuple to require specific modifier keys, and to opt into `preventDefault` / `stopPropagation`.
+
+By default the listener is attached to `window`, but you can pin it to a specific element via the `target` option.
+
+<ForReact>
+```tsx
+import { useRef } from 'react'
+import { useKeyboard } from '@wire-ui/react'
+
+function CommandPalette({ onSave, onClose }: { onSave: () => void; onClose: () => void }) {
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useKeyboard({
+    Escape: onClose,
+    s: [onSave, { meta: true, preventDefault: true }],
+    Enter: [() => console.log('submit'), { preventDefault: true }],
+  }, {
+    target: inputRef,
+    event: 'keydown',
+  })
+
+  return <input ref={inputRef} placeholder="⌘S to save, Esc to close" />
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { useKeyboard } from '@wire-ui/vue'
+
+const props = defineProps<{ onSave: () => void; onClose: () => void }>()
+const inputRef = ref<HTMLInputElement | null>(null)
+
+useKeyboard({
+  Escape: () => props.onClose(),
+  s: [() => props.onSave(), { meta: true, preventDefault: true }],
+}, {
+  target: inputRef,
+})
+</script>
+
+<template>
+  <input ref="inputRef" placeholder="⌘S to save, Esc to close" />
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createKeyboard } from '@wire-ui/solid'
+
+function CommandPalette(props: { onSave: () => void; onClose: () => void }) {
+  let inputEl: HTMLInputElement | undefined
+
+  createKeyboard({
+    Escape: () => props.onClose(),
+    s: [() => props.onSave(), { meta: true, preventDefault: true }],
+  }, {
+    target: () => inputEl,
+  })
+
+  return <input ref={inputEl} placeholder="⌘S to save, Esc to close" />
+}
+```
+</ForSolid>
+
+## Parameters
+
+| Param | Type | Description |
+|---|---|---|
+| `map` | `KeyboardMap` | Object of `key → handler` or `key → [handler, options]`. |
+| `options` | `UseKeyboardOptions` | See below. |
+
+## `KeyboardMap`
+
+```ts
+type KeyHandler = (event: KeyboardEvent) => void
+
+interface KeyboardHandlerOptions {
+  ctrl?: boolean
+  meta?: boolean
+  shift?: boolean
+  alt?: boolean
+  preventDefault?: boolean
+  stopPropagation?: boolean
+}
+
+type KeyboardMap = Record<string, KeyHandler | [KeyHandler, KeyboardHandlerOptions]>
+```
+
+Modifier flags use **exact match** — `{ meta: true }` only fires when Meta is held and won't match plain key presses. Omit a modifier to ignore its state.
+
+## Options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `target` | <ForReact>`RefObject<HTMLElement \| null> \| HTMLElement \| Window \| Document \| null`</ForReact><ForVue>`Ref<HTMLElement \| null> \| HTMLElement \| Window \| Document \| null`</ForVue><ForSolid>`Accessor<HTMLElement \| null \| undefined> \| HTMLElement \| Window \| Document \| null`</ForSolid> | `window` | Element to attach the listener to. |
+| `event` | `'keydown' \| 'keyup' \| 'keypress'` | `'keydown'` | Which keyboard event to listen on. |
+| `enabled` | <ForReact>`boolean`</ForReact><ForVue>`MaybeRefOrGetter<boolean>`</ForVue><ForSolid>`boolean` (use a getter for reactivity)</ForSolid> | `true` | Toggle the listener without unmounting. |
