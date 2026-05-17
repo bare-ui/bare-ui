@@ -1,0 +1,70 @@
+---
+title: useId
+description: Stable, SSR-safe unique id with an optional human-readable prefix.
+---
+
+# <ForReact><code>useId</code></ForReact><ForVue><code>useId</code></ForVue><ForSolid><code>createId</code></ForSolid>
+
+Returns a stable, SSR-safe unique id with an optional human-readable prefix. Wraps <ForReact>React's `useId`</ForReact><ForVue>Vue's `useId`</ForVue><ForSolid>Solid's `createUniqueId`</ForSolid> and strips characters that aren't valid in CSS selectors. Pass a `staticId` as the second argument to honor an id provided by the parent instead of generating one.
+
+<ForReact>
+```tsx
+import { useId } from '@wire-ui/react'
+
+function Field({ id, label, ...props }: { id?: string; label: string }) {
+  const inputId = useId('field', id)
+  const labelId = useId('field-label')
+
+  return (
+    <>
+      <label id={labelId} htmlFor={inputId}>{label}</label>
+      <input id={inputId} aria-labelledby={labelId} {...props} />
+    </>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup lang="ts">
+import { useId } from '@wire-ui/vue'
+
+const props = defineProps<{ id?: string; label: string }>()
+const inputId = useId('field', props.id)
+const labelId = useId('field-label')
+</script>
+
+<template>
+  <label :id="labelId" :for="inputId">{{ label }}</label>
+  <input :id="inputId" :aria-labelledby="labelId" />
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createId } from '@wire-ui/solid'
+
+function Field(props: { id?: string; label: string }) {
+  const inputId = createId('field', props.id)
+  const labelId = createId('field-label')
+
+  return (
+    <>
+      <label id={labelId} for={inputId}>{props.label}</label>
+      <input id={inputId} aria-labelledby={labelId} />
+    </>
+  )
+}
+```
+</ForSolid>
+
+## Parameters
+
+| Param | Type | Description |
+|---|---|---|
+| `prefix` | `string` | Human-readable prefix prepended to the generated id. Defaults to `'wire'`. |
+| `staticId` | `string` | If provided, returned as-is — the generated id is discarded. |
+
+## Returns
+
+A `string` id that is stable across renders and unique across the page.
