@@ -1,0 +1,62 @@
+---
+title: Hooks / Composables / Primitives
+description: Publicly exported hooks, composables, and primitives from Wire UI.
+---
+
+# <ForReact>Hooks</ForReact><ForVue>Composables</ForVue><ForSolid>Primitives</ForSolid>
+
+<ForReact>Wire UI ships a set of small, focused React hooks. They are the same building blocks the components are made from — exported so you can compose your own headless UI with identical behaviour, accessibility, and `data-*` conventions.</ForReact>
+<ForVue>Wire UI ships a set of small, focused Vue composables. They are the same building blocks the components are made from — exported so you can compose your own headless UI with identical behaviour, accessibility, and `data-*` conventions.</ForVue>
+<ForSolid>Wire UI ships a set of small, focused Solid primitives. They follow Solid's `create*` naming convention and accept reactive option getters. They are the same building blocks the components are made from — exported so you can compose your own headless UI with identical behaviour, accessibility, and `data-*` conventions.</ForSolid>
+
+## State
+
+| Hook | Purpose |
+|---|---|
+| [<ForReact>`useControllableState`</ForReact><ForVue>`useControllableState`</ForVue><ForSolid>`createControllableState`</ForSolid>](./use-controllable-state) | Unified controlled / uncontrolled state. |
+| [<ForReact>`useDisclosure`</ForReact><ForVue>`useDisclosure`</ForVue><ForSolid>`createDisclosure`</ForSolid>](./use-disclosure) | Boolean open / close with stable handlers. |
+| [<ForReact>`useId`</ForReact><ForVue>`useId`</ForVue><ForSolid>`createId`</ForSolid>](./use-id) | SSR-safe unique id with optional prefix. |
+
+## Interaction
+
+| Hook | Purpose |
+|---|---|
+| [<ForReact>`useClickOutside`</ForReact><ForVue>`useClickOutside`</ForVue><ForSolid>`createClickOutside`</ForSolid>](./use-click-outside) | Fire a callback on outside click / tap. |
+| [<ForReact>`useFocusTrap`</ForReact><ForVue>`useFocusTrap`</ForVue><ForSolid>`createFocusTrap`</ForSolid>](./use-focus-trap) | Trap keyboard focus inside a container. |
+| [<ForReact>`useFocusVisible`</ForReact><ForVue>`useFocusVisible`</ForVue><ForSolid>`createFocusVisible`</ForSolid>](./use-focus-visible) | Track keyboard-vs-pointer focus. |
+| [<ForReact>`useInteractiveState`</ForReact><ForVue>`useInteractiveState`</ForVue><ForSolid>`createInteractiveState`</ForSolid>](./use-interactive-state) | Hover, focus-visible, press state with `data-*` attributes. |
+| [<ForReact>`useKeyboard`</ForReact><ForVue>`useKeyboard`</ForVue><ForSolid>`createKeyboard`</ForSolid>](./use-keyboard) | Map keyboard events to handlers with modifier support. |
+
+## Layout
+
+| Hook | Purpose |
+|---|---|
+| [<ForReact>`useFloating`</ForReact><ForVue>`useFloating`</ForVue><ForSolid>`createFloating`</ForSolid>](./use-floating) | Position a floating element relative to a reference. |
+| [<ForReact>`useScrollLock`</ForReact><ForVue>`useScrollLock`</ForVue><ForSolid>`createScrollLock`</ForSolid>](./use-scroll-lock) | Lock document scrolling without layout shift. |
+
+## Observers
+
+| Hook | Purpose |
+|---|---|
+| [<ForReact>`useIntersectionObserver`</ForReact><ForVue>`useIntersectionObserver`</ForVue><ForSolid>`createIntersectionObserver`</ForSolid>](./use-intersection-observer) | Observe element visibility within a scroll container. |
+| [<ForReact>`useResizeObserver`</ForReact><ForVue>`useResizeObserver`</ForVue><ForSolid>`createResizeObserver`</ForSolid>](./use-resize-observer) | Observe an element's content-box size. |
+
+## Utilities
+
+| Hook | Purpose |
+|---|---|
+| [<ForReact>`useDebounce`</ForReact><ForVue>`useDebounce`</ForVue><ForSolid>`createDebounce`</ForSolid>](./use-debounce) | Debounce a value or callback. |
+| [<ForReact>`useThrottle`</ForReact><ForVue>`useThrottle`</ForVue><ForSolid>`createThrottle`</ForSolid>](./use-throttle) | Throttle a value or callback. |
+| [<ForReact>`useMediaQuery`</ForReact><ForVue>`useMediaQuery`</ForVue><ForSolid>`createMediaQuery`</ForSolid>](./use-media-query) | Reactively match a CSS media query. |
+| [<ForReact>`useReduceMotion`</ForReact><ForVue>`useReduceMotion`</ForVue><ForSolid>`createReduceMotion`</ForSolid>](./use-reduce-motion) | Detect the OS-level reduced-motion preference. |
+
+<ForReact>
+### Refs
+
+- [`useMergedRefs`](./use-merged-refs) — merge multiple refs onto a single element.
+</ForReact>
+<ForSolid>
+### Refs
+
+- [`createMergedRefs`](./use-merged-refs) — merge multiple ref setters onto a single element.
+</ForSolid>
