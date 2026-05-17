@@ -31,19 +31,19 @@ const isExpControlled = computed(() => props.expanded !== undefined)
 const expandedArr = computed(() =>
 	isExpControlled.value ? (props.expanded as string[]) : uncontrolledExpanded.value,
 )
-const expanded = computed(() => new Set(expandedArr.value))
+const expandedSet = computed(() => new Set(expandedArr.value))
 
 const uncontrolledSelected = ref<string[]>(props.defaultSelected ?? [])
 const isSelControlled = computed(() => props.selected !== undefined)
 const selectedArr = computed(() =>
 	isSelControlled.value ? (props.selected as string[]) : uncontrolledSelected.value,
 )
-const selected = computed(() => new Set(selectedArr.value))
+const selectedSet = computed(() => new Set(selectedArr.value))
 
 const selectionMode = computed(() => props.selectionMode)
 
 function toggleExpanded(id: string) {
-	const next = new Set(expanded.value)
+	const next = new Set(expandedSet.value)
 	if (next.has(id)) next.delete(id)
 	else next.add(id)
 	const arr = Array.from(next)
@@ -55,9 +55,9 @@ function selectNode(id: string) {
 	if (selectionMode.value === 'none') return
 	let next: string[]
 	if (selectionMode.value === 'single') {
-		next = selected.value.has(id) ? [] : [id]
+		next = selectedSet.value.has(id) ? [] : [id]
 	} else {
-		const set = new Set(selected.value)
+		const set = new Set(selectedSet.value)
 		if (set.has(id)) set.delete(id)
 		else set.add(id)
 		next = Array.from(set)
@@ -67,8 +67,8 @@ function selectNode(id: string) {
 }
 
 provide(TreeViewKey, {
-	expanded,
-	selected,
+	expanded: expandedSet,
+	selected: selectedSet,
 	selectionMode,
 	toggleExpanded,
 	selectNode,
