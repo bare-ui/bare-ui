@@ -1,0 +1,291 @@
+---
+title: Combobox
+description: Filterable autocomplete with keyboard navigation and ARIA listbox semantics.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Combobox
+
+Filterable autocomplete input. Full keyboard navigation, ARIA listbox semantics, and a render-prop items API. Controlled and uncontrolled.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Filterable list with custom filter function.</FeatureItem>
+  <FeatureItem>Render-prop items API for fully custom rows.</FeatureItem>
+  <FeatureItem>Full keyboard navigation (arrows, Home, End, Enter, Escape).</FeatureItem>
+  <FeatureItem>Controlled or uncontrolled value, input text, and open state.</FeatureItem>
+  <FeatureItem>data-highlighted, data-selected, data-disabled on each option.</FeatureItem>
+  <FeatureItem>Auto-scrolls the highlighted option into view.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><ComboboxPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Combobox } from '@wire-ui/react'
+
+const options = [
+  { value: 'react', label: 'React' },
+  { value: 'vue', label: 'Vue' },
+  { value: 'solid', label: 'Solid' },
+]
+
+<Combobox.Root options={options}>
+  <Combobox.Input placeholder="Search…" />
+  <Combobox.Trigger>▾</Combobox.Trigger>
+  <Combobox.Content>
+    <Combobox.Items>
+      {({ option }) => <div>{option.label}</div>}
+    </Combobox.Items>
+    <Combobox.Empty>No results</Combobox.Empty>
+  </Combobox.Content>
+</Combobox.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Combobox } from '@wire-ui/vue'
+
+const options = [
+  { value: 'react', label: 'React' },
+  { value: 'vue', label: 'Vue' },
+  { value: 'solid', label: 'Solid' },
+]
+</script>
+
+<template>
+  <Combobox.Root :options="options">
+    <Combobox.Input placeholder="Search…" />
+    <Combobox.Trigger>▾</Combobox.Trigger>
+    <Combobox.Content>
+      <Combobox.Items v-slot="{ option }">
+        <div>{{ option.label }}</div>
+      </Combobox.Items>
+      <Combobox.Empty>No results</Combobox.Empty>
+    </Combobox.Content>
+  </Combobox.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Combobox } from '@wire-ui/solid'
+
+const options = [
+  { value: 'react', label: 'React' },
+  { value: 'vue', label: 'Vue' },
+  { value: 'solid', label: 'Solid' },
+]
+
+<Combobox.Root options={options}>
+  <Combobox.Input placeholder="Search…" />
+  <Combobox.Trigger>▾</Combobox.Trigger>
+  <Combobox.Content>
+    <Combobox.Items>
+      {({ option }) => <div>{option.label}</div>}
+    </Combobox.Items>
+    <Combobox.Empty>No results</Combobox.Empty>
+  </Combobox.Content>
+</Combobox.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Combobox } from '@wire-ui/react'
+
+<Combobox.Root options={options} className="relative w-72">
+  <Combobox.Input
+    placeholder="Search frameworks…"
+    className="w-full rounded-[8px] border border-black bg-white px-3 py-2 pr-10 text-sm text-black outline-none focus:ring-2 focus:ring-black"
+  />
+  <Combobox.Trigger className="absolute right-2 top-1/2 -translate-y-1/2 text-[#6b7280] data-[state=open]:rotate-180 transition-transform">
+    ▾
+  </Combobox.Trigger>
+  <Combobox.Content className="absolute left-0 top-full z-10 mt-1 w-full max-h-60 overflow-y-auto rounded-[20px] border border-black bg-white py-1">
+    <Combobox.Items>
+      {({ option, selected }) => (
+        <div className="cursor-pointer px-3 py-2 text-sm text-black group-data-[highlighted]:bg-[#f5f5f5] group-data-[selected]:font-semibold group-data-[disabled]:opacity-40">
+          {option.label}
+          {selected && <span className="ml-2">✓</span>}
+        </div>
+      )}
+    </Combobox.Items>
+    <Combobox.Empty className="px-3 py-3 text-center text-sm text-[#6b7280]">
+      No results
+    </Combobox.Empty>
+  </Combobox.Content>
+</Combobox.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { Combobox } from '@wire-ui/vue'
+</script>
+
+<template>
+  <Combobox.Root :options="options" class="relative w-72">
+    <Combobox.Input
+      placeholder="Search frameworks…"
+      class="w-full rounded-[8px] border border-black bg-white px-3 py-2 pr-10 text-sm text-black outline-none focus:ring-2 focus:ring-black"
+    />
+    <Combobox.Trigger class="absolute right-2 top-1/2 -translate-y-1/2 text-[#6b7280] data-[state=open]:rotate-180 transition-transform">
+      ▾
+    </Combobox.Trigger>
+    <Combobox.Content class="absolute left-0 top-full z-10 mt-1 w-full max-h-60 overflow-y-auto rounded-[20px] border border-black bg-white py-1">
+      <Combobox.Items v-slot="{ option, selected }">
+        <div class="cursor-pointer px-3 py-2 text-sm text-black group-data-[highlighted]:bg-[#f5f5f5] group-data-[selected]:font-semibold group-data-[disabled]:opacity-40">
+          {{ option.label }}
+          <span v-if="selected" class="ml-2">✓</span>
+        </div>
+      </Combobox.Items>
+      <Combobox.Empty class="px-3 py-3 text-center text-sm text-[#6b7280]">
+        No results
+      </Combobox.Empty>
+    </Combobox.Content>
+  </Combobox.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { Combobox } from '@wire-ui/solid'
+
+<Combobox.Root options={options} class="relative w-72">
+  <Combobox.Input
+    placeholder="Search frameworks…"
+    class="w-full rounded-[8px] border border-black bg-white px-3 py-2 pr-10 text-sm text-black outline-none focus:ring-2 focus:ring-black"
+  />
+  <Combobox.Trigger class="absolute right-2 top-1/2 -translate-y-1/2 text-[#6b7280] data-[state=open]:rotate-180 transition-transform">
+    ▾
+  </Combobox.Trigger>
+  <Combobox.Content class="absolute left-0 top-full z-10 mt-1 w-full max-h-60 overflow-y-auto rounded-[20px] border border-black bg-white py-1">
+    <Combobox.Items>
+      {({ option, selected }) => (
+        <div class="cursor-pointer px-3 py-2 text-sm text-black group-data-[highlighted]:bg-[#f5f5f5] group-data-[selected]:font-semibold group-data-[disabled]:opacity-40">
+          {option.label}
+          {selected && <span class="ml-2">✓</span>}
+        </div>
+      )}
+    </Combobox.Items>
+    <Combobox.Empty class="px-3 py-3 text-center text-sm text-[#6b7280]">
+      No results
+    </Combobox.Empty>
+  </Combobox.Content>
+</Combobox.Root>
+```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Each option row gets `data-highlighted`, `data-selected`, and `data-disabled`. Because the row uses `class="group"` internally, you can target these from anywhere inside the row with the `group-data-*` Tailwind variant.
+
+```tsx
+<Combobox.Items>
+  {({ option }) => (
+    <div className="
+      px-3 py-2
+      group-data-[highlighted]:bg-[#f5f5f5]
+      group-data-[selected]:font-semibold
+      group-data-[disabled]:opacity-40
+    ">
+      {option.label}
+    </div>
+  )}
+</Combobox.Items>
+```
+
+## Using data attributes
+
+Root sets `data-state` and `data-disabled`. Trigger mirrors `data-state` and exposes Button-style interactive attributes. Each option row sets `data-highlighted`, `data-selected`, `data-disabled`.
+
+```css
+[data-state="open"] .trigger { transform: rotate(180deg); }
+
+[data-highlighted] { background: #f5f5f5; }
+[data-selected]    { font-weight: 600; }
+[data-disabled]    { opacity: 0.4; cursor: not-allowed; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `options` | `ComboboxOption[]` | required | Available options |
+| `value` | `string \| null` | — | Controlled selected value |
+| `defaultValue` | `string \| null` | `null` | Initial selected value (uncontrolled) |
+| `onChange` | `(value, option) => void` | — | Called when the selection changes |
+| `inputValue` | `string` | — | Controlled input text |
+| `defaultInputValue` | `string` | — | Initial input text (uncontrolled) |
+| `onInputChange` | `(value: string) => void` | — | Called when the user types |
+| `filter` | `(option, input) => boolean` | case-insensitive label match | Custom filter |
+| `disabled` | `boolean` | `false` | Disables the combobox |
+| `open` | `boolean` | — | Controlled open state |
+| `defaultOpen` | `boolean` | `false` | Initial open state |
+| `onOpenChange` | `(open: boolean) => void` | — | Called when open state changes |
+
+## ComboboxOption
+
+| Field | Type | Description |
+|---|---|---|
+| `value` | `string` | Stable identifier |
+| `label` | `string` | Human-readable label shown in the input when selected |
+| `subtitle` | `string` | Optional subtitle available to the render prop |
+| `disabled` | `boolean` | Disable selection of this option |
+
+## Items render-prop
+
+`Combobox.Items` accepts a function child that receives `{ option, highlighted, selected }` for each filtered row.
+
+```tsx
+<Combobox.Items>
+  {({ option, highlighted, selected }) => (
+    <div>{option.label}</div>
+  )}
+</Combobox.Items>
+```
+
+## Empty
+
+`Combobox.Empty` only renders when the filtered list is empty.
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-state` | Root, Trigger, Content | `"open"` / `"closed"` |
+| `data-disabled` | Root, Trigger, Item | Present when disabled |
+| `data-highlighted` | Item | Present on the currently highlighted row |
+| `data-selected` | Item | Present on the selected row |
+| `data-hover` / `data-active` / `data-focus-visible` | Trigger | Standard interactive states |
+
+Input also sets `role="combobox"`, `aria-expanded`, `aria-controls`, and `aria-activedescendant`. Content sets `role="listbox"`. Each row sets `role="option"` with `aria-selected` and `aria-disabled`.
+
+## Accessibility
+
+- Implements the WAI-ARIA combobox pattern with `aria-autocomplete="list"`.
+- Highlighted option is announced via `aria-activedescendant` — focus stays in the input.
+- Disabled options are skipped during keyboard navigation.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>ArrowDown</kbd> | Opens the list, or moves highlight down. |
+| <kbd>ArrowUp</kbd> | Opens the list, or moves highlight up. |
+| <kbd>Home</kbd> | Highlights the first option. |
+| <kbd>End</kbd> | Highlights the last option. |
+| <kbd>Enter</kbd> | Selects the highlighted option. |
+| <kbd>Escape</kbd> | Closes the list. |
