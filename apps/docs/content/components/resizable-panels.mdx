@@ -1,0 +1,210 @@
+---
+title: Resizable Panels
+description: Drag-to-resize panel layout with min/max constraints.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Resizable Panels
+
+Drag-to-resize panel layout. Horizontal or vertical, with per-panel min/max size constraints. Panels can be nested for split-view editors.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Horizontal or vertical orientation per Group.</FeatureItem>
+  <FeatureItem>Per-panel `minSize` / `maxSize` constraints (in percent).</FeatureItem>
+  <FeatureItem>Sizes distribute remaining space across panels without `defaultSize`.</FeatureItem>
+  <FeatureItem>Groups nest cleanly — nest a vertical Group inside a horizontal one for IDE layouts.</FeatureItem>
+  <FeatureItem>Controlled or uncontrolled sizes.</FeatureItem>
+  <FeatureItem>Pointer capture for smooth dragging across the whole window.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><ResizablePanelsPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { ResizablePanels } from '@wire-ui/react'
+
+<ResizablePanels.Group orientation="horizontal">
+  <ResizablePanels.Panel defaultSize={50}>Left</ResizablePanels.Panel>
+  <ResizablePanels.Handle />
+  <ResizablePanels.Panel defaultSize={50}>Right</ResizablePanels.Panel>
+</ResizablePanels.Group>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { ResizablePanels } from '@wire-ui/vue'
+</script>
+
+<template>
+  <ResizablePanels.Group orientation="horizontal">
+    <ResizablePanels.Panel :default-size="50">Left</ResizablePanels.Panel>
+    <ResizablePanels.Handle />
+    <ResizablePanels.Panel :default-size="50">Right</ResizablePanels.Panel>
+  </ResizablePanels.Group>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { ResizablePanels } from '@wire-ui/solid'
+
+<ResizablePanels.Group orientation="horizontal">
+  <ResizablePanels.Panel defaultSize={50}>Left</ResizablePanels.Panel>
+  <ResizablePanels.Handle />
+  <ResizablePanels.Panel defaultSize={50}>Right</ResizablePanels.Panel>
+</ResizablePanels.Group>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { ResizablePanels } from '@wire-ui/react'
+
+<div style={{ width: '100%', height: 250 }} className="border border-black rounded-[8px] overflow-hidden">
+  <ResizablePanels.Group orientation="horizontal">
+    <ResizablePanels.Panel
+      defaultSize={25}
+      minSize={15}
+      maxSize={50}
+      className="flex items-center justify-center bg-[#f5f5f5] text-sm font-medium text-black">
+      Sidebar
+    </ResizablePanels.Panel>
+    <ResizablePanels.Handle className="w-px bg-black hover:w-1 transition-all" />
+    <ResizablePanels.Panel defaultSize={75} className="flex items-center justify-center bg-white text-sm text-black">
+      Content
+    </ResizablePanels.Panel>
+  </ResizablePanels.Group>
+</div>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ResizablePanels } from '@wire-ui/vue'
+</script>
+
+<template>
+  <div style="width: 100%; height: 250px" class="border border-black rounded-[8px] overflow-hidden">
+    <ResizablePanels.Group orientation="horizontal">
+      <ResizablePanels.Panel
+        :default-size="25"
+        :min-size="15"
+        :max-size="50"
+        class="flex items-center justify-center bg-[#f5f5f5] text-sm font-medium text-black">
+        Sidebar
+      </ResizablePanels.Panel>
+      <ResizablePanels.Handle class="w-px bg-black hover:w-1 transition-all" />
+      <ResizablePanels.Panel :default-size="75" class="flex items-center justify-center bg-white text-sm text-black">
+        Content
+      </ResizablePanels.Panel>
+    </ResizablePanels.Group>
+  </div>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { ResizablePanels } from '@wire-ui/solid'
+
+<div style={{ width: '100%', height: '250px' }} class="border border-black rounded-[8px] overflow-hidden">
+  <ResizablePanels.Group orientation="horizontal">
+    <ResizablePanels.Panel
+      defaultSize={25}
+      minSize={15}
+      maxSize={50}
+      class="flex items-center justify-center bg-[#f5f5f5] text-sm font-medium text-black">
+      Sidebar
+    </ResizablePanels.Panel>
+    <ResizablePanels.Handle class="w-px bg-black hover:w-1 transition-all" />
+    <ResizablePanels.Panel defaultSize={75} class="flex items-center justify-center bg-white text-sm text-black">
+      Content
+    </ResizablePanels.Panel>
+  </ResizablePanels.Group>
+</div>
+```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Group sets `data-orientation` (`"horizontal"` / `"vertical"`). Panel and Handle inherit the same attribute so you can flip width/height styles without prop drilling.
+
+```tsx
+<ResizablePanels.Handle className="
+  data-[orientation=horizontal]:w-px data-[orientation=horizontal]:cursor-col-resize
+  data-[orientation=vertical]:h-px data-[orientation=vertical]:cursor-row-resize
+  bg-black
+" />
+```
+
+Handles already set `cursor` and `touch-action: none` inline; the className is for visual styling on top of that.
+
+## Using data attributes
+
+```css
+[data-orientation="horizontal"] [data-handle] { width: 1px; cursor: col-resize; }
+[data-orientation="vertical"]   [data-handle] { height: 1px; cursor: row-resize; }
+[data-handle][data-disabled]                  { pointer-events: none; opacity: 0.5; }
+```
+
+## Group props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout direction |
+| `sizes` | `number[]` | — | Controlled sizes (percentages, summing to ~100) |
+| `defaultSizes` | `number[]` | — | Initial sizes (uncontrolled) |
+| `onSizesChange` | `(sizes: number[]) => void` | — | Called whenever sizes change |
+
+## Panel props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `defaultSize` | `number` | distributed | Default size in percent of the group |
+| `minSize` | `number` | `0` | Minimum size in percent |
+| `maxSize` | `number` | `100` | Maximum size in percent |
+
+If only some panels declare `defaultSize`, the remaining space is split evenly between the rest.
+
+## Handle props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `disabled` | `boolean` | `false` | Disable dragging on this handle |
+| `aria-label` | `string` | `'Resize handle'` | Accessible label |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-orientation` | Group, Panel, Handle | `"horizontal"` / `"vertical"` |
+| `data-panel` | Panel | Present (empty) on every panel |
+| `data-handle` | Handle | Present (empty) on every handle |
+| `data-disabled` | Handle | Present when disabled |
+
+Handle renders with `role="separator"` and `aria-orientation` set perpendicular to the Group (a vertical line separating horizontal panels reports `aria-orientation="vertical"`).
+
+## Accessibility
+
+- Handles are focusable (`tabIndex=0`) and use `role="separator"` with the correct `aria-orientation`.
+- Dragging uses pointer events with pointer capture, so moving the cursor outside the handle keeps dragging smoothly.
+- `touch-action: none` is set on handles so touch dragging doesn't scroll the page.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Tab</kbd> | Moves focus to the next handle. |
+
+Keyboard-driven resizing is not currently implemented — users resize via pointer drag.
