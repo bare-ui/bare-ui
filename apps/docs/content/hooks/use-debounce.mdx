@@ -1,0 +1,132 @@
+---
+title: useDebounce
+description: Debounce a reactive value or a callback function.
+---
+
+# <ForReact><code>useDebounce</code></ForReact><ForVue><code>useDebounce</code></ForVue><ForSolid><code>createDebounce</code></ForSolid>
+
+Two related utilities for debouncing — only firing after `delay` ms of inactivity. Use them for derived state that drives expensive work like network requests, filters, or autosaves.
+
+- <ForReact>**`useDebounce(value, delay)`**</ForReact><ForVue>**`useDebounce(source, delay)`**</ForVue><ForSolid>**`createDebounce(accessor, delay)`**</ForSolid> — debounces a value.
+- <ForReact>**`useDebouncedCallback(callback, delay)`**</ForReact><ForVue>**`useDebouncedCallback(callback, delay)`**</ForVue><ForSolid>**`createDebouncedCallback(callback, delay)`**</ForSolid> — returns a stable, debounced version of `callback`.
+
+## Debouncing a value
+
+<ForReact>
+```tsx
+import { useEffect, useState } from 'react'
+import { useDebounce } from '@wire-ui/react'
+
+function Search() {
+  const [query, setQuery] = useState('')
+  const debouncedQuery = useDebounce(query, 250)
+
+  useEffect(() => {
+    if (debouncedQuery) fetch(`/api/search?q=${debouncedQuery}`)
+  }, [debouncedQuery])
+
+  return <input value={query} onChange={e => setQuery(e.target.value)} />
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref, watch } from 'vue'
+import { useDebounce } from '@wire-ui/vue'
+
+const query = ref('')
+const debouncedQuery = useDebounce(() => query.value, 250)
+
+watch(debouncedQuery, (value) => {
+  if (value) fetch(`/api/search?q=${value}`)
+})
+</script>
+
+<template>
+  <input v-model="query" />
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createSignal, createEffect } from 'solid-js'
+import { createDebounce } from '@wire-ui/solid'
+
+function Search() {
+  const [query, setQuery] = createSignal('')
+  const debouncedQuery = createDebounce(() => query(), 250)
+
+  createEffect(() => {
+    const q = debouncedQuery()
+    if (q) fetch(`/api/search?q=${q}`)
+  })
+
+  return <input value={query()} onInput={e => setQuery(e.currentTarget.value)} />
+}
+```
+</ForSolid>
+
+## Debouncing a callback
+
+<ForReact>
+```tsx
+import { useDebouncedCallback } from '@wire-ui/react'
+
+function Editor() {
+  const saveDraft = useDebouncedCallback((value: string) => {
+    fetch('/api/draft', { method: 'POST', body: value })
+  }, 500)
+
+  return <textarea onChange={e => saveDraft(e.target.value)} />
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { useDebouncedCallback } from '@wire-ui/vue'
+
+const saveDraft = useDebouncedCallback((value: string) => {
+  fetch('/api/draft', { method: 'POST', body: value })
+}, 500)
+</script>
+
+<template>
+  <textarea @input="e => saveDraft((e.target as HTMLTextAreaElement).value)" />
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createDebouncedCallback } from '@wire-ui/solid'
+
+function Editor() {
+  const saveDraft = createDebouncedCallback((value: string) => {
+    fetch('/api/draft', { method: 'POST', body: value })
+  }, 500)
+
+  return <textarea onInput={e => saveDraft(e.currentTarget.value)} />
+}
+```
+</ForSolid>
+
+<ForReact>
+The returned callback always invokes the **latest** `callback` reference, so closure-captured values stay fresh without resetting the timer between renders.
+</ForReact>
+
+## Parameters
+
+### <ForReact>`useDebounce`</ForReact><ForVue>`useDebounce`</ForVue><ForSolid>`createDebounce`</ForSolid>
+
+| Param | Type | Description |
+|---|---|---|
+| `value` | <ForReact>`T`</ForReact><ForVue>`MaybeRefOrGetter<T>`</ForVue><ForSolid>`Accessor<T>`</ForSolid> | Value to debounce. |
+| `delay` | `number` | Milliseconds of inactivity required before emitting. |
+
+### <ForReact>`useDebouncedCallback`</ForReact><ForVue>`useDebouncedCallback`</ForVue><ForSolid>`createDebouncedCallback`</ForSolid>
+
+| Param | Type | Description |
+|---|---|---|
+| `callback` | `(...args) => void` | Function to debounce. |
+| `delay` | `number` | Milliseconds of inactivity required before invoking. |
