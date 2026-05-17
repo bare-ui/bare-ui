@@ -1,0 +1,138 @@
+---
+title: Skeleton
+description: Accessible loading placeholder that swaps in real content when ready.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Skeleton
+
+A loading placeholder. Set `loading={false}` to swap the skeleton for your real content. Announces itself as a polite live region while loading.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Toggles between placeholder and children via `loading` prop.</FeatureItem>
+  <FeatureItem>Accessible: `role="status"`, `aria-busy`, `aria-live="polite"`.</FeatureItem>
+  <FeatureItem>Customizable `aria-label` for screen readers.</FeatureItem>
+  <FeatureItem>Zero baked-in animation — style with your own classes.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><SkeletonPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Skeleton } from '@wire-ui/react'
+
+<Skeleton loading={isLoading}>
+  <p>Loaded content</p>
+</Skeleton>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Skeleton } from '@wire-ui/vue'
+</script>
+
+<template>
+    <Skeleton :loading="isLoading">
+      <p>Loaded content</p>
+    </Skeleton>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Skeleton } from '@wire-ui/solid'
+
+<Skeleton loading={isLoading()}>
+  <p>Loaded content</p>
+</Skeleton>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Skeleton } from '@wire-ui/react'
+
+<div className="flex flex-col gap-2 w-72">
+  <Skeleton className="animate-pulse rounded-[8px] bg-[#e5e5e5] h-6 w-1/2" />
+  <Skeleton className="animate-pulse rounded-[8px] bg-[#e5e5e5] h-4 w-full" />
+  <Skeleton className="animate-pulse rounded-[8px] bg-[#e5e5e5] h-4 w-2/3" />
+</div>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { Skeleton } from '@wire-ui/vue'
+</script>
+
+<template>
+  <div class="flex flex-col gap-2 w-72">
+    <Skeleton class="animate-pulse rounded-[8px] bg-[#e5e5e5] h-6 w-1/2" />
+    <Skeleton class="animate-pulse rounded-[8px] bg-[#e5e5e5] h-4 w-full" />
+    <Skeleton class="animate-pulse rounded-[8px] bg-[#e5e5e5] h-4 w-2/3" />
+  </div>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { Skeleton } from '@wire-ui/solid'
+
+<div class="flex flex-col gap-2 w-72">
+  <Skeleton class="animate-pulse rounded-[8px] bg-[#e5e5e5] h-6 w-1/2" />
+  <Skeleton class="animate-pulse rounded-[8px] bg-[#e5e5e5] h-4 w-full" />
+  <Skeleton class="animate-pulse rounded-[8px] bg-[#e5e5e5] h-4 w-2/3" />
+</div>
+```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Skeleton renders as an empty `<div>` with `data-loading`. Size, color, and animation are entirely up to you — typically a pulsing background with a fixed width and height.
+
+```tsx
+<Skeleton className="animate-pulse rounded-[8px] bg-[#e5e5e5] h-4 w-48" />
+```
+
+## Using data attributes
+
+Skeleton sets `data-loading=""` while in the placeholder state. Use it to scope styles or query active skeletons.
+
+```css
+[data-loading] {
+  background: #e5e5e5;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `loading` | `boolean` | `true` | When `false`, renders children instead of the skeleton |
+| `aria-label` | `string` | `'Loading'` | Announced to screen readers while loading |
+| `...rest` | `HTMLAttributes<HTMLDivElement>` | — | All standard HTML div attributes |
+
+## Data attributes
+
+| Attribute | When present |
+|---|---|
+| `data-loading` | Always present on the rendered placeholder |
+
+## Accessibility
+
+- Renders with `role="status"`, `aria-busy="true"`, and `aria-live="polite"` while loading.
+- The `aria-label` (default `"Loading"`) is announced to screen readers.
+- Once `loading={false}`, the element is replaced entirely by children — no lingering ARIA state.
