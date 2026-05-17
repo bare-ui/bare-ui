@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import { h, ref } from 'vue';
+import { h } from 'vue';
 import { Select } from '.';
 
 function renderSelect(rootProps: Record<string, unknown> = {}) {
