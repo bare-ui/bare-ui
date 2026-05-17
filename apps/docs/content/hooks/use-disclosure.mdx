@@ -1,0 +1,92 @@
+---
+title: useDisclosure
+description: Boolean open / close state with stable open, close, and toggle handlers.
+---
+
+# <ForReact><code>useDisclosure</code></ForReact><ForVue><code>useDisclosure</code></ForVue><ForSolid><code>createDisclosure</code></ForSolid>
+
+Manages a boolean open / close state with stable `open`, `close`, and `toggle` handlers. Use it for modals, drawers, dropdowns, accordions — anything with a binary open state that doesn't need to be controlled from the outside.
+
+<ForReact>
+```tsx
+import { useDisclosure } from '@wire-ui/react'
+
+function ExampleModal() {
+  const { isOpen, open, close, toggle } = useDisclosure({
+    defaultOpen: false,
+    onOpenChange: (next) => console.log('open changed:', next),
+  })
+
+  return (
+    <>
+      <button onClick={open}>Open</button>
+      {isOpen && (
+        <div role="dialog">
+          <button onClick={close}>Close</button>
+        </div>
+      )}
+    </>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { useDisclosure } from '@wire-ui/vue'
+
+const { isOpen, open, close, toggle } = useDisclosure({
+  defaultOpen: false,
+  onOpenChange: next => console.log('open changed:', next),
+})
+</script>
+
+<template>
+  <button @click="open">Open</button>
+  <div v-if="isOpen" role="dialog">
+    <button @click="close">Close</button>
+  </div>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { Show } from 'solid-js'
+import { createDisclosure } from '@wire-ui/solid'
+
+function ExampleModal() {
+  const { isOpen, open, close, toggle } = createDisclosure({
+    defaultOpen: false,
+    onOpenChange: (next) => console.log('open changed:', next),
+  })
+
+  return (
+    <>
+      <button onClick={open}>Open</button>
+      <Show when={isOpen()}>
+        <div role="dialog">
+          <button onClick={close}>Close</button>
+        </div>
+      </Show>
+    </>
+  )
+}
+```
+</ForSolid>
+
+## Options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `defaultOpen` | `boolean` | `false` | Initial open state. |
+| `onOpenChange` | `(open: boolean) => void` | — | Called whenever the open state changes. |
+
+## Returns
+
+| Key | Type | Description |
+|---|---|---|
+| `isOpen` | <ForReact>`boolean`</ForReact><ForVue>`Ref<boolean>`</ForVue><ForSolid>`Accessor<boolean>`</ForSolid> | Current open state. |
+| `open` | `() => void` | Sets the state to `true`. |
+| `close` | `() => void` | Sets the state to `false`. |
+| `toggle` | `() => void` | Flips the current state. |
+| `setOpen` | `(value: boolean) => void` | Sets the state directly. |
