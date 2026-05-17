@@ -1,0 +1,40 @@
+export default {
+  index: 'Overview',
+  '-- state': {
+    type: 'separator',
+    title: 'State',
+  },
+  'use-controllable-state': 'useControllableState',
+  'use-disclosure': 'useDisclosure',
+  'use-id': 'useId',
+  '-- interaction': {
+    type: 'separator',
+    title: 'Interaction',
+  },
+  'use-click-outside': 'useClickOutside',
+  'use-focus-trap': 'useFocusTrap',
+  'use-focus-visible': 'useFocusVisible',
+  'use-interactive-state': 'useInteractiveState',
+  'use-keyboard': 'useKeyboard',
+  '-- layout': {
+    type: 'separator',
+    title: 'Layout',
+  },
+  'use-floating': 'useFloating',
+  'use-scroll-lock': 'useScrollLock',
+  '-- observers': {
+    type: 'separator',
+    title: 'Observers',
+  },
+  'use-intersection-observer': 'useIntersectionObserver',
+  'use-resize-observer': 'useResizeObserver',
+  '-- utilities': {
+    type: 'separator',
+    title: 'Utilities',
+  },
+  'use-debounce': 'useDebounce',
+  'use-throttle': 'useThrottle',
+  'use-media-query': 'useMediaQuery',
+  'use-reduce-motion': 'useReduceMotion',
+  'use-merged-refs': 'useMergedRefs',
+}
