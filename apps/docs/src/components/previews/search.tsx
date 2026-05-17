@@ -35,6 +35,7 @@ export function SearchBasic() {
               <div className="text-sm font-medium text-black">{item.title}</div>
             </Search.Item>
           ))}
+          <Search.Empty className="px-3 py-4 text-center text-sm text-[#6b7280]">No results found</Search.Empty>
         </Search.Content>
       </Search.Root>
     </div>
@@ -66,6 +67,7 @@ export function SearchComposed() {
               <div className="text-xs text-[#6b7280]">{item.subtitle}</div>
             </Search.Item>
           ))}
+          <Search.Empty className="px-3 py-4 text-center text-sm text-[#6b7280]">No results found</Search.Empty>
         </Search.Content>
       </Search.Root>
     </div>
