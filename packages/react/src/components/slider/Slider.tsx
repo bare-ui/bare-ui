@@ -98,7 +98,6 @@ const SliderImpl = React.forwardRef<HTMLDivElement, SliderProps>((props, ref) =>
 			if (range) (props.onChange as ((v: [number, number]) => void) | undefined)?.([normalized[0], normalized[1]]);
 			else (props.onChange as ((v: number) => void) | undefined)?.(normalized[0]);
 		},
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[isControlled, min, max, step, range, props.onChange, value],
 	);
 

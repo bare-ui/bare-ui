@@ -97,9 +97,12 @@ const Root = React.forwardRef<HTMLDivElement, ComboboxRootProps>(
 		// --- highlight ---
 		const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
 
-		// Reset highlight when listbox opens/filters change
+		// Reset highlight when listbox opens/filters change. Intentionally syncs
+		// state to props — moveHighlight reads the functional-setter `curr`, so a
+		// derived-during-render version would break arrow-key navigation.
 		useEffect(() => {
 			if (!open) {
+				// eslint-disable-next-line react-hooks/set-state-in-effect
 				setHighlightedIndex(-1);
 				return;
 			}
@@ -348,13 +351,14 @@ Content.displayName = 'Combobox.Content';
 
 const Items: React.FC<ComboboxItemsProps> = ({ children }) => {
 	const ctx = useComboboxContext();
+	const { open, highlightedIndex, filtered, getOptionId } = ctx;
 
 	// Keep the highlighted option visible inside its scroll container.
 	useLayoutEffect(() => {
-		if (!ctx.open || ctx.highlightedIndex < 0) return;
-		const opt = ctx.filtered[ctx.highlightedIndex];
+		if (!open || highlightedIndex < 0) return;
+		const opt = filtered[highlightedIndex];
 		if (!opt) return;
-		const el = typeof document !== 'undefined' ? document.getElementById(ctx.getOptionId(opt.value)) : null;
+		const el = typeof document !== 'undefined' ? document.getElementById(getOptionId(opt.value)) : null;
 		if (!el) return;
 
 		// Find nearest scrollable ancestor (so the page never gets scrolled).
@@ -383,7 +387,7 @@ const Items: React.FC<ComboboxItemsProps> = ({ children }) => {
 		} else if (relativeBottom > viewBottom) {
 			container.scrollTop = relativeBottom - container.clientHeight;
 		}
-	}, [ctx.open, ctx.highlightedIndex, ctx.filtered, ctx.getOptionId]);
+	}, [open, highlightedIndex, filtered, getOptionId]);
 
 	return (
 		<>
