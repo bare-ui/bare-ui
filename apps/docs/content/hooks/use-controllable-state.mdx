@@ -1,0 +1,124 @@
+---
+title: useControllableState
+description: Unified state for components that can be controlled or uncontrolled.
+---
+
+# <ForReact><code>useControllableState</code></ForReact><ForVue><code>useControllableState</code></ForVue><ForSolid><code>createControllableState</code></ForSolid>
+
+Unified state for components that can be controlled or uncontrolled. When `value` is provided, the parent owns the state and the setter only fires `onChange`. When `value` is omitted, the hook keeps state internally and fires `onChange` on each change.
+
+This is the same primitive Wire UI uses internally on every controllable component (Modal, Drawer, Tabs, Accordion, ...) — exported so your own components can offer the same dual API.
+
+<ForReact>
+```tsx
+import { useControllableState } from '@wire-ui/react'
+
+interface SwitchProps {
+  checked?: boolean
+  defaultChecked?: boolean
+  onCheckedChange?: (checked: boolean) => void
+}
+
+function Switch({ checked, defaultChecked, onCheckedChange }: SwitchProps) {
+  const [isOn, setOn] = useControllableState({
+    value: checked,
+    defaultValue: defaultChecked ?? false,
+    onChange: onCheckedChange,
+  })
+
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={isOn}
+      onClick={() => setOn(!isOn)}
+    >
+      {isOn ? 'On' : 'Off'}
+    </button>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup lang="ts">
+import { useControllableState } from '@wire-ui/vue'
+
+const props = defineProps<{
+  modelValue?: boolean
+  defaultValue?: boolean
+}>()
+
+const emit = defineEmits<{
+  'update:modelValue': [value: boolean]
+}>()
+
+const isOn = useControllableState({
+  value: () => props.modelValue,
+  defaultValue: props.defaultValue ?? false,
+  onChange: value => emit('update:modelValue', value),
+})
+</script>
+
+<template>
+  <button
+    type="button"
+    role="switch"
+    :aria-checked="isOn"
+    @click="isOn = !isOn"
+  >
+    {{ isOn ? 'On' : 'Off' }}
+  </button>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createControllableState } from '@wire-ui/solid'
+
+interface SwitchProps {
+  checked?: boolean
+  defaultChecked?: boolean
+  onCheckedChange?: (checked: boolean) => void
+}
+
+function Switch(props: SwitchProps) {
+  const [isOn, setOn] = createControllableState({
+    get value() { return props.checked },
+    defaultValue: props.defaultChecked ?? false,
+    onChange: props.onCheckedChange,
+  })
+
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={isOn()}
+      onClick={() => setOn(!isOn())}
+    >
+      {isOn() ? 'On' : 'Off'}
+    </button>
+  )
+}
+```
+</ForSolid>
+
+## Behavior
+
+- When `value` is provided (defined), the hook is **controlled**: writes do not mutate internal state — they only call `onChange`. The parent must react by updating its own state.
+- When `value` is `undefined`, the hook is **uncontrolled**: writes update internal state and call `onChange`.
+- Switching between controlled and uncontrolled across a component's lifetime is unsupported.
+
+## Options
+
+| Option | Type | Description |
+|---|---|---|
+| `value` | <ForReact>`T \| undefined`</ForReact><ForVue>`MaybeRefOrGetter<T \| undefined>`</ForVue><ForSolid>`T \| undefined` (use a getter for reactivity)</ForSolid> | When defined, makes the hook controlled. |
+| `defaultValue` | `T` | Initial value in uncontrolled mode. |
+| `onChange` | `(value: T) => void` | Called on every change in both modes. |
+
+## Returns
+
+<ForReact>A `[value, setValue]` tuple, similar to `useState`. `setValue` accepts either a new value or an updater function.</ForReact>
+<ForVue>A `WritableComputedRef` — assign to `.value` to update.</ForVue>
+<ForSolid>A `[get, set]` tuple. `get()` reads the current value; `set` accepts either a value or an updater function.</ForSolid>
