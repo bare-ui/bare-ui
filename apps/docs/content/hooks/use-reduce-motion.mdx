@@ -1,0 +1,64 @@
+---
+title: useReduceMotion
+description: Detect the OS-level reduced-motion preference.
+---
+
+# <ForReact><code>useReduceMotion</code></ForReact><ForVue><code>useReduceMotion</code></ForVue><ForSolid><code>createReduceMotion</code></ForSolid>
+
+Returns `true` when the user has requested reduced motion at the OS level. Use it to gate animations and transitions for accessibility. Internally a thin wrapper around [`useMediaQuery('(prefers-reduced-motion: reduce)')`](./use-media-query).
+
+<ForReact>
+```tsx
+import { useReduceMotion } from '@wire-ui/react'
+
+function FadeIn({ children }: { children: React.ReactNode }) {
+  const reduceMotion = useReduceMotion()
+  const duration = reduceMotion ? 0 : 200
+
+  return (
+    <div style={{ transition: `opacity ${duration}ms` }}>
+      {children}
+    </div>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { computed } from 'vue'
+import { useReduceMotion } from '@wire-ui/vue'
+
+const reduceMotion = useReduceMotion()
+const duration = computed(() => (reduceMotion.value ? 0 : 200))
+</script>
+
+<template>
+  <div :style="{ transition: `opacity ${duration}ms` }">
+    <slot />
+  </div>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createReduceMotion } from '@wire-ui/solid'
+
+function FadeIn(props: { children: any }) {
+  const reduceMotion = createReduceMotion()
+  const duration = () => (reduceMotion() ? 0 : 200)
+
+  return (
+    <div style={{ transition: `opacity ${duration()}ms` }}>
+      {props.children}
+    </div>
+  )
+}
+```
+</ForSolid>
+
+## Returns
+
+<ForReact>`boolean` — `true` while the user has requested reduced motion.</ForReact>
+<ForVue>`Ref<boolean>` — `true` while the user has requested reduced motion.</ForVue>
+<ForSolid>`Accessor<boolean>` — `true` while the user has requested reduced motion.</ForSolid>
