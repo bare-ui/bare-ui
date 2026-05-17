@@ -1,0 +1,315 @@
+---
+title: Form
+description: Headless form primitives that wire id, ARIA, and validation attributes onto your own controls.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Form
+
+Headless form primitives that handle the boring parts: matching `label`'s `htmlFor` to the control's `id`, wiring `aria-describedby` to descriptions and error messages, toggling `aria-invalid` / `aria-required` / `disabled`, and exposing `data-invalid` / `data-required` / `data-disabled` for styling.
+
+You own the inputs — `Form.Control` clones a single child and injects the right attributes. Validation logic is yours; the Form simply renders `Form.Error` when the parent `Form.Field` is marked `invalid`.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Auto-wires `label htmlFor`, control `id`, and `aria-describedby`.</FeatureItem>
+  <FeatureItem>Toggles `aria-invalid`, `aria-required`, `disabled` on the control.</FeatureItem>
+  <FeatureItem>data-invalid, data-required, data-disabled on Field, Label, and Control.</FeatureItem>
+  <FeatureItem>Renders `Form.Error` only when the field is invalid (override with `forceMount`).</FeatureItem>
+  <FeatureItem>Bring-your-own validation — no schema lock-in.</FeatureItem>
+  <FeatureItem>Form Root uses `noValidate` so the browser doesn't double-validate.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><FormPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Form } from '@wire-ui/react'
+
+<Form.Root onSubmit={handleSubmit}>
+  <Form.Field name="email" invalid={emailInvalid} required>
+    <Form.Label>Email</Form.Label>
+    <Form.Control>
+      <input type="email" />
+    </Form.Control>
+    <Form.Description>We'll send a magic link.</Form.Description>
+    <Form.Error>Please enter a valid email address.</Form.Error>
+  </Form.Field>
+  <button type="submit">Submit</button>
+</Form.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { FormRoot, FormField, FormLabel, FormControl, FormDescription, FormError } from '@wire-ui/vue'
+</script>
+
+<template>
+  <FormRoot @submit="handleSubmit">
+    <FormField name="email" :invalid="emailInvalid" required>
+      <FormLabel>Email</FormLabel>
+      <FormControl>
+        <input type="email" />
+      </FormControl>
+      <FormDescription>We'll send a magic link.</FormDescription>
+      <FormError>Please enter a valid email address.</FormError>
+    </FormField>
+    <button type="submit">Submit</button>
+  </FormRoot>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Form } from '@wire-ui/solid'
+
+<Form.Root onSubmit={handleSubmit}>
+  <Form.Field name="email" invalid={emailInvalid()} required>
+    <Form.Label>Email</Form.Label>
+    <Form.Control>
+      <input type="email" />
+    </Form.Control>
+    <Form.Description>We'll send a magic link.</Form.Description>
+    <Form.Error>Please enter a valid email address.</Form.Error>
+  </Form.Field>
+  <button type="submit">Submit</button>
+</Form.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { useState } from 'react'
+import { Form } from '@wire-ui/react'
+
+const labelCls = 'text-sm font-medium text-black'
+const fieldCls = 'w-full rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 data-[invalid]:ring-2 data-[invalid]:ring-black disabled:opacity-50'
+const descCls = 'text-xs text-[#6b7280]'
+const errorCls = 'text-xs font-medium text-black'
+
+function MyForm() {
+  const [email, setEmail] = useState('not-an-email')
+  const emailInvalid = !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+
+  return (
+    <Form.Root className="flex w-80 flex-col gap-4">
+      <Form.Field name="email" invalid={emailInvalid} required className="flex flex-col gap-1.5">
+        <Form.Label className={labelCls}>Email</Form.Label>
+        <Form.Control>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={fieldCls}
+          />
+        </Form.Control>
+        <Form.Description className={descCls}>We'll send a magic link.</Form.Description>
+        <Form.Error className={errorCls}>Please enter a valid email address.</Form.Error>
+      </Form.Field>
+      <button
+        type="submit"
+        disabled={emailInvalid}
+        className="cursor-pointer rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333] disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        Submit
+      </button>
+    </Form.Root>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { computed, ref } from 'vue'
+import { FormRoot, FormField, FormLabel, FormControl, FormDescription, FormError } from '@wire-ui/vue'
+
+const email = ref('not-an-email')
+const emailInvalid = computed(() => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value))
+</script>
+
+<template>
+  <FormRoot class="flex w-80 flex-col gap-4">
+    <FormField name="email" :invalid="emailInvalid" required class="flex flex-col gap-1.5">
+      <FormLabel class="text-sm font-medium text-black">Email</FormLabel>
+      <FormControl>
+        <input
+          type="email"
+          v-model="email"
+          class="w-full rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 data-[invalid]:ring-2 data-[invalid]:ring-black disabled:opacity-50"
+        />
+      </FormControl>
+      <FormDescription class="text-xs text-[#6b7280]">We'll send a magic link.</FormDescription>
+      <FormError class="text-xs font-medium text-black">Please enter a valid email address.</FormError>
+    </FormField>
+    <button
+      type="submit"
+      :disabled="emailInvalid"
+      class="cursor-pointer rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333] disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      Submit
+    </button>
+  </FormRoot>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { createMemo, createSignal } from 'solid-js'
+import { Form } from '@wire-ui/solid'
+
+function MyForm() {
+  const [email, setEmail] = createSignal('not-an-email')
+  const emailInvalid = createMemo(() => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email()))
+
+  return (
+    <Form.Root class="flex w-80 flex-col gap-4">
+      <Form.Field name="email" invalid={emailInvalid()} required class="flex flex-col gap-1.5">
+        <Form.Label class="text-sm font-medium text-black">Email</Form.Label>
+        <Form.Control>
+          <input
+            type="email"
+            value={email()}
+            onInput={(e) => setEmail(e.currentTarget.value)}
+            class="w-full rounded-[8px] border border-black bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 data-[invalid]:ring-2 data-[invalid]:ring-black disabled:opacity-50"
+          />
+        </Form.Control>
+        <Form.Description class="text-xs text-[#6b7280]">We'll send a magic link.</Form.Description>
+        <Form.Error class="text-xs font-medium text-black">Please enter a valid email address.</Form.Error>
+      </Form.Field>
+      <button
+        type="submit"
+        disabled={emailInvalid()}
+        class="cursor-pointer rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333] disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        Submit
+      </button>
+    </Form.Root>
+  )
+}
+```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Validation & error API
+
+Validation in wire-ui Form is bring-your-own: derive an `invalid` boolean for each field and pass it to `Form.Field`. The Field is the source of truth — toggling `invalid` on the Field flips `aria-invalid` and `data-invalid` on the wrapped control, and conditionally renders `Form.Error`.
+
+```tsx
+const emailInvalid = !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+
+<Form.Field name="email" invalid={emailInvalid} required>
+  <Form.Label>Email</Form.Label>
+  <Form.Control>
+    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+  </Form.Control>
+  <Form.Error>Please enter a valid email address.</Form.Error>
+</Form.Field>
+```
+
+By default `Form.Error` only renders when `invalid` is true. Pass `forceMount` to keep it mounted (useful for animations or reserving space):
+
+```tsx
+<Form.Error forceMount className="
+  data-[state=hidden]:opacity-0
+  data-[state=visible]:opacity-100
+">
+  Please enter a valid email address.
+</Form.Error>
+```
+
+For per-rule messages, branch on your own error state:
+
+```tsx
+const error = !value ? 'Required.' : !validFormat ? 'Wrong format.' : null
+
+<Form.Field invalid={!!error}>
+  <Form.Control><input ... /></Form.Control>
+  <Form.Error>{error}</Form.Error>
+</Form.Field>
+```
+
+## Combining with wire-ui inputs
+
+`Form.Control` only clones the first React element child. Pair it with a native `<input>` for the simple case, or skip `Form.Control` entirely and wrap a wire-ui field component (`Input.Root`, `Textarea.Root`, etc.) which manages its own id/aria internally — `Form.Field` still provides layout, error rendering, and the `data-invalid` flag.
+
+```tsx
+<Form.Field name="email" invalid={emailInvalid}>
+  <Input.Root invalidType={emailInvalid ? 'email' : ''} errorMessage={{ email: '...' }}>
+    <Input.Label>Email</Input.Label>
+    <Input.Field type="email" />
+    <Input.Error />
+  </Input.Root>
+</Form.Field>
+```
+
+## Using data attributes
+
+```css
+[data-invalid]  { /* error state */ }
+[data-required] { /* required indicator */ }
+[data-disabled] { opacity: 0.5; cursor: not-allowed; }
+```
+
+## Root props
+
+`Form.Root` accepts all standard `<form>` props. The element is rendered with `noValidate` to suppress browser-native validation popups; remove with `noValidate={false}` if you need them.
+
+## Field props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `name` | `string` | — | Used as the `id` prefix and on the control's `name` attribute |
+| `invalid` | `boolean` | `false` | Marks the field as invalid; toggles `aria-invalid` / `data-invalid` |
+| `required` | `boolean` | `false` | Marks the field as required; toggles `aria-required` / `data-required` |
+| `disabled` | `boolean` | `false` | Disables the control; toggles `disabled` / `data-disabled` |
+
+## Label props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `asChild` | `boolean` | `false` | Render the child element instead of a `<label>`, merging `htmlFor` |
+
+## Control props
+
+| Prop | Type | Description |
+|---|---|---|
+| `children` | `React.ReactElement` | Exactly one element. `id`, `name`, `aria-*`, `disabled`, and `data-*` are merged onto it. |
+
+## Error props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `forceMount` | `boolean` | `false` | Render even when the surrounding Field is not invalid |
+
+## Data attributes
+
+| Attribute | Element | When present |
+|---|---|---|
+| `data-invalid` | Field, Label, Control | Field is `invalid` |
+| `data-required` | Field, Label, Control | Field is `required` |
+| `data-disabled` | Field, Label, Control | Field is `disabled` |
+
+## Accessibility
+
+- `Form.Label` automatically points to the control via `htmlFor` = control `id`.
+- `Form.Control` sets `aria-invalid`, `aria-required`, and `aria-describedby` that references both the Description and Error ids when they're present.
+- `Form.Error` is rendered with `role="alert"` so screen readers announce it when it appears.
+- `Form.Root` uses `noValidate` — combine with `onSubmit` to handle validation yourself.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Tab</kbd> | Moves focus to the next control. |
+| <kbd>Enter</kbd> | Submits the form when focus is inside a control (browser default). |
