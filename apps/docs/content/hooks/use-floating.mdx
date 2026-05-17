@@ -1,0 +1,166 @@
+---
+title: useFloating
+description: Position a floating element relative to a reference element.
+---
+
+# <ForReact><code>useFloating</code></ForReact><ForVue><code>useFloating</code></ForVue><ForSolid><code>createFloating</code></ForSolid>
+
+Lightweight, zero-dependency positioning for tooltips, popovers, dropdowns, and similar UI. Computes `floatingStyles` to place a floating element on a chosen side / alignment relative to a reference element, with optional `flip` and `shift` to keep it in the viewport. Recomputes on scroll and resize while open.
+
+For more advanced needs (auto-update on any layout shift, virtual elements, middleware composition), pair with `@floating-ui/dom`.
+
+<ForReact>
+```tsx
+import { useRef, useState } from 'react'
+import { useFloating } from '@wire-ui/react'
+
+function Tooltip({ children, label }: { children: React.ReactNode; label: string }) {
+  const [open, setOpen] = useState(false)
+  const referenceRef = useRef<HTMLButtonElement>(null)
+  const floatingRef = useRef<HTMLDivElement>(null)
+
+  const { floatingStyles, side } = useFloating(referenceRef, floatingRef, {
+    open,
+    side: 'top',
+    offset: 6,
+  })
+
+  return (
+    <>
+      <button
+        ref={referenceRef}
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+      >
+        {children}
+      </button>
+      {open && (
+        <div ref={floatingRef} style={floatingStyles} data-side={side} role="tooltip">
+          {label}
+        </div>
+      )}
+    </>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { useFloating } from '@wire-ui/vue'
+
+const open = ref(false)
+const referenceRef = ref<HTMLButtonElement | null>(null)
+const floatingRef = ref<HTMLDivElement | null>(null)
+
+const { floatingStyles, side } = useFloating(referenceRef, floatingRef, {
+  open: () => open.value,
+  side: 'top',
+  offset: 6,
+})
+</script>
+
+<template>
+  <button
+    ref="referenceRef"
+    @mouseenter="open = true"
+    @mouseleave="open = false"
+  >
+    <slot />
+  </button>
+  <div
+    v-if="open"
+    ref="floatingRef"
+    :style="floatingStyles"
+    :data-side="side"
+    role="tooltip"
+  >
+    Tooltip
+  </div>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createSignal, Show } from 'solid-js'
+import { createFloating } from '@wire-ui/solid'
+
+function Tooltip(props: { label: string; children: any }) {
+  const [open, setOpen] = createSignal(false)
+  let referenceEl: HTMLButtonElement | undefined
+  let floatingEl: HTMLDivElement | undefined
+
+  const { floatingStyles, side } = createFloating(
+    () => referenceEl,
+    () => floatingEl,
+    { get open() { return open() }, side: 'top', offset: 6 },
+  )
+
+  return (
+    <>
+      <button
+        ref={referenceEl}
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+      >
+        {props.children}
+      </button>
+      <Show when={open()}>
+        <div ref={floatingEl} style={floatingStyles()} data-side={side()} role="tooltip">
+          {props.label}
+        </div>
+      </Show>
+    </>
+  )
+}
+```
+</ForSolid>
+
+## Parameters
+
+<ForReact>
+| Param | Type | Description |
+|---|---|---|
+| `referenceRef` | `RefObject<HTMLElement \| null>` | Element the floating element is positioned against. |
+| `floatingRef` | `RefObject<HTMLElement \| null>` | The floating element itself. |
+| `options` | `UseFloatingOptions` | See below. |
+</ForReact>
+<ForVue>
+| Param | Type | Description |
+|---|---|---|
+| `referenceRef` | `Ref<HTMLElement \| null>` | Element the floating element is positioned against. |
+| `floatingRef` | `Ref<HTMLElement \| null>` | The floating element itself. |
+| `options` | `UseFloatingOptions` | See below. |
+</ForVue>
+<ForSolid>
+| Param | Type | Description |
+|---|---|---|
+| `referenceRef` | `Accessor<HTMLElement \| null \| undefined>` | Element the floating element is positioned against. |
+| `floatingRef` | `Accessor<HTMLElement \| null \| undefined>` | The floating element itself. |
+| `options` | `CreateFloatingOptions` | See below. |
+</ForSolid>
+
+## Options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `open` | <ForReact>`boolean`</ForReact><ForVue>`MaybeRefOrGetter<boolean>`</ForVue><ForSolid>`boolean` (use a getter for reactivity)</ForSolid> | `true` | Positioning only runs when `true`. |
+| `side` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'bottom'` | Preferred side. |
+| `align` | `'start' \| 'center' \| 'end'` | `'center'` | Alignment along the chosen side. |
+| `offset` | `number` | `8` | Gap in pixels between reference and floating. |
+| `strategy` | `'absolute' \| 'fixed'` | `'absolute'` | `fixed` is safer inside transformed / clipping ancestors. |
+| `flip` | `boolean` | `true` | Flip to the opposite side when there isn't room. |
+| `shift` | `boolean` | `true` | Shift along the main axis to stay in the viewport. |
+
+## Returns
+
+| Key | Type | Description |
+|---|---|---|
+| `x` | <ForReact>`number`</ForReact><ForVue>`Ref<number>`</ForVue><ForSolid>`Accessor<number>`</ForSolid> | Horizontal coordinate. |
+| `y` | <ForReact>`number`</ForReact><ForVue>`Ref<number>`</ForVue><ForSolid>`Accessor<number>`</ForSolid> | Vertical coordinate. |
+| `side` | `FloatingSide` | Final side (may flip from the requested side). |
+| `align` | `FloatingAlign` | Final alignment. |
+| `strategy` | `FloatingStrategy` | The positioning strategy used. |
+| `floatingStyles` | <ForReact>`CSSProperties`</ForReact><ForVue>`Ref<CSSProperties>`</ForVue><ForSolid>`() => JSX.CSSProperties`</ForSolid> | Styles to apply to the floating element. |
+| `update` | `() => void` | Recompute position imperatively. |
