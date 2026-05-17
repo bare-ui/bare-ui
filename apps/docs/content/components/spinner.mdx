@@ -1,0 +1,136 @@
+---
+title: Spinner
+description: Accessible loading indicator with role=status and a visually-hidden label.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Spinner
+
+A semantic wrapper for a loading indicator. Provides ARIA live-region semantics and a visually-hidden text label so screen readers always announce the loading state — regardless of which visual icon you bring.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Bring-your-own visual: any SVG, icon, or animation as children.</FeatureItem>
+  <FeatureItem>Accessible: `role="status"`, `aria-live="polite"`, visually-hidden label.</FeatureItem>
+  <FeatureItem>Hides the decorative visual from screen readers by default.</FeatureItem>
+  <FeatureItem>Renders as a `<span>` — inline-friendly.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><SpinnerPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Spinner } from '@wire-ui/react'
+
+<Spinner label="Loading">
+  <svg /* your spinning icon */ />
+</Spinner>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Spinner } from '@wire-ui/vue'
+</script>
+
+<template>
+    <Spinner label="Loading">
+      <svg><!-- your spinning icon --></svg>
+    </Spinner>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Spinner } from '@wire-ui/solid'
+
+<Spinner label="Loading">
+  <svg /* your spinning icon */ />
+</Spinner>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Spinner } from '@wire-ui/react'
+
+<Spinner label="Saving changes" className="inline-flex">
+  <svg className="size-5 animate-spin" viewBox="0 0 24 24" fill="none">
+    <circle cx="12" cy="12" r="10" stroke="#e5e5e5" strokeWidth="2" />
+    <path d="M22 12a10 10 0 0 0-10-10" stroke="black" strokeWidth="2" strokeLinecap="round" />
+  </svg>
+</Spinner>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { Spinner } from '@wire-ui/vue'
+</script>
+
+<template>
+  <Spinner label="Saving changes" class="inline-flex">
+    <svg class="size-5 animate-spin" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="10" stroke="#e5e5e5" stroke-width="2" />
+      <path d="M22 12a10 10 0 0 0-10-10" stroke="black" stroke-width="2" stroke-linecap="round" />
+    </svg>
+  </Spinner>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { Spinner } from '@wire-ui/solid'
+
+<Spinner label="Saving changes" class="inline-flex">
+  <svg class="size-5 animate-spin" viewBox="0 0 24 24" fill="none">
+    <circle cx="12" cy="12" r="10" stroke="#e5e5e5" stroke-width="2" />
+    <path d="M22 12a10 10 0 0 0-10-10" stroke="black" stroke-width="2" stroke-linecap="round" />
+  </svg>
+</Spinner>
+```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Spinner renders a wrapping `<span>` with two children: your visual (decorative by default) and a visually-hidden label. Apply animation classes to the SVG, not the wrapper.
+
+```tsx
+<Spinner label="Loading">
+  <svg className="size-5 animate-spin">…</svg>
+</Spinner>
+```
+
+## Using data attributes
+
+Spinner does not set any custom data attributes — it's purely semantic. Style it with regular class selectors.
+
+```css
+/* Scope styles via the inner element */
+span[role="status"] svg { animation: spin 1s linear infinite; }
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `label` | `string` | `'Loading'` | Accessible label announced to screen readers |
+| `decorative` | `boolean` | `true` | Hides the visual element from screen readers (label still announced) |
+| `...rest` | `HTMLAttributes<HTMLSpanElement>` | — | All standard HTML span attributes |
+
+## Accessibility
+
+- Wrapper has `role="status"` and `aria-live="polite"` — screen readers announce changes to the label.
+- The visual is wrapped in an `aria-hidden` span when `decorative` is `true` (the default).
+- The text label is rendered in a visually-hidden span so it's announced but not seen.
+- Spinner does not include an animation — bring your own (CSS animation, SVG `<animateTransform>`, etc.).
