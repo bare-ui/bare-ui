@@ -1,0 +1,88 @@
+---
+title: useResizeObserver
+description: Observe an element's content-box dimensions.
+---
+
+# <ForReact><code>useResizeObserver</code></ForReact><ForVue><code>useResizeObserver</code></ForVue><ForSolid><code>createResizeObserver</code></ForSolid>
+
+Observes the size of the element referenced by `ref` and returns its current content-box dimensions. Pass `onResize` to react imperatively without depending on the returned signal.
+
+Wraps `ResizeObserver` and bails out gracefully when the environment doesn't support it (e.g. older SSR contexts).
+
+<ForReact>
+```tsx
+import { useRef } from 'react'
+import { useResizeObserver } from '@wire-ui/react'
+
+function ResizableBox() {
+  const ref = useRef<HTMLDivElement>(null)
+  const { width, height } = useResizeObserver(ref)
+
+  return (
+    <div ref={ref} className="resize overflow-auto border p-4" style={{ minWidth: 200 }}>
+      {Math.round(width)} × {Math.round(height)}
+    </div>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { useResizeObserver } from '@wire-ui/vue'
+
+const el = ref<HTMLDivElement | null>(null)
+const size = useResizeObserver(el)
+</script>
+
+<template>
+  <div ref="el" class="resize overflow-auto border p-4" style="min-width: 200px">
+    {{ Math.round(size.width) }} × {{ Math.round(size.height) }}
+  </div>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createResizeObserver } from '@wire-ui/solid'
+
+function ResizableBox() {
+  let el: HTMLDivElement | undefined
+  const size = createResizeObserver(() => el)
+
+  return (
+    <div ref={el} class="resize overflow-auto border p-4" style={{ 'min-width': '200px' }}>
+      {Math.round(size().width)} × {Math.round(size().height)}
+    </div>
+  )
+}
+```
+</ForSolid>
+
+## Parameters
+
+<ForReact>
+| Param | Type | Description |
+|---|---|---|
+| `ref` | `RefObject<HTMLElement \| null>` | Element to observe. |
+| `onResize` | `(size, entry) => void` | Optional callback invoked with each resize. |
+</ForReact>
+<ForVue>
+| Param | Type | Description |
+|---|---|---|
+| `targetRef` | `Ref<HTMLElement \| null>` | Element to observe. |
+| `onResize` | `(size, entry) => void` | Optional callback invoked with each resize. |
+</ForVue>
+<ForSolid>
+| Param | Type | Description |
+|---|---|---|
+| `target` | `Accessor<HTMLElement \| null \| undefined>` | Accessor returning the element to observe. |
+| `onResize` | `(size, entry) => void` | Optional callback invoked with each resize. |
+</ForSolid>
+
+## Returns
+
+<ForReact>An `{ width, height }` object that re-renders on resize.</ForReact>
+<ForVue>A reactive `{ width, height }` object whose properties update on resize.</ForVue>
+<ForSolid>An `Accessor<{ width: number; height: number }>` whose value updates on resize.</ForSolid>
