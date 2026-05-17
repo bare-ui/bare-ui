@@ -1,0 +1,75 @@
+---
+title: useFocusVisible
+description: Track whether focus arrived from keyboard navigation or a pointer.
+---
+
+# <ForReact><code>useFocusVisible</code></ForReact><ForVue><code>useFocusVisible</code></ForVue><ForSolid><code>createFocusVisible</code></ForSolid>
+
+Tracks whether the focused element should show a "focus visible" indicator — i.e. focus arrived from keyboard navigation, not a pointer. Mirrors the CSS `:focus-visible` pseudo-class by querying `element.matches(':focus-visible')` on focus. Spread the returned focus handlers onto your element.
+
+Use this when you only need focus-visible tracking and don't want the rest of [`useInteractiveState`](./use-interactive-state) (hover, press, disabled).
+
+<ForReact>
+```tsx
+import { useFocusVisible } from '@wire-ui/react'
+
+function FocusableButton() {
+  const { isFocusVisible, focusProps } = useFocusVisible()
+
+  return (
+    <button
+      {...focusProps}
+      data-focus-visible={isFocusVisible ? '' : undefined}
+      className="rounded px-3 py-1 data-[focus-visible]:ring-2"
+    >
+      Tab to me
+    </button>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { useFocusVisible } from '@wire-ui/vue'
+
+const { isFocusVisible, focusHandlers } = useFocusVisible()
+</script>
+
+<template>
+  <button
+    v-on="focusHandlers"
+    :data-focus-visible="isFocusVisible ? '' : undefined"
+    class="rounded px-3 py-1 data-[focus-visible]:ring-2"
+  >
+    Tab to me
+  </button>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createFocusVisible } from '@wire-ui/solid'
+
+function FocusableButton() {
+  const { isFocusVisible, focusProps } = createFocusVisible()
+
+  return (
+    <button
+      {...focusProps}
+      data-focus-visible={isFocusVisible() ? '' : undefined}
+      class="rounded px-3 py-1 data-[focus-visible]:ring-2"
+    >
+      Tab to me
+    </button>
+  )
+}
+```
+</ForSolid>
+
+## Returns
+
+| Key | Type | Description |
+|---|---|---|
+| `isFocusVisible` | <ForReact>`boolean`</ForReact><ForVue>`Ref<boolean>`</ForVue><ForSolid>`Accessor<boolean>`</ForSolid> | `true` while the element has keyboard focus. |
+| <ForReact>`focusProps`</ForReact><ForVue>`focusHandlers`</ForVue><ForSolid>`focusProps`</ForSolid> | `{ onFocus, onBlur }` | Event handlers to spread onto the element. |
