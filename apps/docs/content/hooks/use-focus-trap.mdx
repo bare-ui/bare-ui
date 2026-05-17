@@ -1,0 +1,117 @@
+---
+title: useFocusTrap
+description: Trap keyboard focus inside a container while active.
+---
+
+# <ForReact><code>useFocusTrap</code></ForReact><ForVue><code>useFocusTrap</code></ForVue><ForSolid><code>createFocusTrap</code></ForSolid>
+
+Traps keyboard focus inside the given container while `active` is true. Cycles <kbd>Tab</kbd> / <kbd>Shift+Tab</kbd> between the first and last focusable descendants. On activation, focus moves to `initialFocus` (or the first focusable child). On deactivation, focus returns to whatever was focused before, unless `returnFocus` is false.
+
+Used internally by Modal and Drawer to keep keyboard navigation inside the dialog.
+
+<ForReact>
+```tsx
+import { useRef, useState } from 'react'
+import { useFocusTrap, useScrollLock } from '@wire-ui/react'
+
+function Dialog() {
+  const [open, setOpen] = useState(false)
+  const dialogRef = useRef<HTMLDivElement>(null)
+
+  useFocusTrap(dialogRef, { active: open })
+  useScrollLock(open)
+
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>Open dialog</button>
+      {open && (
+        <div ref={dialogRef} role="dialog" aria-modal="true">
+          <input placeholder="First field" />
+          <input placeholder="Second field" />
+          <button onClick={() => setOpen(false)}>Close</button>
+        </div>
+      )}
+    </>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { useFocusTrap, useScrollLock } from '@wire-ui/vue'
+
+const open = ref(false)
+const dialogRef = ref<HTMLDivElement | null>(null)
+
+useFocusTrap(dialogRef, { active: () => open.value })
+useScrollLock(() => open.value)
+</script>
+
+<template>
+  <button @click="open = true">Open dialog</button>
+  <div v-if="open" ref="dialogRef" role="dialog" aria-modal="true">
+    <input placeholder="First field" />
+    <input placeholder="Second field" />
+    <button @click="open = false">Close</button>
+  </div>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createSignal, Show } from 'solid-js'
+import { createFocusTrap, createScrollLock } from '@wire-ui/solid'
+
+function Dialog() {
+  const [open, setOpen] = createSignal(false)
+  let dialogEl: HTMLDivElement | undefined
+
+  createFocusTrap(() => dialogEl, { get active() { return open() } })
+  createScrollLock(() => open())
+
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>Open dialog</button>
+      <Show when={open()}>
+        <div ref={dialogEl} role="dialog" aria-modal="true">
+          <input placeholder="First field" />
+          <input placeholder="Second field" />
+          <button onClick={() => setOpen(false)}>Close</button>
+        </div>
+      </Show>
+    </>
+  )
+}
+```
+</ForSolid>
+
+## Parameters
+
+<ForReact>
+| Param | Type | Description |
+|---|---|---|
+| `containerRef` | `RefObject<HTMLElement \| null>` | Element to trap focus inside. |
+| `options` | `UseFocusTrapOptions` | See below. |
+</ForReact>
+<ForVue>
+| Param | Type | Description |
+|---|---|---|
+| `containerRef` | `Ref<HTMLElement \| null>` | Element to trap focus inside. |
+| `options` | `UseFocusTrapOptions` | See below. |
+</ForVue>
+<ForSolid>
+| Param | Type | Description |
+|---|---|---|
+| `containerRef` | `Accessor<HTMLElement \| null \| undefined>` | Accessor returning the element to trap focus inside. |
+| `options` | `CreateFocusTrapOptions` | See below. |
+</ForSolid>
+
+## Options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `active` | <ForReact>`boolean`</ForReact><ForVue>`MaybeRefOrGetter<boolean>`</ForVue><ForSolid>`boolean` (use a getter for reactivity)</ForSolid> | `true` | Whether the trap is active. |
+| `returnFocus` | `boolean` | `true` | Restore focus to the previously focused element on deactivate. |
+| `initialFocus` | <ForReact>`RefObject<HTMLElement \| null> \| HTMLElement \| null`</ForReact><ForVue>`Ref<HTMLElement \| null> \| HTMLElement \| null`</ForVue><ForSolid>`Accessor<HTMLElement \| null \| undefined> \| HTMLElement \| null \| undefined`</ForSolid> | First focusable child | Element to focus when the trap activates. |
