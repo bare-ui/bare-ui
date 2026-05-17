@@ -1,6 +1,6 @@
 {
 	"name": "@wire-ui/vue",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"license": "MIT",
 	"type": "module",
 	"main": "./dist/wire-ui-vue.cjs.js",
@@ -67,14 +67,15 @@
 		"@storybook/vue3-vite": "^10.3.3",
 		"@tailwindcss/vite": "^4.2.2",
 		"@testing-library/jest-dom": "^6.9.1",
-		"@testing-library/vue": "^8.1.0",
 		"@testing-library/user-event": "^14.6.1",
+		"@testing-library/vue": "^8.1.0",
 		"@types/node": "^24.12.0",
 		"@vitejs/plugin-vue": "^6.0.5",
 		"@vitest/coverage-v8": "^4.1.2",
 		"eslint": "^9.39.4",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-storybook": "^10.3.3",
+		"eslint-plugin-vue": "^10.9.1",
 		"globals": "^17.4.0",
 		"jsdom": "^29.0.1",
 		"prettier": "^3.8.1",
@@ -86,6 +87,7 @@
 		"vite-plugin-dts": "^4.5.4",
 		"vitest": "^4.1.2",
 		"vue": "^3.5.16",
+		"vue-eslint-parser": "^10.4.0",
 		"vue-tsc": "^2.2.12"
 	}
 }
