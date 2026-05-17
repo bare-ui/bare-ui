@@ -1,0 +1,297 @@
+---
+title: Calendar
+description: Headless month calendar with controlled selection, min/max dates, and a render-prop grid.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Calendar
+
+Headless month calendar. Compose `Nav` + `Title` + `Grid`. Render each day with a render-prop and let data attributes drive selected, today, outside-month, and disabled styling.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Controlled and uncontrolled selection.</FeatureItem>
+  <FeatureItem>Controlled and uncontrolled visible month.</FeatureItem>
+  <FeatureItem>`minDate`, `maxDate`, and a custom `isDateDisabled` predicate.</FeatureItem>
+  <FeatureItem>Configurable `weekStartsOn` and `locale`.</FeatureItem>
+  <FeatureItem>Render-prop `renderDay` / `renderWeekday` for full visual control.</FeatureItem>
+  <FeatureItem>data-selected, data-today, data-outside-month, data-disabled, data-weekend.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><CalendarPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Calendar } from '@wire-ui/react'
+
+<Calendar.Root>
+  <Calendar.Nav>
+    <Calendar.PrevButton />
+    <Calendar.Title />
+    <Calendar.NextButton />
+  </Calendar.Nav>
+  <Calendar.Grid
+    renderDay={(day) => (
+      <button {...day.props}>{day.dayOfMonth}</button>
+    )}
+    renderWeekday={(wd) => <div>{wd.short}</div>}
+  />
+</Calendar.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { CalendarRoot, CalendarNav, CalendarPrevButton, CalendarNextButton, CalendarTitle, CalendarGrid } from '@wire-ui/vue'
+</script>
+
+<template>
+  <CalendarRoot>
+    <CalendarNav>
+      <CalendarPrevButton />
+      <CalendarTitle />
+      <CalendarNextButton />
+    </CalendarNav>
+    <CalendarGrid>
+      <template #day="{ day }">
+        <button v-bind="day.props">{{ day.dayOfMonth }}</button>
+      </template>
+      <template #weekday="{ weekday }">
+        <div>{{ weekday.short }}</div>
+      </template>
+    </CalendarGrid>
+  </CalendarRoot>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Calendar } from '@wire-ui/solid'
+
+<Calendar.Root>
+  <Calendar.Nav>
+    <Calendar.PrevButton />
+    <Calendar.Title />
+    <Calendar.NextButton />
+  </Calendar.Nav>
+  <Calendar.Grid
+    renderDay={(day) => (
+      <button {...day.props}>{day.dayOfMonth}</button>
+    )}
+    renderWeekday={(wd) => <div>{wd.short}</div>}
+  />
+</Calendar.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { useState } from 'react'
+import { Calendar } from '@wire-ui/react'
+
+const dayCls =
+  'cursor-pointer rounded-[6px] p-1.5 text-center text-sm text-black hover:bg-[#f5f5f5] data-[selected]:bg-black data-[selected]:text-white data-[today]:font-bold data-[today]:underline data-[outside-month]:text-[#a3a3a3] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-30'
+
+function MyCalendar() {
+  const [selected, setSelected] = useState<Date | null>(new Date())
+  return (
+    <Calendar.Root
+      value={selected}
+      onChange={setSelected}
+      className="inline-block rounded-[20px] border border-black bg-white p-3"
+    >
+      <Calendar.Nav className="flex items-center justify-between mb-2">
+        <Calendar.PrevButton className="cursor-pointer rounded-[6px] px-2 py-1 text-sm text-black hover:bg-[#f5f5f5] disabled:opacity-40">‹</Calendar.PrevButton>
+        <Calendar.Title className="text-sm font-semibold text-black" />
+        <Calendar.NextButton className="cursor-pointer rounded-[6px] px-2 py-1 text-sm text-black hover:bg-[#f5f5f5] disabled:opacity-40">›</Calendar.NextButton>
+      </Calendar.Nav>
+      <Calendar.Grid
+        renderDay={(day) => (
+          <button {...day.props} className={dayCls}>
+            {day.dayOfMonth}
+          </button>
+        )}
+        renderWeekday={(wd) => (
+          <div className="text-center text-xs font-medium text-[#6b7280] py-1">{wd.short}</div>
+        )}
+      />
+    </Calendar.Root>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { CalendarRoot, CalendarNav, CalendarPrevButton, CalendarNextButton, CalendarTitle, CalendarGrid } from '@wire-ui/vue'
+
+const selected = ref(new Date())
+const dayCls = 'cursor-pointer rounded-[6px] p-1.5 text-center text-sm text-black hover:bg-[#f5f5f5] data-[selected]:bg-black data-[selected]:text-white data-[today]:font-bold data-[today]:underline data-[outside-month]:text-[#a3a3a3] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-30'
+</script>
+
+<template>
+  <CalendarRoot
+    :value="selected"
+    @change="(d) => (selected = d)"
+    class="inline-block rounded-[20px] border border-black bg-white p-3"
+  >
+    <CalendarNav class="flex items-center justify-between mb-2">
+      <CalendarPrevButton class="cursor-pointer rounded-[6px] px-2 py-1 text-sm text-black hover:bg-[#f5f5f5] disabled:opacity-40">‹</CalendarPrevButton>
+      <CalendarTitle class="text-sm font-semibold text-black" />
+      <CalendarNextButton class="cursor-pointer rounded-[6px] px-2 py-1 text-sm text-black hover:bg-[#f5f5f5] disabled:opacity-40">›</CalendarNextButton>
+    </CalendarNav>
+    <CalendarGrid>
+      <template #day="{ day }">
+        <button v-bind="day.props" :class="dayCls">{{ day.dayOfMonth }}</button>
+      </template>
+      <template #weekday="{ weekday }">
+        <div class="text-center text-xs font-medium text-[#6b7280] py-1">{{ weekday.short }}</div>
+      </template>
+    </CalendarGrid>
+  </CalendarRoot>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { createSignal } from 'solid-js'
+import { Calendar } from '@wire-ui/solid'
+
+const dayCls =
+  'cursor-pointer rounded-[6px] p-1.5 text-center text-sm text-black hover:bg-[#f5f5f5] data-[selected]:bg-black data-[selected]:text-white data-[today]:font-bold data-[today]:underline data-[outside-month]:text-[#a3a3a3] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-30'
+
+function MyCalendar() {
+  const [selected, setSelected] = createSignal<Date | null>(new Date())
+  return (
+    <Calendar.Root
+      value={selected()}
+      onChange={setSelected}
+      class="inline-block rounded-[20px] border border-black bg-white p-3"
+    >
+      <Calendar.Nav class="flex items-center justify-between mb-2">
+        <Calendar.PrevButton class="cursor-pointer rounded-[6px] px-2 py-1 text-sm text-black hover:bg-[#f5f5f5] disabled:opacity-40">‹</Calendar.PrevButton>
+        <Calendar.Title class="text-sm font-semibold text-black" />
+        <Calendar.NextButton class="cursor-pointer rounded-[6px] px-2 py-1 text-sm text-black hover:bg-[#f5f5f5] disabled:opacity-40">›</Calendar.NextButton>
+      </Calendar.Nav>
+      <Calendar.Grid
+        renderDay={(day) => (
+          <button {...day.props} class={dayCls}>
+            {day.dayOfMonth}
+          </button>
+        )}
+        renderWeekday={(wd) => (
+          <div class="text-center text-xs font-medium text-[#6b7280] py-1">{wd.short}</div>
+        )}
+      />
+    </Calendar.Root>
+  )
+}
+```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Each day cell exposes `data-selected`, `data-today`, `data-outside-month`, `data-disabled`, and `data-weekend`. The PrevButton and NextButton auto-disable when crossing `minDate` / `maxDate`.
+
+```tsx
+<button {...day.props} className="
+  rounded-[6px] p-1.5
+  data-[selected]:bg-black data-[selected]:text-white
+  data-[today]:font-bold data-[today]:underline
+  data-[outside-month]:text-[#a3a3a3]
+  data-[weekend]:text-[#6b7280]
+  data-[disabled]:opacity-30 data-[disabled]:cursor-not-allowed
+">
+  {day.dayOfMonth}
+</button>
+```
+
+## Using data attributes
+
+The render-prop hands you a fully spreadable `day.props` object containing the role, button type, tabIndex, `aria-selected`, `aria-current`, the click handler, and all `data-*` flags.
+
+```css
+[data-selected]      { background: #000; color: #fff; }
+[data-today]         { font-weight: 700; text-decoration: underline; }
+[data-outside-month] { color: #a3a3a3; }
+[data-disabled]      { opacity: 0.3; cursor: not-allowed; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `Date \| null` | — | Controlled selected date |
+| `defaultValue` | `Date \| null` | `null` | Initial selected date |
+| `onChange` | `(date: Date \| null) => void` | — | Called when selection changes |
+| `month` | `Date` | — | Controlled visible month |
+| `defaultMonth` | `Date` | today / `value` | Initial visible month |
+| `onMonthChange` | `(month: Date) => void` | — | Called when the visible month changes |
+| `minDate` | `Date` | — | Earliest selectable date |
+| `maxDate` | `Date` | — | Latest selectable date |
+| `isDateDisabled` | `(date: Date) => boolean` | — | Custom predicate to disable specific dates |
+| `weekStartsOn` | `0 \| 1 \| 2 \| 3 \| 4 \| 5 \| 6` | `0` | First day of the week (0 = Sunday) |
+| `locale` | `string` | `'en-US'` | Locale for weekday and month names |
+
+## Grid props
+
+| Prop | Type | Description |
+|---|---|---|
+| `renderDay` | `(day: CalendarDay) => ReactNode` | Render each day cell |
+| `renderWeekday` | `(wd: { name: string; short: string }) => ReactNode` | Render each weekday header |
+
+## CalendarDay shape
+
+| Field | Type | Description |
+|---|---|---|
+| `date` | `Date` | The day's date |
+| `dayOfMonth` | `number` | 1-31 |
+| `isToday` | `boolean` | True if the cell is today |
+| `isSelected` | `boolean` | True if the cell equals the selected value |
+| `isOutsideMonth` | `boolean` | True if the cell is from the previous or next month |
+| `isDisabled` | `boolean` | True if min/max/predicate disables this date |
+| `isWeekend` | `boolean` | True for Saturday or Sunday |
+| `props` | `object` | Spread onto your button — includes ARIA + data-* + onClick |
+
+## PrevButton / NextButton
+
+Auto-disabled when stepping outside `minDate` / `maxDate`. Render `<` / `>` characters by default; pass children to override.
+
+## Title
+
+Renders the localised "Month Year" string for the visible month. Pass children to fully override.
+
+## Data attributes
+
+| Attribute | Element | When present |
+|---|---|---|
+| `data-selected` | day button | Cell equals the selected value |
+| `data-today` | day button | Cell is today |
+| `data-outside-month` | day button | Cell belongs to prev/next month |
+| `data-disabled` | day button | Cell is disabled |
+| `data-weekend` | day button | Cell is Saturday or Sunday |
+
+## Accessibility
+
+- The Root renders with `role="application"` and `aria-label="Calendar"`.
+- The Grid is `role="grid"`; weekday cells use `role="columnheader"`.
+- Each day cell is a real `<button>` with `aria-selected` and `aria-current="date"` for today.
+- The selected day gets `tabIndex=0`, others `-1` — keep keyboard focus in a single cell.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Tab</kbd> | Moves focus into the grid (lands on the selected day, or the first focusable cell). |
+| <kbd>Enter</kbd> / <kbd>Space</kbd> | Selects the focused day. |
