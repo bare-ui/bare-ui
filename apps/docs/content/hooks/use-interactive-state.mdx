@@ -1,0 +1,124 @@
+---
+title: useInteractiveState
+description: Hover, focus-visible, and press state tracking with matching data attributes.
+---
+
+# <ForReact><code>useInteractiveState</code></ForReact><ForVue><code>useInteractiveState</code></ForVue><ForSolid><code>createInteractiveState</code></ForSolid>
+
+Tracks hover, keyboard focus, and press state for any element. Returns event handlers to spread onto the element along with matching `data-*` attributes so consumers can style state transitions with CSS selectors.
+
+This is the same primitive used internally by Button, Accordion.Trigger, Modal.Close, and Drawer.Close — exported so your own interactive components can opt into identical state tracking.
+
+Unlike libraries that expose `data-focus` for any focus event, Wire UI uses **`data-focus-visible`**, which only applies when focus arrives from keyboard navigation — mirroring the CSS `:focus-visible` pseudo-class detected via `element.matches(':focus-visible')`.
+
+<ForReact>
+```tsx
+import { useInteractiveState } from '@wire-ui/react'
+
+function Card({ disabled }: { disabled?: boolean }) {
+  const { handlers, dataAttributes } = useInteractiveState({ disabled })
+
+  return (
+    <div
+      tabIndex={0}
+      role="button"
+      {...handlers}
+      {...dataAttributes}
+      className="
+        rounded-lg border p-4 cursor-pointer transition-all
+        data-[hover]:bg-gray-50
+        data-[active]:scale-95
+        data-[focus-visible]:ring-2
+        data-[disabled]:opacity-50 data-[disabled]:pointer-events-none
+      "
+    >
+      Card content
+    </div>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup lang="ts">
+import { useInteractiveState } from '@wire-ui/vue'
+
+const props = defineProps<{ disabled?: boolean }>()
+const { handlers, dataAttributes } = useInteractiveState({
+  disabled: () => props.disabled,
+})
+</script>
+
+<template>
+  <div
+    tabindex="0"
+    role="button"
+    v-bind="dataAttributes"
+    v-on="handlers"
+    class="
+      rounded-lg border p-4 cursor-pointer transition-all
+      data-[hover]:bg-gray-50
+      data-[active]:scale-95
+      data-[focus-visible]:ring-2
+      data-[disabled]:opacity-50 data-[disabled]:pointer-events-none
+    "
+  >
+    Card content
+  </div>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createInteractiveState } from '@wire-ui/solid'
+
+function Card(props: { disabled?: boolean }) {
+  const state = createInteractiveState({
+    get disabled() { return !!props.disabled },
+  })
+
+  return (
+    <div
+      tabIndex={0}
+      role="button"
+      {...state.handlers}
+      {...state.dataAttributes}
+      class="
+        rounded-lg border p-4 cursor-pointer transition-all
+        data-[hover]:bg-gray-50
+        data-[active]:scale-95
+        data-[focus-visible]:ring-2
+        data-[disabled]:opacity-50 data-[disabled]:pointer-events-none
+      "
+    >
+      Card content
+    </div>
+  )
+}
+```
+</ForSolid>
+
+## Options
+
+| Option | Type | Description |
+|---|---|---|
+| `disabled` | <ForReact>`boolean`</ForReact><ForVue>`MaybeRefOrGetter<boolean>`</ForVue><ForSolid>`boolean` (use a getter for reactivity)</ForSolid> | When `true`, suppresses hover and active state and applies `data-disabled`. |
+
+## Returns
+
+| Key | Type | Description |
+|---|---|---|
+| `handlers` | `object` | Event handlers to spread onto the element. |
+| `dataAttributes` | `object` | `data-hover`, `data-focus-visible`, `data-active`, `data-disabled` (each present-or-absent). |
+| `isHovered` | <ForReact>`boolean`</ForReact><ForVue>`boolean`</ForVue><ForSolid>`Accessor<boolean>`</ForSolid> | Raw hover state. |
+| `isFocusVisible` | <ForReact>`boolean`</ForReact><ForVue>`boolean`</ForVue><ForSolid>`Accessor<boolean>`</ForSolid> | Raw keyboard-focus state. |
+| `isActive` | <ForReact>`boolean`</ForReact><ForVue>`boolean`</ForVue><ForSolid>`Accessor<boolean>`</ForSolid> | Raw press state. |
+
+## Data attributes
+
+| Attribute | Present when |
+|---|---|
+| `data-hover` | The pointer is hovering the element (suppressed while disabled). |
+| `data-focus-visible` | The element has keyboard focus. |
+| `data-active` | The element is being pressed (pointer or `Enter` / `Space`). |
+| `data-disabled` | `disabled` option is truthy. |
