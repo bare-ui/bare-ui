@@ -1,0 +1,220 @@
+---
+title: Context Menu
+description: Right-click menu positioned at the cursor.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Context Menu
+
+Right-click triggered menu. Positioned at the cursor; closes on outside click, scroll, or Escape. Content is portaled to `document.body` so it escapes any transformed/clipped ancestor.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Opens at the exact cursor position on right-click.</FeatureItem>
+  <FeatureItem>Portaled to body so it escapes transformed ancestors.</FeatureItem>
+  <FeatureItem>Closes on outside click, Escape, or scroll outside the menu.</FeatureItem>
+  <FeatureItem>Disabled items and separators.</FeatureItem>
+  <FeatureItem>Blocks page scroll while open (no layout shift).</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><ContextMenuPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { ContextMenu } from '@wire-ui/react'
+
+<ContextMenu.Root>
+  <ContextMenu.Trigger>Right-click here</ContextMenu.Trigger>
+  <ContextMenu.Content>
+    <ContextMenu.Item onSelect={() => console.log('cut')}>Cut</ContextMenu.Item>
+    <ContextMenu.Item onSelect={() => console.log('copy')}>Copy</ContextMenu.Item>
+    <ContextMenu.Separator />
+    <ContextMenu.Item disabled>Paste</ContextMenu.Item>
+  </ContextMenu.Content>
+</ContextMenu.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { ContextMenu } from '@wire-ui/vue'
+</script>
+
+<template>
+  <ContextMenu.Root>
+    <ContextMenu.Trigger>Right-click here</ContextMenu.Trigger>
+    <ContextMenu.Content>
+      <ContextMenu.Item>Cut</ContextMenu.Item>
+      <ContextMenu.Item>Copy</ContextMenu.Item>
+      <ContextMenu.Separator />
+      <ContextMenu.Item disabled>Paste</ContextMenu.Item>
+    </ContextMenu.Content>
+  </ContextMenu.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { ContextMenu } from '@wire-ui/solid'
+
+<ContextMenu.Root>
+  <ContextMenu.Trigger>Right-click here</ContextMenu.Trigger>
+  <ContextMenu.Content>
+    <ContextMenu.Item onSelect={() => console.log('cut')}>Cut</ContextMenu.Item>
+    <ContextMenu.Item onSelect={() => console.log('copy')}>Copy</ContextMenu.Item>
+    <ContextMenu.Separator />
+    <ContextMenu.Item disabled>Paste</ContextMenu.Item>
+  </ContextMenu.Content>
+</ContextMenu.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { ContextMenu } from '@wire-ui/react'
+
+<ContextMenu.Root>
+  <ContextMenu.Trigger className="flex h-32 w-72 items-center justify-center rounded-[20px] border border-dashed border-black bg-[#f5f5f5] text-sm text-[#6b7280]">
+    Right-click here
+  </ContextMenu.Trigger>
+  <ContextMenu.Content className="min-w-[180px] rounded-[20px] border border-black bg-white p-1">
+    <ContextMenu.Item className="cursor-pointer rounded-[8px] px-3 py-1.5 text-sm text-black outline-none hover:bg-[#f5f5f5] data-[focus-visible]:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40">
+      Open
+    </ContextMenu.Item>
+    <ContextMenu.Item className="cursor-pointer rounded-[8px] px-3 py-1.5 text-sm text-black outline-none hover:bg-[#f5f5f5]">
+      Rename
+    </ContextMenu.Item>
+    <ContextMenu.Separator className="my-1 h-px bg-black" />
+    <ContextMenu.Item disabled className="cursor-pointer rounded-[8px] px-3 py-1.5 text-sm text-black data-[disabled]:opacity-40">
+      Move to trash
+    </ContextMenu.Item>
+  </ContextMenu.Content>
+</ContextMenu.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ContextMenu } from '@wire-ui/vue'
+</script>
+
+<template>
+  <ContextMenu.Root>
+    <ContextMenu.Trigger class="flex h-32 w-72 items-center justify-center rounded-[20px] border border-dashed border-black bg-[#f5f5f5] text-sm text-[#6b7280]">
+      Right-click here
+    </ContextMenu.Trigger>
+    <ContextMenu.Content class="min-w-[180px] rounded-[20px] border border-black bg-white p-1">
+      <ContextMenu.Item class="cursor-pointer rounded-[8px] px-3 py-1.5 text-sm text-black outline-none hover:bg-[#f5f5f5] data-[focus-visible]:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40">
+        Open
+      </ContextMenu.Item>
+      <ContextMenu.Item class="cursor-pointer rounded-[8px] px-3 py-1.5 text-sm text-black outline-none hover:bg-[#f5f5f5]">
+        Rename
+      </ContextMenu.Item>
+      <ContextMenu.Separator class="my-1 h-px bg-black" />
+      <ContextMenu.Item disabled class="cursor-pointer rounded-[8px] px-3 py-1.5 text-sm text-black data-[disabled]:opacity-40">
+        Move to trash
+      </ContextMenu.Item>
+    </ContextMenu.Content>
+  </ContextMenu.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { ContextMenu } from '@wire-ui/solid'
+
+<ContextMenu.Root>
+  <ContextMenu.Trigger class="flex h-32 w-72 items-center justify-center rounded-[20px] border border-dashed border-black bg-[#f5f5f5] text-sm text-[#6b7280]">
+    Right-click here
+  </ContextMenu.Trigger>
+  <ContextMenu.Content class="min-w-[180px] rounded-[20px] border border-black bg-white p-1">
+    <ContextMenu.Item class="cursor-pointer rounded-[8px] px-3 py-1.5 text-sm text-black outline-none hover:bg-[#f5f5f5] data-[focus-visible]:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40">
+      Open
+    </ContextMenu.Item>
+    <ContextMenu.Item class="cursor-pointer rounded-[8px] px-3 py-1.5 text-sm text-black outline-none hover:bg-[#f5f5f5]">
+      Rename
+    </ContextMenu.Item>
+    <ContextMenu.Separator class="my-1 h-px bg-black" />
+    <ContextMenu.Item disabled class="cursor-pointer rounded-[8px] px-3 py-1.5 text-sm text-black data-[disabled]:opacity-40">
+      Move to trash
+    </ContextMenu.Item>
+  </ContextMenu.Content>
+</ContextMenu.Root>
+```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Root and Trigger expose `data-state` (`"open"` / `"closed"`). Item exposes the full set of interactive data attributes plus `data-disabled`.
+
+```tsx
+<ContextMenu.Item className="
+  data-[hover]:bg-[#f5f5f5]
+  data-[focus-visible]:bg-[#f5f5f5]
+  data-[disabled]:opacity-40
+  data-[disabled]:cursor-not-allowed
+">
+  Item
+</ContextMenu.Item>
+```
+
+## Using data attributes
+
+```css
+[data-state="open"]     { /* trigger highlight while menu is open */ }
+[data-disabled]         { opacity: 0.4; cursor: not-allowed; }
+[data-hover]            { background: #f5f5f5; }
+[data-focus-visible]    { background: #f5f5f5; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `open` | `boolean` | — | Controlled open state |
+| `defaultOpen` | `boolean` | `false` | Initial open state |
+| `onOpenChange` | `(open: boolean) => void` | — | Called when open state changes |
+| `disabled` | `boolean` | `false` | Disables the trigger (no right-click handling) |
+
+## Item props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `disabled` | `boolean` | `false` | Disables this item |
+| `onSelect` | `() => void` | — | Called when the item is selected (also closes the menu) |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-state` | Root, Trigger, Content | `"open"` / `"closed"` |
+| `data-disabled` | Item | Present when disabled |
+| `data-hover` / `data-active` / `data-focus-visible` | Item | Standard interactive states |
+
+Content sets `role="menu"`. Items set `role="menuitem"` with `aria-disabled` when disabled. Separator sets `role="separator"`.
+
+## Accessibility
+
+- The `contextmenu` event is intercepted on the Trigger; the native browser menu is suppressed.
+- Content is portaled to `document.body` and uses `position: fixed`, so transformed ancestors don't affect placement.
+- Items are keyboard-activatable with <kbd>Enter</kbd> or <kbd>Space</kbd>.
+- Page scroll (wheel, touch, arrow keys) is blocked while the menu is open — no layout shift since the scrollbar stays in place.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Enter</kbd> | Activates the focused item. |
+| <kbd>Space</kbd> | Activates the focused item. |
+| <kbd>Tab</kbd> | Moves focus to the next item. |
+| <kbd>Escape</kbd> | Closes the menu. |
