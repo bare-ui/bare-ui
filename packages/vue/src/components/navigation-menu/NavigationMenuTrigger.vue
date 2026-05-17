@@ -19,29 +19,28 @@ const item = useNavigationMenuItemContext()
 const open = computed(() => root.value.value === item.value)
 const { handlers, dataAttributes } = useInteractiveState({ disabled: () => props.disabled })
 
+// Open-delay timer is per-trigger (it's tied to this element's hover intent).
+// The close timer lives on Root so Content can cancel it — see Root.
 let openTimer: ReturnType<typeof setTimeout> | null = null
-let closeTimer: ReturnType<typeof setTimeout> | null = null
 
-function clearTimers() {
+function clearOpenTimer() {
 	if (openTimer) {
 		clearTimeout(openTimer)
 		openTimer = null
 	}
-	if (closeTimer) {
-		clearTimeout(closeTimer)
-		closeTimer = null
-	}
 }
 
-onUnmounted(clearTimers)
+onUnmounted(clearOpenTimer)
 
 function onClick() {
-	clearTimers()
+	clearOpenTimer()
+	root.cancelClose()
 	root.setValue(open.value ? null : item.value)
 }
 
 function onPointerEnter() {
-	clearTimers()
+	clearOpenTimer()
+	root.cancelClose()
 	if (root.value.value !== null && root.value.value !== item.value) {
 		root.setValue(item.value)
 	} else {
@@ -50,10 +49,8 @@ function onPointerEnter() {
 }
 
 function onPointerLeave() {
-	clearTimers()
-	closeTimer = setTimeout(() => {
-		if (root.value.value === item.value) root.setValue(null)
-	}, root.skipDelayDuration.value)
+	clearOpenTimer()
+	root.scheduleClose()
 }
 </script>
 

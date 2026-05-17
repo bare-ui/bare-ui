@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { NavigationMenu } from './NavigationMenu';
 
@@ -48,6 +48,23 @@ describe('NavigationMenu', () => {
 		expect(screen.getByRole('menu')).toBeInTheDocument();
 		await userEvent.click(trigger);
 		expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+	});
+
+	it('moving cursor from trigger into content keeps the menu open', () => {
+		vi.useFakeTimers();
+		try {
+			renderNM();
+			const trigger = screen.getByRole('button', { name: 'Products' });
+			fireEvent.pointerEnter(trigger);
+			act(() => vi.advanceTimersByTime(150)); // open delay (100ms)
+			const content = screen.getByRole('menu');
+			fireEvent.pointerLeave(trigger);
+			fireEvent.pointerEnter(content);
+			act(() => vi.advanceTimersByTime(500)); // past skipDelayDuration (300ms)
+			expect(screen.getByRole('menu')).toBeInTheDocument();
+		} finally {
+			vi.useRealTimers();
+		}
 	});
 
 	it('Link active prop sets aria-current=page', () => {

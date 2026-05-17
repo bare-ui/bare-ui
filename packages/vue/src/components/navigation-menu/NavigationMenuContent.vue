@@ -8,19 +8,14 @@ const root = useNavigationMenuContext()
 const item = useNavigationMenuItemContext()
 const open = computed(() => root.value.value === item.value)
 
-let closeTimer: ReturnType<typeof setTimeout> | null = null
-
 function onPointerEnter() {
-	if (closeTimer) {
-		clearTimeout(closeTimer)
-		closeTimer = null
-	}
+	// Cancel the pending close started by Trigger's pointerleave.
+	// Critical: the close timer lives on Root, not on Content.
+	root.cancelClose()
 }
 
 function onPointerLeave() {
-	closeTimer = setTimeout(() => {
-		if (root.value.value === item.value) root.setValue(null)
-	}, root.skipDelayDuration.value)
+	root.scheduleClose()
 }
 </script>
 

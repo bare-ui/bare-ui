@@ -31,6 +31,10 @@ export interface NavigationMenuRootContextValue {
 	setValue: (value: string | null) => void
 	delayDuration: ComputedRef<number>
 	skipDelayDuration: ComputedRef<number>
+	/** Cancel any pending close. Called when cursor enters a Trigger or Content. */
+	cancelClose: () => void
+	/** Schedule a close after `skipDelayDuration`. Called when cursor leaves a Trigger or Content. */
+	scheduleClose: () => void
 }
 
 export interface NavigationMenuItemContextValue {
