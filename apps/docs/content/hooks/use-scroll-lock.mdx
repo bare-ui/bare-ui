@@ -1,0 +1,82 @@
+---
+title: useScrollLock
+description: Lock document scrolling while active, without layout shift.
+---
+
+# <ForReact><code>useScrollLock</code></ForReact><ForVue><code>useScrollLock</code></ForVue><ForSolid><code>createScrollLock</code></ForSolid>
+
+Locks document scrolling while `active` is true. Multiple consumers may call this at once (e.g. nested modals); scrolling is restored only after the last lock is released. Compensates for the disappearing scrollbar by adding equivalent padding to `<body>` to prevent layout shift.
+
+Used internally by Modal, Drawer, and Dropdown.
+
+<ForReact>
+```tsx
+import { useState } from 'react'
+import { useScrollLock } from '@wire-ui/react'
+
+function Drawer() {
+  const [open, setOpen] = useState(false)
+
+  useScrollLock(open)
+
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>Open drawer</button>
+      {open && (
+        <div role="dialog">
+          <button onClick={() => setOpen(false)}>Close</button>
+        </div>
+      )}
+    </>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { useScrollLock } from '@wire-ui/vue'
+
+const open = ref(false)
+
+useScrollLock(() => open.value)
+</script>
+
+<template>
+  <button @click="open = true">Open drawer</button>
+  <div v-if="open" role="dialog">
+    <button @click="open = false">Close</button>
+  </div>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createSignal, Show } from 'solid-js'
+import { createScrollLock } from '@wire-ui/solid'
+
+function Drawer() {
+  const [open, setOpen] = createSignal(false)
+
+  createScrollLock(() => open())
+
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>Open drawer</button>
+      <Show when={open()}>
+        <div role="dialog">
+          <button onClick={() => setOpen(false)}>Close</button>
+        </div>
+      </Show>
+    </>
+  )
+}
+```
+</ForSolid>
+
+## Parameters
+
+| Param | Type | Description |
+|---|---|---|
+| `active` | <ForReact>`boolean`</ForReact><ForVue>`MaybeRefOrGetter<boolean>`</ForVue><ForSolid>`boolean \| (() => boolean)`</ForSolid> | When `true`, the lock is held for as long as the component is mounted. |
