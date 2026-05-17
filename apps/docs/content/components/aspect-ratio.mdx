@@ -1,0 +1,130 @@
+---
+title: AspectRatio
+description: Maintains a width-to-height ratio for its child via CSS aspect-ratio.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# AspectRatio
+
+A wrapper that locks its child to a fixed width-to-height ratio. Useful for responsive images, videos, and media placeholders.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Maintains a precise width-to-height ratio at any container size.</FeatureItem>
+  <FeatureItem>Built on the native CSS `aspect-ratio` property.</FeatureItem>
+  <FeatureItem>Exposes the ratio via `data-ratio` for styling.</FeatureItem>
+  <FeatureItem>Renders as a `<div>` — accepts any HTML attributes.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><AspectRatioPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { AspectRatio } from '@wire-ui/react'
+
+<AspectRatio ratio={16 / 9}>
+  <img src="/banner.jpg" alt="" />
+</AspectRatio>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { AspectRatio } from '@wire-ui/vue'
+</script>
+
+<template>
+    <AspectRatio :ratio="16 / 9">
+      <img src="/banner.jpg" alt="" />
+    </AspectRatio>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { AspectRatio } from '@wire-ui/solid'
+
+<AspectRatio ratio={16 / 9}>
+  <img src="/banner.jpg" alt="" />
+</AspectRatio>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { AspectRatio } from '@wire-ui/react'
+
+<AspectRatio ratio={16 / 9} className="overflow-hidden rounded-[8px] border border-black">
+  <img src="/banner.jpg" alt="" className="size-full object-cover" />
+</AspectRatio>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { AspectRatio } from '@wire-ui/vue'
+</script>
+
+<template>
+  <AspectRatio :ratio="16 / 9" class="overflow-hidden rounded-[8px] border border-black">
+    <img src="/banner.jpg" alt="" class="size-full object-cover" />
+  </AspectRatio>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { AspectRatio } from '@wire-ui/solid'
+
+<AspectRatio ratio={16 / 9} class="overflow-hidden rounded-[8px] border border-black">
+  <img src="/banner.jpg" alt="" class="size-full object-cover" />
+</AspectRatio>
+```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+AspectRatio sets `position: relative`, `width: 100%`, and `aspect-ratio: <ratio>` inline. Children fill the box — use `size-full object-cover` (or equivalent) on media to crop neatly.
+
+```tsx
+<AspectRatio ratio={21 / 9} className="overflow-hidden rounded-[8px]">
+  <video src="/clip.mp4" className="size-full object-cover" />
+</AspectRatio>
+```
+
+## Using data attributes
+
+AspectRatio exposes the current ratio as `data-ratio`. Useful for debugging or matching styles to a specific shape.
+
+```css
+[data-ratio="1"]                  { border: 2px solid black; }
+[data-ratio="1.7777777777777777"] { border: 2px solid #6b7280; }
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `ratio` | `number` | `1` | Width-to-height ratio. e.g. `16/9` (≈1.777) or `1` for a square. |
+| `...rest` | `HTMLAttributes<HTMLDivElement>` | — | All standard HTML div attributes |
+
+## Data attributes
+
+| Attribute | When present |
+|---|---|
+| `data-ratio` | Always — value is the numeric ratio |
+
+## Accessibility
+
+- Renders a plain `<div>` — no inherent semantics. Apply `role`, `aria-label`, or wrap media with appropriate `alt` text as needed.
+- The wrapper does not steal focus or interaction from its children.
