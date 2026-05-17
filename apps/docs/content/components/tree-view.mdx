@@ -1,0 +1,402 @@
+---
+title: Tree View
+description: Recursive tree with expandable branches, optional single or multi selection, and full keyboard navigation.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Tree View
+
+Recursive tree with expandable branches and optional `single` / `multiple` selection. You pass `nodes` (a recursive `TreeNode[]`) and a `renderItem` render-prop — Tree View handles expand/collapse, selection state, ARIA roles, and arrow-key navigation.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Recursive node structure — branches and leaves use the same shape.</FeatureItem>
+  <FeatureItem>Selection modes: `none`, `single`, `multiple`.</FeatureItem>
+  <FeatureItem>Controlled and uncontrolled expanded set and selected set.</FeatureItem>
+  <FeatureItem>Per-row render-prop with `level`, `expanded`, `selected`, `hasChildren`, `toggle()`, `select()`.</FeatureItem>
+  <FeatureItem>Full keyboard navigation: arrows, Home/End, Enter/Space.</FeatureItem>
+  <FeatureItem>Proper ARIA: `role="tree"`, `role="treeitem"`, `aria-expanded`, `aria-selected`, `aria-level`.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><TreeViewPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { TreeView } from '@wire-ui/react'
+import type { TreeNode } from '@wire-ui/react'
+
+const nodes: TreeNode[] = [
+  {
+    id: 'src',
+    label: 'src',
+    children: [
+      { id: 'src/index.ts', label: 'index.ts' },
+      { id: 'src/app.tsx', label: 'app.tsx' },
+    ],
+  },
+  { id: 'README.md', label: 'README.md' },
+]
+
+<TreeView.Root
+  nodes={nodes}
+  defaultExpanded={['src']}
+  selectionMode="single"
+  renderItem={(node, state) => (
+    <div onClick={state.select} style={{ paddingLeft: state.level * 16 }}>
+      {state.hasChildren && (
+        <button data-tree-toggle onClick={(e) => { e.stopPropagation(); state.toggle() }}>
+          {state.expanded ? '▾' : '▸'}
+        </button>
+      )}
+      <span>{node.label}</span>
+    </div>
+  )}
+/>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { TreeViewRoot } from '@wire-ui/vue'
+
+const nodes = [
+  { id: 'src', label: 'src', children: [
+    { id: 'src/index.ts', label: 'index.ts' },
+    { id: 'src/app.tsx', label: 'app.tsx' },
+  ]},
+  { id: 'README.md', label: 'README.md' },
+]
+</script>
+
+<template>
+  <TreeViewRoot
+    :nodes="nodes"
+    :default-expanded="['src']"
+    selection-mode="single"
+  >
+    <template #item="{ node, state }">
+      <div @click="state.select" :style="{ paddingLeft: state.level * 16 + 'px' }">
+        <button
+          v-if="state.hasChildren"
+          data-tree-toggle
+          @click.stop="state.toggle"
+        >
+          {{ state.expanded ? '▾' : '▸' }}
+        </button>
+        <span>{{ node.label }}</span>
+      </div>
+    </template>
+  </TreeViewRoot>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { TreeView } from '@wire-ui/solid'
+import type { TreeNode } from '@wire-ui/solid'
+
+const nodes: TreeNode[] = [
+  {
+    id: 'src',
+    label: 'src',
+    children: [
+      { id: 'src/index.ts', label: 'index.ts' },
+      { id: 'src/app.tsx', label: 'app.tsx' },
+    ],
+  },
+  { id: 'README.md', label: 'README.md' },
+]
+
+<TreeView.Root
+  nodes={nodes}
+  defaultExpanded={['src']}
+  selectionMode="single"
+  renderItem={(node, state) => (
+    <div onClick={state.select} style={{ 'padding-left': `${state.level * 16}px` }}>
+      {state.hasChildren && (
+        <button data-tree-toggle onClick={(e) => { e.stopPropagation(); state.toggle() }}>
+          {state.expanded ? '▾' : '▸'}
+        </button>
+      )}
+      <span>{node.label}</span>
+    </div>
+  )}
+/>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { useState } from 'react'
+import { TreeView } from '@wire-ui/react'
+import type { TreeNode } from '@wire-ui/react'
+
+const fileTree: TreeNode[] = [
+  {
+    id: 'src',
+    label: 'src',
+    children: [
+      {
+        id: 'src/components',
+        label: 'components',
+        children: [
+          { id: 'src/components/Button.tsx', label: 'Button.tsx' },
+          { id: 'src/components/Card.tsx', label: 'Card.tsx' },
+        ],
+      },
+      { id: 'src/index.ts', label: 'index.ts' },
+    ],
+  },
+  { id: 'README.md', label: 'README.md' },
+]
+
+const rowCls = 'flex items-center gap-1 px-2 py-1 text-sm text-black cursor-pointer rounded-[6px] hover:bg-[#f5f5f5] data-[selected]:bg-[#f5f5f5] data-[selected]:font-medium'
+const toggleCls = 'inline-flex size-5 items-center justify-center rounded text-[#6b7280] hover:bg-[#e5e5e5]'
+
+function MyTree() {
+  const [selected, setSelected] = useState<string[]>([])
+  return (
+    <div className="w-80 rounded-[20px] border border-black bg-white p-2">
+      <TreeView.Root
+        nodes={fileTree}
+        defaultExpanded={['src', 'src/components']}
+        selectionMode="single"
+        selected={selected}
+        onSelectionChange={setSelected}
+        renderItem={(node, state) => (
+          <div
+            className={rowCls}
+            style={{ paddingLeft: `${(state.level - 1) * 16 + 8}px` }}
+            onClick={state.select}
+          >
+            {state.hasChildren ? (
+              <button
+                data-tree-toggle
+                onClick={(e) => { e.stopPropagation(); state.toggle() }}
+                className={toggleCls}
+              >
+                {state.expanded ? '▾' : '▸'}
+              </button>
+            ) : (
+              <span className="inline-block size-5" />
+            )}
+            <span className="flex-1">{node.label}</span>
+            {state.selected && <span className="text-xs text-black">✓</span>}
+          </div>
+        )}
+      />
+    </div>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { TreeViewRoot } from '@wire-ui/vue'
+
+const fileTree = [
+  { id: 'src', label: 'src', children: [
+    { id: 'src/components', label: 'components', children: [
+      { id: 'src/components/Button.tsx', label: 'Button.tsx' },
+      { id: 'src/components/Card.tsx', label: 'Card.tsx' },
+    ]},
+    { id: 'src/index.ts', label: 'index.ts' },
+  ]},
+  { id: 'README.md', label: 'README.md' },
+]
+const selected = ref([])
+
+const rowCls = 'flex items-center gap-1 px-2 py-1 text-sm text-black cursor-pointer rounded-[6px] hover:bg-[#f5f5f5] data-[selected]:bg-[#f5f5f5] data-[selected]:font-medium'
+const toggleCls = 'inline-flex size-5 items-center justify-center rounded text-[#6b7280] hover:bg-[#e5e5e5]'
+</script>
+
+<template>
+  <div class="w-80 rounded-[20px] border border-black bg-white p-2">
+    <TreeViewRoot
+      :nodes="fileTree"
+      :default-expanded="['src', 'src/components']"
+      selection-mode="single"
+      :selected="selected"
+      @selection-change="(s) => (selected = s)"
+    >
+      <template #item="{ node, state }">
+        <div
+          :class="rowCls"
+          :style="{ paddingLeft: ((state.level - 1) * 16 + 8) + 'px' }"
+          @click="state.select"
+        >
+          <button
+            v-if="state.hasChildren"
+            data-tree-toggle
+            @click.stop="state.toggle"
+            :class="toggleCls"
+          >
+            {{ state.expanded ? '▾' : '▸' }}
+          </button>
+          <span v-else class="inline-block size-5" />
+          <span class="flex-1">{{ node.label }}</span>
+          <span v-if="state.selected" class="text-xs text-black">✓</span>
+        </div>
+      </template>
+    </TreeViewRoot>
+  </div>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { createSignal } from 'solid-js'
+import { TreeView } from '@wire-ui/solid'
+import type { TreeNode } from '@wire-ui/solid'
+
+const fileTree: TreeNode[] = [
+  { id: 'src', label: 'src', children: [
+    { id: 'src/components', label: 'components', children: [
+      { id: 'src/components/Button.tsx', label: 'Button.tsx' },
+      { id: 'src/components/Card.tsx', label: 'Card.tsx' },
+    ]},
+    { id: 'src/index.ts', label: 'index.ts' },
+  ]},
+  { id: 'README.md', label: 'README.md' },
+]
+
+const rowCls = 'flex items-center gap-1 px-2 py-1 text-sm text-black cursor-pointer rounded-[6px] hover:bg-[#f5f5f5] data-[selected]:bg-[#f5f5f5] data-[selected]:font-medium'
+const toggleCls = 'inline-flex size-5 items-center justify-center rounded text-[#6b7280] hover:bg-[#e5e5e5]'
+
+function MyTree() {
+  const [selected, setSelected] = createSignal<string[]>([])
+  return (
+    <div class="w-80 rounded-[20px] border border-black bg-white p-2">
+      <TreeView.Root
+        nodes={fileTree}
+        defaultExpanded={['src', 'src/components']}
+        selectionMode="single"
+        selected={selected()}
+        onSelectionChange={setSelected}
+        renderItem={(node, state) => (
+          <div
+            class={rowCls}
+            style={{ 'padding-left': `${(state.level - 1) * 16 + 8}px` }}
+            onClick={state.select}
+          >
+            {state.hasChildren ? (
+              <button
+                data-tree-toggle
+                onClick={(e) => { e.stopPropagation(); state.toggle() }}
+                class={toggleCls}
+              >
+                {state.expanded ? '▾' : '▸'}
+              </button>
+            ) : (
+              <span class="inline-block size-5" />
+            )}
+            <span class="flex-1">{node.label}</span>
+            {state.selected && <span class="text-xs text-black">✓</span>}
+          </div>
+        )}
+      />
+    </div>
+  )
+}
+```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Each visible row is a `<div role="treeitem">` with `data-state`, `data-selected`, `data-disabled`, `data-level`, and `data-has-children`. Indent rows using `state.level` from the render-prop (it's 1-based for top-level nodes).
+
+```tsx
+<div className="
+  data-[state=open]:font-medium
+  data-[selected]:bg-[#f5f5f5] data-[selected]:font-medium
+  data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed
+" />
+```
+
+Important: nest your toggle button under `data-tree-toggle` and stop propagation in its click handler. The Tree's internal click handler ignores nested clicks unless they originate from a `[data-tree-toggle]` element — this lets row-clicks select and chevron-clicks toggle independently.
+
+## Using data attributes
+
+```css
+[role="treeitem"][data-state="open"]    { /* expanded branch */ }
+[role="treeitem"][data-state="closed"]  { /* collapsed branch */ }
+[role="treeitem"][data-selected]        { /* selected row */ }
+[role="treeitem"][data-disabled]        { opacity: 0.5; }
+[role="treeitem"][data-has-children]    { /* branch, not leaf */ }
+```
+
+## TreeNode shape
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` | Stable unique id (used for expanded / selected sets) |
+| `label` | `ReactNode` | Default content passed to your render-prop |
+| `children` | `TreeNode[]` | Child nodes; absent or empty = leaf |
+| `disabled` | `boolean` | Disable selection and keyboard activation for this node |
+| `data` | `unknown` | Arbitrary payload — read it in the render-prop via `node.data` |
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `nodes` | `TreeNode[]` | required | Tree data |
+| `expanded` | `string[]` | — | Controlled expanded ids |
+| `defaultExpanded` | `string[]` | `[]` | Initial expanded ids |
+| `onExpandedChange` | `(expanded: string[]) => void` | — | Called when expansion changes |
+| `selectionMode` | `'none' \| 'single' \| 'multiple'` | `'none'` | Selection behaviour |
+| `selected` | `string[]` | — | Controlled selected ids |
+| `defaultSelected` | `string[]` | `[]` | Initial selected ids |
+| `onSelectionChange` | `(selected: string[]) => void` | — | Called when selection changes |
+| `renderItem` | `(node: TreeNode, state: TreeItemState) => ReactNode` | required | Render each visible row |
+
+## TreeItemState (passed to renderItem)
+
+| Field | Type | Description |
+|---|---|---|
+| `level` | `number` | 1-based depth (1 = top-level) |
+| `expanded` | `boolean` | True when the branch is open |
+| `selected` | `boolean` | True when the node is in the selected set |
+| `hasChildren` | `boolean` | True when the node has at least one child |
+| `disabled` | `boolean` | True when `node.disabled` is set |
+| `toggle` | `() => void` | Toggle this branch's expanded state |
+| `select` | `() => void` | Select / deselect this node (respects `selectionMode`) |
+
+## Data attributes
+
+| Attribute | Values |
+|---|---|
+| `data-state` | `"open"` / `"closed"` (only meaningful on branches) |
+| `data-selected` | Present when selected |
+| `data-disabled` | Present when disabled |
+| `data-level` | 1, 2, 3, … |
+| `data-has-children` | Present on branch nodes |
+
+## Accessibility
+
+- Root is `role="tree"`. When `selectionMode === 'multiple'` it also has `aria-multiselectable="true"`.
+- Each row is `role="treeitem"` with `aria-level`, `aria-expanded` (for branches), `aria-selected`, and `aria-disabled`.
+- Child groups use `role="group"` to scope screen-reader navigation.
+- Rows are focusable (`tabIndex=0`) so users can Tab into the tree, then use arrow keys to traverse.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>↓</kbd> | Move focus to the next visible row. |
+| <kbd>↑</kbd> | Move focus to the previous visible row. |
+| <kbd>→</kbd> | Expand the focused branch, or move to its first child if already open. |
+| <kbd>←</kbd> | Collapse the focused branch, or move to its parent if already a leaf. |
+| <kbd>Enter</kbd> / <kbd>Space</kbd> | Toggle selection on the focused row. |
+| <kbd>Tab</kbd> | Move focus in/out of the tree. |
