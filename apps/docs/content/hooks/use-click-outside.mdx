@@ -1,0 +1,92 @@
+---
+title: useClickOutside
+description: Fires a callback when the user clicks or taps outside a referenced element.
+---
+
+# <ForReact><code>useClickOutside</code></ForReact><ForVue><code>useClickOutside</code></ForVue><ForSolid><code>createClickOutside</code></ForSolid>
+
+Fires a callback when the user clicks or taps outside a referenced element. Used internally by Dropdown and Search to close their menus, and useful for any dismissable overlay you build yourself.
+
+Both `click` and `touchstart` are listened to, so taps on mobile dismiss correctly.
+
+<ForReact>
+```tsx
+import { useRef, useState } from 'react'
+import { useClickOutside } from '@wire-ui/react'
+
+function Popover() {
+  const ref = useRef<HTMLDivElement>(null)
+  const [open, setOpen] = useState(true)
+
+  useClickOutside(ref, () => setOpen(false))
+
+  if (!open) return null
+  return (
+    <div ref={ref}>
+      Click anywhere outside this box to close.
+    </div>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { useClickOutside } from '@wire-ui/vue'
+
+const popoverRef = ref<HTMLDivElement | null>(null)
+const open = ref(true)
+
+useClickOutside(popoverRef, () => { open.value = false })
+</script>
+
+<template>
+  <div v-if="open" ref="popoverRef">
+    Click anywhere outside this box to close.
+  </div>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createSignal, Show } from 'solid-js'
+import { createClickOutside } from '@wire-ui/solid'
+
+function Popover() {
+  const [open, setOpen] = createSignal(true)
+  let popoverEl: HTMLDivElement | undefined
+
+  createClickOutside(() => popoverEl, () => setOpen(false))
+
+  return (
+    <Show when={open()}>
+      <div ref={popoverEl}>
+        Click anywhere outside this box to close.
+      </div>
+    </Show>
+  )
+}
+```
+</ForSolid>
+
+## Parameters
+
+<ForReact>
+| Param | Type | Description |
+|---|---|---|
+| `ref` | `RefObject<HTMLElement \| null>` | Reference to the element to watch. |
+| `callback` | `(event: MouseEvent \| TouchEvent) => void` | Called on outside click or tap. Receives the original DOM event. |
+</ForReact>
+<ForVue>
+| Param | Type | Description |
+|---|---|---|
+| `ref` | `Ref<HTMLElement \| null>` | Template ref to the element to watch. |
+| `callback` | `(event: MouseEvent \| TouchEvent) => void` | Called on outside click or tap. Receives the original DOM event. |
+</ForVue>
+<ForSolid>
+| Param | Type | Description |
+|---|---|---|
+| `getElement` | `() => HTMLElement \| undefined \| null` | Accessor returning the element to watch (so the listener picks up ref changes). |
+| `callback` | `(event: MouseEvent \| TouchEvent) => void` | Called on outside click or tap. Receives the original DOM event. |
+</ForSolid>
