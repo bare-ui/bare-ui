@@ -1,0 +1,377 @@
+---
+title: Toast
+description: Imperative notification system with a Provider, Viewport render-prop, and useToast hook.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Toast
+
+An imperative notification system. Wrap your app (or any subtree) in `Toast.Provider`, render a single `Toast.Viewport` somewhere, and call `useToast().toast(...)` from anywhere inside.
+
+The Provider owns the queue; the Viewport renders each active toast through a render-prop, giving you total control over markup. Auto-dismiss timers are per-toast and pause on hover by default.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Imperative `useToast()` API — fire toasts from any descendant.</FeatureItem>
+  <FeatureItem>Render-prop Viewport — bring your own markup per toast.</FeatureItem>
+  <FeatureItem>Per-toast `duration`; `0` keeps the toast persistent.</FeatureItem>
+  <FeatureItem>Auto-pause on pointer-enter / focus, resume on leave / blur.</FeatureItem>
+  <FeatureItem>Stable `status` values for `success` / `warning` / `danger` / `info` styling.</FeatureItem>
+  <FeatureItem>Re-firing a toast with the same `id` updates in place instead of stacking.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><ToastPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Toast, useToast } from '@wire-ui/react'
+
+function App() {
+  return (
+    <Toast.Provider>
+      <Trigger />
+      <Toast.Viewport>
+        {(t, dismiss) => (
+          <Toast.Root key={t.id}>
+            <Toast.Title>{t.title}</Toast.Title>
+            <Toast.Description>{t.description}</Toast.Description>
+            <Toast.Close onClick={dismiss}>×</Toast.Close>
+          </Toast.Root>
+        )}
+      </Toast.Viewport>
+    </Toast.Provider>
+  )
+}
+
+function Trigger() {
+  const { toast } = useToast()
+  return <button onClick={() => toast({ title: 'Saved' })}>Save</button>
+}
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import {
+  ToastProvider, ToastViewport, ToastRoot, ToastTitle, ToastDescription, ToastClose,
+  useToast,
+} from '@wire-ui/vue'
+
+const { toast } = useToast()
+</script>
+
+<template>
+  <ToastProvider>
+    <button @click="toast({ title: 'Saved' })">Save</button>
+    <ToastViewport>
+      <template #default="{ toast: t, dismiss }">
+        <ToastRoot :key="t.id">
+          <ToastTitle>{{ t.title }}</ToastTitle>
+          <ToastDescription>{{ t.description }}</ToastDescription>
+          <ToastClose @click="dismiss">×</ToastClose>
+        </ToastRoot>
+      </template>
+    </ToastViewport>
+  </ToastProvider>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Toast, useToast } from '@wire-ui/solid'
+
+function App() {
+  return (
+    <Toast.Provider>
+      <Trigger />
+      <Toast.Viewport>
+        {(t, dismiss) => (
+          <Toast.Root>
+            <Toast.Title>{t.title}</Toast.Title>
+            <Toast.Description>{t.description}</Toast.Description>
+            <Toast.Close onClick={dismiss}>×</Toast.Close>
+          </Toast.Root>
+        )}
+      </Toast.Viewport>
+    </Toast.Provider>
+  )
+}
+
+function Trigger() {
+  const { toast } = useToast()
+  return <button onClick={() => toast({ title: 'Saved' })}>Save</button>
+}
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Toast, useToast } from '@wire-ui/react'
+
+const toastCls = 'flex items-start gap-3 rounded-[8px] border border-black bg-white px-4 py-3 shadow-sm w-80'
+const closeCls = 'shrink-0 rounded-[8px] p-1 text-black hover:bg-[#e5e5e5] [data-focus-visible]:ring-2 [data-focus-visible]:ring-black'
+const viewportCls = 'fixed bottom-4 right-4 z-50 flex flex-col gap-2'
+const triggerCls = 'inline-flex cursor-pointer items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]'
+
+function Trigger() {
+  const { toast } = useToast()
+  return (
+    <button
+      className={triggerCls}
+      onClick={() => toast({ title: 'Saved', description: 'Your changes are saved.', status: 'success' })}
+    >
+      Show toast
+    </button>
+  )
+}
+
+function App() {
+  return (
+    <Toast.Provider defaultDuration={4000}>
+      <Trigger />
+      <Toast.Viewport className={viewportCls}>
+        {(t, dismiss) => (
+          <Toast.Root key={t.id} className={toastCls}>
+            <div className="flex-1">
+              <Toast.Title className="text-sm font-semibold text-black">{t.title}</Toast.Title>
+              <Toast.Description className="mt-0.5 text-sm text-[#6b7280]">{t.description}</Toast.Description>
+            </div>
+            <Toast.Close className={closeCls} onClick={dismiss}>×</Toast.Close>
+          </Toast.Root>
+        )}
+      </Toast.Viewport>
+    </Toast.Provider>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import {
+  ToastProvider, ToastViewport, ToastRoot, ToastTitle, ToastDescription, ToastClose,
+  useToast,
+} from '@wire-ui/vue'
+
+const { toast } = useToast()
+
+const toastCls = 'flex items-start gap-3 rounded-[8px] border border-black bg-white px-4 py-3 shadow-sm w-80'
+const closeCls = 'shrink-0 rounded-[8px] p-1 text-black hover:bg-[#e5e5e5] [data-focus-visible]:ring-2 [data-focus-visible]:ring-black'
+const viewportCls = 'fixed bottom-4 right-4 z-50 flex flex-col gap-2'
+const triggerCls = 'inline-flex cursor-pointer items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]'
+</script>
+
+<template>
+  <ToastProvider :default-duration="4000">
+    <button
+      :class="triggerCls"
+      @click="toast({ title: 'Saved', description: 'Your changes are saved.', status: 'success' })"
+    >
+      Show toast
+    </button>
+    <ToastViewport :class="viewportCls">
+      <template #default="{ toast: t, dismiss }">
+        <ToastRoot :key="t.id" :class="toastCls">
+          <div class="flex-1">
+            <ToastTitle class="text-sm font-semibold text-black">{{ t.title }}</ToastTitle>
+            <ToastDescription class="mt-0.5 text-sm text-[#6b7280]">{{ t.description }}</ToastDescription>
+          </div>
+          <ToastClose :class="closeCls" @click="dismiss">×</ToastClose>
+        </ToastRoot>
+      </template>
+    </ToastViewport>
+  </ToastProvider>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { Toast, useToast } from '@wire-ui/solid'
+
+const toastCls = 'flex items-start gap-3 rounded-[8px] border border-black bg-white px-4 py-3 shadow-sm w-80'
+const closeCls = 'shrink-0 rounded-[8px] p-1 text-black hover:bg-[#e5e5e5] [data-focus-visible]:ring-2 [data-focus-visible]:ring-black'
+const viewportCls = 'fixed bottom-4 right-4 z-50 flex flex-col gap-2'
+const triggerCls = 'inline-flex cursor-pointer items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]'
+
+function Trigger() {
+  const { toast } = useToast()
+  return (
+    <button
+      class={triggerCls}
+      onClick={() => toast({ title: 'Saved', description: 'Your changes are saved.', status: 'success' })}
+    >
+      Show toast
+    </button>
+  )
+}
+
+function App() {
+  return (
+    <Toast.Provider defaultDuration={4000}>
+      <Trigger />
+      <Toast.Viewport class={viewportCls}>
+        {(t, dismiss) => (
+          <Toast.Root class={toastCls}>
+            <div class="flex-1">
+              <Toast.Title class="text-sm font-semibold text-black">{t.title}</Toast.Title>
+              <Toast.Description class="mt-0.5 text-sm text-[#6b7280]">{t.description}</Toast.Description>
+            </div>
+            <Toast.Close class={closeCls} onClick={dismiss}>×</Toast.Close>
+          </Toast.Root>
+        )}
+      </Toast.Viewport>
+    </Toast.Provider>
+  )
+}
+```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## useToast hook
+
+`useToast()` returns `{ toast, dismiss, toasts }`. Must be called from a descendant of `Toast.Provider`.
+
+- `toast(input)` — adds a toast, returns its `id`. If you pass an `id` and one already exists with that id, it's replaced in place.
+- `dismiss(id)` — removes a toast.
+- `toasts` — the current queue (a reactive value: array in React, computed ref in Vue, signal getter in Solid).
+
+<Tabs items={['React', 'Vue', 'Solid']}>
+  <Tabs.Tab>
+```tsx
+import { useToast } from '@wire-ui/react'
+
+function SaveButton() {
+  const { toast, dismiss } = useToast()
+  return (
+    <button onClick={() => {
+      const id = toast({
+        title: 'Uploading…',
+        description: 'design-mock.png',
+        duration: 0,                  // persistent until you dismiss
+      })
+      setTimeout(() => {
+        toast({ id, title: 'Uploaded', description: 'design-mock.png', status: 'success', duration: 3000 })
+      }, 2000)
+    }}>
+      Upload
+    </button>
+  )
+}
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```vue
+<script setup>
+import { useToast } from '@wire-ui/vue'
+const { toast, dismiss } = useToast()
+
+function upload() {
+  const id = toast({ title: 'Uploading…', duration: 0 })
+  setTimeout(() => {
+    toast({ id, title: 'Uploaded', status: 'success', duration: 3000 })
+  }, 2000)
+}
+</script>
+
+<template>
+  <button @click="upload">Upload</button>
+</template>
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```tsx
+import { useToast } from '@wire-ui/solid'
+
+function SaveButton() {
+  const { toast } = useToast()
+  return (
+    <button onClick={() => {
+      const id = toast({ title: 'Uploading…', duration: 0 })
+      setTimeout(() => {
+        toast({ id, title: 'Uploaded', status: 'success', duration: 3000 })
+      }, 2000)
+    }}>
+      Upload
+    </button>
+  )
+}
+```
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+The Viewport wraps each toast in a `<div role="status" aria-live="polite" data-status="…">`. Style based on `data-status`:
+
+```tsx
+<Toast.Root className="
+  data-[status=success]:border-black data-[status=success]:bg-[#f5f5f5]
+  data-[status=warning]:border-black
+  data-[status=danger]:border-black data-[status=danger]:bg-black data-[status=danger]:text-white
+" />
+```
+
+`Toast.Close` is a `Button` primitive — use `[data-hover]`, `[data-focus-visible]`, `[data-active]` for interaction styling.
+
+## Using data attributes
+
+```css
+[data-status="success"] { /* successful action */ }
+[data-status="warning"] { /* heads-up */ }
+[data-status="danger"]  { /* error */ }
+[data-status="info"]    { /* informational */ }
+
+button[data-hover]         { /* close button hover */ }
+button[data-focus-visible] { /* close button keyboard focus */ }
+```
+
+## Provider props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `defaultDuration` | `number` | `5000` | Auto-dismiss timeout (ms) applied to toasts that don't specify one |
+
+## Viewport props
+
+`Toast.Viewport` takes a render-prop child: `(toast: ToastData, dismiss: () => void) => ReactNode`. It also accepts standard div props for styling (`className`, etc).
+
+## Toast input (`toast(...)` argument)
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `id` | `string` | auto-generated | Stable id; re-firing with the same id replaces in place |
+| `title` | `ReactNode` | — | Toast title |
+| `description` | `ReactNode` | — | Toast description |
+| `status` | `'default' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `'default'` | Drives `data-status` for styling |
+| `duration` | `number` | Provider's `defaultDuration` | Auto-dismiss after N ms. `0` or negative = persistent |
+| `pauseOnHover` | `boolean` | `true` | Pause auto-dismiss while pointer or focus is inside |
+| `data` | `Record<string, unknown>` | — | Arbitrary data passed through to the Viewport render-prop |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-status` | Viewport shell wrapping each toast | `"default"` / `"success"` / `"warning"` / `"danger"` / `"info"` |
+
+## Accessibility
+
+- Each toast is wrapped in `<div role="status" aria-live="polite">` so screen readers announce them as they appear.
+- The Viewport is `<div role="region" aria-label="Notifications">`.
+- `Toast.Close` is a real `<button>` with `aria-label="Close notification"`.
+- Hovering or focusing a toast pauses its dismiss timer — users can read longer messages.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Tab</kbd> | Moves focus into the Viewport and through Close buttons; pauses the timer while focused. |
+| <kbd>Enter</kbd> / <kbd>Space</kbd> | Activates the focused Close button. |
