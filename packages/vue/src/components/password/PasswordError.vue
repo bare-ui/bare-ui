@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useSlots } from 'vue'
+import type { VNode } from 'vue'
 import { usePasswordContext } from './keys'
 
 defineOptions({ name: 'PasswordError' })
 
 const ctx = usePasswordContext()
-const slots = useSlots()
+const slots = defineSlots<{ default?: () => VNode[] }>()
 
 function hasSlotContent() {
   const children = slots.default?.()

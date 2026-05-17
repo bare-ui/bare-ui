@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useSlots } from 'vue'
+import type { VNode } from 'vue'
 import { useTextareaContext } from './keys'
 
 defineOptions({ name: 'TextareaError' })
 
 const ctx = useTextareaContext()
-const slots = useSlots()
+const slots = defineSlots<{ default?: () => VNode[] }>()
 
 function hasSlotContent() {
   const children = slots.default?.()

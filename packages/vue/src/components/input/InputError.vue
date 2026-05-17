@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useSlots } from 'vue'
+import type { VNode } from 'vue'
 import { useInputContext } from './keys'
 
 defineOptions({ name: 'InputError' })
 
 const ctx = useInputContext()
-const slots = useSlots()
+const slots = defineSlots<{ default?: () => VNode[] }>()
 
 function hasSlotContent() {
   const children = slots.default?.()
