@@ -1,0 +1,255 @@
+---
+title: Pagination
+description: Page navigation with sibling/boundary pages and ellipsis gaps.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Pagination
+
+Page navigation primitive. Configurable sibling + boundary counts produce a tidy sequence of pages and ellipsis markers. Headless: the `Items` render-prop emits the computed sequence so you control the markup.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Configurable siblingCount and boundaryCount with ellipsis gaps.</FeatureItem>
+  <FeatureItem>Pure `getPaginationItems()` helper exposed for custom renderers.</FeatureItem>
+  <FeatureItem>Previous / Next buttons auto-disable at edges.</FeatureItem>
+  <FeatureItem>Current page exposes `data-active` and `aria-current="page"`.</FeatureItem>
+  <FeatureItem>Can be controlled or uncontrolled.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><PaginationPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Pagination } from '@wire-ui/react'
+
+<Pagination.Root totalPages={10} defaultPage={1}>
+  <Pagination.List>
+    <li><Pagination.Previous>‹</Pagination.Previous></li>
+    <Pagination.Items>
+      {(item, i) =>
+        item === 'ellipsis'
+          ? <Pagination.Ellipsis key={`e-${i}`} />
+          : <Pagination.Item key={item} page={item}>{item}</Pagination.Item>
+      }
+    </Pagination.Items>
+    <li><Pagination.Next>›</Pagination.Next></li>
+  </Pagination.List>
+</Pagination.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Pagination } from '@wire-ui/vue'
+</script>
+
+<template>
+  <Pagination.Root :total-pages="10" :default-page="1">
+    <Pagination.List>
+      <li><Pagination.Previous>‹</Pagination.Previous></li>
+      <Pagination.Items v-slot="{ item, index }">
+        <Pagination.Ellipsis v-if="item === 'ellipsis'" :key="`e-${index}`" />
+        <Pagination.Item v-else :key="item" :page="item">{{ item }}</Pagination.Item>
+      </Pagination.Items>
+      <li><Pagination.Next>›</Pagination.Next></li>
+    </Pagination.List>
+  </Pagination.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Pagination } from '@wire-ui/solid'
+
+<Pagination.Root totalPages={10} defaultPage={1}>
+  <Pagination.List>
+    <li><Pagination.Previous>‹</Pagination.Previous></li>
+    <Pagination.Items>
+      {(item, i) =>
+        item === 'ellipsis'
+          ? <Pagination.Ellipsis />
+          : <Pagination.Item page={item}>{item}</Pagination.Item>
+      }
+    </Pagination.Items>
+    <li><Pagination.Next>›</Pagination.Next></li>
+  </Pagination.List>
+</Pagination.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Pagination } from '@wire-ui/react'
+
+const navBtn = 'cursor-pointer rounded-[8px] border border-black bg-white px-3 py-1.5 text-sm text-black hover:bg-[#f5f5f5] disabled:cursor-not-allowed disabled:opacity-40'
+const pageBtn = 'cursor-pointer rounded-[8px] border border-black bg-white min-w-[36px] inline-flex items-center justify-center px-2 py-1.5 text-sm text-black hover:bg-[#f5f5f5] data-[active]:bg-black data-[active]:text-white'
+
+<Pagination.Root totalPages={10} defaultPage={1}>
+  <Pagination.List className="flex items-center gap-1">
+    <li><Pagination.Previous className={navBtn}>‹</Pagination.Previous></li>
+    <Pagination.Items>
+      {(item, i) =>
+        item === 'ellipsis' ? (
+          <Pagination.Ellipsis key={`e-${i}`} className="px-2 text-[#6b7280]" />
+        ) : (
+          <Pagination.Item key={item} page={item}>
+            <span className={pageBtn}>{item}</span>
+          </Pagination.Item>
+        )
+      }
+    </Pagination.Items>
+    <li><Pagination.Next className={navBtn}>›</Pagination.Next></li>
+  </Pagination.List>
+</Pagination.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { Pagination } from '@wire-ui/vue'
+
+const navBtn = 'cursor-pointer rounded-[8px] border border-black bg-white px-3 py-1.5 text-sm text-black hover:bg-[#f5f5f5] disabled:cursor-not-allowed disabled:opacity-40'
+const pageBtn = 'cursor-pointer rounded-[8px] border border-black bg-white min-w-[36px] inline-flex items-center justify-center px-2 py-1.5 text-sm text-black hover:bg-[#f5f5f5] data-[active]:bg-black data-[active]:text-white'
+</script>
+
+<template>
+  <Pagination.Root :total-pages="10" :default-page="1">
+    <Pagination.List class="flex items-center gap-1">
+      <li><Pagination.Previous :class="navBtn">‹</Pagination.Previous></li>
+      <Pagination.Items v-slot="{ item, index }">
+        <Pagination.Ellipsis v-if="item === 'ellipsis'" :key="`e-${index}`" class="px-2 text-[#6b7280]" />
+        <Pagination.Item v-else :key="item" :page="item">
+          <span :class="pageBtn">{{ item }}</span>
+        </Pagination.Item>
+      </Pagination.Items>
+      <li><Pagination.Next :class="navBtn">›</Pagination.Next></li>
+    </Pagination.List>
+  </Pagination.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { Pagination } from '@wire-ui/solid'
+
+const navBtn = 'cursor-pointer rounded-[8px] border border-black bg-white px-3 py-1.5 text-sm text-black hover:bg-[#f5f5f5] disabled:cursor-not-allowed disabled:opacity-40'
+const pageBtn = 'cursor-pointer rounded-[8px] border border-black bg-white min-w-[36px] inline-flex items-center justify-center px-2 py-1.5 text-sm text-black hover:bg-[#f5f5f5] data-[active]:bg-black data-[active]:text-white'
+
+<Pagination.Root totalPages={10} defaultPage={1}>
+  <Pagination.List class="flex items-center gap-1">
+    <li><Pagination.Previous class={navBtn}>‹</Pagination.Previous></li>
+    <Pagination.Items>
+      {(item, i) =>
+        item === 'ellipsis' ? (
+          <Pagination.Ellipsis class="px-2 text-[#6b7280]" />
+        ) : (
+          <Pagination.Item page={item}>
+            <span class={pageBtn}>{item}</span>
+          </Pagination.Item>
+        )
+      }
+    </Pagination.Items>
+    <li><Pagination.Next class={navBtn}>›</Pagination.Next></li>
+  </Pagination.List>
+</Pagination.Root>
+```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+The current page exposes `data-active`. Previous / Next set the native `disabled` attribute when at the start / end. Item buttons also expose interactive state attributes (`data-hover`, `data-focus-visible`, `data-active`).
+
+```tsx
+<Pagination.Item page={3}>
+  <span className="
+    data-[active]:bg-black data-[active]:text-white
+    hover:bg-[#f5f5f5]
+  ">3</span>
+</Pagination.Item>
+```
+
+## Using data attributes
+
+```css
+button[data-active]  { background: #000; color: #fff; }
+button[aria-current="page"] { font-weight: 600; }
+button:disabled      { opacity: 0.4; cursor: not-allowed; }
+```
+
+## `getPaginationItems` helper
+
+The pure function used internally is exported for custom renderers:
+
+```ts
+import { getPaginationItems } from '@wire-ui/react'
+
+const items = getPaginationItems(10, 4, /* siblingCount */ 1, /* boundaryCount */ 1)
+// [1, 2, 3, 4, 5, 'ellipsis', 10]
+```
+
+Returns `(number | 'ellipsis')[]` — page numbers are 1-based.
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `totalPages` | `number` | required | Total number of pages (>= 1) |
+| `page` | `number` | — | Controlled current page (1-based) |
+| `defaultPage` | `number` | `1` | Initial page (uncontrolled) |
+| `onChange` | `(page: number) => void` | — | Called when the page changes |
+| `siblingCount` | `number` | `1` | Sibling pages on each side of current |
+| `boundaryCount` | `number` | `1` | Pages always shown at start / end |
+
+## Item props
+
+| Prop | Type | Description |
+|---|---|---|
+| `page` | `number` | Page number (1-based) |
+| `disabled` | `boolean` | Disable the button |
+
+## Previous / Next props
+
+Accept all standard `<button>` attributes. Native `disabled` is auto-applied at the start / end.
+
+## Items props
+
+Render-prop component that emits the computed item sequence.
+
+| Prop | Type | Description |
+|---|---|---|
+| `children` | `(item: number \| 'ellipsis', index: number) => ReactNode` | Render each item |
+
+## Data attributes
+
+| Attribute | Element | When present |
+|---|---|---|
+| `data-active` | Item button | Item matches the current page |
+| `data-hover` | Item / Previous / Next | Mouse is over the button |
+| `data-focus-visible` | Item / Previous / Next | Button has keyboard focus |
+| `data-active` (interactive) | Item / Previous / Next | Button is being pressed |
+
+The Item button also receives `aria-current="page"` when active and `aria-label="Page N"`.
+
+## Accessibility
+
+- Root renders as `<nav>` with `aria-label="Pagination"` (override via `aria-label`).
+- Previous / Next receive `aria-label="Previous page"` / `"Next page"`.
+- Ellipsis renders as `<li role="presentation" aria-hidden="true">`.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Tab</kbd> | Moves focus through Previous, page items, and Next. |
+| <kbd>Space</kbd> / <kbd>Enter</kbd> | Activates the focused button. |
