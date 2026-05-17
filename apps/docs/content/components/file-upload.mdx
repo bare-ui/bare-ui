@@ -1,0 +1,289 @@
+---
+title: File Upload
+description: Click-to-pick or drag-and-drop file upload with built-in accept, maxFiles, and maxSize validation.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# File Upload
+
+Headless file upload. Combines a hidden native `<input type="file">` with a styleable dropzone or trigger button. Validates against `accept`, `maxFiles`, and `maxSize` and reports rejections via `onReject`.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Click-to-pick `Trigger` and drag-and-drop `Dropzone` — use either or both.</FeatureItem>
+  <FeatureItem>Built-in accept / maxFiles / maxSize validation.</FeatureItem>
+  <FeatureItem>Controlled and uncontrolled file list.</FeatureItem>
+  <FeatureItem>`onReject` callback reports rejected files with a reason.</FeatureItem>
+  <FeatureItem>Render-prop `Items` for listing selected files with a per-row remove.</FeatureItem>
+  <FeatureItem>data-dragging on the dropzone for drag-over styling.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><FileUploadPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { FileUpload } from '@wire-ui/react'
+
+<FileUpload.Root multiple>
+  <FileUpload.Input />
+  <FileUpload.Dropzone>
+    Click or drag files here
+  </FileUpload.Dropzone>
+  <FileUpload.Items>
+    {(file, i, remove) => (
+      <li key={i}>
+        {file.name}
+        <button onClick={remove}>Remove</button>
+      </li>
+    )}
+  </FileUpload.Items>
+</FileUpload.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { FileUploadRoot, FileUploadInput, FileUploadDropzone, FileUploadItems } from '@wire-ui/vue'
+</script>
+
+<template>
+  <FileUploadRoot multiple>
+    <FileUploadInput />
+    <FileUploadDropzone>
+      Click or drag files here
+    </FileUploadDropzone>
+    <FileUploadItems>
+      <template #default="{ file, index, remove }">
+        <li :key="index">
+          {{ file.name }}
+          <button @click="remove">Remove</button>
+        </li>
+      </template>
+    </FileUploadItems>
+  </FileUploadRoot>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { FileUpload } from '@wire-ui/solid'
+
+<FileUpload.Root multiple>
+  <FileUpload.Input />
+  <FileUpload.Dropzone>
+    Click or drag files here
+  </FileUpload.Dropzone>
+  <FileUpload.Items>
+    {(file, i, remove) => (
+      <li>
+        {file.name}
+        <button onClick={remove}>Remove</button>
+      </li>
+    )}
+  </FileUpload.Items>
+</FileUpload.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { useState } from 'react'
+import { FileUpload } from '@wire-ui/react'
+
+const dropzoneCls = 'flex flex-col items-center justify-center gap-2 rounded-[20px] border border-dashed border-black bg-[#f5f5f5] p-8 text-center text-sm text-black cursor-pointer hover:bg-[#e5e5e5] data-[dragging]:bg-[#e5e5e5] data-[dragging]:border-solid data-[disabled]:opacity-50'
+
+function MyFileUpload() {
+  const [files, setFiles] = useState<File[]>([])
+  return (
+    <FileUpload.Root
+      value={files}
+      onChange={setFiles}
+      accept="image/*"
+      maxSize={2 * 1024 * 1024}
+      multiple
+      onReject={(rejected) => console.warn(rejected)}
+    >
+      <FileUpload.Input />
+      <FileUpload.Dropzone className={dropzoneCls}>
+        <p className="font-medium">Click or drag images here</p>
+        <p className="text-xs text-[#6b7280]">PNG / JPG · max 2 MB each</p>
+      </FileUpload.Dropzone>
+      <ul className="mt-3 flex flex-col gap-1 text-sm">
+        <FileUpload.Items>
+          {(file, i, remove) => (
+            <li key={i} className="flex items-center justify-between rounded-[8px] border border-black bg-white px-3 py-2">
+              <span className="truncate text-black">{file.name}</span>
+              <button onClick={remove} className="text-sm text-black hover:underline">×</button>
+            </li>
+          )}
+        </FileUpload.Items>
+      </ul>
+    </FileUpload.Root>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { FileUploadRoot, FileUploadInput, FileUploadDropzone, FileUploadItems } from '@wire-ui/vue'
+
+const files = ref([])
+const dropzoneCls = 'flex flex-col items-center justify-center gap-2 rounded-[20px] border border-dashed border-black bg-[#f5f5f5] p-8 text-center text-sm text-black cursor-pointer hover:bg-[#e5e5e5] data-[dragging]:bg-[#e5e5e5] data-[dragging]:border-solid data-[disabled]:opacity-50'
+</script>
+
+<template>
+  <FileUploadRoot
+    :value="files"
+    @change="(f) => (files = f)"
+    accept="image/*"
+    :max-size="2 * 1024 * 1024"
+    multiple
+  >
+    <FileUploadInput />
+    <FileUploadDropzone :class="dropzoneCls">
+      <p class="font-medium">Click or drag images here</p>
+      <p class="text-xs text-[#6b7280]">PNG / JPG · max 2 MB each</p>
+    </FileUploadDropzone>
+    <ul class="mt-3 flex flex-col gap-1 text-sm">
+      <FileUploadItems>
+        <template #default="{ file, index, remove }">
+          <li :key="index" class="flex items-center justify-between rounded-[8px] border border-black bg-white px-3 py-2">
+            <span class="truncate text-black">{{ file.name }}</span>
+            <button @click="remove" class="text-sm text-black hover:underline">×</button>
+          </li>
+        </template>
+      </FileUploadItems>
+    </ul>
+  </FileUploadRoot>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { createSignal } from 'solid-js'
+import { FileUpload } from '@wire-ui/solid'
+
+const dropzoneCls = 'flex flex-col items-center justify-center gap-2 rounded-[20px] border border-dashed border-black bg-[#f5f5f5] p-8 text-center text-sm text-black cursor-pointer hover:bg-[#e5e5e5] data-[dragging]:bg-[#e5e5e5] data-[dragging]:border-solid data-[disabled]:opacity-50'
+
+function MyFileUpload() {
+  const [files, setFiles] = createSignal<File[]>([])
+  return (
+    <FileUpload.Root
+      value={files()}
+      onChange={setFiles}
+      accept="image/*"
+      maxSize={2 * 1024 * 1024}
+      multiple
+    >
+      <FileUpload.Input />
+      <FileUpload.Dropzone class={dropzoneCls}>
+        <p class="font-medium">Click or drag images here</p>
+        <p class="text-xs text-[#6b7280]">PNG / JPG · max 2 MB each</p>
+      </FileUpload.Dropzone>
+      <ul class="mt-3 flex flex-col gap-1 text-sm">
+        <FileUpload.Items>
+          {(file, i, remove) => (
+            <li class="flex items-center justify-between rounded-[8px] border border-black bg-white px-3 py-2">
+              <span class="truncate text-black">{file.name}</span>
+              <button onClick={remove} class="text-sm text-black hover:underline">×</button>
+            </li>
+          )}
+        </FileUpload.Items>
+      </ul>
+    </FileUpload.Root>
+  )
+}
+```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+The Dropzone exposes `data-dragging` while the user is dragging files over it, and `data-disabled` when disabled. Use these to give visual feedback during drag-over.
+
+```tsx
+<FileUpload.Dropzone className="
+  border border-dashed border-black
+  data-[dragging]:bg-[#e5e5e5] data-[dragging]:border-solid
+  data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed
+" />
+```
+
+## Using data attributes
+
+```css
+[data-dragging] { background: #e5e5e5; border-style: solid; }
+[data-disabled] { opacity: 0.5; cursor: not-allowed; }
+```
+
+## Trigger vs Dropzone
+
+Both open the file picker. Use `Trigger` for a button-style flow ("Choose files") and `Dropzone` for drag-and-drop with click fallback. They can coexist within the same `Root`.
+
+## Validation and rejections
+
+Files that fail `accept`, `maxSize`, or `maxFiles` are passed to `onReject` with a `reason`. Accepted files are appended to the list (single-file uploaders replace the existing file).
+
+```tsx
+<FileUpload.Root
+  accept=".pdf,.doc,.docx"
+  maxFiles={3}
+  maxSize={5 * 1024 * 1024}
+  multiple
+  onReject={(rejected) => {
+    for (const { file, reason } of rejected) {
+      // reason is 'maxFiles' | 'maxSize' | 'accept'
+      console.warn(`${file.name} rejected: ${reason}`)
+    }
+  }}
+/>
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `File[]` | — | Controlled file list |
+| `defaultValue` | `File[]` | `[]` | Initial file list |
+| `onChange` | `(files: File[]) => void` | — | Called when the list changes |
+| `multiple` | `boolean` | `false` | Allow selecting multiple files |
+| `accept` | `string` | — | Comma-separated MIME types or extensions (e.g. `image/*` or `.pdf,.doc`) |
+| `maxFiles` | `number` | — | Maximum number of files allowed |
+| `maxSize` | `number` | — | Maximum size per file in bytes |
+| `disabled` | `boolean` | `false` | Disables the trigger + dropzone |
+| `onReject` | `(rejected: { file: File; reason: 'maxFiles' \| 'maxSize' \| 'accept' }[]) => void` | — | Called when files are rejected |
+
+## Items render-prop
+
+`FileUpload.Items` takes a single function child: `(file, index, remove) => ReactNode`. Calling `remove()` deletes that file from the list.
+
+## Data attributes
+
+| Attribute | Element | When present |
+|---|---|---|
+| `data-dragging` | Dropzone | A drag-over is in progress |
+| `data-disabled` | Root, Dropzone, Trigger | `disabled` prop is true |
+
+## Accessibility
+
+- The native `<input type="file">` stays in the DOM (visually hidden) so screen readers and form submission work normally.
+- `Dropzone` is `role="button"` with `tabIndex={0}` so it's keyboard-accessible.
+- Pressing <kbd>Enter</kbd> or <kbd>Space</kbd> on the focused Dropzone opens the file picker.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Tab</kbd> | Moves focus to the Trigger or Dropzone. |
+| <kbd>Enter</kbd> / <kbd>Space</kbd> | Opens the native file picker. |
