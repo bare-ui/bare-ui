@@ -1,0 +1,142 @@
+---
+title: Popover
+description: Floating panel anchored to a trigger. Closes on outside click or Escape.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Popover
+
+Currently only available in React.
+
+Floating panel anchored to a trigger. Closes on outside click or <kbd>Escape</kbd> by default. Controlled and uncontrolled. The component is unstyled and unpositioned — use Tailwind / CSS to anchor the Content relative to the Root.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Closes on outside click and Escape (toggleable).</FeatureItem>
+  <FeatureItem>Can be controlled or uncontrolled.</FeatureItem>
+  <FeatureItem>`forceMount` keeps Content in the DOM for animation.</FeatureItem>
+  <FeatureItem>`Close` subcomponent for inline close buttons.</FeatureItem>
+  <FeatureItem>Full ARIA wiring: aria-haspopup / aria-expanded / aria-controls.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><PopoverPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Popover } from '@wire-ui/react'
+
+<Popover.Root>
+  <Popover.Trigger>Open</Popover.Trigger>
+  <Popover.Content side="bottom" align="center">
+    <p>Popover content</p>
+    <Popover.Close>Close</Popover.Close>
+  </Popover.Content>
+</Popover.Root>
+    ```
+    </ForReact>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Popover } from '@wire-ui/react'
+
+<Popover.Root className="relative inline-block">
+  <Popover.Trigger className="inline-flex cursor-pointer items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]">
+    Account
+  </Popover.Trigger>
+  <Popover.Content className="absolute left-0 top-full z-10 mt-2 w-72 rounded-[20px] border border-black bg-white p-4 text-sm text-black">
+    <p className="font-medium mb-1">Popover</p>
+    <p className="text-[#6b7280]">Click outside or press Escape to close.</p>
+    <Popover.Close className="mt-3 cursor-pointer rounded-[8px] border border-black px-3 py-1.5 text-sm font-medium text-black hover:bg-[#f5f5f5]">
+      Close
+    </Popover.Close>
+  </Popover.Content>
+</Popover.Root>
+```
+    </ForReact>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Root, Trigger, and Content all expose `data-state` (`"open"` / `"closed"`). Content additionally exposes `data-side` and `data-align`. Position the Content manually — wire-ui does not auto-anchor.
+
+```tsx
+<Popover.Content className="
+  absolute top-full mt-2
+  data-[state=closed]:hidden
+  data-[state=open]:animate-in
+  data-[side=top]:bottom-full data-[side=top]:top-auto data-[side=top]:mb-2 data-[side=top]:mt-0
+" />
+```
+
+## Using data attributes
+
+```css
+[data-state="closed"] { display: none; }
+[data-state="open"]   { animation: fadeIn 120ms ease-out; }
+[data-side="top"]     { transform-origin: bottom; }
+[data-side="bottom"]  { transform-origin: top; }
+[data-align="start"]  { left: 0; }
+[data-align="center"] { left: 50%; transform: translateX(-50%); }
+[data-align="end"]    { right: 0; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `open` | `boolean` | — | Controlled open state |
+| `defaultOpen` | `boolean` | `false` | Initial open state (uncontrolled) |
+| `onOpenChange` | `(open: boolean) => void` | — | Called when the open state changes |
+| `closeOnOutsideClick` | `boolean` | `true` | Close on outside click |
+| `closeOnEscape` | `boolean` | `true` | Close on Escape key |
+
+## Trigger props
+
+Accepts all standard `<button>` attributes. Clicking toggles the open state. Receives `aria-haspopup="dialog"`, `aria-expanded`, and `aria-controls` automatically.
+
+## Content props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `side` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'bottom'` | Side data attribute for position-aware styling |
+| `align` | `'start' \| 'center' \| 'end'` | `'center'` | Alignment along the side |
+| `forceMount` | `boolean` | `false` | Keep mounted in DOM when closed (use with `data-state` for animation) |
+
+## Close props
+
+Accepts all standard `<button>` attributes. Closes the popover on click.
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-state` | Root, Trigger, Content | `"open"` / `"closed"` |
+| `data-side` | Content | `"top"` / `"right"` / `"bottom"` / `"left"` |
+| `data-align` | Content | `"start"` / `"center"` / `"end"` |
+| `data-hover` | Trigger, Close | Mouse is over the button |
+| `data-focus-visible` | Trigger, Close | Button has keyboard focus |
+| `data-active` | Trigger, Close | Button is being pressed |
+
+## Accessibility
+
+- Trigger renders as `<button>` with `aria-haspopup="dialog"`, `aria-expanded`, and `aria-controls`.
+- Content is `<div role="dialog">` with `aria-labelledby` pointing at the Trigger.
+- Focus is left up to the caller — wire-ui does not auto-focus Content (use a focused element inside it if needed).
+- Set `closeOnOutsideClick={false}` for click-resistant overlays; set `closeOnEscape={false}` to require an explicit Close.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Space</kbd> / <kbd>Enter</kbd> | Toggles the popover when Trigger is focused. |
+| <kbd>Escape</kbd> | Closes the popover (when `closeOnEscape` is true). |
+| <kbd>Tab</kbd> | Moves focus through Trigger, then into Content when open. |
