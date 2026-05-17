@@ -326,7 +326,7 @@ function Grid(props: CalendarGridProps) {
 			},
 			get props() {
 				return {
-					role: 'gridcell',
+					role: 'gridcell' as const,
 					type: 'button' as const,
 					get tabIndex() {
 						return isSelected() ? 0 : -1;
@@ -337,7 +337,7 @@ function Grid(props: CalendarGridProps) {
 					get 'aria-selected'() {
 						return isSelected();
 					},
-					'aria-current': isToday ? 'date' : undefined,
+					'aria-current': isToday ? ('date' as const) : undefined,
 					'data-today': isToday ? '' : undefined,
 					get 'data-selected'() {
 						return isSelected() ? '' : undefined;
