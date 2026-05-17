@@ -1,0 +1,108 @@
+---
+title: useIntersectionObserver
+description: Observe element visibility within a scroll container or the viewport.
+---
+
+# <ForReact><code>useIntersectionObserver</code></ForReact><ForVue><code>useIntersectionObserver</code></ForVue><ForSolid><code>createIntersectionObserver</code></ForSolid>
+
+Observes intersection of an element with its scroll container (or the viewport by default). Returns the latest `IntersectionObserverEntry`, or `null` before the first callback. Use `entry.isIntersecting` for the common visibility check, or read the `intersectionRatio` / `boundingClientRect` fields for scroll-driven effects.
+
+Set `once: true` to disconnect after the first intersection — useful for "load when visible" patterns.
+
+<ForReact>
+```tsx
+import { useRef } from 'react'
+import { useIntersectionObserver } from '@wire-ui/react'
+
+function LazyImage({ src }: { src: string }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const entry = useIntersectionObserver(ref, { threshold: 0.1, once: true })
+  const isVisible = entry?.isIntersecting ?? false
+
+  return (
+    <div ref={ref} className="h-48 w-full">
+      {isVisible && <img src={src} alt="" />}
+    </div>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref, computed } from 'vue'
+import { useIntersectionObserver } from '@wire-ui/vue'
+
+const target = ref<HTMLDivElement | null>(null)
+const entry = useIntersectionObserver(target, { threshold: 0.1, once: true })
+const isVisible = computed(() => entry.value?.isIntersecting ?? false)
+
+defineProps<{ src: string }>()
+</script>
+
+<template>
+  <div ref="target" class="h-48 w-full">
+    <img v-if="isVisible" :src="src" alt="" />
+  </div>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { Show } from 'solid-js'
+import { createIntersectionObserver } from '@wire-ui/solid'
+
+function LazyImage(props: { src: string }) {
+  let el: HTMLDivElement | undefined
+  const entry = createIntersectionObserver(() => el, { threshold: 0.1, once: true })
+  const isVisible = () => entry()?.isIntersecting ?? false
+
+  return (
+    <div ref={el} class="h-48 w-full">
+      <Show when={isVisible()}>
+        <img src={props.src} alt="" />
+      </Show>
+    </div>
+  )
+}
+```
+</ForSolid>
+
+## Parameters
+
+<ForReact>
+| Param | Type | Description |
+|---|---|---|
+| `ref` | `RefObject<Element \| null>` | Element to observe. |
+| `options` | `UseIntersectionObserverOptions` | See below. |
+</ForReact>
+<ForVue>
+| Param | Type | Description |
+|---|---|---|
+| `targetRef` | `Ref<Element \| null>` | Element to observe. |
+| `options` | `UseIntersectionObserverOptions` | See below. |
+</ForVue>
+<ForSolid>
+| Param | Type | Description |
+|---|---|---|
+| `target` | `Accessor<Element \| null \| undefined>` | Accessor returning the element to observe. |
+| `options` | `CreateIntersectionObserverOptions` | See below. |
+</ForSolid>
+
+## Options
+
+All native `IntersectionObserverInit` fields are supported in addition to:
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `root` | `Element \| Document \| null` | viewport | Scroll container. |
+| `rootMargin` | `string` | `'0px'` | Margin around the root. |
+| `threshold` | `number \| number[]` | `0` | Visibility thresholds. |
+| `once` | `boolean` | `false` | Disconnect after the first intersection. |
+| `enabled` | <ForReact>`boolean`</ForReact><ForVue>`MaybeRefOrGetter<boolean>`</ForVue><ForSolid>`boolean`</ForSolid> | `true` | Skip observation while `false`. |
+
+## Returns
+
+<ForReact>`IntersectionObserverEntry \| null` — the latest entry, or `null` before the first callback.</ForReact>
+<ForVue>`Ref<IntersectionObserverEntry \| null>` — the latest entry as a ref.</ForVue>
+<ForSolid>`Accessor<IntersectionObserverEntry \| null>` — accessor for the latest entry.</ForSolid>
