@@ -23,7 +23,9 @@ const parsed = computed(() => (rawSvg.value ? parseSvg(rawSvg.value) : null))
 const isDecorative = computed(() => !props.label)
 </script>
 
+<!-- eslint-disable vue/no-v-html -->
 <template>
+	<!-- Icon intentionally renders consumer-supplied SVG strings; consumers are responsible for sanitizing input. -->
 	<svg
 		v-if="parsed"
 		:viewBox="parsed.viewBox"
