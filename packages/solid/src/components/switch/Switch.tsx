@@ -30,7 +30,9 @@ function Root(props: SwitchRootProps) {
 			return local.checked;
 		},
 		defaultValue: local.defaultChecked ?? false,
-		onChange: local.onChange,
+		get onChange() {
+			return local.onChange;
+		},
 	});
 	const disabled = () => !!local.disabled;
 

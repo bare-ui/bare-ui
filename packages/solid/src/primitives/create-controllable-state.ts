@@ -38,7 +38,8 @@ export function createControllableState<T>(
 
 	const setValue: ControllableSetter<T | undefined> = (next) => {
 		const resolved = typeof next === 'function' ? (next as (prev: T | undefined) => T | undefined)(current()) : next;
-		if (options.value === undefined) setUncontrolled(resolved as any);
+		// Always use the functional setter form to avoid ambiguity when T extends Function.
+		if (options.value === undefined) setUncontrolled(() => resolved);
 		if (resolved !== undefined) options.onChange?.(resolved as T);
 	};
 

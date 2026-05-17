@@ -20,7 +20,7 @@ export function createThrottle<T>(value: Accessor<T>, delay: number): Accessor<T
 		const remaining = Math.max(0, delay - elapsed);
 		const id = setTimeout(() => {
 			lastEmittedAt = Date.now();
-			setThrottled(() => v as any);
+			setThrottled(() => v);
 		}, remaining);
 		onCleanup(() => clearTimeout(id));
 	});

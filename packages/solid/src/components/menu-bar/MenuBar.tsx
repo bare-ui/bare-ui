@@ -47,7 +47,9 @@ function Root(props: MenuBarRootProps) {
 			return local.value;
 		},
 		defaultValue: local.defaultValue ?? null,
-		onChange: local.onValueChange,
+		get onChange() {
+			return local.onValueChange;
+		},
 	});
 
 	const setOpenMenu = (next: string | null) => setOpenMenuState(next);
@@ -66,7 +68,7 @@ function Root(props: MenuBarRootProps) {
 	let rootEl: HTMLDivElement | undefined;
 	const mergedRef = createMergedRefs<HTMLDivElement>(
 		(el) => (rootEl = el),
-		local.ref as ((el: HTMLDivElement) => void) | undefined,
+		(el) => (local.ref as ((el: HTMLDivElement) => void) | undefined)?.(el),
 	);
 
 	createClickOutside(

@@ -48,7 +48,9 @@ function Root(props: PasswordRootProps) {
 			return local.value;
 		},
 		defaultValue: local.defaultValue ?? '',
-		onChange: local.onChange,
+		get onChange() {
+			return local.onChange;
+		},
 	});
 
 	const [visible, setVisible] = createSignal(false);

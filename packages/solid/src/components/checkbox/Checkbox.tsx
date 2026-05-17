@@ -38,7 +38,9 @@ function Root(props: CheckboxRootProps) {
 			return local.value;
 		},
 		defaultValue: local.defaultValue ?? [],
-		onChange: local.onChange,
+		get onChange() {
+			return local.onChange;
+		},
 	});
 
 	const groupName = createMemo(() => local.name || createId('checkbox-group'));

@@ -57,7 +57,9 @@ function Root(props: SelectRootProps) {
 			return local.value;
 		},
 		defaultValue: local.defaultValue ?? '',
-		onChange: local.onChange,
+		get onChange() {
+			return local.onChange;
+		},
 	});
 
 	const [open, setOpen] = createSignal(false);
@@ -67,7 +69,7 @@ function Root(props: SelectRootProps) {
 	let rootEl: HTMLDivElement | undefined;
 	const mergedRef = createMergedRefs<HTMLDivElement>(
 		(el) => (rootEl = el),
-		local.ref as ((el: HTMLDivElement) => void) | undefined,
+		(el) => (local.ref as ((el: HTMLDivElement) => void) | undefined)?.(el),
 	);
 	createClickOutside(
 		() => rootEl,

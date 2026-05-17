@@ -26,7 +26,9 @@ function Root(props: TooltipRootProps) {
 			return props.open;
 		},
 		defaultValue: props.defaultOpen ?? false,
-		onChange: props.onOpenChange,
+		get onChange() {
+			return props.onOpenChange;
+		},
 	});
 
 	let timer: ReturnType<typeof setTimeout> | null = null;

@@ -56,7 +56,9 @@ function Root(props: DatePickerRootProps) {
 			return local.value;
 		},
 		defaultValue: local.defaultValue ?? null,
-		onChange: local.onChange,
+		get onChange() {
+			return local.onChange;
+		},
 	});
 
 	const [open, setOpenState] = createControllableState<boolean>({
@@ -64,7 +66,9 @@ function Root(props: DatePickerRootProps) {
 			return local.open;
 		},
 		defaultValue: local.defaultOpen ?? false,
-		onChange: local.onOpenChange,
+		get onChange() {
+			return local.onOpenChange;
+		},
 	});
 
 	const setOpen = (next: boolean) => setOpenState(next);
@@ -73,7 +77,7 @@ function Root(props: DatePickerRootProps) {
 	let rootEl: HTMLDivElement | undefined;
 	const mergedRef = createMergedRefs<HTMLDivElement>(
 		(el) => (rootEl = el),
-		local.ref as ((el: HTMLDivElement) => void) | undefined,
+		(el) => (local.ref as ((el: HTMLDivElement) => void) | undefined)?.(el),
 	);
 
 	createClickOutside(

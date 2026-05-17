@@ -99,7 +99,9 @@ function Root(props: PaginationRootProps) {
 			return local.page;
 		},
 		defaultValue: local.defaultPage ?? 1,
-		onChange: local.onChange,
+		get onChange() {
+			return local.onChange;
+		},
 	});
 	const totalPages = () => local.totalPages;
 	const ariaLabel = () => local['aria-label'] ?? 'Pagination';

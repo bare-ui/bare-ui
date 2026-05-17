@@ -1,4 +1,4 @@
-import { createSignal, createEffect, createRenderEffect, mergeProps, onCleanup, type Accessor } from 'solid-js';
+import { createSignal, createEffect, createRenderEffect, mergeProps, onCleanup, untrack, type Accessor } from 'solid-js';
 import type { JSX } from 'solid-js';
 
 export type FloatingSide = 'top' | 'right' | 'bottom' | 'left';
@@ -106,8 +106,9 @@ export function createFloating<R extends HTMLElement, F extends HTMLElement>(
 
 	const [x, setX] = createSignal(0);
 	const [y, setY] = createSignal(0);
-	const [side, setSide] = createSignal<FloatingSide>(merged.side);
-	const [align, setAlign] = createSignal<FloatingAlign>(merged.align);
+	// Initial values are read once; subsequent updates flow through createRenderEffect → update().
+	const [side, setSide] = createSignal<FloatingSide>(untrack(() => merged.side));
+	const [align, setAlign] = createSignal<FloatingAlign>(untrack(() => merged.align));
 
 	const update = () => {
 		const reference = referenceRef();
@@ -170,5 +171,15 @@ export function createFloating<R extends HTMLElement, F extends HTMLElement>(
 		transform: `translate3d(${Math.round(x())}px, ${Math.round(y())}px, 0)`,
 	});
 
-	return { x, y, side, align, strategy: merged.strategy, floatingStyles, update };
+	return {
+		x,
+		y,
+		side,
+		align,
+		get strategy() {
+			return merged.strategy;
+		},
+		floatingStyles,
+		update,
+	};
 }

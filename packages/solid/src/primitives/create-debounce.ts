@@ -14,7 +14,7 @@ export function createDebounce<T>(value: Accessor<T>, delay: number): Accessor<T
 
 	createEffect(() => {
 		const v = value();
-		const id = setTimeout(() => setDebounced(() => v as any), delay);
+		const id = setTimeout(() => setDebounced(() => v), delay);
 		onCleanup(() => clearTimeout(id));
 	});
 

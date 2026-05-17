@@ -33,7 +33,9 @@ function Root(props: DrawerRootProps) {
 			return props.open;
 		},
 		defaultValue: props.defaultOpen ?? false,
-		onChange: props.onOpenChange,
+		get onChange() {
+			return props.onOpenChange;
+		},
 	});
 
 	createKeyboard({
@@ -93,7 +95,7 @@ function Content(props: DrawerContentProps) {
 	let contentEl: HTMLDivElement | undefined;
 	const mergedRef = createMergedRefs<HTMLDivElement>(
 		(el) => (contentEl = el),
-		local.ref as ((el: HTMLDivElement) => void) | undefined,
+		(el) => (local.ref as ((el: HTMLDivElement) => void) | undefined)?.(el),
 	);
 
 	createFocusTrap(() => contentEl, {

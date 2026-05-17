@@ -54,7 +54,9 @@ function Rating(props: RatingProps) {
 			return local.value;
 		},
 		defaultValue: local.defaultValue ?? 0,
-		onChange: local.onChange,
+		get onChange() {
+			return local.onChange;
+		},
 	});
 	const [hoverValue, setHoverValue] = createSignal(0);
 

@@ -42,7 +42,9 @@ function Root(props: TagInputRootProps) {
 			return local.value;
 		},
 		defaultValue: local.defaultValue ?? [],
-		onChange: local.onChange,
+		get onChange() {
+			return local.onChange;
+		},
 	});
 
 	const addTag = (raw: string): boolean => {

@@ -38,7 +38,9 @@ function Root(props: RadioRootProps) {
 			return local.value;
 		},
 		defaultValue: local.defaultValue,
-		onChange: local.onChange as ((v: string | number | undefined) => void) | undefined,
+		get onChange() {
+			return local.onChange as ((v: string | number | undefined) => void) | undefined;
+		},
 	});
 
 	const groupName = createMemo(() => local.name || createId('radio-group'));

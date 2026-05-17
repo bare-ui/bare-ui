@@ -82,7 +82,7 @@ function Group(props: PanelGroupProps) {
 	let containerEl: HTMLDivElement | undefined;
 	const mergedRef = createMergedRefs<HTMLDivElement>(
 		(el) => (containerEl = el),
-		local.ref as ((el: HTMLDivElement) => void) | undefined,
+		(el) => (local.ref as ((el: HTMLDivElement) => void) | undefined)?.(el),
 	);
 
 	// Stable mutable registries — survive re-renders without triggering effect loops.

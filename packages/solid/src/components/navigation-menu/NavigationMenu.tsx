@@ -57,7 +57,9 @@ function Root(props: NavigationMenuRootProps) {
 			return local.value;
 		},
 		defaultValue: local.defaultValue ?? null,
-		onChange: local.onValueChange,
+		get onChange() {
+			return local.onValueChange;
+		},
 	});
 
 	const setValue = (next: string | null) => setValueState(next);
@@ -65,7 +67,7 @@ function Root(props: NavigationMenuRootProps) {
 	let rootEl: HTMLElement | undefined;
 	const mergedRef = createMergedRefs<HTMLElement>(
 		(el) => (rootEl = el),
-		local.ref as ((el: HTMLElement) => void) | undefined,
+		(el) => (local.ref as ((el: HTMLElement) => void) | undefined)?.(el),
 	);
 
 	// Single shared close timer. Without this, each Trigger and Content owns its

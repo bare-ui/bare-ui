@@ -45,7 +45,9 @@ function Root(props: ContextMenuRootProps) {
 			return local.open;
 		},
 		defaultValue: local.defaultOpen ?? false,
-		onChange: local.onOpenChange,
+		get onChange() {
+			return local.onOpenChange;
+		},
 	});
 	const [position, setPosition] = createSignal({ x: 0, y: 0 });
 
@@ -206,7 +208,7 @@ function Content(props: ContextMenuContentProps) {
 
 	const mergedRef = createMergedRefs<HTMLDivElement>(
 		(el) => ctx.setContentEl(el),
-		local.ref as ((el: HTMLDivElement) => void) | undefined,
+		(el) => (local.ref as ((el: HTMLDivElement) => void) | undefined)?.(el),
 	);
 
 	const mergedStyle = (): JSX.CSSProperties | string | undefined => {

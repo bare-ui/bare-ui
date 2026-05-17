@@ -65,7 +65,9 @@ function Root(props: NumberInputRootProps) {
 			return local.value;
 		},
 		defaultValue: local.defaultValue ?? null,
-		onChange: local.onChange,
+		get onChange() {
+			return local.onChange;
+		},
 	});
 
 	const min = () => local.min ?? Number.NEGATIVE_INFINITY;

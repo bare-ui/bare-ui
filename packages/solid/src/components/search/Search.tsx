@@ -1,4 +1,4 @@
-import { createContext, createSignal, onCleanup, onMount, Show, splitProps, useContext, type JSX } from 'solid-js';
+import { createContext, createSignal, onCleanup, onMount, Show, splitProps, untrack, useContext, type JSX } from 'solid-js';
 import { createClickOutside } from '@/primitives/create-click-outside';
 import { createControllableState } from '@/primitives/create-controllable-state';
 import { createDebouncedCallback } from '@/primitives/create-debounce';
@@ -62,10 +62,14 @@ function Root(props: SearchRootProps) {
 	let rootEl: HTMLDivElement | undefined;
 	const mergedRef = createMergedRefs<HTMLDivElement>(
 		(el) => (rootEl = el),
-		local.ref as ((el: HTMLDivElement) => void) | undefined,
+		(el) => (local.ref as ((el: HTMLDivElement) => void) | undefined)?.(el),
 	);
 
-	const submitDebounced = createDebouncedCallback(() => local.onSubmitSearch?.(), local.searchDelay ?? 1000);
+	// searchDelay is captured once at setup; createDebouncedCallback doesn't accept a reactive delay.
+	const submitDebounced = createDebouncedCallback(
+		() => local.onSubmitSearch?.(),
+		untrack(() => local.searchDelay ?? 1000),
+	);
 
 	const handleOpenChange = (value: boolean) => {
 		setOpenState(value);

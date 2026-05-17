@@ -40,7 +40,9 @@ function Root(props: TextareaRootProps) {
 			return local.value;
 		},
 		defaultValue: local.defaultValue ?? '',
-		onChange: local.onChange,
+		get onChange() {
+			return local.onChange;
+		},
 	});
 	const [isActive, setIsActive] = createSignal(false);
 

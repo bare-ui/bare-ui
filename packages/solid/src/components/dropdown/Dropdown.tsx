@@ -25,13 +25,15 @@ function Root(props: DropdownRootProps) {
 			return local.open;
 		},
 		defaultValue: local.defaultOpen ?? false,
-		onChange: local.onOpenChange,
+		get onChange() {
+			return local.onOpenChange;
+		},
 	});
 
 	let rootEl: HTMLDivElement | undefined;
 	const mergedRef = createMergedRefs<HTMLDivElement>(
 		(el) => (rootEl = el),
-		local.ref as ((el: HTMLDivElement) => void) | undefined,
+		(el) => (local.ref as ((el: HTMLDivElement) => void) | undefined)?.(el),
 	);
 
 	createClickOutside(

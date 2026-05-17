@@ -92,7 +92,9 @@ function Root(props: ComboboxRootProps) {
 			return local.inputValue;
 		},
 		defaultValue: initialInput,
-		onChange: local.onInputChange,
+		get onChange() {
+			return local.onInputChange;
+		},
 	});
 
 	// --- open ---
@@ -101,7 +103,9 @@ function Root(props: ComboboxRootProps) {
 			return local.open;
 		},
 		defaultValue: local.defaultOpen ?? false,
-		onChange: local.onOpenChange,
+		get onChange() {
+			return local.onOpenChange;
+		},
 	});
 
 	// --- filtered options ---
@@ -160,7 +164,7 @@ function Root(props: ComboboxRootProps) {
 	let rootEl: HTMLDivElement | undefined;
 	const mergedRef = createMergedRefs<HTMLDivElement>(
 		(el) => (rootEl = el),
-		local.ref as ((el: HTMLDivElement) => void) | undefined,
+		(el) => (local.ref as ((el: HTMLDivElement) => void) | undefined)?.(el),
 	);
 
 	createClickOutside(

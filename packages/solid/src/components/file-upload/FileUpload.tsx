@@ -67,7 +67,9 @@ function Root(props: FileUploadRootProps) {
 			return local.value;
 		},
 		defaultValue: local.defaultValue ?? [],
-		onChange: local.onChange,
+		get onChange() {
+			return local.onChange;
+		},
 	});
 	const [isDragging, setDragging] = createSignal(false);
 	let inputEl: HTMLInputElement | null = null;
@@ -164,7 +166,7 @@ function Input(props: FileUploadInputProps) {
 	const ctx = useFileUploadContext();
 	const mergedRef = createMergedRefs<HTMLInputElement>(
 		(el) => ctx.registerInput(el),
-		local.ref as ((el: HTMLInputElement) => void) | undefined,
+		(el) => (local.ref as ((el: HTMLInputElement) => void) | undefined)?.(el),
 	);
 
 	const mergedStyle = (): JSX.CSSProperties | string | undefined => {
