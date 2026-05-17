@@ -1,0 +1,287 @@
+---
+title: Navigation Menu
+description: Top navigation with hover-driven dropdown panels.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Navigation Menu
+
+Top navigation with hover-driven dropdown panels. Supports plain links (no dropdown) and mega-menu style panels. Configurable hover delays for both open and close.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Hover-to-open with configurable delay.</FeatureItem>
+  <FeatureItem>Skip-delay window for moving from trigger to content.</FeatureItem>
+  <FeatureItem>Switching between open menus is instant (no second delay).</FeatureItem>
+  <FeatureItem>Mix plain links and dropdown triggers in the same bar.</FeatureItem>
+  <FeatureItem>Active-link styling via `data-active`.</FeatureItem>
+  <FeatureItem>Renders as a real `<nav>` element with `aria-label`.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><NavigationMenuPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { NavigationMenu } from '@wire-ui/react'
+
+<NavigationMenu.Root>
+  <NavigationMenu.List>
+    <NavigationMenu.Item>
+      <NavigationMenu.Link href="/" active>Home</NavigationMenu.Link>
+    </NavigationMenu.Item>
+    <NavigationMenu.Item value="products">
+      <NavigationMenu.Trigger>Products</NavigationMenu.Trigger>
+      <NavigationMenu.Content>
+        <NavigationMenu.Link href="/design">Design</NavigationMenu.Link>
+        <NavigationMenu.Link href="/develop">Develop</NavigationMenu.Link>
+      </NavigationMenu.Content>
+    </NavigationMenu.Item>
+    <NavigationMenu.Item>
+      <NavigationMenu.Link href="/pricing">Pricing</NavigationMenu.Link>
+    </NavigationMenu.Item>
+  </NavigationMenu.List>
+</NavigationMenu.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { NavigationMenu } from '@wire-ui/vue'
+</script>
+
+<template>
+  <NavigationMenu.Root>
+    <NavigationMenu.List>
+      <NavigationMenu.Item>
+        <NavigationMenu.Link href="/" active>Home</NavigationMenu.Link>
+      </NavigationMenu.Item>
+      <NavigationMenu.Item value="products">
+        <NavigationMenu.Trigger>Products</NavigationMenu.Trigger>
+        <NavigationMenu.Content>
+          <NavigationMenu.Link href="/design">Design</NavigationMenu.Link>
+          <NavigationMenu.Link href="/develop">Develop</NavigationMenu.Link>
+        </NavigationMenu.Content>
+      </NavigationMenu.Item>
+      <NavigationMenu.Item>
+        <NavigationMenu.Link href="/pricing">Pricing</NavigationMenu.Link>
+      </NavigationMenu.Item>
+    </NavigationMenu.List>
+  </NavigationMenu.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { NavigationMenu } from '@wire-ui/solid'
+
+<NavigationMenu.Root>
+  <NavigationMenu.List>
+    <NavigationMenu.Item>
+      <NavigationMenu.Link href="/" active>Home</NavigationMenu.Link>
+    </NavigationMenu.Item>
+    <NavigationMenu.Item value="products">
+      <NavigationMenu.Trigger>Products</NavigationMenu.Trigger>
+      <NavigationMenu.Content>
+        <NavigationMenu.Link href="/design">Design</NavigationMenu.Link>
+        <NavigationMenu.Link href="/develop">Develop</NavigationMenu.Link>
+      </NavigationMenu.Content>
+    </NavigationMenu.Item>
+    <NavigationMenu.Item>
+      <NavigationMenu.Link href="/pricing">Pricing</NavigationMenu.Link>
+    </NavigationMenu.Item>
+  </NavigationMenu.List>
+</NavigationMenu.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { NavigationMenu } from '@wire-ui/react'
+
+<NavigationMenu.Root className="inline-flex items-center gap-1 rounded-[8px] border border-black bg-white px-2 py-1.5">
+  <NavigationMenu.List className="flex items-center gap-1">
+    <NavigationMenu.Item>
+      <NavigationMenu.Link
+        href="/"
+        active
+        className="rounded-[6px] px-3 py-1 text-sm font-medium text-black hover:bg-[#f5f5f5] data-[active]:bg-black data-[active]:text-white">
+        Home
+      </NavigationMenu.Link>
+    </NavigationMenu.Item>
+    <NavigationMenu.Item value="products">
+      <div className="relative">
+        <NavigationMenu.Trigger className="rounded-[6px] px-3 py-1 text-sm font-medium text-black hover:bg-[#f5f5f5] data-[state=open]:bg-[#f5f5f5]">
+          Products
+        </NavigationMenu.Trigger>
+        <NavigationMenu.Content className="absolute left-0 top-full z-10 mt-2 min-w-[280px] rounded-[20px] border border-black bg-white p-3">
+          <NavigationMenu.Link href="/design" className="block rounded-[6px] px-3 py-2 text-sm text-black hover:bg-[#f5f5f5]">
+            Design
+          </NavigationMenu.Link>
+          <NavigationMenu.Link href="/develop" className="block rounded-[6px] px-3 py-2 text-sm text-black hover:bg-[#f5f5f5]">
+            Develop
+          </NavigationMenu.Link>
+        </NavigationMenu.Content>
+      </div>
+    </NavigationMenu.Item>
+  </NavigationMenu.List>
+</NavigationMenu.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { NavigationMenu } from '@wire-ui/vue'
+</script>
+
+<template>
+  <NavigationMenu.Root class="inline-flex items-center gap-1 rounded-[8px] border border-black bg-white px-2 py-1.5">
+    <NavigationMenu.List class="flex items-center gap-1">
+      <NavigationMenu.Item>
+        <NavigationMenu.Link
+          href="/"
+          active
+          class="rounded-[6px] px-3 py-1 text-sm font-medium text-black hover:bg-[#f5f5f5] data-[active]:bg-black data-[active]:text-white">
+          Home
+        </NavigationMenu.Link>
+      </NavigationMenu.Item>
+      <NavigationMenu.Item value="products">
+        <div class="relative">
+          <NavigationMenu.Trigger class="rounded-[6px] px-3 py-1 text-sm font-medium text-black hover:bg-[#f5f5f5] data-[state=open]:bg-[#f5f5f5]">
+            Products
+          </NavigationMenu.Trigger>
+          <NavigationMenu.Content class="absolute left-0 top-full z-10 mt-2 min-w-[280px] rounded-[20px] border border-black bg-white p-3">
+            <NavigationMenu.Link href="/design" class="block rounded-[6px] px-3 py-2 text-sm text-black hover:bg-[#f5f5f5]">
+              Design
+            </NavigationMenu.Link>
+            <NavigationMenu.Link href="/develop" class="block rounded-[6px] px-3 py-2 text-sm text-black hover:bg-[#f5f5f5]">
+              Develop
+            </NavigationMenu.Link>
+          </NavigationMenu.Content>
+        </div>
+      </NavigationMenu.Item>
+    </NavigationMenu.List>
+  </NavigationMenu.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { NavigationMenu } from '@wire-ui/solid'
+
+<NavigationMenu.Root class="inline-flex items-center gap-1 rounded-[8px] border border-black bg-white px-2 py-1.5">
+  <NavigationMenu.List class="flex items-center gap-1">
+    <NavigationMenu.Item>
+      <NavigationMenu.Link
+        href="/"
+        active
+        class="rounded-[6px] px-3 py-1 text-sm font-medium text-black hover:bg-[#f5f5f5] data-[active]:bg-black data-[active]:text-white">
+        Home
+      </NavigationMenu.Link>
+    </NavigationMenu.Item>
+    <NavigationMenu.Item value="products">
+      <div class="relative">
+        <NavigationMenu.Trigger class="rounded-[6px] px-3 py-1 text-sm font-medium text-black hover:bg-[#f5f5f5] data-[state=open]:bg-[#f5f5f5]">
+          Products
+        </NavigationMenu.Trigger>
+        <NavigationMenu.Content class="absolute left-0 top-full z-10 mt-2 min-w-[280px] rounded-[20px] border border-black bg-white p-3">
+          <NavigationMenu.Link href="/design" class="block rounded-[6px] px-3 py-2 text-sm text-black hover:bg-[#f5f5f5]">
+            Design
+          </NavigationMenu.Link>
+          <NavigationMenu.Link href="/develop" class="block rounded-[6px] px-3 py-2 text-sm text-black hover:bg-[#f5f5f5]">
+            Develop
+          </NavigationMenu.Link>
+        </NavigationMenu.Content>
+      </div>
+    </NavigationMenu.Item>
+  </NavigationMenu.List>
+</NavigationMenu.Root>
+```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Trigger and Content expose `data-state` for open/closed styling. Link exposes `data-active` when its `active` prop is true.
+
+```tsx
+<NavigationMenu.Trigger className="data-[state=open]:bg-[#f5f5f5]">
+  Products
+</NavigationMenu.Trigger>
+
+<NavigationMenu.Link active className="data-[active]:bg-black data-[active]:text-white">
+  Home
+</NavigationMenu.Link>
+```
+
+## Using data attributes
+
+```css
+[data-state="open"]  { background: #f5f5f5; }
+[data-state="closed"] { /* default */ }
+[data-active]        { background: #000; color: #fff; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `string \| null` | — | Controlled open item value |
+| `defaultValue` | `string \| null` | `null` | Initial open item (uncontrolled) |
+| `onValueChange` | `(value: string \| null) => void` | — | Called when the open item changes |
+| `delayDuration` | `number` | `100` | Hover-to-open delay in ms |
+| `skipDelayDuration` | `number` | `300` | Time (ms) to move from trigger → content before closing |
+| `aria-label` | `string` | `'Main'` | Label for the rendered `<nav>` |
+
+## Item props
+
+| Prop | Type | Description |
+|---|---|---|
+| `value` | `string` | Unique id — required only when the item has a Trigger/Content pair |
+
+## Trigger props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `disabled` | `boolean` | `false` | Disables this trigger |
+
+## Link props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `active` | `boolean` | `false` | Marks the link as active; adds `data-active` and `aria-current="page"` |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-state` | Trigger, Content | `"open"` / `"closed"` |
+| `data-active` | Link | Present when `active` is true |
+| `data-disabled` | Trigger | Present when disabled |
+| `data-hover` / `data-active` / `data-focus-visible` | Trigger | Standard interactive states |
+
+Root renders as `<nav>` with `aria-label`. Trigger sets `aria-haspopup="menu"` and `aria-expanded`. Content sets `role="menu"`. Link sets `aria-current="page"` when active.
+
+## Accessibility
+
+- Open delay (`delayDuration`) prevents flickering when sweeping across the bar.
+- Close delay (`skipDelayDuration`) gives the user time to move from trigger to content.
+- When one menu is open, hovering a different trigger switches immediately (no second open delay).
+- Outside click or <kbd>Escape</kbd> closes the open menu.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Enter</kbd> | Activates the focused trigger or link. |
+| <kbd>Space</kbd> | Activates the focused trigger. |
+| <kbd>Tab</kbd> | Moves focus to the next trigger or link. |
+| <kbd>Escape</kbd> | Closes the open menu. |
