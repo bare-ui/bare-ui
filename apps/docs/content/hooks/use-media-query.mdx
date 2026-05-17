@@ -1,0 +1,62 @@
+---
+title: useMediaQuery
+description: Reactively match a CSS media query.
+---
+
+# <ForReact><code>useMediaQuery</code></ForReact><ForVue><code>useMediaQuery</code></ForVue><ForSolid><code>createMediaQuery</code></ForSolid>
+
+Returns whether the given CSS media query currently matches. Re-renders / re-runs when the match state changes. SSR-safe — returns `false` on the server.
+
+<ForReact>Backed by `useSyncExternalStore` for tear-free updates.</ForReact>
+
+<ForReact>
+```tsx
+import { useMediaQuery } from '@wire-ui/react'
+
+function ResponsiveNav() {
+  const isMobile = useMediaQuery('(max-width: 640px)')
+  return isMobile ? <MobileNav /> : <DesktopNav />
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { useMediaQuery } from '@wire-ui/vue'
+
+const isMobile = useMediaQuery('(max-width: 640px)')
+</script>
+
+<template>
+  <MobileNav v-if="isMobile" />
+  <DesktopNav v-else />
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { Show } from 'solid-js'
+import { createMediaQuery } from '@wire-ui/solid'
+
+function ResponsiveNav() {
+  const isMobile = createMediaQuery('(max-width: 640px)')
+  return (
+    <Show when={isMobile()} fallback={<DesktopNav />}>
+      <MobileNav />
+    </Show>
+  )
+}
+```
+</ForSolid>
+
+## Parameters
+
+| Param | Type | Description |
+|---|---|---|
+| `query` | `string` | A valid CSS media query string. |
+
+## Returns
+
+<ForReact>`boolean` — `true` while the media query matches.</ForReact>
+<ForVue>`Ref<boolean>` — `true` while the media query matches.</ForVue>
+<ForSolid>`Accessor<boolean>` — `true` while the media query matches.</ForSolid>
