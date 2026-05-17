@@ -1,0 +1,91 @@
+---
+title: useMergedRefs
+description: Merge multiple refs onto a single element.
+---
+
+# <ForReact><code>useMergedRefs</code></ForReact><ForVue><code>useMergedRefs</code></ForVue><ForSolid><code>createMergedRefs</code></ForSolid>
+
+<ForVue>
+> Vue doesn't need this composable. Vue's template refs are reactive and a single element can be assigned to multiple refs by binding both via a function ref, e.g. `:ref="(el) => { refA = el; refB = el }"`.
+</ForVue>
+
+<ForReact>Merges multiple refs into a single callback ref. Useful when a component receives a forwarded ref but also needs its own internal ref on the same element. Both refs receive the latest value.</ForReact>
+<ForSolid>Merges multiple ref setters into a single callback ref. Useful when a component receives an external ref prop but also needs its own internal ref on the same element. All setters receive the latest element.</ForSolid>
+
+<ForReact>
+The callback's identity depends on each passed ref — since `useRef` / `forwardRef` refs are stable across renders, the resulting callback is also stable in normal usage.
+
+```tsx
+import { forwardRef, useEffect, useRef } from 'react'
+import { useMergedRefs } from '@wire-ui/react'
+
+interface AutoFocusInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+
+const AutoFocusInput = forwardRef<HTMLInputElement, AutoFocusInputProps>(
+  function AutoFocusInput(props, forwardedRef) {
+    const localRef = useRef<HTMLInputElement>(null)
+    const mergedRef = useMergedRefs(localRef, forwardedRef)
+
+    useEffect(() => {
+      localRef.current?.focus()
+    }, [])
+
+    return <input ref={mergedRef} {...props} />
+  },
+)
+```
+</ForReact>
+<ForSolid>
+In Solid, refs are set once via the `ref` attribute. Pass a signal setter, a variable setter `(el) => (localEl = el)`, or `undefined` / `null` to skip a slot.
+
+```tsx
+import { createMergedRefs } from '@wire-ui/solid'
+
+interface AutoFocusInputProps {
+  ref?: (el: HTMLInputElement) => void
+}
+
+function AutoFocusInput(props: AutoFocusInputProps) {
+  let localEl: HTMLInputElement | undefined
+  const mergedRef = createMergedRefs(
+    (el: HTMLInputElement) => (localEl = el),
+    props.ref,
+  )
+
+  // localEl is set as soon as the element mounts
+  return <input ref={mergedRef} />
+}
+```
+</ForSolid>
+
+<ForReact>
+## Parameters
+
+`useMergedRefs<T>(...refs)` accepts any number of refs:
+
+| Type | Notes |
+|---|---|
+| `Ref<T>` | Object ref returned by `useRef` or a forwarded ref. |
+| `RefCallback<T>` | Function refs, e.g. `(el) => setEl(el)`. |
+| `MutableRefObject<T \| null>` | Mutable refs. |
+| `null \| undefined` | Skipped — pass-through for optional refs. |
+
+## Returns
+
+A `RefCallback<T>` to assign to `ref={...}`. When called by React, every passed-in ref is updated.
+</ForReact>
+
+<ForSolid>
+## Parameters
+
+`createMergedRefs<T>(...refs)` accepts any number of ref setters:
+
+| Type | Notes |
+|---|---|
+| `(el: T) => void` | Variable setter, signal setter, or callback. |
+| `null \| undefined` | Skipped — pass-through for optional refs. |
+
+## Returns
+
+A `(el: T) => void` callback to assign to `ref={...}`. Each setter passed in is invoked with the element when Solid resolves the ref.
+</ForSolid>
