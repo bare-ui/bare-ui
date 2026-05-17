@@ -1,0 +1,143 @@
+---
+title: Slider
+description: Single-value or two-thumb range slider with drag and keyboard support.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Slider
+
+Currently only available in React.
+
+Single-value or two-thumb range slider with pointer drag and full keyboard support. Horizontal or vertical, optionally inverted. The component renders track / fill / thumb as inner `<span>` elements with `data-part` attributes so you can style them via Tailwind arbitrary selectors (or any CSS).
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Single-value or two-thumb range mode via `range` prop.</FeatureItem>
+  <FeatureItem>Pointer drag with snap-to-step.</FeatureItem>
+  <FeatureItem>Full keyboard support: Arrows, PageUp / PageDown, Home / End.</FeatureItem>
+  <FeatureItem>Horizontal or vertical orientation, optionally inverted.</FeatureItem>
+  <FeatureItem>Range thumbs cannot pass each other.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><SliderPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Slider } from '@wire-ui/react'
+
+<Slider defaultValue={40} min={0} max={100} step={1} aria-label="Volume" />
+
+<Slider range defaultValue={[20, 80]} min={0} max={100} step={5} aria-label="Price range" />
+    ```
+    </ForReact>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Slider } from '@wire-ui/react'
+
+const sliderCls = [
+  'h-6 w-80',
+  // Track
+  '[&_[data-part=track]]:top-1/2 [&_[data-part=track]]:-translate-y-1/2 [&_[data-part=track]]:h-1 [&_[data-part=track]]:rounded-full [&_[data-part=track]]:bg-[#e5e5e5]',
+  // Fill
+  '[&_[data-part=fill]]:top-1/2 [&_[data-part=fill]]:-translate-y-1/2 [&_[data-part=fill]]:h-1 [&_[data-part=fill]]:rounded-full [&_[data-part=fill]]:bg-black',
+  // Thumb
+  '[&_[data-part=thumb]]:size-4 [&_[data-part=thumb]]:rounded-full [&_[data-part=thumb]]:border [&_[data-part=thumb]]:border-black [&_[data-part=thumb]]:bg-white',
+  '[&_[data-part=thumb]]:cursor-grab [&_[data-part=thumb]]:outline-none',
+  '[&_[data-part=thumb]:focus-visible]:ring-2 [&_[data-part=thumb]:focus-visible]:ring-black [&_[data-part=thumb]:focus-visible]:ring-offset-1',
+].join(' ')
+
+<Slider defaultValue={40} min={0} max={100} aria-label="Volume" className={sliderCls} />
+```
+    </ForReact>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Slider renders three inner parts: `[data-part=track]`, `[data-part=fill]`, and `[data-part=thumb]`. Target them with Tailwind arbitrary selectors or plain CSS. Each thumb additionally carries `data-thumb-index="0"` / `"1"` for range sliders.
+
+```tsx
+<Slider className="
+  [&_[data-part=track]]:bg-[#e5e5e5]
+  [&_[data-part=fill]]:bg-black
+  [&_[data-part=thumb]]:size-4
+  [&_[data-part=thumb]]:bg-white
+  [&_[data-part=thumb]]:border
+" />
+```
+
+## Using data attributes
+
+The root receives `data-orientation` (`"horizontal"` / `"vertical"`) and `data-disabled`. Thumbs receive `data-part="thumb"` and `data-disabled` when the slider is disabled.
+
+```css
+[data-orientation="horizontal"] [data-part="track"] { height: 4px; width: 100%; }
+[data-orientation="vertical"]   [data-part="track"] { width: 4px;  height: 100%; }
+[data-part="thumb"][data-disabled] { opacity: 0.5; cursor: not-allowed; }
+```
+
+## Single-value props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `range` | `false` | `false` | Single thumb mode |
+| `value` | `number` | — | Controlled value |
+| `defaultValue` | `number` | `min` | Initial value (uncontrolled) |
+| `onChange` | `(value: number) => void` | — | Called when the value changes |
+
+## Range props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `range` | `true` | required | Two-thumb range mode |
+| `value` | `[number, number]` | — | Controlled `[start, end]` |
+| `defaultValue` | `[number, number]` | `[min, max]` | Initial value (uncontrolled) |
+| `onChange` | `(value: [number, number]) => void` | — | Called when either thumb moves |
+
+## Shared props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `min` | `number` | `0` | Minimum value |
+| `max` | `number` | `100` | Maximum value |
+| `step` | `number` | `1` | Step increment |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout orientation |
+| `disabled` | `boolean` | `false` | Disable the slider |
+| `inverted` | `boolean` | `false` | Reverse direction |
+| `aria-label` | `string` | — | Accessible name |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-orientation` | Root | `"horizontal"` / `"vertical"` |
+| `data-disabled` | Root, Thumb | Present when disabled |
+| `data-part` | Inner spans | `"track"` / `"fill"` / `"thumb"` |
+| `data-thumb-index` | Thumb | `"0"` (lower) / `"1"` (upper, range only) |
+
+## Accessibility
+
+- Each thumb is a focusable `<span>` with `role="slider"` and `aria-valuemin` / `aria-valuemax` / `aria-valuenow`.
+- `aria-orientation` reflects the `orientation` prop.
+- Range sliders set `role="group"` on the root with the provided `aria-label`.
+- Always provide `aria-label` (or `aria-labelledby`) for non-range sliders.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>ArrowUp</kbd> / <kbd>ArrowRight</kbd> | Increment by `step` (direction adjusts for orientation + inverted). |
+| <kbd>ArrowDown</kbd> / <kbd>ArrowLeft</kbd> | Decrement by `step` (direction adjusts for orientation + inverted). |
+| <kbd>PageUp</kbd> | Increment by `step * 10`. |
+| <kbd>PageDown</kbd> | Decrement by `step * 10`. |
+| <kbd>Home</kbd> | Jump to `min`. |
+| <kbd>End</kbd> | Jump to `max`. |
