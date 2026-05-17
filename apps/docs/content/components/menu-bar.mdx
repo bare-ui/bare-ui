@@ -1,0 +1,254 @@
+---
+title: Menu Bar
+description: Application-style menu bar with hover-switching dropdowns.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Menu Bar
+
+Application menu bar (File / Edit / View). Click a trigger to open its menu, then hover other triggers to switch instantly between them.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Click to open, hover between triggers to switch.</FeatureItem>
+  <FeatureItem>Only one menu open at a time (controlled by Root's `value`).</FeatureItem>
+  <FeatureItem>Closes on outside click or Escape.</FeatureItem>
+  <FeatureItem>Items, separators, and per-item disabled state.</FeatureItem>
+  <FeatureItem>Controlled or uncontrolled open menu.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><MenuBarPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { MenuBar } from '@wire-ui/react'
+
+<MenuBar.Root>
+  <MenuBar.Menu value="file">
+    <MenuBar.Trigger>File</MenuBar.Trigger>
+    <MenuBar.Content>
+      <MenuBar.Item onSelect={() => {}}>New</MenuBar.Item>
+      <MenuBar.Item onSelect={() => {}}>Open</MenuBar.Item>
+      <MenuBar.Separator />
+      <MenuBar.Item onSelect={() => {}}>Quit</MenuBar.Item>
+    </MenuBar.Content>
+  </MenuBar.Menu>
+  <MenuBar.Menu value="edit">
+    <MenuBar.Trigger>Edit</MenuBar.Trigger>
+    <MenuBar.Content>
+      <MenuBar.Item>Undo</MenuBar.Item>
+      <MenuBar.Item>Redo</MenuBar.Item>
+    </MenuBar.Content>
+  </MenuBar.Menu>
+</MenuBar.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { MenuBar } from '@wire-ui/vue'
+</script>
+
+<template>
+  <MenuBar.Root>
+    <MenuBar.Menu value="file">
+      <MenuBar.Trigger>File</MenuBar.Trigger>
+      <MenuBar.Content>
+        <MenuBar.Item>New</MenuBar.Item>
+        <MenuBar.Item>Open</MenuBar.Item>
+        <MenuBar.Separator />
+        <MenuBar.Item>Quit</MenuBar.Item>
+      </MenuBar.Content>
+    </MenuBar.Menu>
+    <MenuBar.Menu value="edit">
+      <MenuBar.Trigger>Edit</MenuBar.Trigger>
+      <MenuBar.Content>
+        <MenuBar.Item>Undo</MenuBar.Item>
+        <MenuBar.Item>Redo</MenuBar.Item>
+      </MenuBar.Content>
+    </MenuBar.Menu>
+  </MenuBar.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { MenuBar } from '@wire-ui/solid'
+
+<MenuBar.Root>
+  <MenuBar.Menu value="file">
+    <MenuBar.Trigger>File</MenuBar.Trigger>
+    <MenuBar.Content>
+      <MenuBar.Item>New</MenuBar.Item>
+      <MenuBar.Item>Open</MenuBar.Item>
+      <MenuBar.Separator />
+      <MenuBar.Item>Quit</MenuBar.Item>
+    </MenuBar.Content>
+  </MenuBar.Menu>
+  <MenuBar.Menu value="edit">
+    <MenuBar.Trigger>Edit</MenuBar.Trigger>
+    <MenuBar.Content>
+      <MenuBar.Item>Undo</MenuBar.Item>
+      <MenuBar.Item>Redo</MenuBar.Item>
+    </MenuBar.Content>
+  </MenuBar.Menu>
+</MenuBar.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { MenuBar } from '@wire-ui/react'
+
+<MenuBar.Root className="flex items-center gap-1 rounded-[8px] border border-black bg-white p-1">
+  <MenuBar.Menu value="file">
+    <div className="relative">
+      <MenuBar.Trigger className="cursor-pointer rounded-[6px] px-3 py-1 text-sm text-black outline-none hover:bg-[#f5f5f5] data-[state=open]:bg-[#f5f5f5]">
+        File
+      </MenuBar.Trigger>
+      <MenuBar.Content className="absolute left-0 top-full z-10 mt-1 min-w-[180px] rounded-[20px] border border-black bg-white p-1">
+        <MenuBar.Item className="cursor-pointer rounded-[6px] px-3 py-1.5 text-sm text-black hover:bg-[#f5f5f5] data-[focus-visible]:bg-[#f5f5f5]">
+          New
+        </MenuBar.Item>
+        <MenuBar.Item className="cursor-pointer rounded-[6px] px-3 py-1.5 text-sm text-black hover:bg-[#f5f5f5]">
+          Open
+        </MenuBar.Item>
+      </MenuBar.Content>
+    </div>
+  </MenuBar.Menu>
+</MenuBar.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { MenuBar } from '@wire-ui/vue'
+</script>
+
+<template>
+  <MenuBar.Root class="flex items-center gap-1 rounded-[8px] border border-black bg-white p-1">
+    <MenuBar.Menu value="file">
+      <div class="relative">
+        <MenuBar.Trigger class="cursor-pointer rounded-[6px] px-3 py-1 text-sm text-black outline-none hover:bg-[#f5f5f5] data-[state=open]:bg-[#f5f5f5]">
+          File
+        </MenuBar.Trigger>
+        <MenuBar.Content class="absolute left-0 top-full z-10 mt-1 min-w-[180px] rounded-[20px] border border-black bg-white p-1">
+          <MenuBar.Item class="cursor-pointer rounded-[6px] px-3 py-1.5 text-sm text-black hover:bg-[#f5f5f5] data-[focus-visible]:bg-[#f5f5f5]">
+            New
+          </MenuBar.Item>
+          <MenuBar.Item class="cursor-pointer rounded-[6px] px-3 py-1.5 text-sm text-black hover:bg-[#f5f5f5]">
+            Open
+          </MenuBar.Item>
+        </MenuBar.Content>
+      </div>
+    </MenuBar.Menu>
+  </MenuBar.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { MenuBar } from '@wire-ui/solid'
+
+<MenuBar.Root class="flex items-center gap-1 rounded-[8px] border border-black bg-white p-1">
+  <MenuBar.Menu value="file">
+    <div class="relative">
+      <MenuBar.Trigger class="cursor-pointer rounded-[6px] px-3 py-1 text-sm text-black outline-none hover:bg-[#f5f5f5] data-[state=open]:bg-[#f5f5f5]">
+        File
+      </MenuBar.Trigger>
+      <MenuBar.Content class="absolute left-0 top-full z-10 mt-1 min-w-[180px] rounded-[20px] border border-black bg-white p-1">
+        <MenuBar.Item class="cursor-pointer rounded-[6px] px-3 py-1.5 text-sm text-black hover:bg-[#f5f5f5] data-[focus-visible]:bg-[#f5f5f5]">
+          New
+        </MenuBar.Item>
+        <MenuBar.Item class="cursor-pointer rounded-[6px] px-3 py-1.5 text-sm text-black hover:bg-[#f5f5f5]">
+          Open
+        </MenuBar.Item>
+      </MenuBar.Content>
+    </div>
+  </MenuBar.Menu>
+</MenuBar.Root>
+```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Both `Menu` and `Trigger` expose `data-state`. Use it to highlight the open trigger and animate the open menu.
+
+```tsx
+<MenuBar.Trigger className="
+  data-[state=open]:bg-[#f5f5f5]
+  data-[focus-visible]:ring-2 data-[focus-visible]:ring-black
+">
+  File
+</MenuBar.Trigger>
+```
+
+## Using data attributes
+
+```css
+[data-state="open"]  { background: #f5f5f5; }
+[data-state="closed"] { /* default */ }
+[data-disabled]      { opacity: 0.4; cursor: not-allowed; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `string \| null` | — | Controlled open menu id |
+| `defaultValue` | `string \| null` | `null` | Initial open menu (uncontrolled) |
+| `onValueChange` | `(value: string \| null) => void` | — | Called when the open menu changes |
+
+## Menu props
+
+| Prop | Type | Description |
+|---|---|---|
+| `value` | `string` | Unique id matching Root's `value` |
+
+## Trigger props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `disabled` | `boolean` | `false` | Disables this trigger |
+
+## Item props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `disabled` | `boolean` | `false` | Disables this item |
+| `onSelect` | `() => void` | — | Called when the item is selected (also closes the menu) |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-state` | Menu, Trigger, Content | `"open"` / `"closed"` |
+| `data-disabled` | Trigger, Item | Present when disabled |
+| `data-hover` / `data-active` / `data-focus-visible` | Trigger, Item | Standard interactive states |
+
+Root sets `role="menubar"`. Trigger sets `aria-haspopup="menu"` and `aria-expanded`. Content sets `role="menu"`. Items set `role="menuitem"`. Separator sets `role="separator"`.
+
+## Accessibility
+
+- Hovering a trigger while another menu is open switches to that menu — matches native application menu behaviour.
+- Outside click or <kbd>Escape</kbd> closes the open menu.
+- Items are keyboard-activatable via <kbd>Enter</kbd> or <kbd>Space</kbd>.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Enter</kbd> | Activates the focused trigger or item. |
+| <kbd>Space</kbd> | Activates the focused trigger or item. |
+| <kbd>Tab</kbd> | Moves focus to the next trigger or item. |
+| <kbd>Escape</kbd> | Closes the open menu. |
