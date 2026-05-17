@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { provide, reactive, computed, toRef } from 'vue';
-import { AccordionKey, AccordionItemKey } from './keys';
+import { AccordionItemKey } from './keys';
 import { useAccordionContext } from './keys';
 
 defineOptions({ name: 'AccordionItem' })
