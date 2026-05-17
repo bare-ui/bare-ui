@@ -1,0 +1,253 @@
+---
+title: Breadcrumb
+description: Semantic navigation trail with current-page marking and a customizable separator.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Breadcrumb
+
+A navigation trail. Renders as `<nav><ol>` with proper landmark and list semantics. Mark the current page with `current` and customize the separator however you like.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Semantic `<nav>` + `<ol>` structure with built-in `aria-label`.</FeatureItem>
+  <FeatureItem>Current-page marking via `current` (adds `aria-current="page"`).</FeatureItem>
+  <FeatureItem>Customizable separator content — text, character, or icon.</FeatureItem>
+  <FeatureItem>`asChild` on Link to wrap router links (Next, React Router, etc.).</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><BreadcrumbPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Breadcrumb } from '@wire-ui/react'
+
+<Breadcrumb.Root>
+  <Breadcrumb.List>
+    <Breadcrumb.Item>
+      <Breadcrumb.Link href="/">Home</Breadcrumb.Link>
+    </Breadcrumb.Item>
+    <Breadcrumb.Separator />
+    <Breadcrumb.Item>
+      <Breadcrumb.Link href="/settings">Settings</Breadcrumb.Link>
+    </Breadcrumb.Item>
+    <Breadcrumb.Separator />
+    <Breadcrumb.Item current>Profile</Breadcrumb.Item>
+  </Breadcrumb.List>
+</Breadcrumb.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Breadcrumb, BreadcrumbRoot, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from '@wire-ui/vue'
+</script>
+
+<template>
+    <BreadcrumbRoot>
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/">Home</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/settings">Settings</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem current>Profile</BreadcrumbItem>
+      </BreadcrumbList>
+    </BreadcrumbRoot>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Breadcrumb } from '@wire-ui/solid'
+
+<Breadcrumb.Root>
+  <Breadcrumb.List>
+    <Breadcrumb.Item>
+      <Breadcrumb.Link href="/">Home</Breadcrumb.Link>
+    </Breadcrumb.Item>
+    <Breadcrumb.Separator />
+    <Breadcrumb.Item>
+      <Breadcrumb.Link href="/settings">Settings</Breadcrumb.Link>
+    </Breadcrumb.Item>
+    <Breadcrumb.Separator />
+    <Breadcrumb.Item current>Profile</Breadcrumb.Item>
+  </Breadcrumb.List>
+</Breadcrumb.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Breadcrumb } from '@wire-ui/react'
+
+<Breadcrumb.Root>
+  <Breadcrumb.List className="flex items-center">
+    <Breadcrumb.Item>
+      <Breadcrumb.Link href="/" className="text-sm text-[#6b7280] hover:text-black hover:underline">
+        Home
+      </Breadcrumb.Link>
+    </Breadcrumb.Item>
+    <Breadcrumb.Separator className="mx-2 text-[#6b7280]">›</Breadcrumb.Separator>
+    <Breadcrumb.Item>
+      <Breadcrumb.Link href="/docs" className="text-sm text-[#6b7280] hover:text-black hover:underline">
+        Docs
+      </Breadcrumb.Link>
+    </Breadcrumb.Item>
+    <Breadcrumb.Separator className="mx-2 text-[#6b7280]">›</Breadcrumb.Separator>
+    <Breadcrumb.Item current className="text-sm font-medium text-black">
+      Breadcrumb
+    </Breadcrumb.Item>
+  </Breadcrumb.List>
+</Breadcrumb.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { BreadcrumbRoot, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from '@wire-ui/vue'
+</script>
+
+<template>
+  <BreadcrumbRoot>
+    <BreadcrumbList class="flex items-center">
+      <BreadcrumbItem>
+        <BreadcrumbLink href="/" class="text-sm text-[#6b7280] hover:text-black hover:underline">
+          Home
+        </BreadcrumbLink>
+      </BreadcrumbItem>
+      <BreadcrumbSeparator class="mx-2 text-[#6b7280]">›</BreadcrumbSeparator>
+      <BreadcrumbItem>
+        <BreadcrumbLink href="/docs" class="text-sm text-[#6b7280] hover:text-black hover:underline">
+          Docs
+        </BreadcrumbLink>
+      </BreadcrumbItem>
+      <BreadcrumbSeparator class="mx-2 text-[#6b7280]">›</BreadcrumbSeparator>
+      <BreadcrumbItem current class="text-sm font-medium text-black">
+        Breadcrumb
+      </BreadcrumbItem>
+    </BreadcrumbList>
+  </BreadcrumbRoot>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { Breadcrumb } from '@wire-ui/solid'
+
+<Breadcrumb.Root>
+  <Breadcrumb.List class="flex items-center">
+    <Breadcrumb.Item>
+      <Breadcrumb.Link href="/" class="text-sm text-[#6b7280] hover:text-black hover:underline">
+        Home
+      </Breadcrumb.Link>
+    </Breadcrumb.Item>
+    <Breadcrumb.Separator class="mx-2 text-[#6b7280]">›</Breadcrumb.Separator>
+    <Breadcrumb.Item>
+      <Breadcrumb.Link href="/docs" class="text-sm text-[#6b7280] hover:text-black hover:underline">
+        Docs
+      </Breadcrumb.Link>
+    </Breadcrumb.Item>
+    <Breadcrumb.Separator class="mx-2 text-[#6b7280]">›</Breadcrumb.Separator>
+    <Breadcrumb.Item current class="text-sm font-medium text-black">
+      Breadcrumb
+    </Breadcrumb.Item>
+  </Breadcrumb.List>
+</Breadcrumb.Root>
+```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+The current item exposes `data-current`. Use it to style the active page differently from the link siblings.
+
+```tsx
+<Breadcrumb.Item current className="
+  text-black font-medium
+  data-[current]:cursor-default
+">
+  Current page
+</Breadcrumb.Item>
+```
+
+## Using data attributes
+
+The current Item sets `data-current=""` and `aria-current="page"`.
+
+```css
+li[data-current] { color: black; font-weight: 500; }
+li[data-current] a { pointer-events: none; }
+```
+
+## Using `asChild` on Link
+
+`asChild` lets you replace the `<a>` with a framework router link (Next.js `<Link>`, React Router `<Link>`, etc.) while keeping the Breadcrumb semantics.
+
+```tsx
+<Breadcrumb.Link asChild>
+  <NextLink href="/dashboard">Dashboard</NextLink>
+</Breadcrumb.Link>
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `aria-label` | `string` | `'Breadcrumb'` | Accessible label for the navigation landmark |
+| `...rest` | `HTMLAttributes<HTMLElement>` | — | All standard HTML nav attributes |
+
+## List props
+
+| Prop | Type | Description |
+|---|---|---|
+| `...rest` | `OlHTMLAttributes<HTMLOListElement>` | All standard HTML ol attributes |
+
+## Item props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `current` | `boolean` | `false` | Marks this item as the current page |
+| `...rest` | `LiHTMLAttributes<HTMLLIElement>` | — | All standard HTML li attributes |
+
+## Link props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `asChild` | `boolean` | `false` | Render the child element instead of an `<a>` |
+| `href` | `string` | — | Anchor target (when not using `asChild`) |
+| `...rest` | `AnchorHTMLAttributes<HTMLAnchorElement>` | — | All standard HTML anchor attributes |
+
+## Separator props
+
+| Prop | Type | Description |
+|---|---|---|
+| `children` | `ReactNode` | Custom separator content (defaults to `/`) |
+| `...rest` | `HTMLAttributes<HTMLSpanElement>` | All standard HTML span attributes |
+
+## Data attributes
+
+| Attribute | Element | When present |
+|---|---|---|
+| `data-current` | Item | Present when `current` is true |
+
+Item also sets `aria-current="page"` when current. Separator sets `role="presentation"` and `aria-hidden="true"`.
+
+## Accessibility
+
+- Root renders as a `<nav>` landmark with `aria-label="Breadcrumb"` by default.
+- List renders as an ordered list (`<ol>`) so screen readers announce position.
+- The current Item is exposed via `aria-current="page"` — most assistive tech announces it.
+- Separators are decorative: `role="presentation"`, `aria-hidden="true"`.
