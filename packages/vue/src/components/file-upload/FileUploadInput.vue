@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
+import { onMounted, onUnmounted, useTemplateRef } from 'vue'
 import { useFileUploadContext } from './keys'
 
 defineOptions({ name: 'FileUploadInput', inheritAttrs: false })
