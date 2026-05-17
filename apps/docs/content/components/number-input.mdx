@@ -1,0 +1,211 @@
+---
+title: NumberInput
+description: Numeric input with increment/decrement controls, clamping, and full keyboard support.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# NumberInput
+
+Numeric input with increment / decrement buttons, min/max clamping, configurable step + precision, and full keyboard support. Controlled and uncontrolled. Use `null` to represent an empty input.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Increment and decrement buttons clamp at min / max.</FeatureItem>
+  <FeatureItem>Configurable step and decimal precision.</FeatureItem>
+  <FeatureItem>Full keyboard support: Arrows, PageUp / PageDown, Home / End.</FeatureItem>
+  <FeatureItem>Commits text on blur — invalid input reverts to the last good value.</FeatureItem>
+  <FeatureItem>Can be controlled or uncontrolled.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><NumberInputPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { NumberInput } from '@wire-ui/react'
+
+<NumberInput.Root defaultValue={1} min={0} max={10}>
+  <NumberInput.Decrement>−</NumberInput.Decrement>
+  <NumberInput.Field aria-label="Quantity" />
+  <NumberInput.Increment>+</NumberInput.Increment>
+</NumberInput.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { NumberInput } from '@wire-ui/vue'
+</script>
+
+<template>
+  <NumberInput.Root :default-value="1" :min="0" :max="10">
+    <NumberInput.Decrement>−</NumberInput.Decrement>
+    <NumberInput.Field aria-label="Quantity" />
+    <NumberInput.Increment>+</NumberInput.Increment>
+  </NumberInput.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { NumberInput } from '@wire-ui/solid'
+
+<NumberInput.Root defaultValue={1} min={0} max={10}>
+  <NumberInput.Decrement>−</NumberInput.Decrement>
+  <NumberInput.Field aria-label="Quantity" />
+  <NumberInput.Increment>+</NumberInput.Increment>
+</NumberInput.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { NumberInput } from '@wire-ui/react'
+
+<NumberInput.Root
+  defaultValue={1}
+  min={0}
+  max={10}
+  className="inline-flex items-stretch overflow-hidden rounded-[8px] border border-black"
+>
+  <NumberInput.Decrement className="cursor-pointer bg-white px-3 text-sm text-black border-r border-black hover:bg-[#f5f5f5] disabled:cursor-not-allowed disabled:opacity-40">
+    −
+  </NumberInput.Decrement>
+  <NumberInput.Field aria-label="Quantity" className="w-16 bg-white px-2 py-2 text-center text-sm text-black outline-none focus:bg-[#f5f5f5]" />
+  <NumberInput.Increment className="cursor-pointer bg-white px-3 text-sm text-black border-l border-black hover:bg-[#f5f5f5] disabled:cursor-not-allowed disabled:opacity-40">
+    +
+  </NumberInput.Increment>
+</NumberInput.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { NumberInput } from '@wire-ui/vue'
+</script>
+
+<template>
+  <NumberInput.Root
+    :default-value="1"
+    :min="0"
+    :max="10"
+    class="inline-flex items-stretch overflow-hidden rounded-[8px] border border-black"
+  >
+    <NumberInput.Decrement class="cursor-pointer bg-white px-3 text-sm text-black border-r border-black hover:bg-[#f5f5f5] disabled:cursor-not-allowed disabled:opacity-40">
+      −
+    </NumberInput.Decrement>
+    <NumberInput.Field aria-label="Quantity" class="w-16 bg-white px-2 py-2 text-center text-sm text-black outline-none focus:bg-[#f5f5f5]" />
+    <NumberInput.Increment class="cursor-pointer bg-white px-3 text-sm text-black border-l border-black hover:bg-[#f5f5f5] disabled:cursor-not-allowed disabled:opacity-40">
+      +
+    </NumberInput.Increment>
+  </NumberInput.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { NumberInput } from '@wire-ui/solid'
+
+<NumberInput.Root
+  defaultValue={1}
+  min={0}
+  max={10}
+  class="inline-flex items-stretch overflow-hidden rounded-[8px] border border-black"
+>
+  <NumberInput.Decrement class="cursor-pointer bg-white px-3 text-sm text-black border-r border-black hover:bg-[#f5f5f5] disabled:cursor-not-allowed disabled:opacity-40">
+    −
+  </NumberInput.Decrement>
+  <NumberInput.Field aria-label="Quantity" class="w-16 bg-white px-2 py-2 text-center text-sm text-black outline-none focus:bg-[#f5f5f5]" />
+  <NumberInput.Increment class="cursor-pointer bg-white px-3 text-sm text-black border-l border-black hover:bg-[#f5f5f5] disabled:cursor-not-allowed disabled:opacity-40">
+    +
+  </NumberInput.Increment>
+</NumberInput.Root>
+```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+NumberInput Root exposes `data-disabled` and `data-readonly`. Increment / Decrement buttons additionally expose `data-hover`, `data-focus-visible`, and `data-active` from the underlying interactive state tracker. The buttons are auto-disabled when the value reaches the relevant boundary.
+
+```tsx
+<NumberInput.Root className="
+  data-[disabled]:opacity-50
+  data-[readonly]:bg-[#f5f5f5]
+">
+  <NumberInput.Decrement className="
+    data-[hover]:bg-[#f5f5f5]
+    disabled:cursor-not-allowed disabled:opacity-40
+  ">−</NumberInput.Decrement>
+  <NumberInput.Field />
+  <NumberInput.Increment>+</NumberInput.Increment>
+</NumberInput.Root>
+```
+
+## Using data attributes
+
+Root sets `data-disabled` and `data-readonly`. Increment / Decrement buttons expose interactive state attributes and the native `disabled` attribute when at boundary.
+
+```css
+[data-disabled] { opacity: 0.5; }
+[data-readonly] { background: #f5f5f5; }
+button[data-hover] { background: #f5f5f5; }
+button:disabled    { opacity: 0.4; cursor: not-allowed; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `number \| null` | — | Controlled value (`null` = empty) |
+| `defaultValue` | `number \| null` | `null` | Initial value (uncontrolled) |
+| `onChange` | `(value: number \| null) => void` | — | Called when the value changes |
+| `min` | `number` | `-Infinity` | Minimum allowed value |
+| `max` | `number` | `Infinity` | Maximum allowed value |
+| `step` | `number` | `1` | Increment / decrement step |
+| `precision` | `number` | step decimals | Decimal precision |
+| `disabled` | `boolean` | `false` | Disables input + buttons |
+| `readOnly` | `boolean` | `false` | Read-only field (buttons still disabled) |
+
+## Field props
+
+Accepts all standard `<input>` props except `value`, `defaultValue`, `onChange`, and `type` (the field is always rendered as `type="text"` with `inputMode="decimal"`).
+
+## Increment / Decrement props
+
+Accept all standard `<button>` attributes. Native `disabled` is automatically applied when the value is at the relevant boundary.
+
+## Data attributes
+
+| Attribute | Element | When present |
+|---|---|---|
+| `data-disabled` | Root | `disabled` prop is true |
+| `data-readonly` | Root | `readOnly` prop is true |
+| `data-hover` | Increment, Decrement | Mouse is over the button |
+| `data-focus-visible` | Increment, Decrement | Button has keyboard focus |
+| `data-active` | Increment, Decrement | Button is being pressed |
+
+## Accessibility
+
+- Field is rendered with `role="spinbutton"` and `aria-valuenow` / `aria-valuemin` / `aria-valuemax`.
+- Increment / Decrement buttons receive `aria-label="Increment"` / `"Decrement"` and `tabIndex={-1}` (the field handles keyboard).
+- Field commits the typed value on blur — partial input like `"-"` or `"."` is treated as empty.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>ArrowUp</kbd> | Increment by `step`. |
+| <kbd>ArrowDown</kbd> | Decrement by `step`. |
+| <kbd>PageUp</kbd> | Increment by `step * 10`. |
+| <kbd>PageDown</kbd> | Decrement by `step * 10`. |
+| <kbd>Home</kbd> | Jump to `min` (when finite). |
+| <kbd>End</kbd> | Jump to `max` (when finite). |
