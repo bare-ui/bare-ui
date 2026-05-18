@@ -3,8 +3,6 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { components } from "../data/components.js";
 import type { Framework } from "../data/types.js";
 
-const SUPPORTED_FRAMEWORKS: Framework[] = ["react"];
-
 const schema = {
 	name: z
 		.string()
@@ -20,7 +18,7 @@ export function registerGetComponent(server: McpServer) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	(server as any).tool(
 		"get_component",
-		"Get full details for a specific Wire UI component including props, data attributes, and usage examples.",
+		"Get full details for a specific Wire UI component including props, data attributes, and usage examples for the chosen framework.",
 		schema,
 		async ({ name, framework }: { name: string; framework: Framework }) => {
 			const component = components.find(
@@ -40,18 +38,19 @@ export function registerGetComponent(server: McpServer) {
 				};
 			}
 
-			if (!SUPPORTED_FRAMEWORKS.includes(framework)) {
+			const snippets = component.frameworks[framework];
+			const availableFrameworks = Object.keys(component.frameworks);
+
+			if (!snippets) {
 				return {
 					content: [
 						{
 							type: "text" as const,
-							text: `The "${framework}" framework is not yet supported for ${component.name}. Currently available: ${SUPPORTED_FRAMEWORKS.join(", ")}.`,
+							text: `Component "${component.name}" is not available in @wire-ui/${framework}. Available frameworks for this component: ${availableFrameworks.join(", ")}.`,
 						},
 					],
 				};
 			}
-
-			const snippets = component.frameworks[framework];
 
 			const result = {
 				name: component.name,
@@ -62,10 +61,9 @@ export function registerGetComponent(server: McpServer) {
 				props: component.props,
 				dataAttributes: component.dataAttributes,
 				notes: component.notes,
-				...(snippets && {
-					import: snippets.importStatement,
-					example: snippets.basicExample,
-				}),
+				import: snippets.importStatement,
+				example: snippets.basicExample,
+				availableFrameworks,
 			};
 
 			return {
