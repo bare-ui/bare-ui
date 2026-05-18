@@ -1,6 +1,9 @@
+import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { Framework } from "../data/types.js";
 
-const installationGuide = `# Wire UI Installation Guide
+const GUIDES: Record<Framework, string> = {
+	react: `# @wire-ui/react Installation Guide
 
 ## Install
 
@@ -10,7 +13,7 @@ npm install @wire-ui/react
 
 ## Peer Dependencies
 
-React >= 19.0.0 and React DOM >= 19.0.0 are required.
+React >= 19.0.0 and React DOM >= 19.0.0.
 
 \`\`\`bash
 npm install react@^19 react-dom@^19
@@ -24,7 +27,7 @@ Style with any approach: Tailwind, CSS Modules, plain CSS, or inline styles.
 ### Tailwind Example
 
 \`\`\`tsx
-<Button className="[data-hover]:bg-blue-700 [data-active]:scale-95 [data-disabled]:opacity-50">
+<Button className="data-[hover]:bg-blue-700 data-[active]:scale-95 data-[disabled]:opacity-50">
   Click me
 </Button>
 \`\`\`
@@ -37,23 +40,9 @@ button[data-active]   { transform: scale(0.95); }
 button[data-disabled] { opacity: 0.5; }
 \`\`\`
 
-## Data Attributes
-
-Attributes are present as an empty string when active, and absent when not — never "true" or "false".
-
-| Attribute           | When present                        |
-|---------------------|-------------------------------------|
-| data-hover          | Mouse is over the element           |
-| data-focus-visible  | Keyboard focus (mirrors :focus-visible) |
-| data-active         | Element is being pressed            |
-| data-disabled       | Element is disabled                 |
-| data-state          | Open/closed, checked/unchecked      |
-| data-invalid        | Consumer-controlled via invalidType |
-| data-success        | Consumer-controlled via isSuccess   |
-
 ## Validation Pattern
 
-Wire UI never validates internally. Set invalidType when your validation logic decides something is invalid:
+Wire UI never validates internally. Set \`invalidType\` when your validation logic decides something is invalid:
 
 \`\`\`tsx
 <Input.Root
@@ -64,20 +53,157 @@ Wire UI never validates internally. Set invalidType when your validation logic d
   <Input.Error />
 </Input.Root>
 \`\`\`
+`,
+
+	solid: `# @wire-ui/solid Installation Guide
+
+## Install
+
+\`\`\`bash
+npm install @wire-ui/solid
+\`\`\`
+
+## Peer Dependencies
+
+Solid.js >= 1.9.0.
+
+\`\`\`bash
+npm install solid-js@^1.9
+\`\`\`
+
+## Styling Approach
+
+Wire UI ships zero CSS. All interactive states are exposed through data-* attributes.
+Style with any approach: Tailwind, CSS Modules, plain CSS, or inline styles.
+
+### Tailwind Example
+
+\`\`\`tsx
+<Button class="data-[hover]:bg-blue-700 data-[active]:scale-95 data-[disabled]:opacity-50">
+  Click me
+</Button>
+\`\`\`
+
+### Plain CSS Example
+
+\`\`\`css
+button[data-hover]    { background: #1d4ed8; }
+button[data-active]   { transform: scale(0.95); }
+button[data-disabled] { opacity: 0.5; }
+\`\`\`
+
+## Signals and Reactivity
+
+Wire UI Solid uses signals throughout. When passing controlled values, call the signal as a function:
+
+\`\`\`tsx
+const [value, setValue] = createSignal('');
+
+<Input.Root value={value()} onChange={setValue}>
+  <Input.Field type="email" />
+</Input.Root>
+\`\`\`
+
+## Validation Pattern
+
+Same as React — set \`invalidType\` from your own validation logic.
+`,
+
+	vue: `# @wire-ui/vue Installation Guide
+
+## Install
+
+\`\`\`bash
+npm install @wire-ui/vue
+\`\`\`
+
+## Peer Dependencies
+
+Vue >= 3.4.0.
+
+\`\`\`bash
+npm install vue@^3.4
+\`\`\`
+
+## Styling Approach
+
+Wire UI ships zero CSS. All interactive states are exposed through data-* attributes.
+Style with any approach: Tailwind, CSS Modules, plain CSS, or inline styles.
+
+### Tailwind Example
+
+\`\`\`vue
+<template>
+  <Button class="data-[hover]:bg-blue-700 data-[active]:scale-95 data-[disabled]:opacity-50">
+    Click me
+  </Button>
+</template>
+\`\`\`
+
+### Plain CSS Example
+
+\`\`\`css
+button[data-hover]    { background: #1d4ed8; }
+button[data-active]   { transform: scale(0.95); }
+button[data-disabled] { opacity: 0.5; }
+\`\`\`
+
+## SFC Template Conventions
+
+Use v-bind (\`:prop\`) for dynamic props, kebab-case events for change handlers:
+
+\`\`\`vue
+<template>
+  <Modal.Root :open="open" @open-change="open = $event">
+    <Modal.Portal>...</Modal.Portal>
+  </Modal.Root>
+</template>
+\`\`\`
+
+## Validation Pattern
+
+Same as React/Solid — set \`invalidType\` from your own validation logic.
+`,
+};
+
+const SHARED = `## Data Attributes
+
+Attributes are present as an empty string when active, and absent when not — never "true" or "false".
+
+| Attribute           | When present                            |
+|---------------------|-----------------------------------------|
+| data-hover          | Mouse is over the element               |
+| data-focus-visible  | Keyboard focus (mirrors :focus-visible) |
+| data-active         | Element is being pressed                |
+| data-disabled       | Element is disabled                     |
+| data-state          | Open/closed, checked/unchecked          |
+| data-invalid        | Consumer-controlled via invalidType     |
+| data-success        | Consumer-controlled via isSuccess       |
+| data-highlighted    | Keyboard-highlighted option/item        |
+| data-selected       | Currently selected item                 |
+| data-side / data-align | Resolved popover placement           |
 `;
+
+const schema = {
+	framework: z
+		.enum(["react", "vue", "solid"])
+		.optional()
+		.default("react")
+		.describe("Target framework (default: react)"),
+};
 
 export function registerGetInstallationGuide(server: McpServer) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	(server as any).tool(
 		"get_installation_guide",
-		"Get Wire UI installation instructions, peer dependencies, styling approach, and data attribute reference.",
-		{},
-		async () => {
+		"Get Wire UI installation instructions, peer dependencies, styling approach, and data attribute reference for the chosen framework.",
+		schema,
+		async ({ framework }: { framework: Framework }) => {
 			return {
 				content: [
 					{
 						type: "text" as const,
-						text: installationGuide,
+						text: GUIDES[framework] + "\n" + SHARED,
 					},
 				],
 			};
