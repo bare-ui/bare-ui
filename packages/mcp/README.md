@@ -2,7 +2,7 @@
 
 MCP (Model Context Protocol) server for [Wire UI](https://wire-ui.com) — AI-native unstyled primitives framework.
 
-Gives AI coding tools direct access to Wire UI's component APIs, props, data attributes, and usage examples.
+Gives AI coding tools direct access to Wire UI's components, hooks/primitives/composables, props, data attributes, and usage examples across React, Solid, and Vue.
 
 ## Installation
 
@@ -70,14 +70,16 @@ Add to your `mcp.json`:
 
 ## Available Tools
 
+Every tool accepts a `framework` parameter — `"react"`, `"solid"`, or `"vue"` (default: `"react"`). The server returns import statements, code snippets, and naming that match the chosen framework (e.g. React/Vue surface hooks as `useX`, Solid as `createX`).
+
 ### `list_components`
 
-List all Wire UI components with categories and descriptions.
+List all Wire UI components for a framework with categories and descriptions.
 
-| Parameter   | Type                                           | Default   | Description        |
-| ----------- | ---------------------------------------------- | --------- | ------------------ |
-| `framework` | `"react" \| "vue" \| "solid"`                  | `"react"` | Target framework   |
-| `category`  | `"form" \| "overlay" \| "display" \| "layout"` | —         | Filter by category |
+| Parameter   | Type                                                                              | Default   | Description        |
+| ----------- | --------------------------------------------------------------------------------- | --------- | ------------------ |
+| `framework` | `"react" \| "vue" \| "solid"`                                                     | `"react"` | Target framework   |
+| `category`  | `"form" \| "overlay" \| "display" \| "layout" \| "navigation" \| "feedback"`      | —         | Filter by category |
 
 ### `get_component`
 
@@ -88,17 +90,35 @@ Get full details for a specific component — props, data attributes, parts, and
 | `name`      | `string`                      | required  | Component name (e.g., "Button", "Modal") |
 | `framework` | `"react" \| "vue" \| "solid"` | `"react"` | Target framework                         |
 
+### `list_hooks`
+
+List all hooks (React/Vue) or primitives (Solid) — also called composables in Vue.
+
+| Parameter   | Type                                                                                       | Default   | Description       |
+| ----------- | ------------------------------------------------------------------------------------------ | --------- | ----------------- |
+| `framework` | `"react" \| "vue" \| "solid"`                                                              | `"react"` | Target framework  |
+| `category`  | `"state" \| "interaction" \| "observer" \| "positioning" \| "timing" \| "dom"`             | —         | Filter by category |
+
+### `get_hook`
+
+Get details for a specific hook/primitive/composable — signature, return value, and example. Accepts any naming form (`useDisclosure`, `createDisclosure`, or canonical `disclosure`).
+
+| Parameter   | Type                          | Default   | Description       |
+| ----------- | ----------------------------- | --------- | ----------------- |
+| `name`      | `string`                      | required  | Hook name         |
+| `framework` | `"react" \| "vue" \| "solid"` | `"react"` | Target framework  |
+
 ### `get_decision_tree`
 
 Get a decision tree to help choose the right component for a scenario.
 
-| Parameter  | Type                               | Description         |
-| ---------- | ---------------------------------- | ------------------- |
-| `scenario` | `"form" \| "overlay" \| "styling"` | Which decision tree |
+| Parameter  | Type                                                                                       | Description         |
+| ---------- | ------------------------------------------------------------------------------------------ | ------------------- |
+| `scenario` | `"form" \| "overlay" \| "navigation" \| "feedback" \| "hooks" \| "styling"`                | Which decision tree |
 
 ### `search_docs`
 
-Search across all component documentation by keyword.
+Search across components, hooks, and decision trees by keyword.
 
 | Parameter   | Type                          | Default   | Description            |
 | ----------- | ----------------------------- | --------- | ---------------------- |
@@ -107,13 +127,15 @@ Search across all component documentation by keyword.
 
 ### `get_installation_guide`
 
-Get installation instructions, peer dependencies, styling approach, and data attribute reference.
+Get installation instructions, peer dependencies, styling approach, and data attribute reference for the chosen framework.
 
-No parameters required.
+| Parameter   | Type                          | Default   | Description      |
+| ----------- | ----------------------------- | --------- | ---------------- |
+| `framework` | `"react" \| "vue" \| "solid"` | `"react"` | Target framework |
 
 ### `get_exports_list`
 
-List all exports from the Wire UI package — components, hooks, and TypeScript types.
+List all exports from a Wire UI package — components, hooks/primitives/composables, and TypeScript types.
 
 | Parameter   | Type                          | Default   | Description      |
 | ----------- | ----------------------------- | --------- | ---------------- |
@@ -121,7 +143,13 @@ List all exports from the Wire UI package — components, hooks, and TypeScript 
 
 ## Framework Support
 
-Currently supports **React**. Vue and Solid support will be added when those packages are released — no server changes needed, just data additions.
+| Framework | Package           | Hooks surface as |
+| --------- | ----------------- | ---------------- |
+| React     | `@wire-ui/react`  | `useX`           |
+| Solid     | `@wire-ui/solid`  | `createX`        |
+| Vue       | `@wire-ui/vue`    | `useX` (composables) |
+
+A small number of components are only available in `@wire-ui/react` (currently `Popover`, `Slider`, `Tabs`) and the MCP server reports this when you query them with another framework.
 
 ## License
 
