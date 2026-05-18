@@ -1,69 +1,19 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { components } from "../data/components.js";
+import { hooks } from "../data/hooks.js";
 import type { Framework } from "../data/types.js";
 
-const SUPPORTED_FRAMEWORKS: Framework[] = ["react"];
+const PACKAGE_BY_FRAMEWORK: Record<Framework, string> = {
+	react: "@wire-ui/react",
+	solid: "@wire-ui/solid",
+	vue: "@wire-ui/vue",
+};
 
-const exports: Partial<
-	Record<
-		Framework,
-		{
-			package: string;
-			components: string[];
-			hooks: string[];
-			types: string[];
-		}
-	>
-> = {
-	react: {
-		package: "@wire-ui/react",
-		components: [
-			"Accordion",
-			"Alert",
-			"Avatar",
-			"Badge",
-			"Button",
-			"Card",
-			"Checkbox",
-			"Divider",
-			"Drawer",
-			"Dropdown",
-			"Icon",
-			"Image",
-			"Input",
-			"List",
-			"Modal",
-			"OTP",
-			"Password",
-			"ProgressBar",
-			"Radio",
-			"Rating",
-			"Search",
-			"Select",
-			"Switch",
-			"Textarea",
-			"Timeago",
-			"Tooltip",
-		],
-		hooks: ["useInteractiveState", "useClickOutside"],
-		types: [
-			"Size",
-			"Status",
-			"HorizontalPosition",
-			"BaseFormFieldProps",
-			"BaseOption",
-			"ButtonProps",
-			"InputRootProps",
-			"TextareaRootProps",
-			"PasswordRootProps",
-			"ModalRootProps",
-			"AccordionRootProps",
-			"SearchOption",
-			"IconSize",
-			"InteractiveStateOptions",
-			"InteractiveStateResult",
-		],
-	},
+const HOOK_NOUN: Record<Framework, string> = {
+	react: "Hooks",
+	solid: "Primitives",
+	vue: "Composables",
 };
 
 const schema = {
@@ -78,48 +28,48 @@ export function registerGetExportsList(server: McpServer) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	(server as any).tool(
 		"get_exports_list",
-		"List all exports from the Wire UI package — components, hooks, and TypeScript types.",
+		"List all exports from a Wire UI package — components, hooks/primitives/composables, and a sample of TypeScript types — for the chosen framework.",
 		schema,
 		async ({ framework }: { framework: Framework }) => {
-			if (!SUPPORTED_FRAMEWORKS.includes(framework)) {
-				return {
-					content: [
-						{
-							type: "text" as const,
-							text: `The "${framework}" framework is not yet supported. Currently available: ${SUPPORTED_FRAMEWORKS.join(", ")}.`,
-						},
-					],
-				};
-			}
+			const pkg = PACKAGE_BY_FRAMEWORK[framework];
+			const componentNames = components
+				.filter((c) => c.frameworks[framework])
+				.map((c) => c.name)
+				.sort();
 
-			const data = exports[framework]!;
+			const hookNames = hooks
+				.filter((h) => h.frameworks[framework])
+				.map((h) => h.frameworks[framework]!.name)
+				.sort();
+
+			const hookNoun = HOOK_NOUN[framework];
 
 			const text = [
-				`# ${data.package} exports`,
+				`# ${pkg} exports`,
 				"",
-				`## Components (${data.components.length})`,
+				`## Components (${componentNames.length})`,
 				"",
-				`\`\`\`tsx`,
-				`import { ${data.components.slice(0, 5).join(", ")}, ... } from '${data.package}'`,
-				`\`\`\``,
+				"```ts",
+				`import { ${componentNames.slice(0, 5).join(", ")}, ... } from '${pkg}'`,
+				"```",
 				"",
-				data.components.map((c: string) => `- ${c}`).join("\n"),
+				componentNames.map((c) => `- ${c}`).join("\n"),
 				"",
-				`## Hooks (${data.hooks.length})`,
+				`## ${hookNoun} (${hookNames.length})`,
 				"",
-				`\`\`\`tsx`,
-				`import { ${data.hooks.join(", ")} } from '${data.package}'`,
-				`\`\`\``,
+				"```ts",
+				`import { ${hookNames.slice(0, 5).join(", ")}, ... } from '${pkg}'`,
+				"```",
 				"",
-				data.hooks.map((h: string) => `- ${h}`).join("\n"),
+				hookNames.map((h) => `- ${h}`).join("\n"),
 				"",
-				`## Types (${data.types.length})`,
+				`## Types`,
 				"",
-				`\`\`\`tsx`,
-				`import type { ${data.types.slice(0, 4).join(", ")}, ... } from '${data.package}'`,
-				`\`\`\``,
+				"All component sub-part types and shared types (Size, Status, HorizontalPosition, BaseFormFieldProps, BaseOption, framework-specific hook options) are exported as type-only re-exports.",
 				"",
-				data.types.map((t: string) => `- ${t}`).join("\n"),
+				"```ts",
+				`import type { Size, Status, BaseFormFieldProps, ButtonProps, InputRootProps, ModalRootProps, ... } from '${pkg}'`,
+				"```",
 			].join("\n");
 
 			return {
