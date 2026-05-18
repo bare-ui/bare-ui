@@ -5,7 +5,16 @@ export type ComponentCategory =
 	| "overlay"
 	| "display"
 	| "layout"
+	| "navigation"
 	| "feedback";
+
+export type HookCategory =
+	| "state"
+	| "interaction"
+	| "observer"
+	| "positioning"
+	| "timing"
+	| "dom";
 
 export interface PropInfo {
 	name: string;
@@ -36,6 +45,22 @@ export interface ComponentData {
 	props: Record<string, PropInfo[]>;
 	dataAttributes: DataAttributeInfo[];
 	frameworks: Partial<Record<Framework, FrameworkSnippets>>;
+	notes?: string[];
+}
+
+export interface HookFrameworkSnippet {
+	name: string;
+	importStatement: string;
+	basicExample: string;
+}
+
+export interface HookData {
+	canonicalName: string;
+	category: HookCategory;
+	description: string;
+	signature?: string;
+	returns?: string;
+	frameworks: Partial<Record<Framework, HookFrameworkSnippet>>;
 	notes?: string[];
 }
 
