@@ -1,10 +1,9 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { components } from "../data/components.js";
+import { hooks } from "../data/hooks.js";
 import { decisionTrees } from "../data/decision-trees.js";
 import type { Framework } from "../data/types.js";
-
-const SUPPORTED_FRAMEWORKS: Framework[] = ["react"];
 
 function scoreComponent(
 	query: string,
@@ -39,6 +38,27 @@ function scoreComponent(
 	return score;
 }
 
+function scoreHook(
+	query: string,
+	hook: (typeof hooks)[number],
+	framework: Framework,
+): number {
+	const tokens = query.toLowerCase().split(/\s+/);
+	let score = 0;
+	const fwName = hook.frameworks[framework]?.name ?? "";
+
+	for (const token of tokens) {
+		if (hook.canonicalName.toLowerCase().includes(token)) score += 8;
+		if (fwName.toLowerCase().includes(token)) score += 8;
+		if (hook.description.toLowerCase().includes(token)) score += 4;
+		if (hook.category.includes(token)) score += 3;
+		if (hook.signature && hook.signature.toLowerCase().includes(token))
+			score += 2;
+	}
+
+	return score;
+}
+
 const schema = {
 	query: z.string().describe("Free-text search query"),
 	framework: z
@@ -52,7 +72,7 @@ export function registerSearchDocs(server: McpServer) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	(server as any).tool(
 		"search_docs",
-		"Search Wire UI documentation by keyword. Returns matching components ranked by relevance.",
+		"Search Wire UI documentation by keyword across components, hooks, and decision trees. Returns matches ranked by relevance for the chosen framework.",
 		schema,
 		async ({
 			query,
@@ -61,36 +81,32 @@ export function registerSearchDocs(server: McpServer) {
 			query: string;
 			framework: Framework;
 		}) => {
-			if (!SUPPORTED_FRAMEWORKS.includes(framework)) {
-				return {
-					content: [
-						{
-							type: "text" as const,
-							text: `The "${framework}" framework is not yet supported. Currently available: ${SUPPORTED_FRAMEWORKS.join(", ")}.`,
-						},
-					],
-				};
-			}
-
-			const scored = components
+			const scoredComponents = components
 				.filter((c) => c.frameworks[framework])
 				.map((c) => ({ component: c, score: scoreComponent(query, c) }))
 				.filter((s) => s.score > 0)
 				.sort((a, b) => b.score - a.score)
 				.slice(0, 5);
 
-			if (scored.length === 0) {
+			const scoredHooks = hooks
+				.filter((h) => h.frameworks[framework])
+				.map((h) => ({ hook: h, score: scoreHook(query, h, framework) }))
+				.filter((s) => s.score > 0)
+				.sort((a, b) => b.score - a.score)
+				.slice(0, 5);
+
+			if (scoredComponents.length === 0 && scoredHooks.length === 0) {
 				return {
 					content: [
 						{
 							type: "text" as const,
-							text: `No components matched "${query}". Try searching for component names (Button, Input, Modal), features (validation, toggle, dropdown), or data attributes (data-hover, data-state).`,
+							text: `No matches for "${query}". Try component names (Button, Input, Modal), hook names (useDisclosure, useFloating), features (validation, toggle, dropdown), or data attributes (data-hover, data-state).`,
 						},
 					],
 				};
 			}
 
-			const results = scored.map((s) => {
+			const componentResults = scoredComponents.map((s) => {
 				const snippets = s.component.frameworks[framework];
 				return {
 					name: s.component.name,
@@ -101,7 +117,17 @@ export function registerSearchDocs(server: McpServer) {
 				};
 			});
 
-			// Check decision trees for matches
+			const hookResults = scoredHooks.map((s) => {
+				const snippets = s.hook.frameworks[framework];
+				return {
+					name: snippets?.name ?? s.hook.canonicalName,
+					category: s.hook.category,
+					description: s.hook.description,
+					relevance: s.score,
+					...(snippets && { import: snippets.importStatement }),
+				};
+			});
+
 			const queryLower = query.toLowerCase();
 			const matchingTrees = decisionTrees.filter(
 				(t) =>
@@ -114,7 +140,9 @@ export function registerSearchDocs(server: McpServer) {
 					),
 			);
 
-			const output: Record<string, unknown> = { components: results };
+			const output: Record<string, unknown> = {};
+			if (componentResults.length > 0) output.components = componentResults;
+			if (hookResults.length > 0) output.hooks = hookResults;
 			if (matchingTrees.length > 0) {
 				output.decisionTrees = matchingTrees.map((t) => t.name);
 			}
