@@ -4,7 +4,14 @@ import { decisionTrees } from "../data/decision-trees.js";
 
 const schema = {
 	scenario: z
-		.enum(["form", "overlay", "styling"])
+		.enum([
+			"form",
+			"overlay",
+			"navigation",
+			"feedback",
+			"hooks",
+			"styling",
+		])
 		.describe("Which decision tree to retrieve"),
 };
 
@@ -12,7 +19,7 @@ export function registerGetDecisionTree(server: McpServer) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	(server as any).tool(
 		"get_decision_tree",
-		"Get a decision tree to help choose the right Wire UI component for a given scenario.",
+		"Get a decision tree to help choose the right Wire UI component (or hook) for a given scenario.",
 		schema,
 		async ({ scenario }: { scenario: string }) => {
 			const tree = decisionTrees.find((t) => t.name === scenario);
