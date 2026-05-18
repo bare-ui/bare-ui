@@ -19,7 +19,8 @@ export const hooks: HookData[] = [
 		category: "state",
 		description:
 			"Unified controlled/uncontrolled state pattern. Pass value, defaultValue, and onChange — the hook decides which one wins.",
-		signature: "(options: { value?, defaultValue?, onChange? }) => [state, setState]",
+		signature:
+			"(options: { value?, defaultValue?, onChange? }) => [state, setState]",
 		returns: "Tuple/array of [state, setter].",
 		frameworks: {
 			react: {
@@ -59,13 +60,15 @@ export const hooks: HookData[] = [
 		canonicalName: "disclosure",
 		category: "state",
 		description:
-			"Boolean state with open/close/toggle actions. Use for any \"is this thing open?\" state.",
-		signature: "(options?: { defaultOpen?, onOpenChange? }) => { isOpen, open, close, toggle }",
+			'Boolean state with open/close/toggle actions. Use for any "is this thing open?" state.',
+		signature:
+			"(options?: { defaultOpen?, onOpenChange? }) => { isOpen, open, close, toggle }",
 		returns: "Object with isOpen + imperative actions.",
 		frameworks: {
 			react: {
 				name: "useDisclosure",
-				importStatement: "import { useDisclosure } from '@wire-ui/react'",
+				importStatement:
+					"import { useDisclosure } from '@wire-ui/react'",
 				basicExample: `const { isOpen, open, close, toggle } = useDisclosure();
 return <button onClick={toggle}>{isOpen ? 'Close' : 'Open'}</button>;`,
 			},
@@ -107,7 +110,9 @@ return <div ref={ref} />;`,
 return <div ref={ref} />;`,
 			},
 		},
-		notes: ["Not exported from @wire-ui/vue — Vue refs compose differently."],
+		notes: [
+			"Not exported from @wire-ui/vue — Vue refs compose differently.",
+		],
 	},
 
 	{
@@ -143,7 +148,8 @@ return <div ref={ref} />;`,
 		category: "interaction",
 		description:
 			"Tracks hover, keyboard-focus, and press state. Returns event handlers plus a data-attributes object you can spread onto an element.",
-		signature: "(options?: { disabled? }) => { handlers, dataAttributes, isHovered, isFocusVisible, isActive }",
+		signature:
+			"(options?: { disabled? }) => { handlers, dataAttributes, isHovered, isFocusVisible, isActive }",
 		returns: "An object with handlers, dataAttributes, and reactive state.",
 		frameworks: {
 			react: {
@@ -207,7 +213,8 @@ useClickOutside(el, () => close());`,
 		category: "interaction",
 		description:
 			"Declarative keydown/keyup handler with key-combo matching. Map shortcut strings to handler functions.",
-		signature: "(map: KeyboardMap, options?: { event?: 'keydown' | 'keyup' }) => void",
+		signature:
+			"(map: KeyboardMap, options?: { event?: 'keydown' | 'keyup' }) => void",
 		frameworks: {
 			react: {
 				name: "useKeyboard",
@@ -241,7 +248,8 @@ useClickOutside(el, () => close());`,
 		category: "interaction",
 		description:
 			"Contains keyboard focus within an element while active. Used internally by Modal and Drawer.",
-		signature: "(ref: Ref<HTMLElement>, options?: { active?, onEscape? }) => void",
+		signature:
+			"(ref: Ref<HTMLElement>, options?: { active?, onEscape? }) => void",
 		frameworks: {
 			react: {
 				name: "useFocusTrap",
@@ -301,7 +309,8 @@ useFocusTrap(el, { active: open, onEscape: () => (open.value = false) });`,
 		category: "positioning",
 		description:
 			"Anchored-positioning primitive used by Tooltip/Popover/DatePicker/Combobox. Computes collision-aware side/align coordinates.",
-		signature: "(options: { reference, floating, placement?, strategy? }) => { x, y, placement }",
+		signature:
+			"(options: { reference, floating, placement?, strategy? }) => { x, y, placement }",
 		frameworks: {
 			react: {
 				name: "useFloating",
@@ -365,7 +374,8 @@ useFocusTrap(el, { active: open, onEscape: () => (open.value = false) });`,
 		category: "observer",
 		description:
 			"Observes when an element enters or leaves the viewport. Configurable threshold and rootMargin.",
-		signature: "(ref: Ref<HTMLElement>, options?: { threshold?, rootMargin? }) => boolean",
+		signature:
+			"(ref: Ref<HTMLElement>, options?: { threshold?, rootMargin? }) => boolean",
 		frameworks: {
 			react: {
 				name: "useIntersectionObserver",
@@ -396,7 +406,8 @@ const isVisible = useIntersectionObserver(el, { threshold: 0.5 });`,
 		category: "observer",
 		description:
 			"Observes element size with a debounced callback. Returns the latest width/height.",
-		signature: "(ref: Ref<HTMLElement>, callback?: (size) => void) => { width, height }",
+		signature:
+			"(ref: Ref<HTMLElement>, callback?: (size) => void) => { width, height }",
 		frameworks: {
 			react: {
 				name: "useResizeObserver",
@@ -425,8 +436,7 @@ const { width, height } = useResizeObserver(el);`,
 	{
 		canonicalName: "media-query",
 		category: "observer",
-		description:
-			"Reactive boolean that matches a CSS media query.",
+		description: "Reactive boolean that matches a CSS media query.",
 		signature: "(query: string) => boolean",
 		frameworks: {
 			react: {
@@ -443,8 +453,7 @@ const { width, height } = useResizeObserver(el);`,
 			},
 			vue: {
 				name: "useMediaQuery",
-				importStatement:
-					"import { useMediaQuery } from '@wire-ui/vue'",
+				importStatement: "import { useMediaQuery } from '@wire-ui/vue'",
 				basicExample: `const isMobile = useMediaQuery('(max-width: 768px)');`,
 			},
 		},
@@ -538,9 +547,9 @@ return <input onChange={(e) => execute(e.target.value)} />;`,
 	{
 		canonicalName: "throttle",
 		category: "timing",
-		description:
-			"Throttles a callback. Supports leading/trailing options.",
-		signature: "(callback, delay, options?: { leading?, trailing? }) => { execute, cancel }",
+		description: "Throttles a callback. Supports leading/trailing options.",
+		signature:
+			"(callback, delay, options?: { leading?, trailing? }) => { execute, cancel }",
 		frameworks: {
 			react: {
 				name: "useThrottle",

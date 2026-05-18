@@ -995,7 +995,8 @@ export const components: ComponentData[] = [
 					name: "readOnly",
 					type: "boolean",
 					required: false,
-					description: "Disables the field for direct input but still allows the buttons.",
+					description:
+						"Disables the field for direct input but still allows the buttons.",
 				},
 			],
 		},
@@ -1007,7 +1008,8 @@ export const components: ComponentData[] = [
 			},
 			{
 				name: "data-disabled",
-				description: "Present when the increment/decrement button is at the min/max bound.",
+				description:
+					"Present when the increment/decrement button is at the min/max bound.",
 				appliesTo: "Increment, Decrement",
 			},
 		],
@@ -1244,7 +1246,8 @@ export const components: ComponentData[] = [
 					name: "value",
 					type: "number[]",
 					required: false,
-					description: "Controlled value array (one entry per thumb).",
+					description:
+						"Controlled value array (one entry per thumb).",
 				},
 				{
 					name: "defaultValue",
@@ -1434,7 +1437,8 @@ export const components: ComponentData[] = [
 					name: "accept",
 					type: "string",
 					required: false,
-					description: "MIME types or extensions to accept (e.g. \"image/*\").",
+					description:
+						'MIME types or extensions to accept (e.g. "image/*").',
 				},
 				{
 					name: "multiple",
@@ -1465,7 +1469,8 @@ export const components: ComponentData[] = [
 		dataAttributes: [
 			{
 				name: "data-dragging",
-				description: "Present on Dropzone while a file is being dragged over.",
+				description:
+					"Present on Dropzone while a file is being dragged over.",
 				appliesTo: "Dropzone",
 			},
 			{
@@ -2267,14 +2272,16 @@ export const components: ComponentData[] = [
 					name: "isCurrent",
 					type: "boolean",
 					required: false,
-					description: "Marks the item as the current page (aria-current=\"page\").",
+					description:
+						'Marks the item as the current page (aria-current="page").',
 				},
 			],
 		},
 		dataAttributes: [
 			{
 				name: "data-current",
-				description: "Present on the item representing the current page.",
+				description:
+					"Present on the item representing the current page.",
 				appliesTo: "Item",
 			},
 		],
@@ -2322,7 +2329,15 @@ export const components: ComponentData[] = [
 		description:
 			"Compound page navigation with first/prev/next/last and ellipsis items.",
 		isCompound: true,
-		parts: ["Root", "List", "Item", "Button", "Previous", "Next", "Ellipsis"],
+		parts: [
+			"Root",
+			"List",
+			"Item",
+			"Button",
+			"Previous",
+			"Next",
+			"Ellipsis",
+		],
 		props: {
 			Root: [
 				{
@@ -2353,7 +2368,8 @@ export const components: ComponentData[] = [
 					name: "siblingCount",
 					type: "number",
 					required: false,
-					description: "Number of page buttons to show on either side of the current page.",
+					description:
+						"Number of page buttons to show on either side of the current page.",
 				},
 			],
 		},
@@ -2378,7 +2394,8 @@ export const components: ComponentData[] = [
 </Pagination.Root>`,
 			},
 			solid: {
-				importStatement: "import { Pagination, getPaginationItems } from '@wire-ui/solid'",
+				importStatement:
+					"import { Pagination, getPaginationItems } from '@wire-ui/solid'",
 				basicExample: `<Pagination page={page()} onPageChange={setPage} total={20} />`,
 			},
 			vue: {
@@ -2511,7 +2528,8 @@ export const components: ComponentData[] = [
 		],
 		frameworks: {
 			react: {
-				importStatement: "import { NavigationMenu } from '@wire-ui/react'",
+				importStatement:
+					"import { NavigationMenu } from '@wire-ui/react'",
 				basicExample: `<NavigationMenu.Root>
   <NavigationMenu.List>
     <NavigationMenu.Item>
@@ -2525,7 +2543,8 @@ export const components: ComponentData[] = [
 </NavigationMenu.Root>`,
 			},
 			solid: {
-				importStatement: "import { NavigationMenu } from '@wire-ui/solid'",
+				importStatement:
+					"import { NavigationMenu } from '@wire-ui/solid'",
 				basicExample: `<NavigationMenu.Root>
   <NavigationMenu.List>
     <NavigationMenu.Item>
@@ -2538,7 +2557,8 @@ export const components: ComponentData[] = [
 </NavigationMenu.Root>`,
 			},
 			vue: {
-				importStatement: "import { NavigationMenu } from '@wire-ui/vue'",
+				importStatement:
+					"import { NavigationMenu } from '@wire-ui/vue'",
 				basicExample: `<template>
   <NavigationMenu.Root>
     <NavigationMenu.List>
@@ -2928,7 +2948,8 @@ export const components: ComponentData[] = [
 			},
 			{
 				name: "data-outside-month",
-				description: "Present on days that fall outside the visible month.",
+				description:
+					"Present on days that fall outside the visible month.",
 				appliesTo: "day",
 			},
 			{
@@ -3194,7 +3215,7 @@ export const components: ComponentData[] = [
 		name: "Spinner",
 		category: "feedback",
 		description:
-			"Animated 12-dot loading spinner with role=\"status\" and aria-label=\"Loading\".",
+			'Animated 12-dot loading spinner with role="status" and aria-label="Loading".',
 		isCompound: false,
 		parts: [],
 		props: {
@@ -3210,7 +3231,8 @@ export const components: ComponentData[] = [
 					name: "color",
 					type: "string",
 					required: false,
-					description: "Color for the spinner dots, exposed as the --spinner-color CSS var.",
+					description:
+						"Color for the spinner dots, exposed as the --spinner-color CSS var.",
 				},
 			],
 		},
@@ -3238,8 +3260,7 @@ export const components: ComponentData[] = [
 	{
 		name: "Skeleton",
 		category: "feedback",
-		description:
-			"Animated placeholder shown while content is loading.",
+		description: "Animated placeholder shown while content is loading.",
 		isCompound: false,
 		parts: [],
 		props: {
@@ -3248,7 +3269,8 @@ export const components: ComponentData[] = [
 					name: "isLoading",
 					type: "boolean",
 					required: false,
-					description: "Sets data-loading; render children when false.",
+					description:
+						"Sets data-loading; render children when false.",
 					defaultValue: "true",
 				},
 			],
@@ -3314,13 +3336,15 @@ export const components: ComponentData[] = [
 		dataAttributes: [
 			{
 				name: "data-status",
-				description: 'Reflects status (e.g. "success" | "error" | "info").',
+				description:
+					'Reflects status (e.g. "success" | "error" | "info").',
 				appliesTo: "Root",
 			},
 		],
 		frameworks: {
 			react: {
-				importStatement: "import { Toast, useToast } from '@wire-ui/react'",
+				importStatement:
+					"import { Toast, useToast } from '@wire-ui/react'",
 				basicExample: `// Root: wrap your app
 <Toast.Provider>
   <App />
@@ -3332,7 +3356,8 @@ const { toast } = useToast();
 toast({ title: 'Saved', status: 'success' });`,
 			},
 			solid: {
-				importStatement: "import { Toast, useToast } from '@wire-ui/solid'",
+				importStatement:
+					"import { Toast, useToast } from '@wire-ui/solid'",
 				basicExample: `<Toast.Provider>
   <App />
   <Toast.Viewport />
@@ -3342,7 +3367,8 @@ const { toast } = useToast();
 toast({ title: 'Saved', status: 'success' });`,
 			},
 			vue: {
-				importStatement: "import { Toast, useToast } from '@wire-ui/vue'",
+				importStatement:
+					"import { Toast, useToast } from '@wire-ui/vue'",
 				basicExample: `<template>
   <Toast.Provider>
     <App />
@@ -3637,7 +3663,8 @@ toast({ title: 'Saved', status: 'success' });
 					name: "ratio",
 					type: "number",
 					required: false,
-					description: "Width / height ratio (e.g. 16/9 for widescreen).",
+					description:
+						"Width / height ratio (e.g. 16/9 for widescreen).",
 					defaultValue: "1",
 				},
 			],

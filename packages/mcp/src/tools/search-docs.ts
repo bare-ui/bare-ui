@@ -90,7 +90,10 @@ export function registerSearchDocs(server: McpServer) {
 
 			const scoredHooks = hooks
 				.filter((h) => h.frameworks[framework])
-				.map((h) => ({ hook: h, score: scoreHook(query, h, framework) }))
+				.map((h) => ({
+					hook: h,
+					score: scoreHook(query, h, framework),
+				}))
 				.filter((s) => s.score > 0)
 				.sort((a, b) => b.score - a.score)
 				.slice(0, 5);
@@ -141,7 +144,8 @@ export function registerSearchDocs(server: McpServer) {
 			);
 
 			const output: Record<string, unknown> = {};
-			if (componentResults.length > 0) output.components = componentResults;
+			if (componentResults.length > 0)
+				output.components = componentResults;
 			if (hookResults.length > 0) output.hooks = hookResults;
 			if (matchingTrees.length > 0) {
 				output.decisionTrees = matchingTrees.map((t) => t.name);

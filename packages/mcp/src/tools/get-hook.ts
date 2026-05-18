@@ -43,7 +43,9 @@ export function registerGetHook(server: McpServer) {
 
 			if (!hook) {
 				const available = hooks
-					.map((h) => h.frameworks[framework]?.name ?? h.canonicalName)
+					.map(
+						(h) => h.frameworks[framework]?.name ?? h.canonicalName,
+					)
 					.join(", ");
 				return {
 					content: [

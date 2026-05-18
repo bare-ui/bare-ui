@@ -10,7 +10,14 @@ const schema = {
 		.default("react")
 		.describe("Target framework (default: react)"),
 	category: z
-		.enum(["form", "overlay", "display", "layout", "navigation", "feedback"])
+		.enum([
+			"form",
+			"overlay",
+			"display",
+			"layout",
+			"navigation",
+			"feedback",
+		])
 		.optional()
 		.describe("Filter by component category"),
 };

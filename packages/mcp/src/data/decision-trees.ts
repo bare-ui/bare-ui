@@ -26,7 +26,10 @@ export const decisionTrees: DecisionTree[] = [
 			},
 			{ condition: "Need an on/off toggle?", component: "Switch" },
 			{ condition: "Need a star rating?", component: "Rating" },
-			{ condition: "Need a numeric range?", component: "Slider (React only)" },
+			{
+				condition: "Need a numeric range?",
+				component: "Slider (React only)",
+			},
 			{ condition: "Need keyword tags?", component: "TagInput" },
 			{ condition: "Need to pick a date?", component: "DatePicker" },
 			{ condition: "Need a file uploader?", component: "FileUpload" },
@@ -56,14 +59,23 @@ export const decisionTrees: DecisionTree[] = [
 		name: "navigation",
 		question: "What kind of navigation do you need?",
 		entries: [
-			{ condition: "Need a hierarchical trail?", component: "Breadcrumb" },
+			{
+				condition: "Need a hierarchical trail?",
+				component: "Breadcrumb",
+			},
 			{ condition: "Need page paging?", component: "Pagination" },
-			{ condition: "Need switchable views?", component: "Tabs (React only)" },
+			{
+				condition: "Need switchable views?",
+				component: "Tabs (React only)",
+			},
 			{
 				condition: "Need top-level app navigation?",
 				component: "NavigationMenu",
 			},
-			{ condition: "Need an application menu bar?", component: "MenuBar" },
+			{
+				condition: "Need an application menu bar?",
+				component: "MenuBar",
+			},
 			{ condition: "Need a file/folder tree?", component: "TreeView" },
 		],
 	},
@@ -72,7 +84,10 @@ export const decisionTrees: DecisionTree[] = [
 		question: "What kind of feedback do you need to show?",
 		entries: [
 			{ condition: "Need a loading spinner?", component: "Spinner" },
-			{ condition: "Need a placeholder while loading?", component: "Skeleton" },
+			{
+				condition: "Need a placeholder while loading?",
+				component: "Skeleton",
+			},
 			{ condition: "Need a progress bar?", component: "ProgressBar" },
 			{
 				condition: "Need an inline status banner?",

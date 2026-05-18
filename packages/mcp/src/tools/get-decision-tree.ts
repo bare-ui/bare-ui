@@ -4,14 +4,7 @@ import { decisionTrees } from "../data/decision-trees.js";
 
 const schema = {
 	scenario: z
-		.enum([
-			"form",
-			"overlay",
-			"navigation",
-			"feedback",
-			"hooks",
-			"styling",
-		])
+		.enum(["form", "overlay", "navigation", "feedback", "hooks", "styling"])
 		.describe("Which decision tree to retrieve"),
 };
 
