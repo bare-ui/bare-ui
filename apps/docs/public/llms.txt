@@ -2,54 +2,123 @@
 
 > AI-native unstyled primitives framework. Headless, compound components with AI-integrated docs. Zero CSS — style via data-* attributes.
 
-Wire UI provides AI-native, headless compound components. Every component handles interaction states, accessibility, and complex behaviors while shipping zero CSS. Style them with Tailwind, CSS Modules, plain CSS — anything that supports attribute selectors.
+Wire UI provides AI-native, headless compound components for React, Vue, and SolidJS. Every component handles interaction states, accessibility, and complex behaviors while shipping zero CSS. Style them with Tailwind, CSS Modules, plain CSS — anything that supports attribute selectors. The same building blocks the components are made from are exported as hooks (React), composables (Vue), and primitives (Solid, named `createX`).
 
 ## Getting Started
 
 - [Introduction](https://wire-ui.vercel.app/docs): Overview, core principles, and philosophy
 - [Getting Started](https://wire-ui.vercel.app/docs/getting-started): Installation, styling approach, validation pattern, TypeScript types
+- [Accessibility](https://wire-ui.vercel.app/docs/accessibility): ARIA roles, focus management, and keyboard support
 - [Data Attributes](https://wire-ui.vercel.app/docs/data-attributes): Complete reference for all data-* attributes Wire UI exposes
-- [Hooks](https://wire-ui.vercel.app/docs/hooks): useInteractiveState and useClickOutside
+- [Browser Support](https://wire-ui.vercel.app/docs/browser-support): Supported browser matrix
+- [FAQ](https://wire-ui.vercel.app/docs/faq): Common questions
+
+## AI for Agents
+
+- [LLMs.txt](https://wire-ui.vercel.app/docs/ai/llms-txt): AI-readable documentation index and full-text reference
+- [SKILL.md](https://wire-ui.vercel.app/docs/ai/skill-md): Machine-readable docs with decision trees and anti-patterns
+- [MCP Server](https://wire-ui.vercel.app/docs/ai/mcp): `@wire-ui/mcp` — direct API access for AI coding tools
 
 ## Components
 
 ### Layout
 
+- [Accordion](https://wire-ui.vercel.app/docs/components/accordion): Collapsible sections with single or multiple selection types
+- [AspectRatio](https://wire-ui.vercel.app/docs/components/aspect-ratio): Maintains a width-to-height ratio for its child via CSS aspect-ratio
 - [Card](https://wire-ui.vercel.app/docs/components/card): Unstyled container with optional data-color and data-size attributes
 - [Divider](https://wire-ui.vercel.app/docs/components/divider): Horizontal or vertical separator line
+- [List](https://wire-ui.vercel.app/docs/components/list): Ordered or unordered list with optional striped rows and dividers
+- [ResizablePanels](https://wire-ui.vercel.app/docs/components/resizable-panels): Drag-to-resize panel layout with min/max constraints
+- [Skeleton](https://wire-ui.vercel.app/docs/components/skeleton): Accessible loading placeholder that swaps in real content when ready
 
 ### Feedback
 
 - [Alert](https://wire-ui.vercel.app/docs/components/alert): Dismissible alert with auto-dismiss support
 - [Badge](https://wire-ui.vercel.app/docs/components/badge): Numeric count badge capped at 9+
 - [ProgressBar](https://wire-ui.vercel.app/docs/components/progress-bar): Accessible progress indicator with role="progressbar" and ARIA attributes
-- [Timeago](https://wire-ui.vercel.app/docs/components/timeago): Relative or formatted timestamp that updates live
-- [Tooltip](https://wire-ui.vercel.app/docs/components/tooltip): Hover/focus tooltip with configurable delay and side
+- [Rating](https://wire-ui.vercel.app/docs/components/rating): Star rating with hover preview, read-only, and disabled modes
+- [Spinner](https://wire-ui.vercel.app/docs/components/spinner): Accessible loading indicator with role=status and a visually-hidden label
 
 ### Forms
 
 - [Button](https://wire-ui.vercel.app/docs/components/button): Native button with full interactive state tracking and asChild polymorphism
+- [Calendar](https://wire-ui.vercel.app/docs/components/calendar): Headless month calendar with controlled selection, min/max dates, and a render-prop grid
 - [Checkbox](https://wire-ui.vercel.app/docs/components/checkbox): Multi-select checkbox group with controlled state
+- [Combobox](https://wire-ui.vercel.app/docs/components/combobox): Filterable autocomplete with keyboard navigation and ARIA listbox semantics
+- [DatePicker](https://wire-ui.vercel.app/docs/components/date-picker): Trigger plus popover Calendar with a formatted value display
+- [FileUpload](https://wire-ui.vercel.app/docs/components/file-upload): Click-to-pick or drag-and-drop file upload with built-in accept, maxFiles, and maxSize validation
+- [Form](https://wire-ui.vercel.app/docs/components/form): Headless form primitives that wire id, ARIA, and validation attributes onto your own controls
 - [Input](https://wire-ui.vercel.app/docs/components/input): Compound text input with consumer-controlled error state
-- [OTP](https://wire-ui.vercel.app/docs/components/otp): One-time password input with auto-advance and onComplete callback
-- [Password](https://wire-ui.vercel.app/docs/components/password): Password input with built-in show/hide toggle
+- [NumberInput](https://wire-ui.vercel.app/docs/components/number-input): Numeric input with increment/decrement controls, clamping, and full keyboard support
+- [OTP](https://wire-ui.vercel.app/docs/components/otp): One-time password input with individual slots, auto-advance, and onComplete callback
+- [Password](https://wire-ui.vercel.app/docs/components/password): Password input with a built-in show/hide toggle and consumer-controlled error state
 - [Radio](https://wire-ui.vercel.app/docs/components/radio): Single-selection radio group
-- [Rating](https://wire-ui.vercel.app/docs/components/rating): Star rating with hover preview, read-only, and disabled modes
-- [Search](https://wire-ui.vercel.app/docs/components/search): Search input with dropdown results and keyboard navigation
-- [Select](https://wire-ui.vercel.app/docs/components/select): Accessible select menu with groups, separators, and custom trigger
-- [Switch](https://wire-ui.vercel.app/docs/components/switch): Toggle on/off with thumb element and data-state
+- [Select](https://wire-ui.vercel.app/docs/components/select): Accessible select menu with groups, separators, and a custom trigger
+- [Slider](https://wire-ui.vercel.app/docs/components/slider): Single-value or two-thumb range slider with drag and keyboard support (React only)
+- [Switch](https://wire-ui.vercel.app/docs/components/switch): Toggle on/off with a thumb element and data-state
+- [Tag](https://wire-ui.vercel.app/docs/components/tag): Compact label with optional remove button — for chips, filters, and status pills
+- [TagInput](https://wire-ui.vercel.app/docs/components/tag-input): Multi-tag input with commit keys, duplicate rejection, and validation
 - [Textarea](https://wire-ui.vercel.app/docs/components/textarea): Compound multi-line text input with consumer-controlled error state
+
+### Navigation
+
+- [Breadcrumb](https://wire-ui.vercel.app/docs/components/breadcrumb): Semantic navigation trail with current-page marking and a customizable separator
+- [MenuBar](https://wire-ui.vercel.app/docs/components/menu-bar): Application-style menu bar with hover-switching dropdowns
+- [NavigationMenu](https://wire-ui.vercel.app/docs/components/navigation-menu): Top navigation with hover-driven dropdown panels
+- [Pagination](https://wire-ui.vercel.app/docs/components/pagination): Page navigation with sibling/boundary pages and ellipsis gaps
+- [Tabs](https://wire-ui.vercel.app/docs/components/tabs): Accessible tabs with horizontal or vertical orientation and full keyboard navigation (React only)
+- [TreeView](https://wire-ui.vercel.app/docs/components/tree-view): Recursive tree with expandable branches, optional single or multi selection, and full keyboard navigation
 
 ### Overlays
 
-- [Accordion](https://wire-ui.vercel.app/docs/components/accordion): Collapsible sections with single or multiple selection types
+- [ContextMenu](https://wire-ui.vercel.app/docs/components/context-menu): Right-click menu positioned at the cursor
 - [Drawer](https://wire-ui.vercel.app/docs/components/drawer): Side-panel overlay with portal rendering and close behaviours
 - [Dropdown](https://wire-ui.vercel.app/docs/components/dropdown): Trigger and menu pattern with keyboard and click-outside support
 - [Modal](https://wire-ui.vercel.app/docs/components/modal): Dialog with portal rendering, overlay-click and Escape key close
+- [Popover](https://wire-ui.vercel.app/docs/components/popover): Floating panel anchored to a trigger. Closes on outside click or Escape (React only)
+- [Search](https://wire-ui.vercel.app/docs/components/search): Search input with dropdown results, keyboard navigation, and loading state
+- [Toast](https://wire-ui.vercel.app/docs/components/toast): Imperative notification system with a Provider, Viewport render-prop, and useToast hook
+- [Tooltip](https://wire-ui.vercel.app/docs/components/tooltip): Hover/focus tooltip with configurable delay and side
 
 ### Media
 
-- [Avatar](https://wire-ui.vercel.app/docs/components/avatar): Image with fallback for loading errors or missing sources
-- [Icon](https://wire-ui.vercel.app/docs/components/icon): Renders consumer-supplied SVG strings by name; ships no SVG assets
+- [Avatar](https://wire-ui.vercel.app/docs/components/avatar): Image with a fallback for loading errors or missing sources
+- [Icon](https://wire-ui.vercel.app/docs/components/icon): Renders consumer-supplied SVG strings by name. Ships no SVG assets
 - [Image](https://wire-ui.vercel.app/docs/components/image): Image wrapper with a loader placeholder shown until the image loads
-- [List](https://wire-ui.vercel.app/docs/components/list): Ordered or unordered list with optional striped rows and dividers
+- [Timeago](https://wire-ui.vercel.app/docs/components/timeago): Relative or formatted timestamp that updates live
+
+## Hooks / Composables / Primitives
+
+React and Vue expose these as `useX`; Solid follows its `createX` naming convention.
+
+### State
+
+- [useControllableState](https://wire-ui.vercel.app/docs/hooks/use-controllable-state): Unified state for components that can be controlled or uncontrolled
+- [useDisclosure](https://wire-ui.vercel.app/docs/hooks/use-disclosure): Boolean open / close state with stable open, close, and toggle handlers
+- [useId](https://wire-ui.vercel.app/docs/hooks/use-id): Stable, SSR-safe unique id with an optional human-readable prefix
+
+### Interaction
+
+- [useClickOutside](https://wire-ui.vercel.app/docs/hooks/use-click-outside): Fires a callback when the user clicks or taps outside a referenced element
+- [useFocusTrap](https://wire-ui.vercel.app/docs/hooks/use-focus-trap): Trap keyboard focus inside a container while active
+- [useFocusVisible](https://wire-ui.vercel.app/docs/hooks/use-focus-visible): Track whether focus arrived from keyboard navigation or a pointer
+- [useInteractiveState](https://wire-ui.vercel.app/docs/hooks/use-interactive-state): Hover, focus-visible, and press state tracking with matching data attributes
+- [useKeyboard](https://wire-ui.vercel.app/docs/hooks/use-keyboard): Map keyboard events to handlers with modifier-key matching
+
+### Layout
+
+- [useFloating](https://wire-ui.vercel.app/docs/hooks/use-floating): Position a floating element relative to a reference element
+- [useScrollLock](https://wire-ui.vercel.app/docs/hooks/use-scroll-lock): Lock document scrolling while active, without layout shift
+
+### Observers
+
+- [useIntersectionObserver](https://wire-ui.vercel.app/docs/hooks/use-intersection-observer): Observe element visibility within a scroll container or the viewport
+- [useResizeObserver](https://wire-ui.vercel.app/docs/hooks/use-resize-observer): Observe an element's content-box dimensions
+
+### Utilities
+
+- [useDebounce](https://wire-ui.vercel.app/docs/hooks/use-debounce): Debounce a reactive value or a callback function
+- [useThrottle](https://wire-ui.vercel.app/docs/hooks/use-throttle): Throttle a reactive value or a callback function
+- [useMediaQuery](https://wire-ui.vercel.app/docs/hooks/use-media-query): Reactively match a CSS media query
+- [useReduceMotion](https://wire-ui.vercel.app/docs/hooks/use-reduce-motion): Detect the OS-level reduced-motion preference
+- [useMergedRefs](https://wire-ui.vercel.app/docs/hooks/use-merged-refs): Merge multiple refs onto a single element (React and Solid)
