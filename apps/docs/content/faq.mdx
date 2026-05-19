@@ -17,7 +17,7 @@ Yes. Wire UI is free and open source under the [MIT License](/docs/license).
 
 ### What frameworks does Wire UI support?
 
-Currently **React** (19+). Vue and Solid support are planned for the future.
+**React** (19+), **Vue** (3.5+), and **SolidJS** (1.9+) — all three are first-class targets. Install the matching package: `@wire-ui/react`, `@wire-ui/vue`, or `@wire-ui/solid`. Component APIs and data attributes are identical across frameworks; hooks are exposed as `useX` for React/Vue and `createX` for Solid.
 
 ### How is Wire UI different from Headless UI or Radix?
 
@@ -40,7 +40,7 @@ Use CSS attribute selectors targeting `data-*` attributes:
 
 ```tsx
 // Tailwind
-<Button className="[data-hover]:bg-blue-700 [data-active]:scale-95">
+<Button className="data-[hover]:bg-blue-700 data-[active]:scale-95">
 
 // Plain CSS
 button[data-hover] { background: #1d4ed8; }
@@ -65,10 +65,10 @@ Yes. Wire UI works perfectly with Tailwind. Use attribute selectors in your clas
 ```tsx
 <Button className="
   px-4 py-2 rounded-lg bg-blue-600 text-white
-  [data-hover]:bg-blue-700
-  [data-active]:scale-95
-  [data-focus-visible]:ring-2
-  [data-disabled]:opacity-50
+  data-[hover]:bg-blue-700
+  data-[active]:scale-95
+  data-[focus-visible]:ring-2
+  data-[disabled]:opacity-50
 ">
 ```
 
@@ -80,12 +80,14 @@ Yes. Wire UI is styling-agnostic. Any CSS approach that supports attribute selec
 
 ### What components are available?
 
-Wire UI includes 26 components across 4 categories:
+Wire UI includes 48 components across 6 categories:
 
-- **Form** — Button, Input, Textarea, Password, Checkbox, Radio, Switch, Select, Search, OTP, Rating
-- **Overlay** — Modal, Drawer, Dropdown, Tooltip, Accordion
-- **Display** — Alert, Avatar, Badge, Card, ProgressBar, Timeago, Image, Icon
-- **Layout** — Divider, List
+- **Layout** — Accordion, AspectRatio, Card, Divider, List, ResizablePanels, Skeleton
+- **Feedback** — Alert, Badge, ProgressBar, Rating, Spinner
+- **Forms** — Button, Calendar, Checkbox, Combobox, DatePicker, FileUpload, Form, Input, NumberInput, OTP, Password, Radio, Select, Slider, Switch, Tag, TagInput, Textarea
+- **Navigation** — Breadcrumb, MenuBar, NavigationMenu, Pagination, Tabs, TreeView
+- **Overlays** — ContextMenu, Drawer, Dropdown, Modal, Popover, Search, Toast, Tooltip
+- **Media** — Avatar, Icon, Image, Timeago
 
 ### What are compound components?
 
@@ -149,7 +151,7 @@ See the [AI documentation](/docs/ai/llms-txt) for detailed setup instructions.
 
 ### What is the bundle size?
 
-Wire UI is lightweight. Each component is tree-shakeable — you only pay for what you import. The library has zero runtime dependencies beyond React.
+Wire UI is lightweight. Each component is tree-shakeable — you only pay for what you import. The library has zero runtime dependencies beyond the framework peer (React, Vue, or SolidJS).
 
 ### Does Wire UI support tree-shaking?
 
