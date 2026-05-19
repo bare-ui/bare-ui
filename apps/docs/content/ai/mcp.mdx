@@ -51,7 +51,7 @@ Restart your editor after adding the configuration.
 
 ## Available Tools
 
-The MCP server exposes 6 tools that AI agents can call:
+The MCP server exposes 8 tools that AI agents can call:
 
 ### `list_components`
 
@@ -60,7 +60,7 @@ List all Wire UI components with categories and descriptions.
 | Parameter | Type | Default | Description |
 |---|---|---|---|
 | `framework` | `"react" \| "vue" \| "solid"` | `"react"` | Target framework |
-| `category` | `"form" \| "overlay" \| "display" \| "layout"` | — | Filter by category |
+| `category` | `"form" \| "overlay" \| "display" \| "layout" \| "navigation" \| "feedback"` | — | Filter by category |
 
 ### `get_component`
 
@@ -71,17 +71,35 @@ Get full details for a specific component — props, data attributes, compound p
 | `name` | `string` | required | Component name (e.g., "Button", "Modal") |
 | `framework` | `"react" \| "vue" \| "solid"` | `"react"` | Target framework |
 
+### `list_hooks`
+
+List all Wire UI hooks/primitives/composables for the chosen framework. React and Vue expose them as `useX`; Solid exposes them as `createX`.
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `framework` | `"react" \| "vue" \| "solid"` | `"react"` | Target framework |
+| `category` | `"state" \| "interaction" \| "observer" \| "positioning" \| "timing" \| "dom"` | — | Filter by hook category |
+
+### `get_hook`
+
+Get full details for a specific hook — signature, returns, import, and example code for the chosen framework. The `name` parameter is name-normalised: `useDisclosure`, `createDisclosure`, and the canonical `disclosure` all resolve to the same hook.
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `name` | `string` | required | Hook name in any form (`useDisclosure`, `createDisclosure`, or canonical) |
+| `framework` | `"react" \| "vue" \| "solid"` | `"react"` | Target framework |
+
 ### `get_decision_tree`
 
-Get a decision tree to help choose the right component for a scenario.
+Get a decision tree to help choose the right component or hook for a scenario.
 
 | Parameter | Type | Description |
 |---|---|---|
-| `scenario` | `"form" \| "overlay" \| "styling"` | Which decision tree to retrieve |
+| `scenario` | `"form" \| "overlay" \| "navigation" \| "feedback" \| "hooks" \| "styling"` | Which decision tree to retrieve |
 
 ### `search_docs`
 
-Search across all component documentation by keyword.
+Free-text search across components, hooks, and decision trees for the chosen framework.
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
@@ -90,13 +108,15 @@ Search across all component documentation by keyword.
 
 ### `get_installation_guide`
 
-Get installation instructions, peer dependencies, styling approach, and data attribute reference.
+Get framework-specific installation instructions, peer dependencies, styling approach, and data attribute reference.
 
-No parameters required.
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `framework` | `"react" \| "vue" \| "solid"` | `"react"` | Target framework |
 
 ### `get_exports_list`
 
-List all exports from the Wire UI package — components, hooks, and TypeScript types.
+List all exports from the chosen Wire UI package — components, hooks/composables/primitives, and TypeScript types.
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
@@ -107,9 +127,14 @@ List all exports from the Wire UI package — components, hooks, and TypeScript 
 Once connected, try these prompts in your AI coding tool:
 
 - "List all Wire UI form components"
+- "List all Wire UI navigation components for Vue"
 - "Show me the full API for the Modal component"
+- "What hooks does Wire UI ship?"
+- "Show me the signature of `useDisclosure`"
+- "Show me the Solid primitive for click-outside detection"
 - "I need to build a form — help me choose the right Wire UI components"
-- "How do I install Wire UI?"
+- "Pick a Wire UI hook for trapping focus inside a dialog"
+- "How do I install Wire UI for Vue?"
 - "What can I import from @wire-ui/react?"
 - "What can I import from @wire-ui/vue?"
 - "What can I import from @wire-ui/solid?"
