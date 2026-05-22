@@ -32,7 +32,8 @@ function difference(datetime: Date): number {
 </script>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, watch } from 'vue'
+import { useInterval } from '@/composables/use-interval'
 
 defineOptions({ name: 'Timeago' })
 
@@ -116,17 +117,12 @@ function computeDisplay(): string {
 }
 
 const tick = ref(0)
-let intervalId: ReturnType<typeof setInterval> | null = null
-
-onMounted(() => {
-	if (props.isLive) {
-		intervalId = setInterval(() => { tick.value++ }, REFRESH_MS)
-	}
-})
-
-onUnmounted(() => {
-	if (intervalId) clearInterval(intervalId)
-})
+const { start, stop } = useInterval(
+	() => { tick.value++ },
+	REFRESH_MS,
+	{ autoStart: props.isLive },
+)
+watch(() => props.isLive, (live) => (live ? start() : stop()))
 </script>
 
 <template>

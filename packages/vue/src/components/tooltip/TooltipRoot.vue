@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { provide, reactive, onUnmounted } from 'vue'
+import { provide, reactive } from 'vue'
 import { useControllableState } from '@/composables/use-controllable-state'
+import { useTimeout } from '@/composables/use-timeout'
 import { TooltipKey } from './keys'
 
 defineOptions({ name: 'TooltipRoot' })
@@ -18,21 +19,17 @@ const isOpen = useControllableState<boolean>({
   onChange: (next) => props.onOpenChange?.(next),
 })
 
-let timer: ReturnType<typeof setTimeout> | null = null
+const { start, stop } = useTimeout(
+  () => { isOpen.value = true },
+  () => props.delayDuration,
+  { autoStart: false },
+)
 
 function setOpen(value: boolean) {
-  if (timer) {
-    clearTimeout(timer)
-    timer = null
-  }
-  if (value && props.delayDuration > 0) {
-    timer = setTimeout(() => { isOpen.value = true }, props.delayDuration)
-  } else {
-    isOpen.value = value
-  }
+  stop()
+  if (value && props.delayDuration > 0) start()
+  else isOpen.value = value
 }
-
-onUnmounted(() => { if (timer) clearTimeout(timer) })
 
 provide(TooltipKey, reactive({
   open: isOpen,

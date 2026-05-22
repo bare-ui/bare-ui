@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { provide, reactive, ref, onMounted, onUnmounted, toRef } from 'vue';
+import { provide, reactive, ref, toRef } from 'vue';
+import { useTimeout } from '@/composables/use-timeout';
 import { AlertKey } from './keys';
 
 defineOptions({ name: 'AlertRoot' })
@@ -17,7 +18,6 @@ const props = withDefaults(defineProps<{
 });
 
 const dismissed = ref(false);
-let timeout: ReturnType<typeof setTimeout> | null = null;
 
 const dismiss = () => {
 	dismissed.value = true;
@@ -26,15 +26,7 @@ const dismiss = () => {
 
 provide(AlertKey, reactive({ status: toRef(props, 'status'), dismiss }));
 
-onMounted(() => {
-	if (props.isAutoDismissable) {
-		timeout = setTimeout(dismiss, props.dismissCountdown);
-	}
-});
-
-onUnmounted(() => {
-	if (timeout) clearTimeout(timeout);
-});
+useTimeout(dismiss, () => props.dismissCountdown, { autoStart: props.isAutoDismissable });
 </script>
 
 <template>

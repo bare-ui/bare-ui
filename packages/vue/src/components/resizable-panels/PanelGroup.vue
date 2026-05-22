@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, provide, ref, useTemplateRef } from 'vue'
+import { computed, provide, ref, useTemplateRef } from 'vue'
+import { useEventListener } from '@/composables/use-event-listener'
 import { PanelGroupKey } from './keys'
 import type { PanelConfig, PanelOrientation } from './ResizablePanels.types'
 
@@ -164,17 +165,9 @@ function onPointerUp() {
 	dragState = null
 }
 
-onMounted(() => {
-	window.addEventListener('pointermove', onPointerMove)
-	window.addEventListener('pointerup', onPointerUp)
-	window.addEventListener('pointercancel', onPointerUp)
-})
-
-onUnmounted(() => {
-	window.removeEventListener('pointermove', onPointerMove)
-	window.removeEventListener('pointerup', onPointerUp)
-	window.removeEventListener('pointercancel', onPointerUp)
-})
+useEventListener('pointermove', onPointerMove)
+useEventListener('pointerup', onPointerUp)
+useEventListener('pointercancel', onPointerUp)
 
 provide(PanelGroupKey, {
 	orientation,
