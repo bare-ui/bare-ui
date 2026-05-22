@@ -42,3 +42,47 @@ export type { UseIntersectionObserverOptions } from './use-intersection-observer
 
 export { useFocusVisible } from './use-focus-visible';
 export type { UseFocusVisibleResult } from './use-focus-visible';
+
+export { usePrevious } from './use-previous';
+
+export { useDocumentVisibility } from './use-document-visibility';
+
+export { useOnlineStatus } from './use-online-status';
+
+export { useEventListener } from './use-event-listener';
+
+export { useLocalStorage, useSessionStorage } from './use-local-storage';
+export type { UseStorageOptions, UseStorageResult } from './use-local-storage';
+
+export { useCopyToClipboard } from './use-copy-to-clipboard';
+export type { UseCopyToClipboardOptions, UseCopyToClipboardResult } from './use-copy-to-clipboard';
+
+export { useTimeout } from './use-timeout';
+export type { UseTimeoutOptions, UseTimeoutResult } from './use-timeout';
+
+export { useInterval } from './use-interval';
+export type { UseIntervalOptions, UseIntervalResult } from './use-interval';
+
+export { useElementSize } from './use-element-size';
+
+export { useWindowSize } from './use-window-size';
+export type { WindowSize } from './use-window-size';
+
+export { useMutationObserver } from './use-mutation-observer';
+export type { UseMutationObserverOptions } from './use-mutation-observer';
+
+export { useLongPress } from './use-long-press';
+export type { UseLongPressOptions, LongPressHandlers } from './use-long-press';
+
+export { useHotkeys } from './use-hotkeys';
+export type { UseHotkeysOptions, HotkeyMap, HotkeyHandler } from './use-hotkeys';
+
+export { useStateMachine } from './use-state-machine';
+export type {
+	StateMachineConfig,
+	UseStateMachineOptions,
+	UseStateMachineResult,
+} from './use-state-machine';
+
+export { useUndoRedo } from './use-undo-redo';
+export type { UseUndoRedoOptions, UseUndoRedoResult } from './use-undo-redo';
