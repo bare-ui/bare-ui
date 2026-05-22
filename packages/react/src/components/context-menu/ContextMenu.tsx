@@ -1,10 +1,25 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useControllableState } from '@/hooks/use-controllable-state';
+import { useEventListener } from '@/hooks/use-event-listener';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { useKeyboard } from '@/hooks/use-keyboard';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
+
+const PASSIVE_FALSE: AddEventListenerOptions = { passive: false };
+
+const SCROLL_KEYS = new Set([
+	'ArrowUp',
+	'ArrowDown',
+	'ArrowLeft',
+	'ArrowRight',
+	'PageUp',
+	'PageDown',
+	'Home',
+	'End',
+	' ',
+]);
 import type {
 	ContextMenuContentProps,
 	ContextMenuContextValue,
@@ -74,24 +89,18 @@ const Root = React.forwardRef<HTMLDivElement, ContextMenuRootProps>(
 		// trigger wrapper, surrounding container, or anywhere else on the page
 		// all dismiss the menu. (Right-clicks elsewhere on a Trigger reopen at
 		// the new position via the contextmenu handler.)
-		useEffect(() => {
-			if (!open) return;
-			const handlePointer = (e: MouseEvent | TouchEvent) => {
-				const target = e.target as Node | null;
-				if (!target) return;
-				// Only the portaled menu content keeps the menu open.
-				if (contentRef.current?.contains(target)) return;
-				close();
-			};
-			// `mousedown` runs before `contextmenu`, so re-right-clicking a Trigger
-			// closes-then-reopens at the fresh cursor position.
-			document.addEventListener('mousedown', handlePointer);
-			document.addEventListener('touchstart', handlePointer);
-			return () => {
-				document.removeEventListener('mousedown', handlePointer);
-				document.removeEventListener('touchstart', handlePointer);
-			};
-		}, [open, close]);
+		// `mousedown` runs before `contextmenu`, so re-right-clicking a Trigger
+		// closes-then-reopens at the fresh cursor position.
+		const docTarget = open && typeof document !== 'undefined' ? document : null;
+		const handlePointer = (e: MouseEvent | TouchEvent) => {
+			const target = e.target as Node | null;
+			if (!target) return;
+			// Only the portaled menu content keeps the menu open.
+			if (contentRef.current?.contains(target)) return;
+			close();
+		};
+		useEventListener('mousedown', handlePointer, docTarget);
+		useEventListener('touchstart', handlePointer, docTarget);
 
 		useKeyboard(
 			{
@@ -105,56 +114,31 @@ const Root = React.forwardRef<HTMLDivElement, ContextMenuRootProps>(
 		// Block scroll inputs while open without hiding overflow — the scrollbar
 		// stays in place (no layout shift), but mouse wheel, trackpad, touch, and
 		// scroll keys all become no-ops outside the menu.
-		useEffect(() => {
-			if (!open) return;
-			if (typeof document === 'undefined') return;
-
-			const isInsideMenu = (target: EventTarget | null) =>
-				target instanceof Node && !!contentRef.current?.contains(target);
-
-			const preventWheel = (e: WheelEvent) => {
-				if (isInsideMenu(e.target)) return;
-				e.preventDefault();
-			};
-
-			const preventTouchMove = (e: TouchEvent) => {
-				if (isInsideMenu(e.target)) return;
-				e.preventDefault();
-			};
-
-			const SCROLL_KEYS = new Set([
-				'ArrowUp',
-				'ArrowDown',
-				'ArrowLeft',
-				'ArrowRight',
-				'PageUp',
-				'PageDown',
-				'Home',
-				'End',
-				' ',
-			]);
-			const preventScrollKeys = (e: KeyboardEvent) => {
-				if (!SCROLL_KEYS.has(e.key)) return;
-				const target = e.target as HTMLElement | null;
-				if (target) {
-					// Let editable elements receive the key (typing, cursor movement).
-					const tag = target.tagName;
-					if (tag === 'INPUT' || tag === 'TEXTAREA' || target.isContentEditable) return;
-					if (contentRef.current?.contains(target)) return;
-				}
-				e.preventDefault();
-			};
-
-			// passive: false is required for preventDefault to take effect on these.
-			document.addEventListener('wheel', preventWheel, { passive: false });
-			document.addEventListener('touchmove', preventTouchMove, { passive: false });
-			document.addEventListener('keydown', preventScrollKeys);
-			return () => {
-				document.removeEventListener('wheel', preventWheel);
-				document.removeEventListener('touchmove', preventTouchMove);
-				document.removeEventListener('keydown', preventScrollKeys);
-			};
-		}, [open]);
+		const isInsideMenu = (target: EventTarget | null) =>
+			target instanceof Node && !!contentRef.current?.contains(target);
+		const preventWheel = (e: WheelEvent) => {
+			if (isInsideMenu(e.target)) return;
+			e.preventDefault();
+		};
+		const preventTouchMove = (e: TouchEvent) => {
+			if (isInsideMenu(e.target)) return;
+			e.preventDefault();
+		};
+		const preventScrollKeys = (e: KeyboardEvent) => {
+			if (!SCROLL_KEYS.has(e.key)) return;
+			const target = e.target as HTMLElement | null;
+			if (target) {
+				// Let editable elements receive the key (typing, cursor movement).
+				const tag = target.tagName;
+				if (tag === 'INPUT' || tag === 'TEXTAREA' || target.isContentEditable) return;
+				if (contentRef.current?.contains(target)) return;
+			}
+			e.preventDefault();
+		};
+		// passive: false is required for preventDefault to take effect on these.
+		useEventListener('wheel', preventWheel, docTarget, PASSIVE_FALSE);
+		useEventListener('touchmove', preventTouchMove, docTarget, PASSIVE_FALSE);
+		useEventListener('keydown', preventScrollKeys, docTarget);
 
 		const ctx = useMemo(
 			() => ({ open, disabled, position, openAt, close, contentRef }),
