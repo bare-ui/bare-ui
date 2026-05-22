@@ -19,19 +19,28 @@ export interface CreateTimeoutResult {
 /**
  * Schedules `callback` to fire once after `delay` ms.
  *
+ * `delay` accepts a number or accessor — the latest value is read each time
+ * `start()` is called, so it stays in sync with reactive props.
+ *
  * Returns imperative controls so the timeout can be paused, cancelled, or restarted.
  *
  * @example
  * const { start, stop, isPending } = createTimeout(() => setShown(false), 3000)
+ *
+ * @example
+ * // Reactive delay driven by a prop:
+ * const { start, stop } = createTimeout(open, () => props.delayDuration, { autoStart: false })
  */
 export function createTimeout(
 	callback: () => void,
-	delay: number,
+	delay: number | Accessor<number>,
 	options: CreateTimeoutOptions = {},
 ): CreateTimeoutResult {
 	const { autoStart = true } = options;
 	const [isPending, setIsPending] = createSignal(false);
 	let timerId: ReturnType<typeof setTimeout> | null = null;
+
+	const getDelay = () => (typeof delay === 'function' ? delay() : delay);
 
 	const stop = () => {
 		if (timerId !== null) {
@@ -48,7 +57,7 @@ export function createTimeout(
 			timerId = null;
 			setIsPending(false);
 			callback();
-		}, delay);
+		}, getDelay());
 	};
 
 	onMount(() => {

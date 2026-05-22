@@ -21,19 +21,22 @@ export interface CreateIntervalResult {
 /**
  * Calls `callback` repeatedly every `delay` ms.
  *
- * Pass `delay = null` to pause without unmounting.
+ * `delay` accepts a number, `null`, or accessor — read each time `start()` is
+ * called. Pass `null` (or an accessor that returns `null`) to pause.
  *
  * @example
  * const { stop, isRunning } = createInterval(() => setNow(Date.now()), 1000)
  */
 export function createInterval(
 	callback: () => void,
-	delay: number | null,
+	delay: number | null | Accessor<number | null>,
 	options: CreateIntervalOptions = {},
 ): CreateIntervalResult {
 	const { autoStart = true, immediate = false } = options;
 	const [isRunning, setIsRunning] = createSignal(false);
 	let timerId: ReturnType<typeof setInterval> | null = null;
+
+	const getDelay = () => (typeof delay === 'function' ? delay() : delay);
 
 	const stop = () => {
 		if (timerId !== null) {
@@ -44,9 +47,10 @@ export function createInterval(
 	};
 
 	const start = () => {
-		if (delay === null || timerId !== null) return;
+		const d = getDelay();
+		if (d === null || timerId !== null) return;
 		if (immediate) callback();
-		timerId = setInterval(() => callback(), delay);
+		timerId = setInterval(() => callback(), d);
 		setIsRunning(true);
 	};
 
