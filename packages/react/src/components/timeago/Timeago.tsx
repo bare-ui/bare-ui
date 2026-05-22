@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useInterval } from '@/hooks/use-interval';
 import type { TimeagoFormatConfig, TimeagoPlural, TimeagoProps } from './Timeago.types';
 
 const MS_PER_MINUTE = 1000 * 60;
@@ -124,21 +125,8 @@ const Timeago = React.forwardRef<HTMLTimeElement, TimeagoProps>(
 		}, [isDuration, timeOnly, getDuration, getTimeOnly, getDateTime]);
 
 		const [tick, setTick] = useState(0);
-		const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-		useEffect(() => {
-			if (isLive) {
-				intervalRef.current = setInterval(() => {
-					setTick((t) => t + 1);
-				}, REFRESH_MS);
-			}
-
-			return () => {
-				if (intervalRef.current) {
-					clearInterval(intervalRef.current);
-				}
-			};
-		}, [isLive]);
+		useInterval(() => setTick((t) => t + 1), isLive ? REFRESH_MS : null);
 
 		// Suppress unused warning — tick drives re-renders for live updates
 		void tick;
