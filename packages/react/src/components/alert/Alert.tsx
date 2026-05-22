@@ -1,6 +1,7 @@
-import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { createContext, useCallback, useContext, useState } from 'react';
 import { mergeProps } from '@/utils/merge-props';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { useTimeout } from '@/hooks/use-timeout';
 import type {
 	AlertContextValue,
 	AlertDescriptionProps,
@@ -44,21 +45,13 @@ function useAlertContext(): AlertContextValue {
 const AlertRoot = React.forwardRef<HTMLDivElement, AlertRootProps>(
 	({ status, isAutoDismissable = false, dismissCountdown = 3000, onDismiss, children, ...rest }, ref) => {
 		const [dismissed, setDismissed] = useState(false);
-		const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 		const dismiss = useCallback(() => {
 			setDismissed(true);
 			onDismiss?.();
 		}, [onDismiss]);
 
-		useEffect(() => {
-			if (isAutoDismissable) {
-				timeoutRef.current = setTimeout(dismiss, dismissCountdown);
-			}
-			return () => {
-				if (timeoutRef.current) clearTimeout(timeoutRef.current);
-			};
-		}, [isAutoDismissable, dismissCountdown, dismiss]);
+		useTimeout(dismiss, dismissCountdown, { autoStart: isAutoDismissable });
 
 		if (dismissed) return null;
 
