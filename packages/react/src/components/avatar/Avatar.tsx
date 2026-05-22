@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useTimeout } from '@/hooks/use-timeout';
 import type { AvatarFallbackProps, AvatarImageProps, AvatarImageStatus, AvatarRootProps } from './Avatar.types';
 
 // ---------------------------------------------------------------------------
@@ -121,12 +122,7 @@ const AvatarFallback = React.forwardRef<HTMLSpanElement, AvatarFallbackProps>(
 		const { imageStatus } = useAvatarContext();
 		const [canRender, setCanRender] = useState(delayMs === 0);
 
-		useEffect(() => {
-			if (delayMs > 0) {
-				const timer = setTimeout(() => setCanRender(true), delayMs);
-				return () => clearTimeout(timer);
-			}
-		}, [delayMs]);
+		useTimeout(() => setCanRender(true), delayMs, { autoStart: delayMs > 0 });
 
 		if (imageStatus === 'loaded') return null;
 		if (!canRender) return null;
