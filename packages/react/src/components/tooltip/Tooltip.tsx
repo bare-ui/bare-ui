@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useRef } from 'react';
+import React, { createContext, useContext } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
+import { useTimeout } from '@/hooks/use-timeout';
 import type { TooltipContextValue, TooltipRootProps, TooltipTriggerProps, TooltipContentProps } from './Tooltip.types';
 
 // ---------------------------------------------------------------------------
@@ -27,16 +28,13 @@ const Root = ({
 		defaultValue: defaultOpen,
 		onChange: onOpenChange,
 	});
-	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const { start, stop } = useTimeout(() => setOpenState(true), delayDuration, { autoStart: false });
 
 	const setOpen = (value: boolean) => {
-		if (timerRef.current) {
-			clearTimeout(timerRef.current);
-			timerRef.current = null;
-		}
 		if (value) {
-			timerRef.current = setTimeout(() => setOpenState(true), delayDuration);
+			start();
 		} else {
+			stop();
 			setOpenState(false);
 		}
 	};
