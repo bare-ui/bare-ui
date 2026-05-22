@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useEventListener } from '@/hooks/use-event-listener';
 import { useId } from '@/hooks/use-id';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
 import type {
@@ -210,54 +211,47 @@ const Group = React.forwardRef<HTMLDivElement, PanelGroupProps>(
 			[orientation, sizes],
 		);
 
-		useEffect(() => {
-			const handleMove = (e: PointerEvent) => {
-				const drag = dragRef.current;
-				if (!drag) return;
-				const horizontal = orientation === 'horizontal';
-				const currentPos = horizontal ? e.clientX : e.clientY;
-				const deltaPx = currentPos - drag.startPos;
-				const deltaPct = (deltaPx / drag.containerLength) * 100;
+		const handleMove = (e: PointerEvent) => {
+			const drag = dragRef.current;
+			if (!drag) return;
+			const horizontal = orientation === 'horizontal';
+			const currentPos = horizontal ? e.clientX : e.clientY;
+			const deltaPx = currentPos - drag.startPos;
+			const deltaPct = (deltaPx / drag.containerLength) * 100;
 
-				// Handle index k sits between panel k and panel k+1.
-				const aIdx = drag.handleIndex;
-				const bIdx = drag.handleIndex + 1;
-				const panels = panelsRef.current;
-				if (aIdx < 0 || bIdx >= drag.startSizes.length || bIdx >= panels.length) return;
+			// Handle index k sits between panel k and panel k+1.
+			const aIdx = drag.handleIndex;
+			const bIdx = drag.handleIndex + 1;
+			const panels = panelsRef.current;
+			if (aIdx < 0 || bIdx >= drag.startSizes.length || bIdx >= panels.length) return;
 
-				const aCfg = panels[aIdx].config;
-				const bCfg = panels[bIdx].config;
-				const aMin = aCfg.minSize ?? 0;
-				const aMax = aCfg.maxSize ?? 100;
-				const bMin = bCfg.minSize ?? 0;
-				const bMax = bCfg.maxSize ?? 100;
+			const aCfg = panels[aIdx].config;
+			const bCfg = panels[bIdx].config;
+			const aMin = aCfg.minSize ?? 0;
+			const aMax = aCfg.maxSize ?? 100;
+			const bMin = bCfg.minSize ?? 0;
+			const bMax = bCfg.maxSize ?? 100;
 
-				const next = drag.startSizes.slice();
-				let newA = clamp(next[aIdx] + deltaPct, aMin, aMax);
-				let newB = next[bIdx] - (newA - next[aIdx]);
-				if (newB < bMin) {
-					newB = bMin;
-					newA = next[aIdx] + (next[bIdx] - newB);
-				} else if (newB > bMax) {
-					newB = bMax;
-					newA = next[aIdx] + (next[bIdx] - newB);
-				}
-				next[aIdx] = newA;
-				next[bIdx] = newB;
-				setSizes(next);
-			};
-			const handleUp = () => {
-				dragRef.current = null;
-			};
-			window.addEventListener('pointermove', handleMove);
-			window.addEventListener('pointerup', handleUp);
-			window.addEventListener('pointercancel', handleUp);
-			return () => {
-				window.removeEventListener('pointermove', handleMove);
-				window.removeEventListener('pointerup', handleUp);
-				window.removeEventListener('pointercancel', handleUp);
-			};
-		}, [orientation, setSizes]);
+			const next = drag.startSizes.slice();
+			let newA = clamp(next[aIdx] + deltaPct, aMin, aMax);
+			let newB = next[bIdx] - (newA - next[aIdx]);
+			if (newB < bMin) {
+				newB = bMin;
+				newA = next[aIdx] + (next[bIdx] - newB);
+			} else if (newB > bMax) {
+				newB = bMax;
+				newA = next[aIdx] + (next[bIdx] - newB);
+			}
+			next[aIdx] = newA;
+			next[bIdx] = newB;
+			setSizes(next);
+		};
+		const handleUp = () => {
+			dragRef.current = null;
+		};
+		useEventListener('pointermove', handleMove);
+		useEventListener('pointerup', handleUp);
+		useEventListener('pointercancel', handleUp);
 
 		const ctx = useMemo<InternalGroupContext>(
 			() => ({
