@@ -1,5 +1,6 @@
-import { createContext, createEffect, createSignal, onCleanup, Show, splitProps, useContext, type JSX } from 'solid-js';
+import { createContext, createEffect, createSignal, Show, splitProps, useContext, type JSX } from 'solid-js';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
+import { createTimeout } from '@/primitives/create-timeout';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	AlertContextValue,
@@ -56,14 +57,8 @@ function Root(props: AlertRootProps) {
 		local.onDismiss?.();
 	};
 
-	// Auto-dismiss timer — re-runs when isAutoDismissable / dismissCountdown
-	// change, mirroring React's useEffect deps. Cleanup clears the previous
-	// timer before re-running and on unmount.
-	createEffect(() => {
-		if (!local.isAutoDismissable) return;
-		const id = setTimeout(dismiss, local.dismissCountdown ?? 3000);
-		onCleanup(() => clearTimeout(id));
-	});
+	const { start, stop } = createTimeout(dismiss, () => local.dismissCountdown ?? 3000, { autoStart: false });
+	createEffect(() => (local.isAutoDismissable ? start() : stop()));
 
 	const ctxValue: AlertContextValue = {
 		get status() {

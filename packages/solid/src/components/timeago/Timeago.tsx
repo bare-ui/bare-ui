@@ -1,4 +1,5 @@
-import { createEffect, createMemo, createSignal, onCleanup, splitProps } from 'solid-js';
+import { createEffect, createMemo, createSignal, splitProps } from 'solid-js';
+import { createInterval } from '@/primitives/create-interval';
 import type { TimeagoFormatConfig, TimeagoPlural, TimeagoProps } from './Timeago.types';
 
 const MS_PER_MINUTE = 1000 * 60;
@@ -130,11 +131,8 @@ function Timeago(props: TimeagoProps) {
 		return getDateTime();
 	});
 
-	createEffect(() => {
-		if (!local.isLive) return;
-		const id = setInterval(() => setTick((t) => t + 1), REFRESH_MS);
-		onCleanup(() => clearInterval(id));
-	});
+	const { start, stop } = createInterval(() => setTick((t) => t + 1), REFRESH_MS, { autoStart: false });
+	createEffect(() => (local.isLive ? start() : stop()));
 
 	return (
 		<time

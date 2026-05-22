@@ -1,5 +1,6 @@
-import { createContext, onCleanup, splitProps, useContext, type JSX } from 'solid-js';
+import { createContext, splitProps, useContext, type JSX } from 'solid-js';
 import { createControllableState } from '@/primitives/create-controllable-state';
+import { createTimeout } from '@/primitives/create-timeout';
 import type {
 	TooltipContentProps,
 	TooltipContextValue,
@@ -31,19 +32,15 @@ function Root(props: TooltipRootProps) {
 		},
 	});
 
-	let timer: ReturnType<typeof setTimeout> | null = null;
-	onCleanup(() => {
-		if (timer) clearTimeout(timer);
+	const { start, stop } = createTimeout(() => setOpenState(true), () => props.delayDuration ?? 300, {
+		autoStart: false,
 	});
 
 	const setOpen = (value: boolean) => {
-		if (timer) {
-			clearTimeout(timer);
-			timer = null;
-		}
 		if (value) {
-			timer = setTimeout(() => setOpenState(true), props.delayDuration ?? 300);
+			start();
 		} else {
+			stop();
 			setOpenState(false);
 		}
 	};

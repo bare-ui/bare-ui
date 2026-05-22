@@ -1,4 +1,5 @@
-import { createContext, createEffect, createSignal, onCleanup, Show, splitProps, useContext, type JSX } from 'solid-js';
+import { createContext, createEffect, createSignal, Show, splitProps, useContext, type JSX } from 'solid-js';
+import { createTimeout } from '@/primitives/create-timeout';
 import type { AvatarFallbackProps, AvatarImageProps, AvatarImageStatus, AvatarRootProps } from './Avatar.types';
 
 // ---------------------------------------------------------------------------
@@ -129,12 +130,9 @@ function Fallback(props: AvatarFallbackProps) {
 	const delayMs = () => local.delayMs ?? 0;
 	const [canRender, setCanRender] = createSignal(delayMs() === 0);
 
+	const { start } = createTimeout(() => setCanRender(true), delayMs, { autoStart: false });
 	createEffect(() => {
-		const ms = delayMs();
-		if (ms > 0) {
-			const timer = setTimeout(() => setCanRender(true), ms);
-			onCleanup(() => clearTimeout(timer));
-		}
+		if (delayMs() > 0) start();
 	});
 
 	return (
