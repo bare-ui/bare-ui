@@ -1,9 +1,10 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useRef } from 'react';
 import { useClickOutside } from '@/hooks/use-click-outside';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { useKeyboard } from '@/hooks/use-keyboard';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
+import { useTimeout } from '@/hooks/use-timeout';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	NavigationMenuContentProps,
@@ -66,26 +67,15 @@ const Root = React.forwardRef<HTMLElement, NavigationMenuRootProps>(
 		const mergedRef = useMergedRefs<HTMLElement>(internalRef, ref);
 
 		// Single shared close timer. Without this, each Trigger and Content owns its
-		// own local `closeTimer` ref — so when the cursor moves from Trigger into
-		// Content, Content's `pointerenter` clears its own (null) timer while
-		// Trigger's pending close timer keeps running and shuts the menu. Hoisting
-		// the timer here lets either compound piece cancel a pending close.
-		const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-		const cancelClose = useCallback(() => {
-			if (closeTimer.current) {
-				clearTimeout(closeTimer.current);
-				closeTimer.current = null;
-			}
-		}, []);
-		const scheduleClose = useCallback(() => {
-			if (closeTimer.current) clearTimeout(closeTimer.current);
-			const target = value;
-			closeTimer.current = setTimeout(() => {
-				closeTimer.current = null;
-				if (value === target) setValue(null);
-			}, skipDelayDuration);
-		}, [value, setValue, skipDelayDuration]);
-		useEffect(() => () => cancelClose(), [cancelClose]);
+		// own local timer — so when the cursor moves from Trigger into Content,
+		// Content's `pointerenter` clears its own (null) timer while Trigger's
+		// pending close timer keeps running and shuts the menu. Hoisting the timer
+		// here lets either compound piece cancel a pending close.
+		const { start: scheduleClose, stop: cancelClose } = useTimeout(
+			() => setValue(null),
+			skipDelayDuration,
+			{ autoStart: false },
+		);
 
 		useClickOutside(internalRef as React.RefObject<HTMLElement | null>, () => {
 			if (value) setValue(null);
@@ -174,13 +164,11 @@ const Trigger = React.forwardRef<HTMLButtonElement, NavigationMenuTriggerProps>(
 
 		// Open-delay timer is per-trigger (it's tied to this element's hover intent).
 		// The close timer lives on Root so Content can cancel it — see Root.
-		const openTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-		const clearOpenTimer = () => {
-			if (openTimer.current) clearTimeout(openTimer.current);
-			openTimer.current = null;
-		};
-
-		useEffect(() => () => clearOpenTimer(), []);
+		const { start: startOpenTimer, stop: clearOpenTimer } = useTimeout(
+			() => root.setValue(item.value),
+			root.delayDuration,
+			{ autoStart: false },
+		);
 
 		return (
 			<button
@@ -206,7 +194,7 @@ const Trigger = React.forwardRef<HTMLButtonElement, NavigationMenuTriggerProps>(
 						// Switch immediately when another menu is already open.
 						root.setValue(item.value);
 					} else {
-						openTimer.current = setTimeout(() => root.setValue(item.value), root.delayDuration);
+						startOpenTimer();
 					}
 					onPointerEnter?.(e);
 				}}
