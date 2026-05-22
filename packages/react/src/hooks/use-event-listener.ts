@@ -15,21 +15,21 @@ function resolveTarget(target: Target | TargetRef): EventTarget | null {
 export function useEventListener<K extends keyof WindowEventMap>(
 	eventName: K,
 	handler: (event: WindowEventMap[K]) => void,
-	target?: Window | TargetRef,
+	target?: Window | null | TargetRef,
 	options?: boolean | AddEventListenerOptions,
 ): void;
 // Document events: typed
 export function useEventListener<K extends keyof DocumentEventMap>(
 	eventName: K,
 	handler: (event: DocumentEventMap[K]) => void,
-	target: Document | TargetRef,
+	target: Document | null | TargetRef,
 	options?: boolean | AddEventListenerOptions,
 ): void;
 // HTMLElement events: typed
 export function useEventListener<K extends keyof HTMLElementEventMap>(
 	eventName: K,
 	handler: (event: HTMLElementEventMap[K]) => void,
-	target: HTMLElement | TargetRef,
+	target: HTMLElement | null | TargetRef,
 	options?: boolean | AddEventListenerOptions,
 ): void;
 // Fallback
