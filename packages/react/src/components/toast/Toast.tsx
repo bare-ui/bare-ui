@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { useTimeout } from '@/hooks/use-timeout';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	ToastCloseProps,
@@ -82,15 +83,18 @@ const Viewport = React.forwardRef<HTMLDivElement, ToastViewportProps>(({ childre
 			aria-label='Notifications'
 			className={className}
 			{...rest}>
-			{ctx.toasts.map((t) => (
-				<ToastShell
-					key={t.id}
-					toast={t}
-					duration={t.duration ?? ctx.defaultDuration}
-					onDismiss={() => ctx.dismiss(t.id)}>
-					{children(t, () => ctx.dismiss(t.id))}
-				</ToastShell>
-			))}
+			{ctx.toasts.map((t) => {
+				const duration = t.duration ?? ctx.defaultDuration;
+				return (
+					<ToastShell
+						key={`${t.id}-${duration}`}
+						toast={t}
+						duration={duration}
+						onDismiss={() => ctx.dismiss(t.id)}>
+						{children(t, () => ctx.dismiss(t.id))}
+					</ToastShell>
+				);
+			})}
 		</div>
 	);
 });
@@ -108,46 +112,29 @@ interface ToastShellProps {
 }
 
 const ToastShell: React.FC<ToastShellProps> = ({ toast, duration, onDismiss, children }) => {
-	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-	const remainingRef = useRef<number>(duration);
-	const startRef = useRef<number>(Date.now());
+	const [delay, setDelay] = useState(duration);
+	const [paused, setPaused] = useState(false);
+	const startRef = useRef<number>(0);
 
-	const clearTimer = () => {
-		if (timerRef.current) {
-			clearTimeout(timerRef.current);
-			timerRef.current = null;
-		}
-	};
+	useTimeout(onDismiss, delay, { autoStart: !paused && delay > 0 });
 
-	const startTimer = useCallback(() => {
-		clearTimer();
-		if (remainingRef.current <= 0) return;
-		startRef.current = Date.now();
-		timerRef.current = setTimeout(() => {
-			onDismiss();
-		}, remainingRef.current);
-	}, [onDismiss]);
-
+	// Set on mount; parent remounts via key when duration/toast.id changes.
 	useEffect(() => {
-		if (duration > 0) {
-			remainingRef.current = duration;
-			startTimer();
-		}
-		return clearTimer;
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [duration, toast.id]);
+		startRef.current = Date.now();
+	}, []);
 
 	const pauseOnHover = toast.pauseOnHover !== false;
 
 	const handleEnter = () => {
 		if (!pauseOnHover) return;
-		clearTimer();
-		remainingRef.current = remainingRef.current - (Date.now() - startRef.current);
+		setDelay((d) => Math.max(0, d - (Date.now() - startRef.current)));
+		setPaused(true);
 	};
 
 	const handleLeave = () => {
 		if (!pauseOnHover) return;
-		startTimer();
+		startRef.current = Date.now();
+		setPaused(false);
 	};
 
 	return (
