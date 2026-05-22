@@ -54,6 +54,10 @@ export function useTimeout(callback: () => void, delay: number, options: UseTime
 	}, [delay]);
 
 	useEffect(() => {
+		// Calling start() flips isPending — this effect is the synchronization
+		// point between React state and the underlying setTimeout, so the
+		// cascading render is the intended behavior.
+		// eslint-disable-next-line react-hooks/set-state-in-effect
 		if (autoStart) start();
 		return stop;
 	}, [autoStart, start, stop]);

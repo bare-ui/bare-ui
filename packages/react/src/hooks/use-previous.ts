@@ -15,5 +15,8 @@ export function usePrevious<T>(value: T): T | undefined {
 	useEffect(() => {
 		ref.current = value;
 	}, [value]);
+	// Reading the ref during render is the whole point: returns the value held
+	// during the previous render, before the effect above overwrites it.
+	// eslint-disable-next-line react-hooks/refs
 	return ref.current;
 }
