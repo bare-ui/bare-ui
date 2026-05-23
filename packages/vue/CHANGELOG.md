@@ -5,6 +5,42 @@ All notable changes to `@wire-ui/vue` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-05-23
+
+### Added
+
+#### Composables
+
+- **`useCopyToClipboard`** — clipboard write helper returning `{ copy, copied, error }`; configurable auto-reset
+  timeout for the `copied` flag
+- **`useDocumentVisibility`** — reactive `document.visibilityState` ref; SSR-safe with a sensible default
+- **`useElementSize`** — live content-box `{ width, height }` of a referenced element via `ResizeObserver`
+- **`useEventListener`** — typed `addEventListener` subscription for `window`, `document`, elements, or refs; accepts
+  `null` targets for conditional binding; auto-cleans on unmount
+- **`useHotkeys`** — declarative keyboard-shortcut binder with combo matching (e.g. `mod+k`, `shift+/`),
+  `enableOnFormTags`, and `preventDefault` options
+- **`useInterval`** — `setInterval` wrapper with pause/resume/reset controls; pass `null` delay to halt
+- **`useLocalStorage`** / **`useSessionStorage`** — `ref`-shaped composables backed by `localStorage` /
+  `sessionStorage` with cross-tab sync, custom serializer/deserializer, and SSR-safe initial value
+- **`useLongPress`** — long-press gesture handler with configurable `threshold`, `onStart`/`onFinish`/`onCancel`
+  callbacks, and pointer/touch support
+- **`useMutationObserver`** — observes DOM mutations on a referenced element with full `MutationObserverInit` options
+- **`useOnlineStatus`** — reactive `navigator.onLine` ref with SSR-safe default
+- **`usePrevious`** — returns the value from the previous render
+- **`useStateMachine`** — finite-state-machine composable with `states`, `events`, `transitions`, and guarded
+  transitions
+- **`useTimeout`** — `setTimeout` wrapper with `start`/`clear`/`reset` controls and `isPending` ref
+- **`useUndoRedo`** — state container with bounded history; exposes `undo`, `redo`, `canUndo`, `canRedo`, `clear`
+- **`useWindowSize`** — reactive `{ width, height }` of the viewport with SSR-safe default
+
+### Changed
+
+- **AlertRoot** — auto-dismiss timer now uses [[use-timeout]] instead of inline `setTimeout` bookkeeping
+- **AvatarFallback** — show-delay timer now uses [[use-timeout]]
+- **PanelGroup** (ResizablePanels) — drag-end persistence timer now uses [[use-timeout]]
+- **Timeago** — periodic re-render now uses [[use-timeout]] instead of a manual `setInterval`/`setTimeout` chain
+- **TooltipRoot** — show/hide delay timers now use [[use-timeout]]
+
 ## [0.2.0] - 2026-05-17
 
 First functional release of `@wire-ui/vue` — 44 components and 16 composables ported from `@wire-ui/react` with full
