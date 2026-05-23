@@ -375,3 +375,7 @@ button[data-focus-visible] { /* close button keyboard focus */ }
 |---|---|
 | <kbd>Tab</kbd> | Moves focus into the Viewport and through Close buttons; pauses the timer while focused. |
 | <kbd>Enter</kbd> / <kbd>Space</kbd> | Activates the focused Close button. |
+
+## Internals
+
+Since `0.3.0`, each toast's auto-dismiss timer is delegated to <ForReact>[`useTimeout`](../hooks/use-timeout)</ForReact><ForVue>[`useTimeout`](../hooks/use-timeout)</ForVue><ForSolid>[`createTimeout`](../hooks/use-timeout)</ForSolid> — pause-on-hover and pause-on-focus reuse the same `stop` / `reset` controls. No public API change.

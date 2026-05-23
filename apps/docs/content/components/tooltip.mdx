@@ -187,3 +187,7 @@ Content sets `data-state` (`"open"` / `"closed"`) and `data-side` (`"top"` / `"b
 |---|---|
 | <kbd>Tab</kbd> | Shows the tooltip when trigger receives focus. |
 | <kbd>Escape</kbd> | Closes the tooltip. |
+
+## Internals
+
+Since `0.3.0`, the show/hide delay timers are delegated to <ForReact>[`useTimeout`](../hooks/use-timeout)</ForReact><ForVue>[`useTimeout`](../hooks/use-timeout)</ForVue><ForSolid>[`createTimeout`](../hooks/use-timeout)</ForSolid> instead of inline `setTimeout` bookkeeping. No public API change.

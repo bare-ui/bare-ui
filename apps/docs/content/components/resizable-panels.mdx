@@ -208,3 +208,9 @@ Handle renders with `role="separator"` and `aria-orientation` set perpendicular 
 | <kbd>Tab</kbd> | Moves focus to the next handle. |
 
 Keyboard-driven resizing is not currently implemented — users resize via pointer drag.
+
+<ForVue>
+## Internals
+
+Since `0.3.0`, the drag-end persistence timer is delegated to [`useTimeout`](../hooks/use-timeout) instead of inline `setTimeout` bookkeeping. No public API change.
+</ForVue>

@@ -181,3 +181,7 @@ Avatar.Image sets `data-status` with values `"loading"`, `"loaded"`, or `"error"
 | `data-status` | `"loading"` → `"loaded"` / `"error"` |
 
 `Fallback` renders when `data-status` is `"error"` or `src` is empty.
+
+## Internals
+
+Since `0.3.0`, the `Fallback` show-delay timer is delegated to <ForReact>[`useTimeout`](../hooks/use-timeout)</ForReact><ForVue>[`useTimeout`](../hooks/use-timeout)</ForVue><ForSolid>[`createTimeout`](../hooks/use-timeout)</ForSolid> instead of inline `setTimeout` bookkeeping. No public API change.

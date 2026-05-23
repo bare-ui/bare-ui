@@ -188,4 +188,8 @@ time { font-variant-numeric: tabular-nums; }
 
 ## Live updates
 
-In `isDuration` mode, the component sets a `setInterval` that recalculates the displayed string every minute. The `datetime` attribute on the `<time>` element always holds the original ISO timestamp for machine readability.
+In `isDuration` mode, the component recalculates the displayed string every minute via <ForReact>[`useInterval`](../hooks/use-interval)</ForReact><ForVue>[`useTimeout`](../hooks/use-timeout)</ForVue><ForSolid>[`createInterval`](../hooks/use-interval)</ForSolid>. The `datetime` attribute on the `<time>` element always holds the original ISO timestamp for machine readability.
+
+## Internals
+
+Since `0.3.0`, the live-update tick is delegated to the public timing <ForReact>hook</ForReact><ForVue>composable</ForVue><ForSolid>primitive</ForSolid> instead of an inline `setInterval`. No public API change.

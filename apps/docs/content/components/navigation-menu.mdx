@@ -285,3 +285,7 @@ Root renders as `<nav>` with `aria-label`. Trigger sets `aria-haspopup="menu"` a
 | <kbd>Space</kbd> | Activates the focused trigger. |
 | <kbd>Tab</kbd> | Moves focus to the next trigger or link. |
 | <kbd>Escape</kbd> | Closes the open menu. |
+
+## Internals
+
+Since `0.3.0`, the hover-intent open/close timers are delegated to <ForReact>[`useTimeout`](../hooks/use-timeout)</ForReact><ForVue>[`useTimeout`](../hooks/use-timeout)</ForVue><ForSolid>[`createTimeout`](../hooks/use-timeout)</ForSolid>. No public API change — the `delayDuration` / `skipDelayDuration` props behave identically.

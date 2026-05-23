@@ -218,3 +218,9 @@ Content sets `role="menu"`. Items set `role="menuitem"` with `aria-disabled` whe
 | <kbd>Space</kbd> | Activates the focused item. |
 | <kbd>Tab</kbd> | Moves focus to the next item. |
 | <kbd>Escape</kbd> | Closes the menu. |
+
+## Internals
+
+<ForReact>Since `0.3.0`, the outside-click and `Escape` handling is delegated to [`useEventListener`](../hooks/use-event-listener) — null-target safe and no manual `addEventListener` / cleanup boilerplate. No public API change.</ForReact>
+<ForVue>Since `0.3.0`, the outside-click and `Escape` handling is delegated to [`useEventListener`](../hooks/use-event-listener) — null-target safe and no manual `addEventListener` / cleanup boilerplate. No public API change.</ForVue>
+<ForSolid>Since `0.3.0`, the outside-click and `Escape` handling is delegated to [`createEventListener`](../hooks/use-event-listener) — null-target safe and no manual `addEventListener` / cleanup boilerplate. No public API change.</ForSolid>
