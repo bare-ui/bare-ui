@@ -2035,6 +2035,9 @@ export const components: ComponentData[] = [
 </template>`,
 			},
 		},
+		notes: [
+			"Outside-click and Escape dismissal use [[event-listener]] (useEventListener / createEventListener) internally — no behavior change.",
+		],
 	},
 
 	{
@@ -2176,6 +2179,9 @@ export const components: ComponentData[] = [
 </template>`,
 			},
 		},
+		notes: [
+			"Show/hide delay timers use [[timeout]] (useTimeout / createTimeout) internally — no behavior change.",
+		],
 	},
 
 	{
@@ -2575,6 +2581,7 @@ export const components: ComponentData[] = [
 		},
 		notes: [
 			"Cursor movement from Trigger to Content does not close the menu; hover-intent is timed on Root, not per-component.",
+			"The hover-intent open/close timers use [[timeout]] (useTimeout / createTimeout) internally — no behavior change.",
 		],
 	},
 
@@ -2744,6 +2751,9 @@ export const components: ComponentData[] = [
 </template>`,
 			},
 		},
+		notes: [
+			"The auto-dismiss timer uses [[timeout]] (useTimeout / createTimeout) internally — no behavior change.",
+		],
 	},
 
 	{
@@ -2802,6 +2812,9 @@ export const components: ComponentData[] = [
 </template>`,
 			},
 		},
+		notes: [
+			"AvatarFallback's show-delay timer uses [[timeout]] (useTimeout / createTimeout) internally — no behavior change.",
+		],
 	},
 
 	{
@@ -3385,6 +3398,7 @@ toast({ title: 'Saved', status: 'success' });
 		notes: [
 			"Toast.Provider must wrap any component that calls useToast.",
 			"Use the imperative toast() API for one-shot notifications.",
+			"Each toast's auto-dismiss timer uses [[timeout]] (useTimeout / createTimeout) internally — no behavior change.",
 		],
 	},
 
@@ -3551,6 +3565,9 @@ toast({ title: 'Saved', status: 'success' });
 </template>`,
 			},
 		},
+		notes: [
+			"The periodic re-render uses [[interval]] (useInterval / createInterval) internally — no behavior change.",
+		],
 	},
 
 	// ─── Layout ─────────────────────────────────────────────────────────
