@@ -1,0 +1,92 @@
+---
+title: useInterval
+description: setInterval wrapper with pause / resume / reset; delay = null pauses.
+---
+
+# <ForReact><code>useInterval</code></ForReact><ForVue><code>useInterval</code></ForVue><ForSolid><code>createInterval</code></ForSolid>
+
+A managed `setInterval`. Pass `delay = null` to pause without unmounting. The latest callback reference is always invoked, so closure-captured values stay fresh.
+
+Used internally by `Timeago` for its periodic re-render.
+
+<ForReact>
+```tsx
+import { useState } from 'react'
+import { useInterval } from '@wire-ui/react'
+
+function Ticker() {
+  const [count, setCount] = useState(0)
+  const { isRunning, start, stop } = useInterval(() => setCount((c) => c + 1), 1000, {
+    autoStart: true,
+  })
+
+  return (
+    <>
+      <span>{count}</span>
+      <button onClick={isRunning ? stop : start}>
+        {isRunning ? 'Pause' : 'Resume'}
+      </button>
+    </>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { useInterval } from '@wire-ui/vue'
+
+const count = ref(0)
+const { isRunning, start, stop } = useInterval(() => count.value++, 1000, {
+  autoStart: true,
+})
+</script>
+
+<template>
+  <span>{{ count }}</span>
+  <button @click="isRunning ? stop() : start()">
+    {{ isRunning ? 'Pause' : 'Resume' }}
+  </button>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createSignal } from 'solid-js'
+import { createInterval } from '@wire-ui/solid'
+
+function Ticker() {
+  const [count, setCount] = createSignal(0)
+  const { isRunning, start, stop } = createInterval(() => setCount((c) => c + 1), 1000, {
+    autoStart: true,
+  })
+
+  return (
+    <>
+      <span>{count()}</span>
+      <button onClick={isRunning() ? stop : start}>
+        {isRunning() ? 'Pause' : 'Resume'}
+      </button>
+    </>
+  )
+}
+```
+</ForSolid>
+
+## Parameters
+
+| Param | Type | Description |
+|---|---|---|
+| `callback` | `() => void` | Fires on every tick. |
+| `delay` | <ForReact>`number \| null`</ForReact><ForVue>`MaybeRefOrGetter<number \| null>`</ForVue><ForSolid>`number \| null \| Accessor<number \| null>`</ForSolid> | Milliseconds between ticks. `null` pauses the interval. |
+| `options` | `{ autoStart?: boolean, immediate?: boolean }` | `autoStart` runs on mount; `immediate` fires the callback once on start. |
+
+## Returns
+
+| Key | Type | Description |
+|---|---|---|
+| `isRunning` | <ForReact>`boolean`</ForReact><ForVue>`Ref<boolean>`</ForVue><ForSolid>`Accessor<boolean>`</ForSolid> | `true` while the interval is active. |
+| `start` | `() => void` | Begin ticking. |
+| `stop` | `() => void` | Pause ticking. |
+| `reset` | `() => void` | Cancel and restart with the current `delay`. |

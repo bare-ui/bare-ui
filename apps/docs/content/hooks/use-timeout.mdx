@@ -1,0 +1,74 @@
+---
+title: useTimeout
+description: setTimeout wrapper with start / stop / reset and isPending.
+---
+
+# <ForReact><code>useTimeout</code></ForReact><ForVue><code>useTimeout</code></ForVue><ForSolid><code>createTimeout</code></ForSolid>
+
+A managed `setTimeout`. The handler is always the latest reference, so closure-captured values stay fresh even if you don't `reset`. The timer is cleared automatically when the consumer unmounts.
+
+Used internally by `Alert`, `Avatar`, `Toast`, and `Tooltip` for their delay/auto-dismiss timers.
+
+<ForReact>
+```tsx
+import { useTimeout } from '@wire-ui/react'
+
+function AutoDismiss({ onDismiss }: { onDismiss: () => void }) {
+  const { isPending, start, stop, reset } = useTimeout(onDismiss, 3000, { autoStart: true })
+
+  return (
+    <div onMouseEnter={stop} onMouseLeave={reset}>
+      {isPending ? 'closing soon…' : 'hovering'}
+    </div>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { useTimeout } from '@wire-ui/vue'
+
+const props = defineProps<{ onDismiss: () => void }>()
+const { isPending, start, stop, reset } = useTimeout(() => props.onDismiss(), 3000, { autoStart: true })
+</script>
+
+<template>
+  <div @mouseenter="stop" @mouseleave="reset">
+    {{ isPending ? 'closing soon…' : 'hovering' }}
+  </div>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createTimeout } from '@wire-ui/solid'
+
+function AutoDismiss(props: { onDismiss: () => void }) {
+  const { isPending, start, stop, reset } = createTimeout(() => props.onDismiss(), 3000, { autoStart: true })
+
+  return (
+    <div onMouseEnter={stop} onMouseLeave={reset}>
+      {isPending() ? 'closing soon…' : 'hovering'}
+    </div>
+  )
+}
+```
+</ForSolid>
+
+## Parameters
+
+| Param | Type | Description |
+|---|---|---|
+| `callback` | `() => void` | Fires when the timer elapses. |
+| `delay` | <ForReact>`number`</ForReact><ForVue>`MaybeRefOrGetter<number>`</ForVue><ForSolid>`number \| Accessor<number>`</ForSolid> | Milliseconds before `callback` runs. <ForVue>Re-read on each `start`.</ForVue><ForSolid>Re-read on each `start`.</ForSolid> |
+| `options` | `{ autoStart?: boolean }` | Start the timer on mount. Defaults to `false`. |
+
+## Returns
+
+| Key | Type | Description |
+|---|---|---|
+| `isPending` | <ForReact>`boolean`</ForReact><ForVue>`Ref<boolean>`</ForVue><ForSolid>`Accessor<boolean>`</ForSolid> | `true` while the timer is queued. |
+| `start` | `() => void` | Begin the timer. Replaces any in-flight timer. |
+| `stop` | `() => void` | Cancel the timer. |
+| `reset` | `() => void` | Cancel and restart with the current `delay`. |

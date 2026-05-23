@@ -16,6 +16,9 @@ description: Publicly exported hooks, composables, and primitives from Wire UI.
 | [<ForReact>`useControllableState`</ForReact><ForVue>`useControllableState`</ForVue><ForSolid>`createControllableState`</ForSolid>](./use-controllable-state) | Unified controlled / uncontrolled state. |
 | [<ForReact>`useDisclosure`</ForReact><ForVue>`useDisclosure`</ForVue><ForSolid>`createDisclosure`</ForSolid>](./use-disclosure) | Boolean open / close with stable handlers. |
 | [<ForReact>`useId`</ForReact><ForVue>`useId`</ForVue><ForSolid>`createId`</ForSolid>](./use-id) | SSR-safe unique id with optional prefix. |
+| [<ForReact>`usePrevious`</ForReact><ForVue>`usePrevious`</ForVue><ForSolid>`createPrevious`</ForSolid>](./use-previous) | The value from the previous render. |
+| [<ForReact>`useStateMachine`</ForReact><ForVue>`useStateMachine`</ForVue><ForSolid>`createStateMachine`</ForSolid>](./use-state-machine) | Typed finite state machine with `state` / `send` / `can`. |
+| [<ForReact>`useUndoRedo`</ForReact><ForVue>`useUndoRedo`</ForVue><ForSolid>`createUndoRedo`</ForSolid>](./use-undo-redo) | Bounded history with `undo` / `redo` / `canUndo` / `canRedo`. |
 
 ## Interaction
 
@@ -26,6 +29,9 @@ description: Publicly exported hooks, composables, and primitives from Wire UI.
 | [<ForReact>`useFocusVisible`</ForReact><ForVue>`useFocusVisible`</ForVue><ForSolid>`createFocusVisible`</ForSolid>](./use-focus-visible) | Track keyboard-vs-pointer focus. |
 | [<ForReact>`useInteractiveState`</ForReact><ForVue>`useInteractiveState`</ForVue><ForSolid>`createInteractiveState`</ForSolid>](./use-interactive-state) | Hover, focus-visible, press state with `data-*` attributes. |
 | [<ForReact>`useKeyboard`</ForReact><ForVue>`useKeyboard`</ForVue><ForSolid>`createKeyboard`</ForSolid>](./use-keyboard) | Map keyboard events to handlers with modifier support. |
+| [<ForReact>`useHotkeys`</ForReact><ForVue>`useHotkeys`</ForVue><ForSolid>`createHotkeys`</ForSolid>](./use-hotkeys) | Declarative shortcut binder with `mod+k`, scopes, input-suppression. |
+| [<ForReact>`useLongPress`</ForReact><ForVue>`useLongPress`</ForVue><ForSolid>`createLongPress`</ForSolid>](./use-long-press) | Long-press gesture handler with move-cancel and threshold. |
+| [<ForReact>`useCopyToClipboard`</ForReact><ForVue>`useCopyToClipboard`</ForVue><ForSolid>`createCopyToClipboard`</ForSolid>](./use-copy-to-clipboard) | Async clipboard write with `copied` flag and auto-reset. |
 
 ## Layout
 
@@ -40,6 +46,36 @@ description: Publicly exported hooks, composables, and primitives from Wire UI.
 |---|---|
 | [<ForReact>`useIntersectionObserver`</ForReact><ForVue>`useIntersectionObserver`</ForVue><ForSolid>`createIntersectionObserver`</ForSolid>](./use-intersection-observer) | Observe element visibility within a scroll container. |
 | [<ForReact>`useResizeObserver`</ForReact><ForVue>`useResizeObserver`</ForVue><ForSolid>`createResizeObserver`</ForSolid>](./use-resize-observer) | Observe an element's content-box size. |
+| [<ForReact>`useMutationObserver`</ForReact><ForVue>`useMutationObserver`</ForVue><ForSolid>`createMutationObserver`</ForSolid>](./use-mutation-observer) | Observe DOM mutations on a ref target. |
+| [<ForReact>`useElementSize`</ForReact><ForVue>`useElementSize`</ForVue><ForSolid>`createElementSize`</ForSolid>](./use-element-size) | Live `{ width, height }` of a referenced element. |
+| [<ForReact>`useWindowSize`</ForReact><ForVue>`useWindowSize`</ForVue><ForSolid>`createWindowSize`</ForSolid>](./use-window-size) | Live `{ width, height }` of the viewport. |
+
+## Timing
+
+| Hook | Purpose |
+|---|---|
+| [<ForReact>`useTimeout`</ForReact><ForVue>`useTimeout`</ForVue><ForSolid>`createTimeout`</ForSolid>](./use-timeout) | `setTimeout` with `start` / `stop` / `reset` and `isPending`. |
+| [<ForReact>`useInterval`</ForReact><ForVue>`useInterval`</ForVue><ForSolid>`createInterval`</ForSolid>](./use-interval) | `setInterval` with pause / resume; `delay = null` pauses. |
+
+## Storage
+
+| Hook | Purpose |
+|---|---|
+| [<ForReact>`useLocalStorage` / `useSessionStorage`</ForReact><ForVue>`useLocalStorage` / `useSessionStorage`</ForVue><ForSolid>`createLocalStorage` / `createSessionStorage`</ForSolid>](./use-local-storage) | SSR-safe `useState`-shaped hook backed by Web Storage with cross-tab sync. |
+
+## DOM
+
+| Hook | Purpose |
+|---|---|
+| [<ForReact>`useEventListener`</ForReact><ForVue>`useEventListener`</ForVue><ForSolid>`createEventListener`</ForSolid>](./use-event-listener) | Typed `addEventListener` for window / document / element / ref. |
+| [<ForReact>`useDocumentVisibility`</ForReact><ForVue>`useDocumentVisibility`</ForVue><ForSolid>`createDocumentVisibility`</ForSolid>](./use-document-visibility) | Reactive `document.visibilityState`. |
+| [<ForReact>`useOnlineStatus`</ForReact><ForVue>`useOnlineStatus`</ForVue><ForSolid>`createOnlineStatus`</ForSolid>](./use-online-status) | Reactive `navigator.onLine` boolean. |
+
+<ForReact>
+### React-only
+
+- [`useIsomorphicLayoutEffect`](./use-isomorphic-layout-effect) — `useLayoutEffect` on the client, `useEffect` on the server.
+</ForReact>
 
 ## Utilities
 

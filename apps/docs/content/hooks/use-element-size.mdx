@@ -1,0 +1,69 @@
+---
+title: useElementSize
+description: Live content-box width and height of a referenced element.
+---
+
+# <ForReact><code>useElementSize</code></ForReact><ForVue><code>useElementSize</code></ForVue><ForSolid><code>createElementSize</code></ForSolid>
+
+Returns the live content-box `{ width, height }` of a referenced element. A thin wrapper over [`useResizeObserver`](./use-resize-observer) with a friendlier API.
+
+<ForReact>
+```tsx
+import { useRef } from 'react'
+import { useElementSize } from '@wire-ui/react'
+
+function Measured() {
+  const ref = useRef<HTMLDivElement>(null)
+  const { width, height } = useElementSize(ref)
+
+  return (
+    <div ref={ref}>
+      {width.toFixed(0)} × {height.toFixed(0)}
+    </div>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { useElementSize } from '@wire-ui/vue'
+
+const target = ref<HTMLDivElement | null>(null)
+const { width, height } = useElementSize(target)
+</script>
+
+<template>
+  <div ref="target">{{ width.toFixed(0) }} × {{ height.toFixed(0) }}</div>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createElementSize } from '@wire-ui/solid'
+
+function Measured() {
+  let el!: HTMLDivElement
+  const size = createElementSize(() => el)
+
+  return (
+    <div ref={el}>
+      {size().width.toFixed(0)} × {size().height.toFixed(0)}
+    </div>
+  )
+}
+```
+</ForSolid>
+
+## Parameters
+
+| Param | Type | Description |
+|---|---|---|
+| `target` | <ForReact>`RefObject<HTMLElement \| null>`</ForReact><ForVue>`Ref<HTMLElement \| null>`</ForVue><ForSolid>`Accessor<HTMLElement \| null \| undefined>`</ForSolid> | The element to measure. |
+
+## Returns
+
+<ForReact>`{ width: number, height: number }` — defaults to `{ 0, 0 }` until the observer has reported.</ForReact>
+<ForVue>`{ width: number, height: number }` — a reactive object; defaults to `{ 0, 0 }` until the observer reports.</ForVue>
+<ForSolid>`Accessor<{ width: number, height: number }>` — defaults to `{ 0, 0 }` until the observer reports.</ForSolid>

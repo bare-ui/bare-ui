@@ -1,0 +1,79 @@
+---
+title: useLongPress
+description: Long-press gesture handler with movement-cancel and configurable threshold.
+---
+
+# <ForReact><code>useLongPress</code></ForReact><ForVue><code>useLongPress</code></ForVue><ForSolid><code>createLongPress</code></ForSolid>
+
+Detects a long-press gesture via pointer events. Returns a bundle of handlers you spread onto the target element. The press is cancelled if the pointer moves more than `moveThreshold` pixels — so scrolling won't accidentally trigger it.
+
+<ForReact>
+```tsx
+import { useLongPress } from '@wire-ui/react'
+
+function PressableItem() {
+  const handlers = useLongPress(
+    (e) => console.log('long pressed at', e.clientX, e.clientY),
+    { threshold: 500 },
+  )
+
+  return <div {...handlers}>Press and hold</div>
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { useLongPress } from '@wire-ui/vue'
+
+const handlers = useLongPress(
+  (e) => console.log('long pressed at', e.clientX, e.clientY),
+  { threshold: 500 },
+)
+</script>
+
+<template>
+  <div v-bind="handlers">Press and hold</div>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createLongPress } from '@wire-ui/solid'
+
+function PressableItem() {
+  const handlers = createLongPress(
+    (e) => console.log('long pressed at', e.clientX, e.clientY),
+    { threshold: 500 },
+  )
+
+  return <div {...handlers}>Press and hold</div>
+}
+```
+</ForSolid>
+
+## Parameters
+
+| Param | Type | Description |
+|---|---|---|
+| `callback` | `(event: PointerEvent) => void` | Fires once the press has been held for `threshold` ms. |
+| `options` | `UseLongPressOptions` | See below. |
+
+## Options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `threshold` | `number` | `400` | Milliseconds the pointer must stay down before the callback fires. |
+| `moveThreshold` | `number` | `10` | Pixels of movement that cancel the press. |
+| `onStart` | `(event: PointerEvent) => void` | — | Called on pointer down. |
+| `onFinish` | `(event: PointerEvent) => void` | — | Called when the threshold is reached and `callback` fires. |
+| `onCancel` | `(event: PointerEvent) => void` | — | Called when the press is cancelled by movement, release, or pointer leave. |
+| `disabled` | `boolean` | `false` | Disable the gesture entirely. |
+
+## Returns
+
+A handler bundle to spread onto the target element. <ForVue>Vue handler keys are lowercased (`onPointerdown`, etc.) for template binding.</ForVue>
+
+<ForReact>`{ onPointerDown, onPointerUp, onPointerLeave, onPointerMove, onPointerCancel }`</ForReact>
+<ForVue>`{ onPointerdown, onPointerup, onPointerleave, onPointermove, onPointercancel }`</ForVue>
+<ForSolid>`{ onPointerDown, onPointerUp, onPointerLeave, onPointerMove, onPointerCancel }`</ForSolid>

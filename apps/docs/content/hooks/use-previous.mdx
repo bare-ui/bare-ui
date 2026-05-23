@@ -1,0 +1,77 @@
+---
+title: usePrevious
+description: Returns the value from the previous render.
+---
+
+# <ForReact><code>usePrevious</code></ForReact><ForVue><code>usePrevious</code></ForVue><ForSolid><code>createPrevious</code></ForSolid>
+
+Tracks the value from the previous render / tracked update. Returns `undefined` on the first run.
+
+<ForReact>
+```tsx
+import { useEffect } from 'react'
+import { usePrevious } from '@wire-ui/react'
+
+function Counter({ count }: { count: number }) {
+  const previous = usePrevious(count)
+
+  useEffect(() => {
+    if (previous !== undefined && count > previous) {
+      console.log(`went up by ${count - previous}`)
+    }
+  }, [count, previous])
+
+  return <span>{count}</span>
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref, watch } from 'vue'
+import { usePrevious } from '@wire-ui/vue'
+
+const count = ref(0)
+const previous = usePrevious(count)
+
+watch(count, (value) => {
+  if (previous.value !== undefined && value > previous.value) {
+    console.log(`went up by ${value - previous.value}`)
+  }
+})
+</script>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createSignal, createEffect } from 'solid-js'
+import { createPrevious } from '@wire-ui/solid'
+
+function Counter() {
+  const [count, setCount] = createSignal(0)
+  const previous = createPrevious(count)
+
+  createEffect(() => {
+    const prev = previous()
+    const next = count()
+    if (prev !== undefined && next > prev) {
+      console.log(`went up by ${next - prev}`)
+    }
+  })
+
+  return <span>{count()}</span>
+}
+```
+</ForSolid>
+
+## Parameters
+
+| Param | Type | Description |
+|---|---|---|
+| `value` | <ForReact>`T`</ForReact><ForVue>`MaybeRefOrGetter<T>`</ForVue><ForSolid>`Accessor<T>`</ForSolid> | Value to track. |
+
+## Returns
+
+<ForReact>`T | undefined` — the value from the previous render, or `undefined` before the first update.</ForReact>
+<ForVue>`Ref<T | undefined>` — a ref holding the value from the previous tracked update.</ForVue>
+<ForSolid>`Accessor<T | undefined>` — an accessor for the value from the previous tracked update.</ForSolid>

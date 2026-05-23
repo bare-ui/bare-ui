@@ -1,0 +1,102 @@
+---
+title: useEventListener
+description: Typed addEventListener subscription for window, document, elements, and refs.
+---
+
+# <ForReact><code>useEventListener</code></ForReact><ForVue><code>useEventListener</code></ForVue><ForSolid><code>createEventListener</code></ForSolid>
+
+A typed `addEventListener` wrapper. Overloaded for `Window`, `Document`, and `HTMLElement` so the event name auto-completes and the event object is typed for you. Defaults to `window`. The listener is removed automatically on cleanup; `null` targets are tolerated so you can bind conditionally on refs that may not be ready yet.
+
+The handler reference is read live — you can pass an inline arrow without re-subscribing on every render.
+
+Used internally by `ContextMenu`, `Group`, and other components for global listener handling.
+
+<ForReact>
+```tsx
+import { useEventListener } from '@wire-ui/react'
+
+function ResizeLogger() {
+  useEventListener('resize', () => {
+    console.log(window.innerWidth)
+  })
+  return null
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { useEventListener } from '@wire-ui/vue'
+
+useEventListener('resize', () => {
+  console.log(window.innerWidth)
+})
+</script>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createEventListener } from '@wire-ui/solid'
+
+function ResizeLogger() {
+  createEventListener('resize', () => {
+    console.log(window.innerWidth)
+  })
+  return null
+}
+```
+</ForSolid>
+
+## Binding to a ref
+
+Pass a ref/accessor as the third argument. The listener attaches when the target becomes available and detaches when it goes away.
+
+<ForReact>
+```tsx
+import { useRef } from 'react'
+import { useEventListener } from '@wire-ui/react'
+
+function Outside() {
+  const ref = useRef<HTMLDivElement>(null)
+  useEventListener('click', (e) => console.log('clicked', e.target), ref)
+
+  return <div ref={ref}>Click me</div>
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { useEventListener } from '@wire-ui/vue'
+
+const el = ref<HTMLDivElement | null>(null)
+useEventListener('click', (e) => console.log('clicked', e.target), el)
+</script>
+
+<template>
+  <div ref="el">Click me</div>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createEventListener } from '@wire-ui/solid'
+
+function Outside() {
+  let el!: HTMLDivElement
+  createEventListener('click', (e) => console.log('clicked', e.target), () => el)
+
+  return <div ref={el}>Click me</div>
+}
+```
+</ForSolid>
+
+## Parameters
+
+| Param | Type | Description |
+|---|---|---|
+| `eventName` | `string` | Event to subscribe to. Typed against the target. |
+| `handler` | `(event: TEvent) => void` | The listener. Always the latest reference. |
+| `target` | <ForReact>`Window \| Document \| HTMLElement \| RefObject \| null`</ForReact><ForVue>`Window \| Document \| HTMLElement \| Ref \| null`</ForVue><ForSolid>`Window \| Document \| HTMLElement \| Accessor \| null`</ForSolid> | Where to attach. Defaults to `window`. `null` is tolerated. |
+| `options` | `boolean \| AddEventListenerOptions` | Passed straight to `addEventListener`. |

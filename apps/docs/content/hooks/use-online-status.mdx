@@ -1,0 +1,56 @@
+---
+title: useOnlineStatus
+description: Reactive navigator.onLine boolean.
+---
+
+# <ForReact><code>useOnlineStatus</code></ForReact><ForVue><code>useOnlineStatus</code></ForVue><ForSolid><code>createOnlineStatus</code></ForSolid>
+
+Subscribes to the `online` / `offline` window events and returns the current `navigator.onLine` value. SSR-safe — returns `true` on the server.
+
+<ForReact>
+```tsx
+import { useOnlineStatus } from '@wire-ui/react'
+
+function Status() {
+  const online = useOnlineStatus()
+  return <div data-status={online ? 'online' : 'offline'}>{online ? 'Online' : 'Offline'}</div>
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { useOnlineStatus } from '@wire-ui/vue'
+
+const online = useOnlineStatus()
+</script>
+
+<template>
+  <div :data-status="online ? 'online' : 'offline'">
+    {{ online ? 'Online' : 'Offline' }}
+  </div>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createOnlineStatus } from '@wire-ui/solid'
+
+function Status() {
+  const online = createOnlineStatus()
+  return (
+    <div data-status={online() ? 'online' : 'offline'}>
+      {online() ? 'Online' : 'Offline'}
+    </div>
+  )
+}
+```
+</ForSolid>
+
+## Returns
+
+<ForReact>`boolean` — backed by `useSyncExternalStore` for tear-free updates.</ForReact>
+<ForVue>`Ref<boolean>` — reactive ref that updates on `online` / `offline`.</ForVue>
+<ForSolid>`Accessor<boolean>` — accessor that updates on `online` / `offline`.</ForSolid>
+
+The `online` event is unreliable on its own — the browser reports `navigator.onLine` based on the OS network stack, not actual connectivity to your server. For real reachability checks, follow this up with a fetch against a small known endpoint.

@@ -1,0 +1,71 @@
+---
+title: useCopyToClipboard
+description: Async clipboard write with copied flag and auto-reset.
+---
+
+# <ForReact><code>useCopyToClipboard</code></ForReact><ForVue><code>useCopyToClipboard</code></ForVue><ForSolid><code>createCopyToClipboard</code></ForSolid>
+
+Writes a string to the system clipboard and exposes a `copied` flag that auto-resets after `resetAfter` ms — perfect for "Copied!" UI affordances. Falls back to `document.execCommand('copy')` in non-secure contexts (e.g. plain HTTP, older browsers).
+
+<ForReact>
+```tsx
+import { useCopyToClipboard } from '@wire-ui/react'
+
+function CopyButton({ text }: { text: string }) {
+  const { copy, copied } = useCopyToClipboard({ resetAfter: 2000 })
+
+  return (
+    <button onClick={() => copy(text)} data-copied={copied}>
+      {copied ? 'Copied!' : 'Copy'}
+    </button>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { useCopyToClipboard } from '@wire-ui/vue'
+
+const props = defineProps<{ text: string }>()
+const { copy, copied } = useCopyToClipboard({ resetAfter: 2000 })
+</script>
+
+<template>
+  <button @click="copy(props.text)" :data-copied="copied">
+    {{ copied ? 'Copied!' : 'Copy' }}
+  </button>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createCopyToClipboard } from '@wire-ui/solid'
+
+function CopyButton(props: { text: string }) {
+  const { copy, copied } = createCopyToClipboard({ resetAfter: 2000 })
+
+  return (
+    <button onClick={() => copy(props.text)} data-copied={copied()}>
+      {copied() ? 'Copied!' : 'Copy'}
+    </button>
+  )
+}
+```
+</ForSolid>
+
+## Options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `resetAfter` | `number` | `2000` | Milliseconds before `copied` resets to `false`. Pass `0` to disable auto-reset. |
+
+## Returns
+
+| Key | Type | Description |
+|---|---|---|
+| `copy` | `(text: string) => Promise<boolean>` | Write `text` to the clipboard. Resolves with `true` on success. |
+| `copied` | <ForReact>`boolean`</ForReact><ForVue>`Ref<boolean>`</ForVue><ForSolid>`Accessor<boolean>`</ForSolid> | `true` for `resetAfter` ms after a successful copy. |
+| `value` | <ForReact>`string \| null`</ForReact><ForVue>`Ref<string \| null>`</ForVue><ForSolid>`Accessor<string \| null>`</ForSolid> | The last text written, or `null` if nothing has been copied yet. |
+| `error` | <ForReact>`Error \| null`</ForReact><ForVue>`Ref<Error \| null>`</ForVue><ForSolid>`Accessor<Error \| null>`</ForSolid> | The last copy error, if any. |
+| `reset` | `() => void` | Clear `copied`, `value`, and `error`. |

@@ -1,0 +1,113 @@
+---
+title: useStateMachine
+description: Typed finite state machine with state / send / can / transitions.
+---
+
+# <ForReact><code>useStateMachine</code></ForReact><ForVue><code>useStateMachine</code></ForVue><ForSolid><code>createStateMachine</code></ForSolid>
+
+A small finite state machine. Define a typed `states → events → next state` map, then call `send(event)` to transition. Events that aren't valid in the current state are silently ignored — check `can(event)` first if you need to branch on it.
+
+Useful for compound components that have more than two states (e.g. an async loader's `idle → loading → success | error`).
+
+<ForReact>
+```tsx
+import { useStateMachine } from '@wire-ui/react'
+
+type State = 'idle' | 'loading' | 'success' | 'error'
+type Event = 'fetch' | 'resolve' | 'reject' | 'retry'
+
+function Loader() {
+  const { state, send, can } = useStateMachine<State, Event>(
+    {
+      idle: { fetch: 'loading' },
+      loading: { resolve: 'success', reject: 'error' },
+      success: { fetch: 'loading' },
+      error: { retry: 'loading' },
+    },
+    { initial: 'idle' },
+  )
+
+  return (
+    <div data-state={state}>
+      <button onClick={() => send('fetch')} disabled={!can('fetch')}>
+        Fetch
+      </button>
+      <button onClick={() => send('retry')} disabled={!can('retry')}>
+        Retry
+      </button>
+    </div>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup lang="ts">
+import { useStateMachine } from '@wire-ui/vue'
+
+type State = 'idle' | 'loading' | 'success' | 'error'
+type Event = 'fetch' | 'resolve' | 'reject' | 'retry'
+
+const { state, send, can } = useStateMachine<State, Event>(
+  {
+    idle: { fetch: 'loading' },
+    loading: { resolve: 'success', reject: 'error' },
+    success: { fetch: 'loading' },
+    error: { retry: 'loading' },
+  },
+  { initial: 'idle' },
+)
+</script>
+
+<template>
+  <div :data-state="state">
+    <button @click="send('fetch')" :disabled="!can('fetch')">Fetch</button>
+    <button @click="send('retry')" :disabled="!can('retry')">Retry</button>
+  </div>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createStateMachine } from '@wire-ui/solid'
+
+type State = 'idle' | 'loading' | 'success' | 'error'
+type Event = 'fetch' | 'resolve' | 'reject' | 'retry'
+
+function Loader() {
+  const { state, send, can } = createStateMachine<State, Event>(
+    {
+      idle: { fetch: 'loading' },
+      loading: { resolve: 'success', reject: 'error' },
+      success: { fetch: 'loading' },
+      error: { retry: 'loading' },
+    },
+    { initial: 'idle' },
+  )
+
+  return (
+    <div data-state={state()}>
+      <button onClick={() => send('fetch')} disabled={!can('fetch')}>Fetch</button>
+      <button onClick={() => send('retry')} disabled={!can('retry')}>Retry</button>
+    </div>
+  )
+}
+```
+</ForSolid>
+
+## Parameters
+
+| Param | Type | Description |
+|---|---|---|
+| `config` | `Record<TState, Partial<Record<TEvent, TState>>>` | Map of `state → event → next state`. |
+| `options` | `{ initial: TState, onTransition?: (next, prev, event) => void }` | Initial state and optional transition listener. |
+
+## Returns
+
+| Key | Type | Description |
+|---|---|---|
+| `state` | <ForReact>`TState`</ForReact><ForVue>`Ref<TState>`</ForVue><ForSolid>`Accessor<TState>`</ForSolid> | Current state. |
+| `send` | `(event: TEvent) => void` | Attempt a transition. No-op if the event isn't valid in the current state. |
+| `can` | `(event: TEvent) => boolean` | Whether the event would cause a transition. |
+| `reset` | `() => void` | Return to the initial state. |
+| `transitions` | <ForReact>`TEvent[]`</ForReact><ForVue>`ComputedRef<TEvent[]>`</ForVue><ForSolid>`Accessor<TEvent[]>`</ForSolid> | Events that are valid from the current state. |

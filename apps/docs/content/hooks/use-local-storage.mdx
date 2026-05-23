@@ -1,0 +1,125 @@
+---
+title: useLocalStorage / useSessionStorage
+description: SSR-safe useState-shaped hook backed by Web Storage with cross-tab sync.
+---
+
+# <ForReact><code>useLocalStorage</code> / <code>useSessionStorage</code></ForReact><ForVue><code>useLocalStorage</code> / <code>useSessionStorage</code></ForVue><ForSolid><code>createLocalStorage</code> / <code>createSessionStorage</code></ForSolid>
+
+A `useState`-shaped hook backed by `localStorage` or `sessionStorage`. SSR-safe — returns `initialValue` on the server, hydrates from storage on the client. `localStorage` variants sync changes across tabs via the `storage` event by default.
+
+<ForReact>
+```tsx
+import { useLocalStorage } from '@wire-ui/react'
+
+function Preferences() {
+  const [theme, setTheme, removeTheme] = useLocalStorage<'light' | 'dark'>('theme', 'light')
+
+  return (
+    <>
+      <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+        {theme}
+      </button>
+      <button onClick={removeTheme}>Reset</button>
+    </>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup lang="ts">
+import { useLocalStorage } from '@wire-ui/vue'
+
+const { value: theme, setValue, remove } = useLocalStorage<'light' | 'dark'>('theme', 'light')
+</script>
+
+<template>
+  <button @click="setValue(theme === 'light' ? 'dark' : 'light')">{{ theme }}</button>
+  <button @click="remove">Reset</button>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createLocalStorage } from '@wire-ui/solid'
+
+function Preferences() {
+  const [theme, setTheme, removeTheme] = createLocalStorage<'light' | 'dark'>('theme', 'light')
+
+  return (
+    <>
+      <button onClick={() => setTheme(theme() === 'light' ? 'dark' : 'light')}>
+        {theme()}
+      </button>
+      <button onClick={removeTheme}>Reset</button>
+    </>
+  )
+}
+```
+</ForSolid>
+
+## Session storage
+
+The session variant has an identical API but uses `sessionStorage` and does not sync across tabs.
+
+<ForReact>
+```tsx
+import { useSessionStorage } from '@wire-ui/react'
+
+const [draft, setDraft] = useSessionStorage('draft', '')
+```
+</ForReact>
+<ForVue>
+```ts
+import { useSessionStorage } from '@wire-ui/vue'
+
+const { value: draft, setValue: setDraft } = useSessionStorage('draft', '')
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createSessionStorage } from '@wire-ui/solid'
+
+const [draft, setDraft] = createSessionStorage('draft', '')
+```
+</ForSolid>
+
+## Parameters
+
+| Param | Type | Description |
+|---|---|---|
+| `key` | `string` | Storage key. |
+| `initialValue` | `T` | Used when no value exists in storage and during SSR. |
+| `options` | `UseStorageOptions<T>` | See below. |
+
+## Options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `serialize` | `(value: T) => string` | `JSON.stringify` | Convert the value before writing. |
+| `deserialize` | `(raw: string) => T` | `JSON.parse` | Convert the stored string back into a value. |
+| `syncAcrossTabs` | `boolean` | `true` (local), `false` (session) | Subscribe to the `storage` event to mirror changes from other tabs. |
+
+## Returns
+
+<ForReact>
+A tuple `[value, setValue, remove]`:
+
+- `value: T` — current value (server-side: `initialValue`).
+- `setValue: (next: T \| (prev: T) => T) => void` — write a new value.
+- `remove: () => void` — delete the key and fall back to `initialValue`.
+</ForReact>
+<ForVue>
+An object `{ value, setValue, remove }`:
+
+- `value: Ref<T>` — reactive current value.
+- `setValue: (next: T \| (prev: T) => T) => void` — write a new value.
+- `remove: () => void` — delete the key and fall back to `initialValue`.
+</ForVue>
+<ForSolid>
+A tuple `[value, setValue, remove]`:
+
+- `value: Accessor<T>` — current value (server-side: `initialValue`).
+- `setValue: (next: T \| (prev: T) => T) => void` — write a new value.
+- `remove: () => void` — delete the key and fall back to `initialValue`.
+</ForSolid>

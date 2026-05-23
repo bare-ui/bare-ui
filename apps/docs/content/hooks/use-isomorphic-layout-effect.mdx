@@ -1,0 +1,43 @@
+---
+title: useIsomorphicLayoutEffect
+description: useLayoutEffect on the client, useEffect on the server.
+---
+
+# <ForReact><code>useIsomorphicLayoutEffect</code></ForReact><ForVue>useIsomorphicLayoutEffect</ForVue><ForSolid>useIsomorphicLayoutEffect</ForSolid>
+
+<ForVue>
+**Not available in `@wire-ui/vue`.** Vue's `onMounted` already runs only on the client, so there's no SSR-warning issue to work around — use `onMounted` directly.
+</ForVue>
+<ForSolid>
+**Not available in `@wire-ui/solid`.** Solid's `onMount` already runs only on the client, so there's no SSR-warning issue to work around — use `onMount` directly.
+</ForSolid>
+
+<ForReact>
+Resolves to `useLayoutEffect` on the client and `useEffect` on the server. React logs a warning when `useLayoutEffect` runs during server rendering because it can't measure layout there — this hook silences that warning while still giving you synchronous DOM measurements on the client.
+
+Use it any time you'd reach for `useLayoutEffect` but the component might also render on the server.
+
+```tsx
+import { useRef, useState } from 'react'
+import { useIsomorphicLayoutEffect } from '@wire-ui/react'
+
+function MeasureBeforePaint() {
+  const ref = useRef<HTMLDivElement>(null)
+  const [width, setWidth] = useState(0)
+
+  useIsomorphicLayoutEffect(() => {
+    if (ref.current) setWidth(ref.current.getBoundingClientRect().width)
+  }, [])
+
+  return <div ref={ref}>Measured at {width}px</div>
+}
+```
+
+## Signature
+
+```ts
+const useIsomorphicLayoutEffect: typeof useLayoutEffect
+```
+
+Same signature as `useLayoutEffect`. On the server it's `useEffect`, which is a no-op there.
+</ForReact>

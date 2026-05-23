@@ -1,0 +1,111 @@
+---
+title: useHotkeys
+description: Declarative keyboard-shortcut binder with mod+k combos, scopes, and input-suppression.
+---
+
+# <ForReact><code>useHotkeys</code></ForReact><ForVue><code>useHotkeys</code></ForVue><ForSolid><code>createHotkeys</code></ForSolid>
+
+Binds keyboard shortcuts to handlers. Combos use a familiar string syntax: `mod+k` resolves to ⌘K on macOS and Ctrl+K elsewhere; `shift+/` covers `?`; `+` separates modifiers from the key.
+
+By default shortcuts don't fire while the user is typing inside an `<input>`, `<textarea>`, or `[contenteditable]` element — opt back in per binding with `enableOnFormTags`.
+
+<ForReact>
+```tsx
+import { useHotkeys } from '@wire-ui/react'
+
+function CommandPalette({ open, onOpen, onClose }) {
+  useHotkeys({
+    'mod+k': (e) => {
+      e.preventDefault()
+      onOpen()
+    },
+    'escape': () => onClose(),
+  })
+
+  return open ? <Palette /> : null
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { useHotkeys } from '@wire-ui/vue'
+
+const props = defineProps<{ open: boolean }>()
+const emit = defineEmits<{ open: []; close: [] }>()
+
+useHotkeys({
+  'mod+k': (e) => {
+    e.preventDefault()
+    emit('open')
+  },
+  'escape': () => emit('close'),
+})
+</script>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createHotkeys } from '@wire-ui/solid'
+
+function CommandPalette(props: { open: boolean; onOpen: () => void; onClose: () => void }) {
+  createHotkeys({
+    'mod+k': (e) => {
+      e.preventDefault()
+      props.onOpen()
+    },
+    'escape': () => props.onClose(),
+  })
+
+  return <>{props.open ? <Palette /> : null}</>
+}
+```
+</ForSolid>
+
+## Scopes
+
+Use `scope` + `activeScopes` to isolate a binding to a particular UI surface (e.g. shortcuts that only fire while a modal is open). Bindings with `scope: '*'` always fire.
+
+<ForReact>
+```tsx
+useHotkeys(
+  { 'enter': onSubmit },
+  { scope: 'dialog', activeScopes: isOpen ? ['dialog'] : [] },
+)
+```
+</ForReact>
+<ForVue>
+```ts
+useHotkeys(
+  { enter: onSubmit },
+  { scope: 'dialog', activeScopes: () => (isOpen.value ? ['dialog'] : []) },
+)
+```
+</ForVue>
+<ForSolid>
+```tsx
+createHotkeys(
+  { enter: onSubmit },
+  { scope: 'dialog', activeScopes: isOpen() ? ['dialog'] : [] },
+)
+```
+</ForSolid>
+
+## Parameters
+
+| Param | Type | Description |
+|---|---|---|
+| `map` | `Record<string, (event: KeyboardEvent) => void>` | Combo → handler. |
+| `options` | `UseHotkeysOptions` | See below. |
+
+## Options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `target` | <ForReact>`RefObject \| HTMLElement \| Window \| Document \| null`</ForReact><ForVue>`Ref<HTMLElement \| null> \| HTMLElement \| Window \| Document \| null`</ForVue><ForSolid>`Accessor<HTMLElement \| null \| undefined> \| HTMLElement \| Window \| Document \| null`</ForSolid> | `window` | Where to attach the listener. |
+| `event` | `'keydown' \| 'keyup'` | `'keydown'` | Which keyboard event fires the handler. |
+| `enabled` | <ForReact>`boolean`</ForReact><ForVue>`MaybeRefOrGetter<boolean>`</ForVue><ForSolid>`boolean`</ForSolid> | `true` | Globally toggle all bindings. |
+| `scope` | `string` | `'*'` | Scope name this binding belongs to. |
+| `activeScopes` | <ForReact>`string[]`</ForReact><ForVue>`MaybeRefOrGetter<string[]>`</ForVue><ForSolid>`string[]`</ForSolid> | `[]` | Scopes currently active. Bindings with `scope: '*'` ignore this. |
+| `enableInInputs` | `boolean` | `false` | Allow bindings to fire while typing in `input` / `textarea` / `contenteditable`. |
+| `preventDefault` | `boolean` | `false` | Call `event.preventDefault()` on every match. |

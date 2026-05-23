@@ -7,6 +7,9 @@ export default {
   'use-controllable-state': 'useControllableState',
   'use-disclosure': 'useDisclosure',
   'use-id': 'useId',
+  'use-previous': 'usePrevious',
+  'use-state-machine': 'useStateMachine',
+  'use-undo-redo': 'useUndoRedo',
   '-- interaction': {
     type: 'separator',
     title: 'Interaction',
@@ -16,6 +19,9 @@ export default {
   'use-focus-visible': 'useFocusVisible',
   'use-interactive-state': 'useInteractiveState',
   'use-keyboard': 'useKeyboard',
+  'use-hotkeys': 'useHotkeys',
+  'use-long-press': 'useLongPress',
+  'use-copy-to-clipboard': 'useCopyToClipboard',
   '-- layout': {
     type: 'separator',
     title: 'Layout',
@@ -28,6 +34,28 @@ export default {
   },
   'use-intersection-observer': 'useIntersectionObserver',
   'use-resize-observer': 'useResizeObserver',
+  'use-mutation-observer': 'useMutationObserver',
+  'use-element-size': 'useElementSize',
+  'use-window-size': 'useWindowSize',
+  '-- timing': {
+    type: 'separator',
+    title: 'Timing',
+  },
+  'use-timeout': 'useTimeout',
+  'use-interval': 'useInterval',
+  '-- storage': {
+    type: 'separator',
+    title: 'Storage',
+  },
+  'use-local-storage': 'useLocalStorage / useSessionStorage',
+  '-- dom': {
+    type: 'separator',
+    title: 'DOM',
+  },
+  'use-event-listener': 'useEventListener',
+  'use-document-visibility': 'useDocumentVisibility',
+  'use-online-status': 'useOnlineStatus',
+  'use-isomorphic-layout-effect': 'useIsomorphicLayoutEffect',
   '-- utilities': {
     type: 'separator',
     title: 'Utilities',

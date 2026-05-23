@@ -1,0 +1,98 @@
+---
+title: useMutationObserver
+description: Observe DOM mutations on a referenced element.
+---
+
+# <ForReact><code>useMutationObserver</code></ForReact><ForVue><code>useMutationObserver</code></ForVue><ForSolid><code>createMutationObserver</code></ForSolid>
+
+A thin wrapper around `MutationObserver`. Watches a referenced element and runs a callback whenever the configured mutations fire. The observer is created on mount and disconnected automatically on cleanup.
+
+<ForReact>
+```tsx
+import { useRef } from 'react'
+import { useMutationObserver } from '@wire-ui/react'
+
+function TitleWatcher() {
+  const ref = useRef<HTMLDivElement>(null)
+
+  useMutationObserver(
+    ref,
+    (mutations) => {
+      for (const m of mutations) {
+        if (m.type === 'attributes' && m.attributeName === 'data-state') {
+          console.log('state changed →', (m.target as HTMLElement).dataset.state)
+        }
+      }
+    },
+    { attributes: true, attributeFilter: ['data-state'] },
+  )
+
+  return <div ref={ref} data-state="idle" />
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { useMutationObserver } from '@wire-ui/vue'
+
+const target = ref<HTMLDivElement | null>(null)
+
+useMutationObserver(
+  target,
+  (mutations) => {
+    for (const m of mutations) {
+      if (m.type === 'attributes' && m.attributeName === 'data-state') {
+        console.log('state changed →', (m.target as HTMLElement).dataset.state)
+      }
+    }
+  },
+  { attributes: true, attributeFilter: ['data-state'] },
+)
+</script>
+
+<template>
+  <div ref="target" data-state="idle" />
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createMutationObserver } from '@wire-ui/solid'
+
+function TitleWatcher() {
+  let el!: HTMLDivElement
+
+  createMutationObserver(
+    () => el,
+    (mutations) => {
+      for (const m of mutations) {
+        if (m.type === 'attributes' && m.attributeName === 'data-state') {
+          console.log('state changed →', (m.target as HTMLElement).dataset.state)
+        }
+      }
+    },
+    { attributes: true, attributeFilter: ['data-state'] },
+  )
+
+  return <div ref={el} data-state="idle" />
+}
+```
+</ForSolid>
+
+## Parameters
+
+| Param | Type | Description |
+|---|---|---|
+| `target` | <ForReact>`RefObject<Node \| null>`</ForReact><ForVue>`Ref<Node \| null>`</ForVue><ForSolid>`Accessor<Node \| null \| undefined>`</ForSolid> | The element to observe. |
+| `callback` | `MutationCallback` | Invoked with the list of `MutationRecord`s. |
+| `options` | `UseMutationObserverOptions` | `MutationObserverInit` plus an `enabled` flag. |
+
+## Options
+
+Accepts every key from the standard [`MutationObserverInit`](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/observe#parameters), plus:
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `enabled` | <ForReact>`boolean`</ForReact><ForVue>`MaybeRefOrGetter<boolean>`</ForVue><ForSolid>`boolean`</ForSolid> | `true` | Disable observation without unmounting the consumer. |

@@ -1,0 +1,67 @@
+---
+title: useDocumentVisibility
+description: Reactive document.visibilityState.
+---
+
+# <ForReact><code>useDocumentVisibility</code></ForReact><ForVue><code>useDocumentVisibility</code></ForVue><ForSolid><code>createDocumentVisibility</code></ForSolid>
+
+Subscribes to the [`visibilitychange`](https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilitychange_event) event and returns the current `document.visibilityState`. SSR-safe — returns `'visible'` on the server.
+
+Use it to pause polling, animations, or audio while the tab is in the background.
+
+<ForReact>
+```tsx
+import { useEffect } from 'react'
+import { useDocumentVisibility } from '@wire-ui/react'
+
+function Polling() {
+  const visibility = useDocumentVisibility()
+
+  useEffect(() => {
+    if (visibility !== 'visible') return
+    const id = setInterval(refresh, 5000)
+    return () => clearInterval(id)
+  }, [visibility])
+
+  return null
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { watch } from 'vue'
+import { useDocumentVisibility } from '@wire-ui/vue'
+
+const visibility = useDocumentVisibility()
+
+watch(visibility, (state) => {
+  if (state === 'hidden') pauseAnimations()
+  else resumeAnimations()
+})
+</script>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createEffect } from 'solid-js'
+import { createDocumentVisibility } from '@wire-ui/solid'
+
+function Polling() {
+  const visibility = createDocumentVisibility()
+
+  createEffect(() => {
+    if (visibility() === 'hidden') pausePolling()
+    else resumePolling()
+  })
+
+  return null
+}
+```
+</ForSolid>
+
+## Returns
+
+<ForReact>`'visible' | 'hidden'` — backed by `useSyncExternalStore` for tear-free updates.</ForReact>
+<ForVue>`Ref<'visible' | 'hidden'>` — reactive ref that updates on `visibilitychange`.</ForVue>
+<ForSolid>`Accessor<'visible' | 'hidden'>` — accessor that updates on `visibilitychange`.</ForSolid>

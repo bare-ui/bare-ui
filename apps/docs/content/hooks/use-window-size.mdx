@@ -1,0 +1,48 @@
+---
+title: useWindowSize
+description: Live width and height of the viewport.
+---
+
+# <ForReact><code>useWindowSize</code></ForReact><ForVue><code>useWindowSize</code></ForVue><ForSolid><code>createWindowSize</code></ForSolid>
+
+Returns the live `{ width, height }` of the viewport. SSR-safe — returns `{ width: 0, height: 0 }` until the first client measurement.
+
+<ForReact>
+```tsx
+import { useWindowSize } from '@wire-ui/react'
+
+function Viewport() {
+  const { width, height } = useWindowSize()
+  return <span>{width} × {height}</span>
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { useWindowSize } from '@wire-ui/vue'
+
+const { width, height } = useWindowSize()
+</script>
+
+<template>
+  <span>{{ width }} × {{ height }}</span>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createWindowSize } from '@wire-ui/solid'
+
+function Viewport() {
+  const size = createWindowSize()
+  return <span>{size().width} × {size().height}</span>
+}
+```
+</ForSolid>
+
+## Returns
+
+<ForReact>`{ width: number, height: number }` — reactive object that updates on `resize` and `orientationchange`.</ForReact>
+<ForVue>`{ width: number, height: number }` — a reactive object; updates on `resize` and `orientationchange`.</ForVue>
+<ForSolid>`Accessor<{ width: number, height: number }>` — updates on `resize` and `orientationchange`.</ForSolid>

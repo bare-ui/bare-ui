@@ -1,0 +1,80 @@
+---
+title: useUndoRedo
+description: State container with bounded undo / redo history.
+---
+
+# <ForReact><code>useUndoRedo</code></ForReact><ForVue><code>useUndoRedo</code></ForVue><ForSolid><code>createUndoRedo</code></ForSolid>
+
+A state container that keeps a bounded history of past and future values. Calling `set` clears the redo stack — standard text-editor behaviour.
+
+<ForReact>
+```tsx
+import { useUndoRedo } from '@wire-ui/react'
+
+function TextEditor() {
+  const { value, set, undo, redo, canUndo, canRedo } = useUndoRedo('', { limit: 100 })
+
+  return (
+    <>
+      <textarea value={value} onChange={(e) => set(e.target.value)} />
+      <button onClick={undo} disabled={!canUndo}>Undo</button>
+      <button onClick={redo} disabled={!canRedo}>Redo</button>
+    </>
+  )
+}
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { useUndoRedo } from '@wire-ui/vue'
+
+const { value, set, undo, redo, canUndo, canRedo } = useUndoRedo('', { limit: 100 })
+</script>
+
+<template>
+  <textarea :value="value" @input="(e) => set(e.target.value)" />
+  <button @click="undo" :disabled="!canUndo">Undo</button>
+  <button @click="redo" :disabled="!canRedo">Redo</button>
+</template>
+```
+</ForVue>
+<ForSolid>
+```tsx
+import { createUndoRedo } from '@wire-ui/solid'
+
+function TextEditor() {
+  const { value, set, undo, redo, canUndo, canRedo } = createUndoRedo('', { limit: 100 })
+
+  return (
+    <>
+      <textarea value={value()} onInput={(e) => set(e.currentTarget.value)} />
+      <button onClick={undo} disabled={!canUndo()}>Undo</button>
+      <button onClick={redo} disabled={!canRedo()}>Redo</button>
+    </>
+  )
+}
+```
+</ForSolid>
+
+## Parameters
+
+| Param | Type | Description |
+|---|---|---|
+| `initialValue` | `T` | Starting value. |
+| `options` | `{ limit?: number }` | Max past entries retained. Defaults to `100`. Pass `Infinity` for unbounded history. |
+
+## Returns
+
+| Key | Type | Description |
+|---|---|---|
+| `value` | <ForReact>`T`</ForReact><ForVue>`ComputedRef<T>`</ForVue><ForSolid>`Accessor<T>`</ForSolid> | Current value. |
+| `set` | `(next: T \| ((prev: T) => T)) => void` | Push a new value; clears the redo stack. |
+| `undo` | `() => void` | Step back. No-op if there is nothing to undo. |
+| `redo` | `() => void` | Step forward. No-op if there is nothing to redo. |
+| `reset` | `(next?: T) => void` | Clear history and replace the current value (defaults to the initial). |
+| `clear` | `() => void` | Clear history but keep the current value. |
+| `canUndo` | <ForReact>`boolean`</ForReact><ForVue>`ComputedRef<boolean>`</ForVue><ForSolid>`Accessor<boolean>`</ForSolid> | `true` if the past stack is non-empty. |
+| `canRedo` | <ForReact>`boolean`</ForReact><ForVue>`ComputedRef<boolean>`</ForVue><ForSolid>`Accessor<boolean>`</ForSolid> | `true` if the future stack is non-empty. |
+| `pastSize` | <ForReact>`number`</ForReact><ForVue>`ComputedRef<number>`</ForVue><ForSolid>`Accessor<number>`</ForSolid> | Size of the undo stack. |
+| `futureSize` | <ForReact>`number`</ForReact><ForVue>`ComputedRef<number>`</ForVue><ForSolid>`Accessor<number>`</ForSolid> | Size of the redo stack. |
