@@ -5,6 +5,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-05-23
+
+### Added
+
+#### Primitives
+
+- **`createCopyToClipboard`** — clipboard write helper returning `{ copy, copied, error }`; configurable auto-reset
+  timeout for the `copied` flag
+- **`createDocumentVisibility`** — reactive `document.visibilityState` accessor; SSR-safe with a sensible default
+- **`createElementSize`** — live content-box `{ width, height }` of a referenced element via `ResizeObserver`
+- **`createEventListener`** — typed `addEventListener` subscription for `window`, `document`, elements, or refs;
+  accepts `null` targets for conditional binding; auto-cleans on dispose
+- **`createHotkeys`** — declarative keyboard-shortcut binder with combo matching (e.g. `mod+k`, `shift+/`),
+  `enableOnFormTags`, and `preventDefault` options
+- **`createInterval`** — `setInterval` wrapper with pause/resume/reset controls; pass `null` delay to halt
+- **`createLocalStorage`** / **`createSessionStorage`** — Solid signal–shaped primitives backed by `localStorage` /
+  `sessionStorage` with cross-tab sync, custom serializer/deserializer, and SSR-safe initial value
+- **`createLongPress`** — long-press gesture handler with configurable `threshold`, `onStart`/`onFinish`/`onCancel`
+  callbacks, and pointer/touch support
+- **`createMutationObserver`** — observes DOM mutations on a referenced element with full `MutationObserverInit`
+  options
+- **`createOnlineStatus`** — reactive `navigator.onLine` accessor with SSR-safe default
+- **`createPrevious`** — returns the value from the previous tracked update
+- **`createStateMachine`** — finite-state-machine primitive with `states`, `events`, `transitions`, and guarded
+  transitions
+- **`createTimeout`** — `setTimeout` wrapper with `start`/`clear`/`reset` controls and `isPending` accessor
+- **`createUndoRedo`** — state container with bounded history; exposes `undo`, `redo`, `canUndo`, `canRedo`, `clear`
+- **`createWindowSize`** — reactive `{ width, height }` of the viewport with SSR-safe default
+
+### Changed
+
+- **Alert** — auto-dismiss timer now uses [[create-timeout]] instead of inline `setTimeout` bookkeeping
+- **Avatar** — fallback show-delay timer now uses [[create-timeout]]
+- **Timeago** — periodic re-render now uses [[create-interval]] instead of a manual `setInterval`
+- **Tooltip** — show/hide delay timers now use [[create-timeout]]
+- **`createInterval`** / **`createTimeout`** — accept omitted/`undefined` delay arguments and treat them as paused
+  instead of throwing
+
 ## [0.2.0] - 2026-05-17
 
 ### Added
