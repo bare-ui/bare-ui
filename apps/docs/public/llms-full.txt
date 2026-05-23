@@ -263,6 +263,70 @@ Signature: `useId(prefix?, staticId?)` → `string`. Defaults `prefix` to `'wire
 
 ---
 
+### usePrevious
+
+Returns the value from the previous render. `undefined` until the first update.
+
+```tsx
+import { useEffect } from 'react'
+import { usePrevious } from '@wire-ui/react'
+
+function Counter({ count }: { count: number }) {
+  const previous = usePrevious(count)
+  useEffect(() => {
+    if (previous !== undefined && count > previous) console.log('increased')
+  }, [count, previous])
+  return <span>{count}</span>
+}
+```
+
+Signature: `usePrevious<T>(value)` → `T | undefined`. Vue: `usePrevious(refOrGetter)` → `Ref<T | undefined>`. Solid: `createPrevious(accessor)` → `Accessor<T | undefined>`.
+
+---
+
+### useStateMachine
+
+Typed finite state machine. Define a `state → event → state` map and call `send(event)` to transition. Invalid events are no-ops; `can(event)` tells you whether one would transition.
+
+```tsx
+import { useStateMachine } from '@wire-ui/react'
+
+type State = 'idle' | 'loading' | 'success' | 'error'
+type Event = 'fetch' | 'resolve' | 'reject' | 'retry'
+
+const { state, send, can } = useStateMachine<State, Event>(
+  {
+    idle: { fetch: 'loading' },
+    loading: { resolve: 'success', reject: 'error' },
+    success: { fetch: 'loading' },
+    error: { retry: 'loading' },
+  },
+  { initial: 'idle' },
+)
+```
+
+Signature: `useStateMachine(config, { initial, onTransition? })` → `{ state, send, can, reset, transitions }`. Vue / Solid mirror the API with reactive `state` and `transitions`. Solid: `createStateMachine`.
+
+---
+
+### useUndoRedo
+
+Bounded undo/redo state container. `set` clears the redo stack — standard text-editor behaviour.
+
+```tsx
+import { useUndoRedo } from '@wire-ui/react'
+
+const { value, set, undo, redo, canUndo, canRedo } = useUndoRedo('', { limit: 100 })
+
+<textarea value={value} onChange={(e) => set(e.target.value)} />
+<button onClick={undo} disabled={!canUndo}>Undo</button>
+<button onClick={redo} disabled={!canRedo}>Redo</button>
+```
+
+Signature: `useUndoRedo<T>(initial, { limit? })` → `{ value, set, undo, redo, reset, clear, canUndo, canRedo, pastSize, futureSize }`. Default `limit` is 100; pass `Infinity` for unbounded history. Solid: `createUndoRedo`.
+
+---
+
 ### Interaction
 
 ### useClickOutside
@@ -370,6 +434,59 @@ Signature: `useKeyboard(map, { target?, event?, enabled? })` where map is `Recor
 
 ---
 
+### useHotkeys
+
+Declarative keyboard-shortcut binder. `mod+k` resolves to ⌘K on macOS and Ctrl+K elsewhere. Suppresses shortcuts inside inputs / contenteditable by default. Supports scopes for per-surface bindings.
+
+```tsx
+import { useHotkeys } from '@wire-ui/react'
+
+function CommandPalette({ onOpen, onClose }) {
+  useHotkeys({
+    'mod+k': (e) => { e.preventDefault(); onOpen() },
+    'escape': onClose,
+  })
+  return null
+}
+```
+
+Signature: `useHotkeys(map, { target?, event?, enabled?, scope?, activeScopes?, enableInInputs?, preventDefault? })`. Bindings with `scope: '*'` (the default) always fire; otherwise the binding only fires when `scope` is included in `activeScopes`. Solid: `createHotkeys`.
+
+---
+
+### useLongPress
+
+Long-press gesture handler with movement-cancel. Returns a bundle of pointer handlers you spread onto an element.
+
+```tsx
+import { useLongPress } from '@wire-ui/react'
+
+const handlers = useLongPress((e) => console.log('held'), { threshold: 500 })
+
+<div {...handlers}>Press and hold</div>
+```
+
+Signature: `useLongPress(callback, { threshold = 400, moveThreshold = 10, onStart?, onFinish?, onCancel?, disabled? })` → `{ onPointerDown, onPointerUp, onPointerLeave, onPointerMove, onPointerCancel }`. Vue exposes lowercased keys (`onPointerdown`, etc.) for template binding. Solid: `createLongPress`.
+
+---
+
+### useCopyToClipboard
+
+Async clipboard write with a `copied` flag that auto-resets — drop-in for "Copied!" UI. Falls back to `document.execCommand('copy')` in non-secure contexts.
+
+```tsx
+import { useCopyToClipboard } from '@wire-ui/react'
+
+function CopyButton({ text }) {
+  const { copy, copied } = useCopyToClipboard({ resetAfter: 2000 })
+  return <button onClick={() => copy(text)}>{copied ? 'Copied!' : 'Copy'}</button>
+}
+```
+
+Signature: `useCopyToClipboard({ resetAfter = 2000 })` → `{ copy, copied, value, error, reset }`. Pass `resetAfter: 0` to disable auto-reset. Solid: `createCopyToClipboard`.
+
+---
+
 ### Layout
 
 ### useFloating
@@ -452,6 +569,169 @@ function ResizableBox() {
 ```
 
 Signature: `useResizeObserver(ref, onResize?)` → `{ width, height }`. Solid: `createResizeObserver`.
+
+---
+
+### useMutationObserver
+
+Thin wrapper around `MutationObserver`. Watches a referenced element and runs a callback whenever the configured mutations fire. Auto-disconnects on cleanup.
+
+```tsx
+import { useRef } from 'react'
+import { useMutationObserver } from '@wire-ui/react'
+
+const ref = useRef<HTMLDivElement>(null)
+useMutationObserver(ref, (mutations) => {
+  for (const m of mutations) {
+    if (m.type === 'attributes' && m.attributeName === 'data-state') {
+      console.log('state →', (m.target as HTMLElement).dataset.state)
+    }
+  }
+}, { attributes: true, attributeFilter: ['data-state'] })
+```
+
+Signature: `useMutationObserver(ref, callback, options)` where `options` extends `MutationObserverInit` with `{ enabled? }`. Solid: `createMutationObserver` (target as accessor).
+
+---
+
+### useElementSize
+
+Live content-box `{ width, height }` of a referenced element. Thin convenience wrapper over `useResizeObserver`.
+
+```tsx
+import { useRef } from 'react'
+import { useElementSize } from '@wire-ui/react'
+
+const ref = useRef<HTMLDivElement>(null)
+const { width, height } = useElementSize(ref)
+```
+
+Signature: `useElementSize(ref)` → `{ width, height }`. Solid: `createElementSize` (target as accessor).
+
+---
+
+### useWindowSize
+
+Live `{ width, height }` of the viewport. SSR-safe — returns `{ 0, 0 }` on the server.
+
+```tsx
+import { useWindowSize } from '@wire-ui/react'
+
+const { width, height } = useWindowSize()
+```
+
+Signature: `useWindowSize()` → `{ width, height }`. Solid: `createWindowSize` → `Accessor<{ width, height }>`.
+
+---
+
+### Timing
+
+### useTimeout
+
+Managed `setTimeout` with start / stop / reset controls and an `isPending` flag. The latest callback reference is always invoked. Used internally by Alert, Avatar, Toast, Tooltip, and NavigationMenu.
+
+```tsx
+import { useTimeout } from '@wire-ui/react'
+
+const { isPending, start, stop, reset } = useTimeout(onDismiss, 3000, { autoStart: true })
+```
+
+Signature: `useTimeout(callback, delay, { autoStart? })` → `{ isPending, start, stop, reset }`. Solid: `createTimeout` (delay can be an accessor). Vue: delay accepts `MaybeRefOrGetter<number>`.
+
+---
+
+### useInterval
+
+Managed `setInterval` with pause / resume controls. Pass `delay = null` to pause. Used internally by Timeago for the live re-render.
+
+```tsx
+import { useState } from 'react'
+import { useInterval } from '@wire-ui/react'
+
+const [count, setCount] = useState(0)
+const { isRunning, start, stop } = useInterval(() => setCount(c => c + 1), 1000, { autoStart: true })
+```
+
+Signature: `useInterval(callback, delay | null, { autoStart?, immediate? })` → `{ isRunning, start, stop, reset }`. Solid: `createInterval`.
+
+---
+
+### Storage
+
+### useLocalStorage / useSessionStorage
+
+SSR-safe `useState`-shaped hook backed by Web Storage. `useLocalStorage` syncs changes across tabs via the `storage` event by default; `useSessionStorage` does not.
+
+```tsx
+import { useLocalStorage } from '@wire-ui/react'
+
+const [theme, setTheme, removeTheme] = useLocalStorage<'light' | 'dark'>('theme', 'light')
+```
+
+Signature: `useLocalStorage(key, initial, { serialize?, deserialize?, syncAcrossTabs? })` → `[value, setValue, remove]`. Vue returns `{ value, setValue, remove }`. Solid: `createLocalStorage` / `createSessionStorage`.
+
+---
+
+### DOM
+
+### useEventListener
+
+Typed `addEventListener`. Overloaded for `Window`, `Document`, and `HTMLElement`. Defaults to `window`. Tolerates `null` targets so refs can be bound conditionally. Used internally by ContextMenu and Group.
+
+```tsx
+import { useEventListener } from '@wire-ui/react'
+
+useEventListener('resize', () => console.log(window.innerWidth))
+// or scoped to an element ref:
+const ref = useRef<HTMLDivElement>(null)
+useEventListener('click', (e) => console.log(e.target), ref)
+```
+
+Signature: `useEventListener(name, handler, target?, options?)`. Target may be `window` / `document` / an element / a ref / `null`. Solid: `createEventListener`.
+
+---
+
+### useDocumentVisibility
+
+Subscribes to the `visibilitychange` event and returns the current `document.visibilityState`. SSR-safe — returns `'visible'` on the server. Useful for pausing polling/animations in background tabs.
+
+```tsx
+import { useDocumentVisibility } from '@wire-ui/react'
+
+const visibility = useDocumentVisibility() // 'visible' | 'hidden'
+```
+
+Signature: `useDocumentVisibility()` → `'visible' | 'hidden'`. Vue: `Ref<…>`. Solid: `createDocumentVisibility` → `Accessor<…>`.
+
+---
+
+### useOnlineStatus
+
+Reactive `navigator.onLine` boolean. SSR-safe — returns `true` on the server. Updates on `online` / `offline` events.
+
+```tsx
+import { useOnlineStatus } from '@wire-ui/react'
+
+const online = useOnlineStatus()
+```
+
+Signature: `useOnlineStatus()` → `boolean`. Vue: `Ref<boolean>`. Solid: `createOnlineStatus` → `Accessor<boolean>`.
+
+---
+
+### useIsomorphicLayoutEffect
+
+`useLayoutEffect` on the client, `useEffect` on the server — silences the SSR warning while still giving you synchronous DOM measurements on the client. **React-only**. Vue's `onMounted` and Solid's `onMount` already run only on the client.
+
+```tsx
+import { useIsomorphicLayoutEffect } from '@wire-ui/react'
+
+useIsomorphicLayoutEffect(() => {
+  // measure DOM before paint
+}, [])
+```
+
+Signature: `typeof useLayoutEffect`.
 
 ---
 

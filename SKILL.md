@@ -1,7 +1,7 @@
 ---
 name: wire-ui
 description: AI-native unstyled primitives framework. Headless, compound components with zero CSS.
-version: 0.1.6
+version: 0.3.0
 tags:
   - react
   - headless
@@ -482,26 +482,255 @@ import { Icon } from '@wire-ui/react'
 
 ## Hooks
 
-### useInteractiveState
+`@wire-ui/react` exports 33 hooks. Vue exposes the same APIs as `useX` composables; Solid exposes them as `createX` primitives. The list below uses React names.
 
-Returns `handlers` and `dataAttributes` for building custom interactive elements.
+### State
+
+#### useControllableState
+
+Unified controlled/uncontrolled state. Returns `[value, setValue]`.
 
 ```tsx
-import { useInteractiveState } from '@wire-ui/react'
+const [value, setValue] = useControllableState({
+  value: props.value,
+  defaultValue: props.defaultValue ?? '',
+  onChange: props.onChange,
+})
+```
 
+#### useDisclosure
+
+Boolean open/close with stable handlers.
+
+```tsx
+const { isOpen, open, close, toggle } = useDisclosure({ defaultOpen: false })
+```
+
+#### useId
+
+SSR-safe unique id with an optional prefix.
+
+```tsx
+const id = useId('field')
+```
+
+#### usePrevious
+
+Returns the value from the previous render (`undefined` on first render).
+
+```tsx
+const previous = usePrevious(count)
+```
+
+#### useStateMachine
+
+Typed finite state machine. Invalid events are silent no-ops.
+
+```tsx
+const { state, send, can } = useStateMachine(
+  { idle: { fetch: 'loading' }, loading: { resolve: 'idle' } },
+  { initial: 'idle' },
+)
+```
+
+#### useUndoRedo
+
+Bounded undo/redo container. `set` clears the redo stack.
+
+```tsx
+const { value, set, undo, redo, canUndo, canRedo } = useUndoRedo('', { limit: 100 })
+```
+
+### Interaction
+
+#### useInteractiveState
+
+`handlers` + `dataAttributes` for building custom interactive elements.
+
+```tsx
 const { handlers, dataAttributes } = useInteractiveState({ disabled })
 return <div {...handlers} {...dataAttributes}>Custom element</div>
 ```
 
-### useClickOutside
+#### useClickOutside
 
-Fires callback when clicking outside a ref.
+Fires a callback on outside click/tap.
 
 ```tsx
-import { useClickOutside } from '@wire-ui/react'
-
 const ref = useRef(null)
 useClickOutside(ref, () => setOpen(false))
+```
+
+#### useFocusTrap
+
+Trap keyboard focus inside a container while active.
+
+```tsx
+const ref = useRef(null)
+useFocusTrap(ref, { isActive: isOpen })
+```
+
+#### useFocusVisible
+
+Track whether focus arrived from the keyboard or a pointer.
+
+#### useKeyboard
+
+Map keys to handlers with modifier matching.
+
+```tsx
+useKeyboard({ Escape: onClose, s: [onSave, { meta: true, preventDefault: true }] })
+```
+
+#### useHotkeys
+
+Declarative hotkey binder. `mod+k` is ⌘K on macOS, Ctrl+K elsewhere. Suppressed inside inputs by default; supports scopes.
+
+```tsx
+useHotkeys({
+  'mod+k': (e) => { e.preventDefault(); openPalette() },
+  'escape': closePalette,
+})
+```
+
+#### useLongPress
+
+Long-press gesture; spread the returned handlers onto an element.
+
+```tsx
+const handlers = useLongPress((e) => console.log('held'), { threshold: 500 })
+return <div {...handlers}>Press and hold</div>
+```
+
+#### useCopyToClipboard
+
+Async clipboard write with a `copied` flag that auto-resets after `resetAfter` ms.
+
+```tsx
+const { copy, copied } = useCopyToClipboard({ resetAfter: 2000 })
+return <button onClick={() => copy(text)}>{copied ? 'Copied!' : 'Copy'}</button>
+```
+
+### Layout
+
+#### useFloating
+
+Position a floating element relative to a reference (used by Tooltip, Popover, Dropdown, etc.).
+
+#### useScrollLock
+
+Lock document scrolling without layout shift.
+
+### Observers
+
+#### useIntersectionObserver
+
+Observe element visibility within a scroll container.
+
+#### useResizeObserver
+
+Observe an element's content-box `{ width, height }`.
+
+#### useMutationObserver
+
+Observe DOM mutations on a ref target.
+
+```tsx
+useMutationObserver(ref, (mutations) => { /* … */ }, { attributes: true })
+```
+
+#### useElementSize
+
+Live content-box `{ width, height }` of a referenced element. Thin wrapper over `useResizeObserver`.
+
+#### useWindowSize
+
+Live `{ width, height }` of the viewport. SSR-safe.
+
+### Timing
+
+#### useTimeout
+
+Managed `setTimeout` with `start` / `stop` / `reset` and `isPending`. Latest callback is always invoked.
+
+```tsx
+const { isPending, start, stop, reset } = useTimeout(onDismiss, 3000, { autoStart: true })
+```
+
+#### useInterval
+
+Managed `setInterval` with pause/resume. Pass `delay = null` to pause without unmounting.
+
+```tsx
+const { isRunning, start, stop } = useInterval(tick, 1000, { autoStart: true })
+```
+
+#### useDebounce / useDebouncedCallback
+
+Debounce a value or a callback — only fires after `delay` ms of inactivity.
+
+```tsx
+const debouncedQuery = useDebounce(query, 250)
+const saveDraft = useDebouncedCallback((v) => fetch('/draft', { body: v }), 500)
+```
+
+#### useThrottle / useThrottledCallback
+
+Throttle a value or a callback — fires at most once per `delay` window.
+
+### Storage
+
+#### useLocalStorage / useSessionStorage
+
+`useState`-shaped hook backed by Web Storage. SSR-safe. `useLocalStorage` syncs across tabs by default; `useSessionStorage` does not.
+
+```tsx
+const [theme, setTheme, removeTheme] = useLocalStorage<'light' | 'dark'>('theme', 'light')
+```
+
+### DOM
+
+#### useEventListener
+
+Typed `addEventListener` for window / document / element / ref. Tolerates `null` targets.
+
+```tsx
+useEventListener('resize', () => console.log(window.innerWidth))
+useEventListener('click', onClick, ref)
+```
+
+#### useDocumentVisibility
+
+Reactive `'visible' | 'hidden'`. SSR-safe (defaults to `'visible'`).
+
+#### useOnlineStatus
+
+Reactive `navigator.onLine` boolean. SSR-safe (defaults to `true`).
+
+#### useMediaQuery
+
+Reactively match a CSS media query.
+
+```tsx
+const isMobile = useMediaQuery('(max-width: 640px)')
+```
+
+#### useReduceMotion
+
+Detect the OS-level reduced-motion preference.
+
+#### useIsomorphicLayoutEffect
+
+`useLayoutEffect` on the client, `useEffect` on the server — silences SSR warnings while keeping synchronous DOM measurements on the client.
+
+### Utilities
+
+#### useMergedRefs
+
+Merge multiple refs onto a single element. Accepts ref objects, callback refs, or `null` (skipped).
+
+```tsx
+const mergedRef = useMergedRefs(localRef, forwardedRef)
 ```
 
 ## Decision Trees
@@ -531,6 +760,36 @@ useClickOutside(ref, () => setOpen(false))
 - Using Tailwind? → `className="[data-hover]:bg-blue-700"`
 - Using CSS Modules? → `[data-hover] { background: #1d4ed8; }`
 - Using plain CSS? → `button[data-hover] { background: #1d4ed8; }`
+
+### Choosing a hook
+
+- Boolean open/close (modal, drawer, dropdown)? → `useDisclosure`
+- Controlled/uncontrolled wrapper for a custom component? → `useControllableState`
+- Stable, SSR-safe id (for `htmlFor` / `aria-labelledby`)? → `useId`
+- Track the value from the previous render? → `usePrevious`
+- More than two states (`idle` → `loading` → `success` | `error`)? → `useStateMachine`
+- Need undo/redo? → `useUndoRedo`
+- Cmd-K / global shortcut? → `useHotkeys` (not `useKeyboard` — that's for element-scoped key handlers)
+- Click outside to close? → `useClickOutside`
+- Trap focus inside a dialog? → `useFocusTrap`
+- "Copied!" affordance after writing to the clipboard? → `useCopyToClipboard`
+- Long-press gesture? → `useLongPress`
+- Position a floating element next to a trigger? → `useFloating`
+- Lock body scroll while a modal is open? → `useScrollLock`
+- Observe element size / window size? → `useElementSize` / `useWindowSize`
+- Lazy-load when an element scrolls into view? → `useIntersectionObserver`
+- Observe DOM mutations? → `useMutationObserver`
+- One-shot `setTimeout` with pause/resume? → `useTimeout`
+- Recurring tick? → `useInterval`
+- Debounce/throttle a value or callback? → `useDebounce` / `useThrottle`
+- Persist UI state with cross-tab sync? → `useLocalStorage` (use `useSessionStorage` for per-tab)
+- Reactive `document.visibilityState`? → `useDocumentVisibility`
+- Reactive `navigator.onLine`? → `useOnlineStatus`
+- Typed `addEventListener` (window/document/element/ref)? → `useEventListener`
+- Match a CSS media query reactively? → `useMediaQuery`
+- Respect `prefers-reduced-motion`? → `useReduceMotion`
+- Merge two refs onto one element? → `useMergedRefs`
+- Need `useLayoutEffect` semantics without an SSR warning? → `useIsomorphicLayoutEffect`
 
 ## Anti-Patterns
 
