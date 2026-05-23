@@ -54,7 +54,7 @@ describe('useControllableState', () => {
 
 	it('does not call onChange when resolved value is undefined', () => {
 		const onChange = vi.fn();
-		const { result } = renderHook(() => useControllableState<string>({ defaultValue: 'x', onChange }));
+		const { result } = renderHook(() => useControllableState<string | undefined>({ defaultValue: 'x', onChange }));
 		act(() => result.current[1](undefined));
 		expect(onChange).not.toHaveBeenCalled();
 	});
