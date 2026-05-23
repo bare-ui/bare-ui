@@ -5,6 +5,51 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-05-23
+
+### Added
+
+#### Hooks
+
+- **`useCopyToClipboard`** — clipboard write helper returning `{ copy, copied, error }`; configurable auto-reset timeout
+  for the `copied` flag
+- **`useDocumentVisibility`** — reactive `document.visibilityState` value; SSR-safe with a sensible default
+- **`useElementSize`** — live content-box `{ width, height }` of a referenced element via `ResizeObserver`
+- **`useEventListener`** — typed `addEventListener` subscription for `window`, `document`, elements, or refs; accepts
+  `null` targets for conditional binding; auto-cleans on unmount
+- **`useHotkeys`** — declarative keyboard-shortcut binder with combo matching (e.g. `mod+k`, `shift+/`),
+  `enableOnFormTags`, and `preventDefault` options
+- **`useInterval`** — `setInterval` wrapper with pause/resume/reset controls; pass `null` delay to halt
+- **`useIsomorphicLayoutEffect`** — `useLayoutEffect` on the client, `useEffect` on the server; avoids SSR warnings
+- **`useLocalStorage`** / **`useSessionStorage`** — `useState`-shaped hooks backed by `localStorage` / `sessionStorage`
+  with cross-tab sync, custom serializer/deserializer, and SSR-safe initial value
+- **`useLongPress`** — long-press gesture handler with configurable `threshold`, `onStart`/`onFinish`/`onCancel`
+  callbacks, and pointer/touch support
+- **`useMutationObserver`** — observes DOM mutations on a referenced element with full `MutationObserverInit` options
+- **`useOnlineStatus`** — reactive `navigator.onLine` boolean with SSR-safe default
+- **`usePrevious`** — returns the value from the previous render
+- **`useStateMachine`** — finite-state-machine hook with `states`, `events`, `transitions`, and guarded transitions
+- **`useTimeout`** — `setTimeout` wrapper with `start`/`clear`/`reset` controls and `isPending` flag
+- **`useUndoRedo`** — state container with bounded history; exposes `undo`, `redo`, `canUndo`, `canRedo`, `clear`
+- **`useWindowSize`** — reactive `{ width, height }` of the viewport with SSR-safe default
+
+### Changed
+
+- **AlertRoot** — auto-dismiss timer now uses [[use-timeout]] instead of inline `setTimeout` bookkeeping
+- **AvatarFallback** — show-delay timer now uses [[use-timeout]]
+- **ContextMenu** — outside-click/Escape handling now uses [[use-event-listener]]
+- **Group** — internal listeners now use [[use-event-listener]]
+- **NavigationMenu** — hover-intent open/close timers now use [[use-timeout]] (no behavior change to the timer-hoist
+  fix from 0.2.0)
+- **Timeago** — periodic re-render now uses [[use-interval]] instead of a manual `setInterval`
+- **Toast** — per-toast auto-dismiss timer now uses [[use-timeout]]
+- **Tooltip** — show/hide delay timers now use [[use-timeout]]
+
+### Fixed
+
+- **`useEventListener`** — target type now accepts `null`, so conditional bindings on refs that may be unset typecheck
+  without a cast
+
 ## [0.2.0] - 2026-05-17
 
 ### Added
