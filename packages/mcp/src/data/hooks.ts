@@ -1,7 +1,7 @@
 import type { HookData } from "./types.js";
 
 // ────────────────────────────────────────────────────────────────────
-// Wire UI 0.2 hooks / primitives / composables catalog
+// Wire UI 0.2 + 0.3 hooks / primitives / composables catalog
 //
 //   React  → useX
 //   Solid  → createX
@@ -596,5 +596,564 @@ return <input onChange={(e) => execute(e.target.value)} />;`,
 				basicExample: `const throttledScroll = useThrottledCallback(onScroll, 100);`,
 			},
 		},
+	},
+
+	// ════════════════════════════════════════════════════════════════════
+	// Added in 0.3
+	// ════════════════════════════════════════════════════════════════════
+
+	// ─── State ──────────────────────────────────────────────────────────
+
+	{
+		canonicalName: "local-storage",
+		category: "state",
+		description:
+			"useState-shaped hook backed by localStorage. SSR-safe initial value, cross-tab sync, and custom serialize/deserialize.",
+		signature:
+			"<T>(key: string, initialValue: T, options?: { serialize?, deserialize?, syncAcrossTabs? }) => [value, setValue, remove]",
+		returns: "Tuple of [value, setValue, remove].",
+		frameworks: {
+			react: {
+				name: "useLocalStorage",
+				importStatement:
+					"import { useLocalStorage } from '@wire-ui/react'",
+				basicExample: `const [theme, setTheme, removeTheme] = useLocalStorage('theme', 'light');`,
+			},
+			solid: {
+				name: "createLocalStorage",
+				importStatement:
+					"import { createLocalStorage } from '@wire-ui/solid'",
+				basicExample: `const [theme, setTheme, removeTheme] = createLocalStorage('theme', 'light');`,
+			},
+			vue: {
+				name: "useLocalStorage",
+				importStatement:
+					"import { useLocalStorage } from '@wire-ui/vue'",
+				basicExample: `const [theme, setTheme, removeTheme] = useLocalStorage('theme', 'light');`,
+			},
+		},
+		notes: [
+			"Cross-tab sync is on by default for localStorage (storage event).",
+		],
+	},
+
+	{
+		canonicalName: "session-storage",
+		category: "state",
+		description:
+			"Same API as useLocalStorage but backed by sessionStorage. Per-tab; cross-tab sync is off by default.",
+		signature:
+			"<T>(key: string, initialValue: T, options?: { serialize?, deserialize? }) => [value, setValue, remove]",
+		returns: "Tuple of [value, setValue, remove].",
+		frameworks: {
+			react: {
+				name: "useSessionStorage",
+				importStatement:
+					"import { useSessionStorage } from '@wire-ui/react'",
+				basicExample: `const [draft, setDraft, clearDraft] = useSessionStorage('draft', '');`,
+			},
+			solid: {
+				name: "createSessionStorage",
+				importStatement:
+					"import { createSessionStorage } from '@wire-ui/solid'",
+				basicExample: `const [draft, setDraft, clearDraft] = createSessionStorage('draft', '');`,
+			},
+			vue: {
+				name: "useSessionStorage",
+				importStatement:
+					"import { useSessionStorage } from '@wire-ui/vue'",
+				basicExample: `const [draft, setDraft, clearDraft] = useSessionStorage('draft', '');`,
+			},
+		},
+	},
+
+	{
+		canonicalName: "previous",
+		category: "state",
+		description:
+			"Returns the value from the previous render. Undefined on the first render.",
+		signature: "<T>(value: T) => T | undefined",
+		returns: "The prior render's value, or undefined initially.",
+		frameworks: {
+			react: {
+				name: "usePrevious",
+				importStatement: "import { usePrevious } from '@wire-ui/react'",
+				basicExample: `const previousCount = usePrevious(count);`,
+			},
+			solid: {
+				name: "createPrevious",
+				importStatement:
+					"import { createPrevious } from '@wire-ui/solid'",
+				basicExample: `const previousCount = createPrevious(count);
+// read with previousCount()`,
+			},
+			vue: {
+				name: "usePrevious",
+				importStatement: "import { usePrevious } from '@wire-ui/vue'",
+				basicExample: `const previousCount = usePrevious(count);`,
+			},
+		},
+	},
+
+	{
+		canonicalName: "state-machine",
+		category: "state",
+		description:
+			"Tiny, fully-typed finite state machine. States map events to next states; send() is a no-op for events the current state doesn't accept.",
+		signature:
+			"<S, E>(config: Record<S, Partial<Record<E, S>>>, init: { initial: S, onTransition? }) => { state, send, can, reset, transitions }",
+		returns: "Object with state, send, can, reset, and transitions.",
+		frameworks: {
+			react: {
+				name: "useStateMachine",
+				importStatement:
+					"import { useStateMachine } from '@wire-ui/react'",
+				basicExample: `const { state, send, can } = useStateMachine({
+  idle: { fetch: 'loading' },
+  loading: { resolve: 'success', reject: 'error' },
+  success: { reset: 'idle' },
+  error: { retry: 'loading', reset: 'idle' },
+} as const, { initial: 'idle' });`,
+			},
+			solid: {
+				name: "createStateMachine",
+				importStatement:
+					"import { createStateMachine } from '@wire-ui/solid'",
+				basicExample: `const { state, send, can } = createStateMachine({
+  idle: { fetch: 'loading' },
+  loading: { resolve: 'success', reject: 'error' },
+} as const, { initial: 'idle' });
+// read with state()`,
+			},
+			vue: {
+				name: "useStateMachine",
+				importStatement:
+					"import { useStateMachine } from '@wire-ui/vue'",
+				basicExample: `const { state, send, can } = useStateMachine({
+  idle: { fetch: 'loading' },
+  loading: { resolve: 'success', reject: 'error' },
+} as const, { initial: 'idle' });`,
+			},
+		},
+	},
+
+	{
+		canonicalName: "undo-redo",
+		category: "state",
+		description:
+			"State container with bounded undo/redo history. set() pushes the prior value and clears the redo stack.",
+		signature:
+			"<T>(initialValue: T, options?: { limit? }) => { value, set, undo, redo, reset, clear, canUndo, canRedo }",
+		returns:
+			"Object with value, set, undo, redo, reset, clear, canUndo, canRedo (+ pastSize/futureSize).",
+		frameworks: {
+			react: {
+				name: "useUndoRedo",
+				importStatement: "import { useUndoRedo } from '@wire-ui/react'",
+				basicExample: `const { value, set, undo, redo, canUndo, canRedo } = useUndoRedo('');`,
+			},
+			solid: {
+				name: "createUndoRedo",
+				importStatement:
+					"import { createUndoRedo } from '@wire-ui/solid'",
+				basicExample: `const { value, set, undo, redo, canUndo, canRedo } = createUndoRedo('');
+// read with value(); canUndo() / canRedo() are accessors`,
+			},
+			vue: {
+				name: "useUndoRedo",
+				importStatement: "import { useUndoRedo } from '@wire-ui/vue'",
+				basicExample: `const { value, set, undo, redo, canUndo, canRedo } = useUndoRedo('');`,
+			},
+		},
+		notes: [
+			"History is bounded by `limit` (default 100); set Infinity for unbounded.",
+		],
+	},
+
+	// ─── Interaction ────────────────────────────────────────────────────
+
+	{
+		canonicalName: "copy-to-clipboard",
+		category: "interaction",
+		description:
+			"Clipboard write helper. Returns copy() plus a copied flag that auto-resets, and the last value/error.",
+		signature:
+			"(options?: { resetAfter? }) => { copy, copied, value, error, reset }",
+		returns: "Object with copy(), copied, value, error, reset.",
+		frameworks: {
+			react: {
+				name: "useCopyToClipboard",
+				importStatement:
+					"import { useCopyToClipboard } from '@wire-ui/react'",
+				basicExample: `const { copy, copied } = useCopyToClipboard();
+return <button onClick={() => copy('hello')}>{copied ? 'Copied!' : 'Copy'}</button>;`,
+			},
+			solid: {
+				name: "createCopyToClipboard",
+				importStatement:
+					"import { createCopyToClipboard } from '@wire-ui/solid'",
+				basicExample: `const { copy, copied } = createCopyToClipboard();
+return <button onClick={() => copy('hello')}>{copied() ? 'Copied!' : 'Copy'}</button>;`,
+			},
+			vue: {
+				name: "useCopyToClipboard",
+				importStatement:
+					"import { useCopyToClipboard } from '@wire-ui/vue'",
+				basicExample: `const { copy, copied } = useCopyToClipboard();`,
+			},
+		},
+		notes: [
+			"`resetAfter` defaults to 2000ms; set to 0 to keep `copied` true until manually reset.",
+		],
+	},
+
+	{
+		canonicalName: "hotkeys",
+		category: "interaction",
+		description:
+			"Declarative keyboard-shortcut binder with combo matching (e.g. mod+k, shift+/). Supports scopes and input-suppression.",
+		signature:
+			"(map: Record<string, (e: KeyboardEvent) => void>, options?: { target?, event?, scope?, enableInInputs?, preventDefault? }) => void",
+		frameworks: {
+			react: {
+				name: "useHotkeys",
+				importStatement: "import { useHotkeys } from '@wire-ui/react'",
+				basicExample: `useHotkeys({
+  'mod+k': () => openPalette(),
+  'shift+/': () => openHelp(),
+});`,
+			},
+			solid: {
+				name: "createHotkeys",
+				importStatement:
+					"import { createHotkeys } from '@wire-ui/solid'",
+				basicExample: `createHotkeys({
+  'mod+k': () => openPalette(),
+  'shift+/': () => openHelp(),
+});`,
+			},
+			vue: {
+				name: "useHotkeys",
+				importStatement: "import { useHotkeys } from '@wire-ui/vue'",
+				basicExample: `useHotkeys({
+  'mod+k': () => openPalette(),
+});`,
+			},
+		},
+		notes: [
+			"`mod` resolves to Cmd on macOS and Ctrl elsewhere.",
+			"By default hotkeys don't fire inside inputs/textareas; set enableInInputs to override.",
+		],
+	},
+
+	{
+		canonicalName: "long-press",
+		category: "interaction",
+		description:
+			"Long-press gesture handler. Returns pointer handlers you spread onto an element; fires after a held threshold without movement.",
+		signature:
+			"(callback, options?: { threshold?, moveThreshold?, onStart?, onCancel?, onFinish?, disabled? }) => LongPressHandlers",
+		returns: "Object of pointer event handlers to spread onto an element.",
+		frameworks: {
+			react: {
+				name: "useLongPress",
+				importStatement:
+					"import { useLongPress } from '@wire-ui/react'",
+				basicExample: `const handlers = useLongPress(() => openMenu(), { threshold: 500 });
+return <button {...handlers}>Hold me</button>;`,
+			},
+			solid: {
+				name: "createLongPress",
+				importStatement:
+					"import { createLongPress } from '@wire-ui/solid'",
+				basicExample: `const handlers = createLongPress(() => openMenu(), { threshold: 500 });
+return <button {...handlers}>Hold me</button>;`,
+			},
+			vue: {
+				name: "useLongPress",
+				importStatement: "import { useLongPress } from '@wire-ui/vue'",
+				basicExample: `const handlers = useLongPress(() => openMenu(), { threshold: 500 });`,
+			},
+		},
+		notes: ["Unifies mouse, touch, and pen via Pointer Events."],
+	},
+
+	// ─── Observers ──────────────────────────────────────────────────────
+
+	{
+		canonicalName: "document-visibility",
+		category: "observer",
+		description:
+			"Reactive document.visibilityState ('visible' | 'hidden'). SSR-safe — returns 'visible' on the server.",
+		signature: "() => DocumentVisibilityState",
+		returns: "'visible' or 'hidden'.",
+		frameworks: {
+			react: {
+				name: "useDocumentVisibility",
+				importStatement:
+					"import { useDocumentVisibility } from '@wire-ui/react'",
+				basicExample: `const visibility = useDocumentVisibility();
+if (visibility === 'hidden') pausePolling();`,
+			},
+			solid: {
+				name: "createDocumentVisibility",
+				importStatement:
+					"import { createDocumentVisibility } from '@wire-ui/solid'",
+				basicExample: `const visibility = createDocumentVisibility();
+// read with visibility()`,
+			},
+			vue: {
+				name: "useDocumentVisibility",
+				importStatement:
+					"import { useDocumentVisibility } from '@wire-ui/vue'",
+				basicExample: `const visibility = useDocumentVisibility();`,
+			},
+		},
+	},
+
+	{
+		canonicalName: "online-status",
+		category: "observer",
+		description:
+			"Reactive navigator.onLine boolean. SSR-safe default of true.",
+		signature: "() => boolean",
+		returns: "true when online, false when offline.",
+		frameworks: {
+			react: {
+				name: "useOnlineStatus",
+				importStatement:
+					"import { useOnlineStatus } from '@wire-ui/react'",
+				basicExample: `const isOnline = useOnlineStatus();`,
+			},
+			solid: {
+				name: "createOnlineStatus",
+				importStatement:
+					"import { createOnlineStatus } from '@wire-ui/solid'",
+				basicExample: `const isOnline = createOnlineStatus();
+// read with isOnline()`,
+			},
+			vue: {
+				name: "useOnlineStatus",
+				importStatement:
+					"import { useOnlineStatus } from '@wire-ui/vue'",
+				basicExample: `const isOnline = useOnlineStatus();`,
+			},
+		},
+	},
+
+	{
+		canonicalName: "element-size",
+		category: "observer",
+		description:
+			"Live content-box { width, height } of a referenced element via ResizeObserver. Thin alias over useResizeObserver.",
+		signature: "(ref: Ref<HTMLElement>) => { width, height }",
+		returns: "Object with width and height.",
+		frameworks: {
+			react: {
+				name: "useElementSize",
+				importStatement:
+					"import { useElementSize } from '@wire-ui/react'",
+				basicExample: `const ref = useRef<HTMLDivElement>(null);
+const { width, height } = useElementSize(ref);`,
+			},
+			solid: {
+				name: "createElementSize",
+				importStatement:
+					"import { createElementSize } from '@wire-ui/solid'",
+				basicExample: `let el: HTMLDivElement | undefined;
+const { width, height } = createElementSize(() => el);`,
+			},
+			vue: {
+				name: "useElementSize",
+				importStatement:
+					"import { useElementSize } from '@wire-ui/vue'",
+				basicExample: `const el = ref<HTMLDivElement>();
+const { width, height } = useElementSize(el);`,
+			},
+		},
+	},
+
+	{
+		canonicalName: "window-size",
+		category: "observer",
+		description:
+			"Reactive { width, height } of the viewport. SSR-safe default; updates on resize and orientation change.",
+		signature: "() => { width, height }",
+		returns: "Object with width and height.",
+		frameworks: {
+			react: {
+				name: "useWindowSize",
+				importStatement:
+					"import { useWindowSize } from '@wire-ui/react'",
+				basicExample: `const { width, height } = useWindowSize();`,
+			},
+			solid: {
+				name: "createWindowSize",
+				importStatement:
+					"import { createWindowSize } from '@wire-ui/solid'",
+				basicExample: `const size = createWindowSize();
+// read with size().width`,
+			},
+			vue: {
+				name: "useWindowSize",
+				importStatement: "import { useWindowSize } from '@wire-ui/vue'",
+				basicExample: `const { width, height } = useWindowSize();`,
+			},
+		},
+	},
+
+	{
+		canonicalName: "mutation-observer",
+		category: "observer",
+		description:
+			"Observes DOM mutations on a referenced element with full MutationObserverInit options.",
+		signature:
+			"(ref: Ref<Node>, callback: MutationCallback, options?: MutationObserverInit & { enabled? }) => void",
+		frameworks: {
+			react: {
+				name: "useMutationObserver",
+				importStatement:
+					"import { useMutationObserver } from '@wire-ui/react'",
+				basicExample: `const ref = useRef<HTMLDivElement>(null);
+useMutationObserver(ref, (records) => console.log(records), { childList: true });`,
+			},
+			solid: {
+				name: "createMutationObserver",
+				importStatement:
+					"import { createMutationObserver } from '@wire-ui/solid'",
+				basicExample: `let el: HTMLDivElement | undefined;
+createMutationObserver(() => el, (records) => console.log(records), { childList: true });`,
+			},
+			vue: {
+				name: "useMutationObserver",
+				importStatement:
+					"import { useMutationObserver } from '@wire-ui/vue'",
+				basicExample: `const el = ref<HTMLDivElement>();
+useMutationObserver(el, (records) => console.log(records), { childList: true });`,
+			},
+		},
+	},
+
+	// ─── Timing ─────────────────────────────────────────────────────────
+
+	{
+		canonicalName: "timeout",
+		category: "timing",
+		description:
+			"setTimeout wrapper with start/stop/reset controls and an isPending flag. Always invokes the latest callback.",
+		signature:
+			"(callback: () => void, delay: number, options?: { autoStart? }) => { isPending, start, stop, reset }",
+		returns: "Object with isPending, start, stop, reset.",
+		frameworks: {
+			react: {
+				name: "useTimeout",
+				importStatement: "import { useTimeout } from '@wire-ui/react'",
+				basicExample: `const { start, stop, isPending } = useTimeout(() => setShown(false), 3000);`,
+			},
+			solid: {
+				name: "createTimeout",
+				importStatement:
+					"import { createTimeout } from '@wire-ui/solid'",
+				basicExample: `const { start, stop, isPending } = createTimeout(() => setShown(false), 3000);
+// isPending() is an accessor`,
+			},
+			vue: {
+				name: "useTimeout",
+				importStatement: "import { useTimeout } from '@wire-ui/vue'",
+				basicExample: `const { start, stop, isPending } = useTimeout(() => setShown(false), 3000);`,
+			},
+		},
+		notes: [
+			"Used internally by Tooltip, Toast, Alert, Avatar, and NavigationMenu for their delay/dismiss timers.",
+		],
+	},
+
+	{
+		canonicalName: "interval",
+		category: "timing",
+		description:
+			"setInterval wrapper with start/stop/reset controls and an isRunning flag. Pass delay = null to pause without unmounting.",
+		signature:
+			"(callback: () => void, delay: number | null, options?: { autoStart?, immediate? }) => { isRunning, start, stop, reset }",
+		returns: "Object with isRunning, start, stop, reset.",
+		frameworks: {
+			react: {
+				name: "useInterval",
+				importStatement: "import { useInterval } from '@wire-ui/react'",
+				basicExample: `const { stop, isRunning } = useInterval(() => setNow(Date.now()), 1000);`,
+			},
+			solid: {
+				name: "createInterval",
+				importStatement:
+					"import { createInterval } from '@wire-ui/solid'",
+				basicExample: `const { stop, isRunning } = createInterval(() => setNow(Date.now()), 1000);
+// isRunning() is an accessor`,
+			},
+			vue: {
+				name: "useInterval",
+				importStatement: "import { useInterval } from '@wire-ui/vue'",
+				basicExample: `const { stop, isRunning } = useInterval(() => setNow(Date.now()), 1000);`,
+			},
+		},
+		notes: ["Used internally by Timeago for its periodic re-render."],
+	},
+
+	// ─── DOM ────────────────────────────────────────────────────────────
+
+	{
+		canonicalName: "event-listener",
+		category: "dom",
+		description:
+			"Typed addEventListener subscription for window, document, an element, or a ref. Accepts null targets for conditional binding; auto-cleans on unmount.",
+		signature:
+			"(eventName, handler, target?: Window | Document | HTMLElement | Ref | null, options?) => void",
+		frameworks: {
+			react: {
+				name: "useEventListener",
+				importStatement:
+					"import { useEventListener } from '@wire-ui/react'",
+				basicExample: `useEventListener('scroll', () => setY(window.scrollY));
+useEventListener('click', onClick, buttonRef);`,
+			},
+			solid: {
+				name: "createEventListener",
+				importStatement:
+					"import { createEventListener } from '@wire-ui/solid'",
+				basicExample: `createEventListener('scroll', () => setY(window.scrollY));
+createEventListener('click', onClick, () => buttonEl);`,
+			},
+			vue: {
+				name: "useEventListener",
+				importStatement:
+					"import { useEventListener } from '@wire-ui/vue'",
+				basicExample: `useEventListener('scroll', () => setY(window.scrollY));
+useEventListener('click', onClick, buttonRef);`,
+			},
+		},
+		notes: [
+			"Always calls the latest handler without resubscribing — inline functions are safe.",
+			"Used internally by ContextMenu (outside-click/Escape) and Group.",
+		],
+	},
+
+	{
+		canonicalName: "isomorphic-layout-effect",
+		category: "dom",
+		description:
+			"useLayoutEffect on the client, useEffect on the server — avoids the React SSR layout-effect warning.",
+		signature: "(effect, deps?) => void",
+		frameworks: {
+			react: {
+				name: "useIsomorphicLayoutEffect",
+				importStatement:
+					"import { useIsomorphicLayoutEffect } from '@wire-ui/react'",
+				basicExample: `useIsomorphicLayoutEffect(() => {
+  measure();
+}, []);`,
+			},
+		},
+		notes: [
+			"React-only. Vue and Solid have no equivalent SSR layout-effect hazard, so they don't ship this primitive.",
+		],
 	},
 ];
