@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-05-23
+
+Catches the MCP catalog up to the `0.3.0` releases of `@wire-ui/react`, `@wire-ui/solid`, and `@wire-ui/vue`.
+
+### Added
+
+- 17 new hook entries catalogued (the 0.3 hook expansion), surfaced by `list_hooks`, `get_hook`, and `get_exports_list`:
+  - **State** — `useLocalStorage`, `useSessionStorage`, `usePrevious`, `useStateMachine`, `useUndoRedo`
+  - **Interaction** — `useCopyToClipboard`, `useHotkeys`, `useLongPress`
+  - **Observers** — `useDocumentVisibility`, `useOnlineStatus`, `useElementSize`, `useWindowSize`, `useMutationObserver`
+  - **Timing** — `useTimeout`, `useInterval`
+  - **DOM** — `useEventListener`, `useIsomorphicLayoutEffect`
+  - Solid surfaces these as `createX` (storage via `createLocalStorage` / `createSessionStorage`); Vue as `useX`. `useIsomorphicLayoutEffect` is React-only.
+
+### Changed
+
+- Component notes updated to record the hooks now used internally (no public API change): `Alert`, `Avatar`, `Toast`, `Tooltip`, and `NavigationMenu` use `useTimeout`; `Timeago` uses `useInterval`; `ContextMenu` uses `useEventListener`.
+
 ## [0.2.0] - 2026-05-18
 
 ### Added
