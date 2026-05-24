@@ -9,9 +9,12 @@ export {
 	Button,
 	Calendar,
 	Card,
+	Carousel,
 	Chat,
 	Citation,
 	CodeBlock,
+	ColorPicker,
+	Command,
 	Divider,
 	Checkbox,
 	Combobox,
@@ -20,10 +23,14 @@ export {
 	Diff,
 	Drawer,
 	Dropdown,
+	Editable,
+	EmptyState,
 	FileUpload,
 	Form,
+	HoverCard,
 	Icon,
 	Image,
+	InfiniteScroll,
 	Input,
 	List,
 	Markdown,
@@ -40,11 +47,16 @@ export {
 	Radio,
 	Rating,
 	ResizablePanels,
+	RichText,
+	ScrollArea,
 	Search,
 	Select,
+	Sheet,
 	Skeleton,
 	Slider,
 	Spinner,
+	Stat,
+	Stepper,
 	Switch,
 	Tabs,
 	Tag,
@@ -53,9 +65,13 @@ export {
 	Timeago,
 	Toast,
 	useToast,
+	Toggle,
+	ToggleGroup,
+	Toolbar,
 	Tooltip,
 	TreeView,
 	Typewriter,
+	Virtualizer,
 } from './components';
 
 // Hooks
@@ -436,3 +452,130 @@ export type {
 	ChatInputProps,
 	ChatSendProps,
 } from './components/chat';
+
+// Gap-fillers (table-stakes primitives)
+export type {
+	EmptyStateRootProps,
+	EmptyStateMediaProps,
+	EmptyStateTitleProps,
+	EmptyStateDescriptionProps,
+	EmptyStateActionsProps,
+} from './components/empty-state';
+export type {
+	EditableRootProps,
+	EditablePreviewProps,
+	EditableInputProps,
+	EditableAreaProps,
+	EditableEditTriggerProps,
+	EditableSubmitTriggerProps,
+	EditableCancelTriggerProps,
+} from './components/editable';
+export type {
+	StepperRootProps,
+	StepperListProps,
+	StepperItemProps,
+	StepperTriggerProps,
+	StepperSeparatorProps,
+	StepperContentProps,
+	StepperPrevTriggerProps,
+	StepperNextTriggerProps,
+	StepperOrientation,
+} from './components/stepper';
+export type {
+	ToolbarRootProps,
+	ToolbarButtonProps,
+	ToolbarLinkProps,
+	ToolbarSeparatorProps,
+	ToolbarOrientation,
+} from './components/toolbar';
+export type {
+	HoverCardRootProps,
+	HoverCardTriggerProps,
+	HoverCardContentProps,
+	HoverCardSide,
+} from './components/hover-card';
+export type { VirtualizerRootProps, VirtualizerOrientation, VirtualItem } from './components/virtualizer';
+export type {
+	ScrollAreaRootProps,
+	ScrollAreaViewportProps,
+	ScrollAreaScrollbarProps,
+	ScrollAreaThumbProps,
+	ScrollAreaOrientation,
+	ScrollAreaMetrics,
+} from './components/scroll-area';
+export type {
+	CarouselRootProps,
+	CarouselViewportProps,
+	CarouselContentProps,
+	CarouselSlideProps,
+	CarouselPreviousProps,
+	CarouselNextProps,
+	CarouselIndicatorsProps,
+	CarouselIndicatorRenderProps,
+	CarouselOrientation,
+} from './components/carousel';
+export type {
+	CommandRootProps,
+	CommandInputProps,
+	CommandListProps,
+	CommandGroupProps,
+	CommandItemProps,
+	CommandSeparatorProps,
+	CommandEmptyProps,
+	CommandFilter,
+} from './components/command';
+export type {
+	ColorPickerRootProps,
+	ColorPickerAreaProps,
+	ColorPickerAreaThumbProps,
+	ColorPickerHueProps,
+	ColorPickerHueThumbProps,
+	ColorPickerAlphaProps,
+	ColorPickerAlphaThumbProps,
+	ColorPickerSwatchProps,
+	ColorPickerInputProps,
+	HSVA,
+	RGBA,
+} from './components/color-picker';
+export type {
+	ToggleProps,
+	ToggleGroupRootProps,
+	ToggleGroupSingleProps,
+	ToggleGroupMultipleProps,
+	ToggleOrientation,
+} from './components/toggle';
+export type {
+	StatRootProps,
+	StatLabelProps,
+	StatValueProps,
+	StatDeltaProps,
+	StatHelpTextProps,
+	StatSparklineProps,
+	StatDirection,
+} from './components/stat';
+export type {
+	RichTextRootProps,
+	RichTextToolbarProps,
+	RichTextActionProps,
+	RichTextEditorProps,
+	RichTextPreviewProps,
+	RichTextMode,
+} from './components/rich-text';
+export type {
+	InfiniteScrollRootProps,
+	InfiniteScrollSentinelProps,
+	InfiniteScrollLoaderProps,
+	InfiniteScrollEndMessageProps,
+} from './components/infinite-scroll';
+export type {
+	SheetRootProps,
+	SheetTriggerProps,
+	SheetPortalProps,
+	SheetOverlayProps,
+	SheetContentProps,
+	SheetHandleProps,
+	SheetTitleProps,
+	SheetDescriptionProps,
+	SheetCloseProps,
+	SheetSide,
+} from './components/sheet';
