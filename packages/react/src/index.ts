@@ -9,11 +9,15 @@ export {
 	Button,
 	Calendar,
 	Card,
+	Chat,
+	Citation,
+	CodeBlock,
 	Divider,
 	Checkbox,
 	Combobox,
 	ContextMenu,
 	DatePicker,
+	Diff,
 	Drawer,
 	Dropdown,
 	FileUpload,
@@ -22,6 +26,8 @@ export {
 	Image,
 	Input,
 	List,
+	Markdown,
+	Mention,
 	MenuBar,
 	Modal,
 	NavigationMenu,
@@ -49,6 +55,7 @@ export {
 	useToast,
 	Tooltip,
 	TreeView,
+	Typewriter,
 } from './components';
 
 // Hooks
@@ -369,3 +376,63 @@ export type {
 	NavigationMenuContentProps,
 	NavigationMenuLinkProps,
 } from './components/navigation-menu';
+
+// AI-native primitives
+export type {
+	TypewriterRootProps,
+	TypewriterTextProps,
+	TypewriterCursorProps,
+	TypewriterState,
+	TypewriterMode,
+} from './components/typewriter';
+export type {
+	MarkdownProps,
+	MarkdownNode,
+	MarkdownNodeType,
+	MarkdownComponent,
+	MarkdownComponents,
+	MarkdownComponentProps,
+} from './components/markdown';
+export type {
+	CodeBlockRootProps,
+	CodeBlockCodeProps,
+	CodeBlockLinesProps,
+	CodeBlockCopyButtonProps,
+	CodeBlockLine,
+	CodeBlockDiffType,
+} from './components/code-block';
+export type {
+	CitationRootProps,
+	CitationRefProps,
+	CitationListProps,
+	CitationSource,
+	CitationRenderProps,
+} from './components/citation';
+export type {
+	DiffRootProps,
+	DiffUnifiedProps,
+	DiffSplitProps,
+	DiffStatsProps,
+	DiffLine,
+	DiffLineType,
+	DiffRow,
+	DiffStats,
+} from './components/diff';
+export type {
+	MentionRootProps,
+	MentionInputProps,
+	MentionContentProps,
+	MentionItemsProps,
+	MentionEmptyProps,
+	MentionOption,
+	MentionItemRenderProps,
+	MentionCoords,
+} from './components/mention';
+export type {
+	ChatRootProps,
+	ChatListProps,
+	ChatMessageProps,
+	ChatComposerProps,
+	ChatInputProps,
+	ChatSendProps,
+} from './components/chat';
