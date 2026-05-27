@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import { defineComponent, h, nextTick } from 'vue';
-import { useLocalStorage, useSessionStorage, type UseStorageResult } from '@/composables/use-local-storage';
+import { useLocalStorage, useSessionStorage, type UseStorageResult } from '@/composables/use-storage';
 
 function mountLocal<T>(key: string, initial: T): UseStorageResult<T> {
 	let captured!: UseStorageResult<T>;

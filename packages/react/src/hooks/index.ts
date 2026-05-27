@@ -55,8 +55,8 @@ export { useOnlineStatus } from './use-online-status';
 
 export { useEventListener } from './use-event-listener';
 
-export { useLocalStorage, useSessionStorage } from './use-local-storage';
-export type { UseStorageOptions, UseStorageResult } from './use-local-storage';
+export { useLocalStorage, useSessionStorage } from './use-storage';
+export type { UseStorageOptions, UseStorageResult } from './use-storage';
 
 export { useCopyToClipboard } from './use-copy-to-clipboard';
 export type { UseCopyToClipboardOptions, UseCopyToClipboardResult } from './use-copy-to-clipboard';
