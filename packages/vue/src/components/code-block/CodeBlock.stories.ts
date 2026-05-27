@@ -88,6 +88,17 @@ export const DiffRegions: Story = {
 	}),
 };
 
+/** BYO highlighting: a trivial keyword colorizer stands in for Shiki/Prism. */
+const KEYWORDS = ['function', 'const', 'let', 'var', 'return', 'if', 'else', 'for', 'while'];
+const KEYWORD_SPLIT = new RegExp(`\\b(${KEYWORDS.join('|')})\\b`);
+function highlight(content: string) {
+	return content
+		.split(KEYWORD_SPLIT)
+		.map((part, i) =>
+			KEYWORDS.includes(part) ? h('span', { key: i, class: 'text-purple-400' }, part) : h('span', { key: i }, part),
+		);
+}
+
 export const HighlightedLines: Story = {
 	render: () => ({
 		setup: () => () =>
@@ -105,7 +116,7 @@ export const HighlightedLines: Story = {
 							({ line }: { line: { number: number; content: string; highlighted: boolean } }) =>
 								h('span', { class: `block px-2${line.highlighted ? ' bg-white/10' : ''}` }, [
 									h('span', { class: gutterCls }, line.number),
-									line.content,
+									...highlight(line.content),
 								]),
 						),
 					),
