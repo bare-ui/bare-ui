@@ -42,6 +42,7 @@ export {
 	OTP,
 	Pagination,
 	Password,
+	Popover,
 	ProgressBar,
 	Radio,
 	Rating,
@@ -52,10 +53,12 @@ export {
 	Select,
 	Sheet,
 	Skeleton,
+	Slider,
 	Spinner,
 	Stat,
 	Stepper,
 	Switch,
+	Tabs,
 	Tag,
 	TagInput,
 	Textarea,
@@ -301,6 +304,14 @@ export type {
 	PasswordLabelProps,
 	PasswordErrorProps,
 } from './components/password';
+export type {
+	PopoverRootProps,
+	PopoverTriggerProps,
+	PopoverContentProps,
+	PopoverCloseProps,
+	PopoverSide,
+	PopoverAlign,
+} from './components/popover';
 export type { ProgressBarProps } from './components/progress-bar';
 export type {
 	RadioRootProps,
@@ -334,8 +345,22 @@ export type {
 	SelectGroupLabelProps,
 } from './components/select';
 export type { SkeletonProps } from './components/skeleton';
+export type {
+	SliderProps,
+	SliderSingleProps,
+	SliderRangeProps,
+	SliderOrientation,
+} from './components/slider';
 export type { SpinnerProps } from './components/spinner';
 export type { SwitchRootProps, SwitchThumbProps } from './components/switch';
+export type {
+	TabsRootProps,
+	TabsListProps,
+	TabsTriggerProps,
+	TabsContentProps,
+	TabsOrientation,
+	TabsActivationMode,
+} from './components/tabs';
 export type { TagRootProps, TagLabelProps, TagRemoveProps } from './components/tag';
 export type { TagInputRootProps, TagInputListProps, TagInputFieldProps } from './components/tag-input';
 export type {
