@@ -167,3 +167,6 @@ export const CodeBlock = {
 	Lines,
 	CopyButton,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `CodeBlock.*`).
+export { Root, Code, Lines, CopyButton };

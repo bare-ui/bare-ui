@@ -236,3 +236,6 @@ export const Toolbar = {
 	Link,
 	Separator,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Toolbar.*`).
+export { Root, Button, Link, Separator };

@@ -200,3 +200,6 @@ Error.displayName = 'Password.Error';
 // ---------------------------------------------------------------------------
 
 export const Password = { Root, Field, Toggle, Label, Error };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Password.*`).
+export { Root, Field, Toggle, Label, Error };

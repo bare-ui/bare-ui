@@ -365,3 +365,6 @@ export const Chat = {
 	Input,
 	Send,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Chat.*`).
+export { Root, List, Message, Composer, Input, Send };

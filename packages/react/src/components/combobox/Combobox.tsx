@@ -443,3 +443,6 @@ Empty.displayName = 'Combobox.Empty';
 // ---------------------------------------------------------------------------
 
 export const Combobox = { Root, Input, Trigger, Content, Items, Empty };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Combobox.*`).
+export { Root, Input, Trigger, Content, Items, Empty };

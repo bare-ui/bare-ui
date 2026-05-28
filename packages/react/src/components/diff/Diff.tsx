@@ -193,3 +193,6 @@ export const Diff = {
 	Split,
 	Stats,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Diff.*`).
+export { Root, Unified, Split, Stats };

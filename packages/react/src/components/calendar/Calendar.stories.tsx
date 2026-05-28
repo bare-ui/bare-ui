@@ -5,6 +5,13 @@ import { Calendar } from './Calendar';
 const meta = {
 	title: 'Forms/Calendar',
 	component: Calendar.Root,
+	subcomponents: {
+		'Calendar.Nav': Calendar.Nav,
+		'Calendar.PrevButton': Calendar.PrevButton,
+		'Calendar.NextButton': Calendar.NextButton,
+		'Calendar.Title': Calendar.Title,
+		'Calendar.Grid': Calendar.Grid,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

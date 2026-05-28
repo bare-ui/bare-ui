@@ -287,3 +287,6 @@ export const Stepper = {
 	PrevTrigger,
 	NextTrigger,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Stepper.*`).
+export { Root, List, Item, Trigger, Separator, Content, PrevTrigger, NextTrigger };

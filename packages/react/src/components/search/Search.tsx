@@ -272,3 +272,6 @@ export const Search = {
 	Item,
 	Empty,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Search.*`).
+export { Root, Input, Content, Item, Empty };

@@ -482,3 +482,6 @@ export const Mention = {
 	Items,
 	Empty,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Mention.*`).
+export { Root, Input, Content, Items, Empty };

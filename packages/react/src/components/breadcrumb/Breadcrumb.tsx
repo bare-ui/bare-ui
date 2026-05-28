@@ -83,3 +83,8 @@ const Separator = React.forwardRef<HTMLSpanElement, BreadcrumbSeparatorProps>(
 Separator.displayName = 'Breadcrumb.Separator';
 
 export const Breadcrumb = { Root, List, Item, Link, Separator };
+
+// Named exports expose the sub-components to Storybook's react-docgen so each one
+// gets a documented props table. Not re-exported from the package barrel — the
+// public API stays `Breadcrumb.*`.
+export { Root, List, Item, Link, Separator };

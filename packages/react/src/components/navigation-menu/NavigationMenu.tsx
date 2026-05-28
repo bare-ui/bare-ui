@@ -269,3 +269,6 @@ Link.displayName = 'NavigationMenu.Link';
 // ---------------------------------------------------------------------------
 
 export const NavigationMenu = { Root, List, Item, Trigger, Content, Link };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `NavigationMenu.*`).
+export { Root, List, Item, Trigger, Content, Link };

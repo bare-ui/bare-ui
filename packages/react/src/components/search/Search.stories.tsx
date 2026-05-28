@@ -6,6 +6,12 @@ import type { SearchOption } from './Search.types';
 const meta = {
 	title: 'Overlays/Search',
 	component: Search.Root,
+	subcomponents: {
+		'Search.Input': Search.Input,
+		'Search.Content': Search.Content,
+		'Search.Item': Search.Item,
+		'Search.Empty': Search.Empty,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

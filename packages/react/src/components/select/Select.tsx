@@ -281,3 +281,6 @@ GroupLabel.displayName = 'Select.GroupLabel';
 // ---------------------------------------------------------------------------
 
 export const Select = { Root, Trigger, Value, Content, Item, Separator, Group, GroupLabel };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Select.*`).
+export { Root, Trigger, Value, Content, Item, Separator, Group, GroupLabel };

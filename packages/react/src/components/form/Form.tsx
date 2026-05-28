@@ -213,3 +213,6 @@ Error.displayName = 'Form.Error';
 // ---------------------------------------------------------------------------
 
 export const Form = { Root, Field, Label, Control, Description, Error };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Form.*`).
+export { Root, Field, Label, Control, Description, Error };

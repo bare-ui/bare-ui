@@ -259,3 +259,6 @@ const Next = makeNavButton('next', 'Next page', 'Pagination.Next');
 // ---------------------------------------------------------------------------
 
 export const Pagination = { Root, List, Items, Item, Previous, Next, Ellipsis };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Pagination.*`).
+export { Root, List, Items, Item, Previous, Next, Ellipsis };

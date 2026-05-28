@@ -143,3 +143,6 @@ export const Alert = {
 	Description: AlertDescription,
 	Dismiss: AlertDismiss,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Alert.*`).
+export { AlertRoot, AlertTitle, AlertDescription, AlertDismiss };

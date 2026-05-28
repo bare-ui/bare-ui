@@ -418,3 +418,6 @@ export const Command = {
 	Separator,
 	Empty,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Command.*`).
+export { Root, Input, List, Group, Item, Separator, Empty };

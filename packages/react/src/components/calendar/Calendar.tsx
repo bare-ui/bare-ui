@@ -363,3 +363,6 @@ Grid.displayName = 'Calendar.Grid';
 // ---------------------------------------------------------------------------
 
 export const Calendar = { Root, Nav, PrevButton, NextButton, Title, Grid };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Calendar.*`).
+export { Root, Nav, PrevButton, NextButton, Title, Grid };

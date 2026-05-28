@@ -405,3 +405,6 @@ Handle.displayName = 'ResizablePanels.Handle';
 // ---------------------------------------------------------------------------
 
 export const ResizablePanels = { Group, Panel, Handle };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `ResizablePanels.*`).
+export { Group, Panel, Handle };

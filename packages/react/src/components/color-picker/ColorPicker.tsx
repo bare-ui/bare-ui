@@ -450,3 +450,6 @@ export const ColorPicker = {
 	Swatch,
 	Input,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `ColorPicker.*`).
+export { Root, Area, AreaThumb, Hue, HueThumb, Alpha, AlphaThumb, Swatch, Input };

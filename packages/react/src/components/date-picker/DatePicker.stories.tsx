@@ -6,6 +6,12 @@ import { Calendar } from '../calendar/Calendar';
 const meta = {
 	title: 'Forms/DatePicker',
 	component: DatePicker.Root,
+	subcomponents: {
+		'DatePicker.Trigger': DatePicker.Trigger,
+		'DatePicker.Value': DatePicker.Value,
+		'DatePicker.Content': DatePicker.Content,
+		'DatePicker.Calendar': DatePicker.Calendar,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

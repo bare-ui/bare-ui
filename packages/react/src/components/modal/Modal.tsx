@@ -132,3 +132,6 @@ export const Modal = {
 	Content,
 	Close,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Modal.*`).
+export { Root, Portal, Overlay, Content, Close };

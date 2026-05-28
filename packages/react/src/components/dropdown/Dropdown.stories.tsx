@@ -4,6 +4,10 @@ import { Dropdown } from './Dropdown';
 const meta = {
 	title: 'Overlays/Dropdown',
 	component: Dropdown.Root,
+	subcomponents: {
+		'Dropdown.Trigger': Dropdown.Trigger,
+		'Dropdown.Menu': Dropdown.Menu,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

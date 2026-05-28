@@ -92,3 +92,6 @@ Thumb.displayName = 'Switch.Thumb';
 // ---------------------------------------------------------------------------
 
 export const Switch = { Root, Thumb };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Switch.*`).
+export { Root, Thumb };

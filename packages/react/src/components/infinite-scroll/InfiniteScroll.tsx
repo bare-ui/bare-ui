@@ -149,3 +149,6 @@ export const InfiniteScroll = {
 	Loader,
 	EndMessage,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `InfiniteScroll.*`).
+export { Root, Sentinel, Loader, EndMessage };

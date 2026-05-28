@@ -4,6 +4,12 @@ import { EmptyState } from './EmptyState';
 const meta = {
 	title: 'Feedback/EmptyState',
 	component: EmptyState.Root,
+	subcomponents: {
+		'EmptyState.Media': EmptyState.Media,
+		'EmptyState.Title': EmptyState.Title,
+		'EmptyState.Description': EmptyState.Description,
+		'EmptyState.Actions': EmptyState.Actions,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

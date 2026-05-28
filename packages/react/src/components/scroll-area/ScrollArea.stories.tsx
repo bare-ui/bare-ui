@@ -4,6 +4,11 @@ import { ScrollArea } from './ScrollArea';
 const meta = {
 	title: 'Layout/ScrollArea',
 	component: ScrollArea.Root,
+	subcomponents: {
+		'ScrollArea.Viewport': ScrollArea.Viewport,
+		'ScrollArea.Scrollbar': ScrollArea.Scrollbar,
+		'ScrollArea.Thumb': ScrollArea.Thumb,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

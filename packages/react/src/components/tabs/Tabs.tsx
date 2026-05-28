@@ -255,3 +255,6 @@ Content.displayName = 'Tabs.Content';
 // ---------------------------------------------------------------------------
 
 export const Tabs = { Root, List, Trigger, Content };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Tabs.*`).
+export { Root, List, Trigger, Content };

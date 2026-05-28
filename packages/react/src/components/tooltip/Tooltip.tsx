@@ -144,3 +144,6 @@ Content.displayName = 'Tooltip.Content';
 // ---------------------------------------------------------------------------
 
 export const Tooltip = { Root, Trigger, Content };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Tooltip.*`).
+export { Root, Trigger, Content };

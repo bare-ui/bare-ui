@@ -299,3 +299,6 @@ Items.displayName = 'FileUpload.Items';
 // ---------------------------------------------------------------------------
 
 export const FileUpload = { Root, Input, Trigger, Dropzone, Items };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `FileUpload.*`).
+export { Root, Input, Trigger, Dropzone, Items };

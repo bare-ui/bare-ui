@@ -210,3 +210,6 @@ Close.displayName = 'Toast.Close';
 
 export const Toast = { Provider, Viewport, Root, Title, Description, Close };
 export type { ToastStatus, ToastData };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Toast.*`).
+export { Provider, Viewport, Root, Title, Description, Close };

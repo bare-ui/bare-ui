@@ -168,3 +168,6 @@ Field.displayName = 'TagInput.Field';
 // ---------------------------------------------------------------------------
 
 export const TagInput = { Root, List, Items, Field };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `TagInput.*`).
+export { Root, List, Items, Field };

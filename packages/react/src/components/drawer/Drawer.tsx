@@ -147,3 +147,6 @@ export const Drawer = {
 	Header,
 	Close,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Drawer.*`).
+export { Root, Portal, Overlay, Content, Header, Close };

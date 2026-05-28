@@ -4,6 +4,11 @@ import { Input } from './Input';
 const meta = {
 	title: 'Forms/Input',
 	component: Input.Root,
+	subcomponents: {
+		'Input.Field': Input.Field,
+		'Input.Label': Input.Label,
+		'Input.Error': Input.Error,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

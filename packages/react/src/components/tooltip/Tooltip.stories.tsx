@@ -4,6 +4,10 @@ import { Tooltip } from './Tooltip';
 const meta = {
 	title: 'Overlays/Tooltip',
 	component: Tooltip.Root,
+	subcomponents: {
+		'Tooltip.Trigger': Tooltip.Trigger,
+		'Tooltip.Content': Tooltip.Content,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

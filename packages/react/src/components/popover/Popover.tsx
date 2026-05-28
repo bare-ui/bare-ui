@@ -188,3 +188,6 @@ Close.displayName = 'Popover.Close';
 // ---------------------------------------------------------------------------
 
 export const Popover = { Root, Trigger, Content, Close };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Popover.*`).
+export { Root, Trigger, Content, Close };

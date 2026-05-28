@@ -154,3 +154,6 @@ export const Input = {
 	Label,
 	Error,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Input.*`).
+export { Root, Field, Label, Error };

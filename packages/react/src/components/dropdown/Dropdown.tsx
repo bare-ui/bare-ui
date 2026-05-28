@@ -112,3 +112,6 @@ export const Dropdown = {
 	Trigger,
 	Menu,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Dropdown.*`).
+export { Root, Trigger, Menu };

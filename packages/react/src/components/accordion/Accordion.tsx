@@ -217,3 +217,6 @@ export const Accordion = {
 	Trigger,
 	Content,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Accordion.*`).
+export { Root, Item, Trigger, Content };

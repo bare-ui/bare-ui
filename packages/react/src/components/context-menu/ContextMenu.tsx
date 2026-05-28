@@ -291,3 +291,6 @@ Separator.displayName = 'ContextMenu.Separator';
 // ---------------------------------------------------------------------------
 
 export const ContextMenu = { Root, Trigger, Content, Item, Separator };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `ContextMenu.*`).
+export { Root, Trigger, Content, Item, Separator };

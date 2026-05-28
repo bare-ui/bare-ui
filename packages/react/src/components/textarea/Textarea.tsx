@@ -154,3 +154,6 @@ export const Textarea = {
 	Label,
 	Error,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Textarea.*`).
+export { Root, Field, Label, Error };

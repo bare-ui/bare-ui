@@ -247,3 +247,6 @@ const Decrement = makeStepButton(-1, 'NumberInput.Decrement') as React.ForwardRe
 // ---------------------------------------------------------------------------
 
 export const NumberInput = { Root, Field, Increment, Decrement };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `NumberInput.*`).
+export { Root, Field, Increment, Decrement };

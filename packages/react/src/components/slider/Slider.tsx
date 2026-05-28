@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
-import type { SliderOrientation, SliderProps, SliderValue } from './Slider.types';
+import type { SliderImplProps, SliderOrientation, SliderProps, SliderValue } from './Slider.types';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -36,7 +36,7 @@ function arraysEqual(a: SliderValue, b: SliderValue) {
 // Slider
 // ---------------------------------------------------------------------------
 
-const SliderImpl = React.forwardRef<HTMLDivElement, SliderProps>((props, ref) => {
+const SliderImpl = React.forwardRef<HTMLDivElement, SliderImplProps>((props, ref) => {
 	const {
 		min = 0,
 		max = 100,
@@ -52,12 +52,7 @@ const SliderImpl = React.forwardRef<HTMLDivElement, SliderProps>((props, ref) =>
 		onChange: _oc,
 		range: _r,
 		...rest
-	} = props as SliderProps & {
-		value?: number | [number, number];
-		defaultValue?: number | [number, number];
-		onChange?: (v: number | [number, number]) => void;
-		range?: boolean;
-	};
+	} = props;
 	void _v;
 	void _dv;
 	void _oc;
@@ -68,8 +63,8 @@ const SliderImpl = React.forwardRef<HTMLDivElement, SliderProps>((props, ref) =>
 
 	// --- Controlled / uncontrolled value state -------------------------------
 	const initial: SliderValue = range
-		? (props.defaultValue ?? [min, max])
-		: [props.defaultValue ?? min];
+		? ((props.defaultValue as [number, number] | undefined) ?? [min, max])
+		: [(props.defaultValue as number | undefined) ?? min];
 
 	const [uncontrolled, setUncontrolled] = useState<SliderValue>(() => {
 		const decimals = getDecimals(step);

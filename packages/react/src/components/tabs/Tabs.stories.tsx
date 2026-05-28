@@ -4,6 +4,11 @@ import { Tabs } from './Tabs';
 const meta = {
 	title: 'Layout/Tabs',
 	component: Tabs.Root,
+	subcomponents: {
+		'Tabs.List': Tabs.List,
+		'Tabs.Trigger': Tabs.Trigger,
+		'Tabs.Content': Tabs.Content,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

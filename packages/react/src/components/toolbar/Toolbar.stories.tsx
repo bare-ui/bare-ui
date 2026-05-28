@@ -4,6 +4,11 @@ import { Toolbar } from './Toolbar';
 const meta = {
 	title: 'Layout/Toolbar',
 	component: Toolbar.Root,
+	subcomponents: {
+		'Toolbar.Button': Toolbar.Button,
+		'Toolbar.Link': Toolbar.Link,
+		'Toolbar.Separator': Toolbar.Separator,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

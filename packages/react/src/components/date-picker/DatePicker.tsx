@@ -239,3 +239,6 @@ CalendarBridge.displayName = 'DatePicker.Calendar';
 // ---------------------------------------------------------------------------
 
 export const DatePicker = { Root, Trigger, Value, Content, Calendar: CalendarBridge };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `DatePicker.*`).
+export { Root, Trigger, Value, Content, CalendarBridge };

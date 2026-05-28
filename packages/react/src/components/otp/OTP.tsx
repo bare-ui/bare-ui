@@ -235,3 +235,6 @@ export const OTP = {
 	Slot,
 	Separator,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `OTP.*`).
+export { Root, Slot, Separator };

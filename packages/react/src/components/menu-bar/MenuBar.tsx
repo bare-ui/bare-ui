@@ -255,3 +255,6 @@ Separator.displayName = 'MenuBar.Separator';
 // ---------------------------------------------------------------------------
 
 export const MenuBar = { Root, Menu, Trigger, Content, Item, Separator };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `MenuBar.*`).
+export { Root, Menu, Trigger, Content, Item, Separator };

@@ -216,3 +216,6 @@ export const RichText = {
 	Editor,
 	Preview,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `RichText.*`).
+export { Root, Toolbar, Action, Editor, Preview };

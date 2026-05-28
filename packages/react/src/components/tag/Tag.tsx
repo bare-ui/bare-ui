@@ -47,3 +47,6 @@ const Remove = React.forwardRef<HTMLButtonElement, TagRemoveProps>(
 Remove.displayName = 'Tag.Remove';
 
 export const Tag = { Root, Label, Remove };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Tag.*`).
+export { Root, Label, Remove };

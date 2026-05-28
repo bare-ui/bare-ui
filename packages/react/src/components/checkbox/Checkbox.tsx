@@ -180,3 +180,6 @@ export const Checkbox = {
 	Indicator,
 	Label,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Checkbox.*`).
+export { Root, Item, Indicator, Label };

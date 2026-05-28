@@ -187,3 +187,6 @@ export const HoverCard = {
 	Trigger,
 	Content,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `HoverCard.*`).
+export { Root, Trigger, Content };

@@ -5,6 +5,11 @@ import type { DiffLine } from './Diff.types';
 const meta = {
 	title: 'AI/Diff',
 	component: Diff.Root,
+	subcomponents: {
+		'Diff.Unified': Diff.Unified,
+		'Diff.Split': Diff.Split,
+		'Diff.Stats': Diff.Stats,
+	},
 	tags: ['autodocs'],
 	args: { oldValue: '', newValue: '' },
 	parameters: {

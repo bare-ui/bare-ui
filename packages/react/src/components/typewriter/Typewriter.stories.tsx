@@ -5,6 +5,10 @@ import { Typewriter } from './Typewriter';
 const meta = {
 	title: 'AI/Typewriter',
 	component: Typewriter.Root,
+	subcomponents: {
+		'Typewriter.Text': Typewriter.Text,
+		'Typewriter.Cursor': Typewriter.Cursor,
+	},
 	tags: ['autodocs'],
 	args: { text: 'The quick brown fox jumps over the lazy dog.', speed: 35 },
 	parameters: {

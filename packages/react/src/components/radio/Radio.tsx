@@ -172,3 +172,6 @@ export const Radio = {
 	Indicator,
 	Label,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Radio.*`).
+export { Root, Item, Indicator, Label };

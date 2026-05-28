@@ -424,3 +424,6 @@ export const Sheet = {
 	Description,
 	Close,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Sheet.*`).
+export { Root, Trigger, Portal, Overlay, Content, Handle, Title, Description, Close };

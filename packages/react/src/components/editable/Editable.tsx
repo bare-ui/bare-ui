@@ -345,3 +345,6 @@ export const Editable = {
 	SubmitTrigger,
 	CancelTrigger,
 };
+
+// Named exports expose the sub-components to Storybook's react-docgen (public API stays `Editable.*`).
+export { Root, Preview, Input, Area, EditTrigger, SubmitTrigger, CancelTrigger };
