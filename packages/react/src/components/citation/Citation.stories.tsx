@@ -78,21 +78,131 @@ export const Default: Story = {
 	),
 };
 
-export const CustomMarker: Story = {
+export const Composed: Story = {
 	render: () => (
-		<Citation.Root
-			sources={sources}
-			className='max-w-lg space-y-4 text-sm text-[#374151]'>
-			<p className='leading-relaxed'>
-				HTTP semantics are defined in the spec
-				<Citation.Ref
-					for='rfc'
-					className='mx-0.5 rounded-full bg-black px-1.5 text-[0.65rem] font-semibold text-white no-underline'>
-					{({ source }) => source.title?.split(' ')[1]}
-				</Citation.Ref>
-				.
-			</p>
-			<Citation.List className='space-y-1 border-t border-[#e5e7eb] pt-3 text-xs text-[#6b7280]' />
-		</Citation.Root>
+		<div className='max-w-lg space-y-8 text-sm text-[#374151]'>
+			<Citation.Root sources={sources}>
+				<p className='leading-relaxed'>
+					Default <code>&lt;sup&gt;</code> markers number in source order
+					<Citation.Ref
+						for='rfc'
+						className='text-[#4338ca]'
+					/>
+					<Citation.Ref
+						for='mdn'
+						className='text-[#4338ca]'
+					/>
+					.
+				</p>
+			</Citation.Root>
+
+			<Citation.Root sources={sources}>
+				<p className='leading-relaxed'>
+					A render function lets a marker show anything — here the source title
+					<Citation.Ref
+						for='rfc'
+						className='mx-0.5 rounded-full bg-black px-1.5 text-[0.65rem] font-semibold text-white no-underline'>
+						{({ source }) => source.title?.split(' ')[1]}
+					</Citation.Ref>
+					.
+				</p>
+			</Citation.Root>
+
+			<Citation.Root sources={sources}>
+				<p className='leading-relaxed'>
+					The footnote list defaults to a title + link row, or render your own with excerpts
+					<Citation.Ref
+						for='mdn'
+						className={markerCls}
+					/>
+					.
+				</p>
+				<Citation.List className='mt-3 space-y-2 border-t border-[#e5e7eb] pt-3 text-xs text-[#6b7280]'>
+					{({ index, source }) => (
+						<div className='flex gap-2'>
+							<span className='font-semibold text-[#4338ca]'>{index}.</span>
+							<div>
+								<a
+									href={source.url}
+									target='_blank'
+									rel='noreferrer'
+									className='font-medium text-[#374151] hover:underline'>
+									{source.title}
+								</a>
+								<p className='text-[#9ca3af]'>{source.excerpt}</p>
+							</div>
+						</div>
+					)}
+				</Citation.List>
+			</Citation.Root>
+		</div>
 	),
+};
+
+export const Complex: Story = {
+	render: () => {
+		const answerSources: CitationSource[] = [
+			{
+				id: 'react-docs',
+				title: 'React — useMemo',
+				url: 'https://react.dev/reference/react/useMemo',
+				excerpt: 'useMemo caches a calculation result between re-renders.',
+			},
+			{
+				id: 'react-perf',
+				title: 'React — Render and Commit',
+				url: 'https://react.dev/learn/render-and-commit',
+				excerpt: 'React renders components to figure out what to display.',
+			},
+		];
+
+		return (
+			<div className='mx-auto max-w-xl rounded-2xl border border-[#e5e7eb] bg-white p-5 shadow-sm'>
+				<div className='mb-3 flex items-center gap-2 text-xs font-medium text-[#6b7280]'>
+					<span className='inline-flex h-6 w-6 items-center justify-center rounded-full bg-black text-[0.65rem] text-white'>
+						AI
+					</span>
+					Assistant
+				</div>
+				<Citation.Root
+					sources={answerSources}
+					className='space-y-4 text-sm text-[#374151]'>
+					<p className='leading-relaxed'>
+						<code>useMemo</code> caches a computed value so it is only recalculated when its dependencies
+						change
+						<Citation.Ref
+							for='react-docs'
+							className={markerCls}
+						/>
+						. This avoids redoing expensive work on every render pass
+						<Citation.Ref
+							for='react-perf'
+							className={markerCls}
+						/>
+						.
+					</p>
+					<div>
+						<p className='mb-2 text-xs font-semibold uppercase tracking-wide text-[#9ca3af]'>Sources</p>
+						<Citation.List className='space-y-2 text-xs text-[#6b7280]'>
+							{({ index, source }) => (
+								<div className='flex gap-2 rounded-lg border border-[#e5e7eb] p-2'>
+									<span className='font-semibold text-[#4338ca]'>{index}</span>
+									<div>
+										<a
+											href={source.url}
+											target='_blank'
+											rel='noreferrer'
+											className='font-medium text-[#374151] hover:underline'>
+											{source.title}
+										</a>
+										<p className='text-[#9ca3af]'>{source.excerpt}</p>
+									</div>
+								</div>
+							)}
+						</Citation.List>
+					</div>
+				</Citation.Root>
+			</div>
+		);
+	},
 };

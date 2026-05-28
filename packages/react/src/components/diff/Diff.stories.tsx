@@ -52,20 +52,12 @@ function sign(type: DiffLine['type']) {
 	return ' ';
 }
 
-export const Unified: Story = {
+export const Default: Story = {
 	render: () => (
 		<Diff.Root
 			oldValue={before}
 			newValue={after}
 			className={shellCls}>
-			<Diff.Stats>
-				{({ additions, deletions }) => (
-					<div className='flex gap-3 border-b border-[#e5e7eb] bg-[#f9fafb] px-3 py-2 text-[#6b7280]'>
-						<span className='text-green-600'>+{additions}</span>
-						<span className='text-red-600'>−{deletions}</span>
-					</div>
-				)}
-			</Diff.Stats>
 			<Diff.Unified>
 				{({ line }) => (
 					<div className={`flex whitespace-pre px-1 ${lineClass(line.type)}`}>
@@ -80,26 +72,114 @@ export const Unified: Story = {
 	),
 };
 
-export const Split: Story = {
+export const Composed: Story = {
 	render: () => (
-		<Diff.Root
-			oldValue={before}
-			newValue={after}
-			className={shellCls}>
-			<Diff.Split>
-				{({ left, right }) => (
-					<div className='grid grid-cols-2 divide-x divide-[#e5e7eb]'>
-						<div className={`flex whitespace-pre px-1 ${left ? lineClass(left.type) : 'bg-[#fafafa]'}`}>
-							<span className={gutterCls}>{left?.oldLine ?? ''}</span>
-							<span>{left?.content ?? ''}</span>
-						</div>
-						<div className={`flex whitespace-pre px-1 ${right ? lineClass(right.type) : 'bg-[#fafafa]'}`}>
-							<span className={gutterCls}>{right?.newLine ?? ''}</span>
-							<span>{right?.content ?? ''}</span>
-						</div>
-					</div>
-				)}
-			</Diff.Split>
-		</Diff.Root>
+		<div className='flex flex-col gap-6'>
+			<div>
+				<p className='mb-2 text-xs font-semibold uppercase tracking-wide text-[#9ca3af]'>Unified</p>
+				<Diff.Root
+					oldValue={before}
+					newValue={after}
+					className={shellCls}>
+					<Diff.Stats>
+						{({ additions, deletions }) => (
+							<div className='flex gap-3 border-b border-[#e5e7eb] bg-[#f9fafb] px-3 py-2 text-[#6b7280]'>
+								<span className='text-green-600'>+{additions}</span>
+								<span className='text-red-600'>−{deletions}</span>
+							</div>
+						)}
+					</Diff.Stats>
+					<Diff.Unified>
+						{({ line }) => (
+							<div className={`flex whitespace-pre px-1 ${lineClass(line.type)}`}>
+								<span className={gutterCls}>{line.oldLine ?? ''}</span>
+								<span className={gutterCls}>{line.newLine ?? ''}</span>
+								<span className='px-2'>{sign(line.type)}</span>
+								<span>{line.content}</span>
+							</div>
+						)}
+					</Diff.Unified>
+				</Diff.Root>
+			</div>
+
+			<div>
+				<p className='mb-2 text-xs font-semibold uppercase tracking-wide text-[#9ca3af]'>Split</p>
+				<Diff.Root
+					oldValue={before}
+					newValue={after}
+					className={shellCls}>
+					<Diff.Split>
+						{({ left, right }) => (
+							<div className='grid grid-cols-2 divide-x divide-[#e5e7eb]'>
+								<div
+									className={`flex whitespace-pre px-1 ${left ? lineClass(left.type) : 'bg-[#fafafa]'}`}>
+									<span className={gutterCls}>{left?.oldLine ?? ''}</span>
+									<span>{left?.content ?? ''}</span>
+								</div>
+								<div
+									className={`flex whitespace-pre px-1 ${right ? lineClass(right.type) : 'bg-[#fafafa]'}`}>
+									<span className={gutterCls}>{right?.newLine ?? ''}</span>
+									<span>{right?.content ?? ''}</span>
+								</div>
+							</div>
+						)}
+					</Diff.Split>
+				</Diff.Root>
+			</div>
+		</div>
 	),
+};
+
+export const Complex: Story = {
+	render: () => {
+		const oldFile = `export function add(a, b) {
+  return a + b;
+}
+
+export function mul(a, b) {
+  return a * b;
+}`;
+
+		const newFile = `export function add(a, b) {
+  return a + b;
+}
+
+export function mul(a, b) {
+  return a * b;
+}
+
+export function sub(a, b) {
+  return a - b;
+}`;
+
+		return (
+			<div className='mx-auto w-full max-w-2xl overflow-hidden rounded-xl border border-[#e5e7eb] bg-white'>
+				<Diff.Root
+					oldValue={oldFile}
+					newValue={newFile}>
+					<div className='flex items-center justify-between border-b border-[#e5e7eb] bg-[#f9fafb] px-4 py-2'>
+						<span className='font-mono text-xs text-[#374151]'>src/math.ts</span>
+						<Diff.Stats>
+							{({ additions, deletions }) => (
+								<div className='flex gap-3 text-xs'>
+									<span className='text-green-600'>+{additions}</span>
+									<span className='text-red-600'>−{deletions}</span>
+								</div>
+							)}
+						</Diff.Stats>
+					</div>
+					<Diff.Unified>
+						{({ line }) => (
+							<div className={`flex whitespace-pre px-1 font-mono text-xs ${lineClass(line.type)}`}>
+								<span className={gutterCls}>{line.oldLine ?? ''}</span>
+								<span className={gutterCls}>{line.newLine ?? ''}</span>
+								<span className='px-2'>{sign(line.type)}</span>
+								<span>{line.content}</span>
+							</div>
+						)}
+					</Diff.Unified>
+				</Diff.Root>
+			</div>
+		);
+	},
 };

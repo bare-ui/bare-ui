@@ -27,26 +27,23 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const paletteCls =
-	'w-full max-w-md overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-xl';
-const inputCls = 'w-full border-b border-[#e5e7eb] px-4 py-3 text-sm text-black outline-none placeholder:text-[#9ca3af]';
+const paletteCls = 'w-full max-w-md overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-xl';
+const inputCls =
+	'w-full border-b border-[#e5e7eb] px-4 py-3 text-sm text-black outline-none placeholder:text-[#9ca3af]';
 const listCls = 'max-h-72 overflow-auto p-2';
 const headingCls = 'px-2 py-1.5 text-xs font-medium text-[#9ca3af]';
 const itemCls =
 	'flex cursor-pointer items-center gap-2 rounded-md px-2 py-2 text-sm text-black data-[active]:bg-[#f3f4f6] data-[disabled]:opacity-40';
 
-const Palette = () => (
-	<>
-		<Command.Input
-			placeholder='Type a command or search…'
-			className={inputCls}
-		/>
-		<Command.List className={listCls}>
-			<Command.Empty className='py-6 text-center text-sm text-[#9ca3af]'>No results found.</Command.Empty>
-			<Command.Group
-				heading='Suggestions'
-				className='[&[hidden]]:hidden'>
-				<div className={headingCls}>Suggestions</div>
+export const Default: Story = {
+	render: () => (
+		<Command.Root className={paletteCls}>
+			<Command.Input
+				placeholder='Type a command or search…'
+				className={inputCls}
+			/>
+			<Command.List className={listCls}>
+				<Command.Empty className='py-6 text-center text-sm text-[#9ca3af]'>No results found.</Command.Empty>
 				<Command.Item
 					value='New File'
 					keywords={['create', 'document']}
@@ -59,45 +56,72 @@ const Palette = () => (
 					className={itemCls}>
 					🔍 Search Docs
 				</Command.Item>
-			</Command.Group>
-			<Command.Separator className='my-1 h-px bg-[#f3f4f6]' />
-			<Command.Group className='[&[hidden]]:hidden'>
-				<div className={headingCls}>Settings</div>
 				<Command.Item
-					value='Profile'
+					value='Open Settings'
+					keywords={['preferences']}
 					className={itemCls}>
-					👤 Profile
+					⚙️ Open Settings
 				</Command.Item>
-				<Command.Item
-					value='Appearance'
-					keywords={['theme', 'dark mode']}
-					className={itemCls}>
-					🎨 Appearance
-				</Command.Item>
-				<Command.Item
-					value='Billing'
-					disabled
-					className={itemCls}>
-					💳 Billing (disabled)
-				</Command.Item>
-			</Command.Group>
-		</Command.List>
-	</>
-);
-
-export const Inline: Story = {
-	render: () => (
-		<Command.Root
-			className={paletteCls}
-			onSelect={(v) => console.log('selected', v)}>
-			<Palette />
+			</Command.List>
 		</Command.Root>
 	),
 };
 
-/** Toggle with ⌘K / Ctrl+K. A single managed `Command.Root` renders the palette
- *  only while open; its `shortcut` keeps the hotkey wired even when hidden. */
-export const WithShortcut: Story = {
+export const Composed: Story = {
+	render: () => (
+		<Command.Root
+			className={paletteCls}
+			onSelect={(v) => console.log('selected', v)}>
+			<Command.Input
+				placeholder='Type a command or search…'
+				className={inputCls}
+			/>
+			<Command.List className={listCls}>
+				<Command.Empty className='py-6 text-center text-sm text-[#9ca3af]'>No results found.</Command.Empty>
+				<Command.Group
+					heading='Suggestions'
+					className='[&[hidden]]:hidden'>
+					<div className={headingCls}>Suggestions</div>
+					<Command.Item
+						value='New File'
+						keywords={['create', 'document']}
+						className={itemCls}>
+						📄 New File
+					</Command.Item>
+					<Command.Item
+						value='Search Docs'
+						keywords={['find', 'help']}
+						className={itemCls}>
+						🔍 Search Docs
+					</Command.Item>
+				</Command.Group>
+				<Command.Separator className='my-1 h-px bg-[#f3f4f6]' />
+				<Command.Group className='[&[hidden]]:hidden'>
+					<div className={headingCls}>Settings</div>
+					<Command.Item
+						value='Profile'
+						className={itemCls}>
+						👤 Profile
+					</Command.Item>
+					<Command.Item
+						value='Appearance'
+						keywords={['theme', 'dark mode']}
+						className={itemCls}>
+						🎨 Appearance
+					</Command.Item>
+					<Command.Item
+						value='Billing'
+						disabled
+						className={itemCls}>
+						💳 Billing (disabled)
+					</Command.Item>
+				</Command.Group>
+			</Command.List>
+		</Command.Root>
+	),
+};
+
+export const Complex: Story = {
 	render: () => {
 		const [open, setOpen] = useState(false);
 		return (
@@ -111,7 +135,53 @@ export const WithShortcut: Story = {
 					onOpenChange={setOpen}
 					shortcut='mod+k'
 					className={`fixed left-1/2 top-[12vh] z-50 -translate-x-1/2 ${paletteCls}`}>
-					<Palette />
+					<Command.Input
+						placeholder='Type a command or search…'
+						className={inputCls}
+					/>
+					<Command.List className={listCls}>
+						<Command.Empty className='py-6 text-center text-sm text-[#9ca3af]'>
+							No results found.
+						</Command.Empty>
+						<Command.Group
+							heading='Suggestions'
+							className='[&[hidden]]:hidden'>
+							<div className={headingCls}>Suggestions</div>
+							<Command.Item
+								value='New File'
+								keywords={['create', 'document']}
+								className={itemCls}>
+								📄 New File
+							</Command.Item>
+							<Command.Item
+								value='Search Docs'
+								keywords={['find', 'help']}
+								className={itemCls}>
+								🔍 Search Docs
+							</Command.Item>
+						</Command.Group>
+						<Command.Separator className='my-1 h-px bg-[#f3f4f6]' />
+						<Command.Group className='[&[hidden]]:hidden'>
+							<div className={headingCls}>Settings</div>
+							<Command.Item
+								value='Profile'
+								className={itemCls}>
+								👤 Profile
+							</Command.Item>
+							<Command.Item
+								value='Appearance'
+								keywords={['theme', 'dark mode']}
+								className={itemCls}>
+								🎨 Appearance
+							</Command.Item>
+							<Command.Item
+								value='Billing'
+								disabled
+								className={itemCls}>
+								💳 Billing (disabled)
+							</Command.Item>
+						</Command.Group>
+					</Command.List>
 				</Command.Root>
 			</div>
 		);

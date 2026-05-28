@@ -35,54 +35,65 @@ export const Default: Story = {
 	),
 };
 
-export const WithCursor: Story = {
-	render: (args) => (
+export const Composed: Story = {
+	render: () => (
 		<>
 			<style>{blinkCss}</style>
-			<p className='max-w-md font-mono text-sm leading-relaxed text-black'>
-				<Typewriter.Root {...args}>
-					<Typewriter.Text />
-					<Typewriter.Cursor
-						keepMounted
-						className='wire-cursor ml-0.5 inline-block w-[1ch] text-black'>
-						▋
-					</Typewriter.Cursor>
-				</Typewriter.Root>
-			</p>
+			<div className='flex max-w-md flex-col gap-8'>
+				<div>
+					<p className='mb-1.5 text-xs font-medium text-[#6b7280]'>With blinking cursor</p>
+					<p className='font-mono text-sm leading-relaxed text-black'>
+						<Typewriter.Root
+							text='Composing a reply…'
+							speed={45}>
+							<Typewriter.Text />
+							<Typewriter.Cursor
+								keepMounted
+								className='wire-cursor ml-0.5 inline-block w-[1ch] text-black'>
+								▋
+							</Typewriter.Cursor>
+						</Typewriter.Root>
+					</p>
+				</div>
+
+				<div>
+					<p className='mb-1.5 text-xs font-medium text-[#6b7280]'>Word-by-word reveal</p>
+					<p className='text-base leading-relaxed text-black'>
+						<Typewriter.Root
+							text='Revealing one whole word at a time feels more natural for prose.'
+							mode='word'
+							speed={120}
+						/>
+					</p>
+				</div>
+
+				<div>
+					<p className='mb-1.5 text-xs font-medium text-[#6b7280]'>Render-prop progress</p>
+					<Typewriter.Root
+						text='Drive your own UI from the reveal state.'
+						speed={35}>
+						{({ displayed, progress, isDone }) => (
+							<div className='space-y-2'>
+								<p className='font-mono text-sm text-black'>{displayed}</p>
+								<div className='h-1 w-full overflow-hidden rounded-full bg-[#e5e7eb]'>
+									<div
+										className='h-full bg-black transition-[width]'
+										style={{ width: `${Math.round(progress * 100)}%` }}
+									/>
+								</div>
+								<p className='text-xs text-[#6b7280]'>
+									{isDone ? 'Done' : `${Math.round(progress * 100)}%`}
+								</p>
+							</div>
+						)}
+					</Typewriter.Root>
+				</div>
+			</div>
 		</>
 	),
 };
 
-export const WordByWord: Story = {
-	args: { mode: 'word', speed: 120 },
-	render: (args) => (
-		<p className='max-w-md text-base leading-relaxed text-black'>
-			<Typewriter.Root {...args} />
-		</p>
-	),
-};
-
-export const RenderProp: Story = {
-	render: (args) => (
-		<Typewriter.Root {...args}>
-			{({ displayed, progress, isDone }) => (
-				<div className='max-w-md space-y-2'>
-					<p className='font-mono text-sm text-black'>{displayed}</p>
-					<div className='h-1 w-full overflow-hidden rounded-full bg-[#e5e7eb]'>
-						<div
-							className='h-full bg-black transition-[width]'
-							style={{ width: `${Math.round(progress * 100)}%` }}
-						/>
-					</div>
-					<p className='text-xs text-[#6b7280]'>{isDone ? 'Done' : `${Math.round(progress * 100)}%`}</p>
-				</div>
-			)}
-		</Typewriter.Root>
-	),
-};
-
-/** Simulates a streamed response: `text` grows over time and the reveal keeps up. */
-export const Streaming: Story = {
+export const Complex: Story = {
 	render: () => {
 		const full =
 			'Streaming works by appending tokens to the `text` prop. The Typewriter reveals them at a steady cadence, smoothing out a bursty network stream.';
@@ -102,14 +113,26 @@ export const Streaming: Story = {
 		return (
 			<>
 				<style>{blinkCss}</style>
-				<p className='max-w-md text-sm leading-relaxed text-black'>
-					<Typewriter.Root
-						text={text}
-						speed={20}>
-						<Typewriter.Text />
-						<Typewriter.Cursor className='wire-cursor ml-0.5 inline-block w-[1ch]'>▋</Typewriter.Cursor>
-					</Typewriter.Root>
-				</p>
+				<div className='w-full max-w-md rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm'>
+					<div className='flex items-start gap-3'>
+						<div className='flex size-8 shrink-0 items-center justify-center rounded-full bg-black text-xs font-bold text-white'>
+							AI
+						</div>
+						<div className='flex-1'>
+							<p className='mb-1 text-xs font-medium text-[#6b7280]'>Assistant</p>
+							<p className='text-sm leading-relaxed text-[#374151]'>
+								<Typewriter.Root
+									text={text}
+									speed={20}>
+									<Typewriter.Text />
+									<Typewriter.Cursor className='wire-cursor ml-0.5 inline-block w-[1ch] text-black'>
+										▋
+									</Typewriter.Cursor>
+								</Typewriter.Root>
+							</p>
+						</div>
+					</div>
+				</div>
 			</>
 		);
 	},

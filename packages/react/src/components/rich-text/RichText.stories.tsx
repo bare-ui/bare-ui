@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { ReactNode } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { RichText } from './RichText';
 import type { RichTextMode } from './RichText.types';
@@ -63,21 +64,31 @@ const actionCls = 'rounded-md px-2 py-1 text-sm text-[#374151] hover:bg-[#f3f4f6
 const tabCls = (active: boolean) =>
 	`rounded-md px-2 py-1 text-sm ${active ? 'bg-black text-white' : 'text-[#6b7280] hover:bg-[#f3f4f6]'}`;
 
+const previewComponents = {
+	heading: ({ children }: { children?: ReactNode }) => (
+		<h3 className='mb-2 text-lg font-bold text-black'>{children}</h3>
+	),
+	paragraph: ({ children }: { children?: ReactNode }) => <p className='mb-2 text-sm text-[#374151]'>{children}</p>,
+	list: ({ children }: { children?: ReactNode }) => (
+		<ul className='mb-2 list-disc pl-5 text-sm text-[#374151]'>{children}</ul>
+	),
+	strong: ({ children }: { children?: ReactNode }) => (
+		<strong className='font-semibold text-black'>{children}</strong>
+	),
+};
+
 export const Default: Story = {
 	render: () => {
 		const [mode, setMode] = useState<RichTextMode>('split');
 		return (
 			<RichText.Root
-				defaultValue={'# Hello\n\nType **markdown** on the left, see it rendered on the right.\n\n- item one\n- item two'}
+				defaultValue={
+					'# Hello\n\nType **markdown** on the left, see it rendered on the right.\n\n- item one\n- item two'
+				}
 				mode={mode}
 				onModeChange={setMode}
 				parse={miniParse}
-				components={{
-					heading: ({ children }) => <h3 className='mb-2 text-lg font-bold text-black'>{children}</h3>,
-					paragraph: ({ children }) => <p className='mb-2 text-sm text-[#374151]'>{children}</p>,
-					list: ({ children }) => <ul className='mb-2 list-disc pl-5 text-sm text-[#374151]'>{children}</ul>,
-					strong: ({ children }) => <strong className='font-semibold text-black'>{children}</strong>,
-				}}
+				components={previewComponents}
 				className='w-full max-w-2xl overflow-hidden rounded-xl border border-[#e5e7eb]'>
 				<RichText.Toolbar className='flex items-center gap-1 border-b border-[#e5e7eb] bg-[#fafafa] p-1.5'>
 					<RichText.Action
@@ -121,6 +132,122 @@ export const Default: Story = {
 					<RichText.Preview className='min-h-48 p-3' />
 				</div>
 			</RichText.Root>
+		);
+	},
+};
+
+export const Composed: Story = {
+	render: () => (
+		<div className='flex w-full max-w-2xl flex-col gap-6'>
+			{/* Edit-only: a focused authoring surface */}
+			<div>
+				<p className='text-xs font-medium uppercase tracking-wide text-[#6b7280] mb-2'>Edit mode</p>
+				<RichText.Root
+					defaultMode='edit'
+					defaultValue={'Write **markdown** here — the preview is hidden in edit mode.'}
+					parse={miniParse}
+					components={previewComponents}
+					className='overflow-hidden rounded-xl border border-[#e5e7eb]'>
+					<RichText.Toolbar className='flex items-center gap-1 border-b border-[#e5e7eb] bg-[#fafafa] p-1.5'>
+						<RichText.Action
+							wrap='**'
+							className={`${actionCls} font-bold`}>
+							B
+						</RichText.Action>
+						<RichText.Action
+							wrap='_'
+							className={`${actionCls} italic`}>
+							I
+						</RichText.Action>
+					</RichText.Toolbar>
+					<RichText.Editor
+						className='min-h-32 w-full resize-none p-3 font-mono text-sm outline-none'
+						placeholder='Write some markdown…'
+					/>
+					<RichText.Preview className='min-h-32 p-3' />
+				</RichText.Root>
+			</div>
+
+			{/* Preview-only: render stored markdown read-only */}
+			<div>
+				<p className='text-xs font-medium uppercase tracking-wide text-[#6b7280] mb-2'>Preview mode</p>
+				<RichText.Root
+					defaultMode='preview'
+					defaultValue={
+						'# Release notes\n\nShipped **RichText** with edit, split and preview modes.\n\n- toolbar actions\n- live preview'
+					}
+					parse={miniParse}
+					components={previewComponents}
+					className='overflow-hidden rounded-xl border border-[#e5e7eb]'>
+					<RichText.Editor className='min-h-32 w-full resize-none p-3 font-mono text-sm outline-none' />
+					<RichText.Preview className='min-h-32 p-3' />
+				</RichText.Root>
+			</div>
+		</div>
+	),
+};
+
+export const Complex: Story = {
+	render: () => {
+		const [value, setValue] = useState('Looks great! Just one **nit** on the naming.');
+		const [mode, setMode] = useState<RichTextMode>('edit');
+
+		return (
+			<div className='w-full max-w-lg rounded-xl border border-[#e5e7eb] bg-white'>
+				<RichText.Root
+					value={value}
+					onChange={setValue}
+					mode={mode}
+					onModeChange={setMode}
+					parse={miniParse}
+					components={previewComponents}>
+					<RichText.Toolbar className='flex items-center gap-1 border-b border-[#e5e7eb] bg-[#fafafa] p-1.5'>
+						<RichText.Action
+							wrap='**'
+							className={`${actionCls} font-bold`}>
+							B
+						</RichText.Action>
+						<RichText.Action
+							wrap='_'
+							className={`${actionCls} italic`}>
+							I
+						</RichText.Action>
+						<RichText.Action
+							wrap={['`', '`']}
+							className={`${actionCls} font-mono`}>
+							{'</>'}
+						</RichText.Action>
+						<div className='ml-auto flex gap-1'>
+							{(['edit', 'preview'] as const).map((m) => (
+								<button
+									key={m}
+									type='button'
+									onClick={() => setMode(m)}
+									className={tabCls(mode === m)}>
+									{m === 'edit' ? 'Write' : 'Preview'}
+								</button>
+							))}
+						</div>
+					</RichText.Toolbar>
+
+					<RichText.Editor
+						rows={4}
+						className='min-h-28 w-full resize-none p-3 text-sm outline-none'
+						placeholder='Leave a comment…'
+					/>
+					<RichText.Preview className='min-h-28 p-3' />
+				</RichText.Root>
+
+				<div className='flex items-center justify-between border-t border-[#e5e7eb] px-3 py-2'>
+					<span className='text-xs text-[#9ca3af]'>{value.length} characters</span>
+					<button
+						type='button'
+						disabled={value.trim().length === 0}
+						className='rounded-lg bg-black px-3 py-1.5 text-sm font-medium text-white disabled:opacity-40'>
+						Comment
+					</button>
+				</div>
+			</div>
 		);
 	},
 };
