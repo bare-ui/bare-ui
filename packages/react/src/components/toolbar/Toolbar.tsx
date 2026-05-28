@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import { useId } from '@/hooks/use-id';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
 import type {
@@ -7,6 +8,7 @@ import type {
 	ToolbarLinkProps,
 	ToolbarRootProps,
 	ToolbarSeparatorProps,
+	ToolbarToggleProps,
 } from './Toolbar.types';
 
 // ---------------------------------------------------------------------------
@@ -59,10 +61,10 @@ const Root = React.forwardRef<HTMLDivElement, ToolbarRootProps>(
 
 		const orderedEnabled = useCallback(() => {
 			return [...itemsRef.current]
-				.filter((it) => !(it.el as HTMLButtonElement).disabled && it.el.getAttribute('aria-disabled') !== 'true')
-				.sort((a, b) =>
-					a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1,
-				);
+				.filter(
+					(it) => !(it.el as HTMLButtonElement).disabled && it.el.getAttribute('aria-disabled') !== 'true',
+				)
+				.sort((a, b) => (a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
 		}, []);
 
 		const onItemKeyDown = useCallback(
@@ -174,6 +176,62 @@ const Button = React.forwardRef<HTMLButtonElement, ToolbarButtonProps>(
 Button.displayName = 'Toolbar.Button';
 
 // ---------------------------------------------------------------------------
+// Toggle
+// ---------------------------------------------------------------------------
+
+const Toggle = React.forwardRef<HTMLButtonElement, ToolbarToggleProps>(
+	(
+		{
+			pressed: controlledPressed,
+			defaultPressed = false,
+			onPressedChange,
+			disabled,
+			className,
+			onClick,
+			onFocus,
+			onKeyDown,
+			...rest
+		},
+		ref,
+	) => {
+		const { ctx, id, mergedRef } = useRovingItem<HTMLButtonElement>(ref);
+		const [pressed, setPressed] = useControllableState({
+			value: controlledPressed,
+			defaultValue: defaultPressed,
+			onChange: onPressedChange,
+		});
+
+		return (
+			<button
+				ref={mergedRef}
+				type='button'
+				disabled={disabled}
+				tabIndex={ctx.isTabbable(id) ? 0 : -1}
+				aria-pressed={pressed}
+				data-toolbar-item=''
+				data-state={pressed ? 'on' : 'off'}
+				className={className}
+				{...rest}
+				onClick={(e) => {
+					if (!disabled) setPressed(!pressed);
+					onClick?.(e);
+				}}
+				onFocus={(e) => {
+					ctx.onItemFocus(id);
+					onFocus?.(e);
+				}}
+				onKeyDown={(e) => {
+					onKeyDown?.(e);
+					if (!e.defaultPrevented) ctx.onItemKeyDown(e);
+				}}
+			/>
+		);
+	},
+);
+
+Toggle.displayName = 'Toolbar.Toggle';
+
+// ---------------------------------------------------------------------------
 // Link
 // ---------------------------------------------------------------------------
 
@@ -233,9 +291,10 @@ Separator.displayName = 'Toolbar.Separator';
 export const Toolbar = {
 	Root,
 	Button,
+	Toggle,
 	Link,
 	Separator,
 };
 
 // Named exports expose the sub-components to Storybook's react-docgen (public API stays `Toolbar.*`).
-export { Root, Button, Link, Separator };
+export { Root, Button, Toggle, Link, Separator };
