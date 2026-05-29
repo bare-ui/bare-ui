@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from 'storybook-solidjs-vite';
 import { createSignal, For } from 'solid-js';
 import { RichText } from './RichText';
 import type { RichTextMode } from './RichText.types';
-import type { MarkdownNode } from '../markdown/Markdown.types';
+import type { MarkdownComponents, MarkdownNode } from '../markdown/Markdown.types';
 
 const meta = {
 	title: 'AI/RichText',
@@ -63,21 +63,25 @@ const actionCls = 'rounded-md px-2 py-1 text-sm text-[#374151] hover:bg-[#f3f4f6
 const tabCls = (active: boolean) =>
 	`rounded-md px-2 py-1 text-sm ${active ? 'bg-black text-white' : 'text-[#6b7280] hover:bg-[#f3f4f6]'}`;
 
+const previewComponents: MarkdownComponents = {
+	heading: (props) => <h3 class='mb-2 text-lg font-bold text-black'>{props.children}</h3>,
+	paragraph: (props) => <p class='mb-2 text-sm text-[#374151]'>{props.children}</p>,
+	list: (props) => <ul class='mb-2 list-disc pl-5 text-sm text-[#374151]'>{props.children}</ul>,
+	strong: (props) => <strong class='font-semibold text-black'>{props.children}</strong>,
+};
+
 export const Default: Story = {
 	render: () => {
 		const [mode, setMode] = createSignal<RichTextMode>('split');
 		return (
 			<RichText.Root
-				defaultValue={'# Hello\n\nType **markdown** on the left, see it rendered on the right.\n\n- item one\n- item two'}
+				defaultValue={
+					'# Hello\n\nType **markdown** on the left, see it rendered on the right.\n\n- item one\n- item two'
+				}
 				mode={mode()}
 				onModeChange={setMode}
 				parse={miniParse}
-				components={{
-					heading: (props) => <h3 class='mb-2 text-lg font-bold text-black'>{props.children}</h3>,
-					paragraph: (props) => <p class='mb-2 text-sm text-[#374151]'>{props.children}</p>,
-					list: (props) => <ul class='mb-2 list-disc pl-5 text-sm text-[#374151]'>{props.children}</ul>,
-					strong: (props) => <strong class='font-semibold text-black'>{props.children}</strong>,
-				}}
+				components={previewComponents}
 				class='w-full max-w-2xl overflow-hidden rounded-xl border border-[#e5e7eb]'>
 				<RichText.Toolbar class='flex items-center gap-1 border-b border-[#e5e7eb] bg-[#fafafa] p-1.5'>
 					<RichText.Action
@@ -122,6 +126,123 @@ export const Default: Story = {
 					<RichText.Preview class='min-h-48 p-3' />
 				</div>
 			</RichText.Root>
+		);
+	},
+};
+
+export const Composed: Story = {
+	render: () => (
+		<div class='flex w-full max-w-2xl flex-col gap-6'>
+			{/* Edit-only: a focused authoring surface */}
+			<div>
+				<p class='text-xs font-medium uppercase tracking-wide text-[#6b7280] mb-2'>Edit mode</p>
+				<RichText.Root
+					defaultMode='edit'
+					defaultValue={'Write **markdown** here — the preview is hidden in edit mode.'}
+					parse={miniParse}
+					components={previewComponents}
+					class='overflow-hidden rounded-xl border border-[#e5e7eb]'>
+					<RichText.Toolbar class='flex items-center gap-1 border-b border-[#e5e7eb] bg-[#fafafa] p-1.5'>
+						<RichText.Action
+							wrap='**'
+							class={`${actionCls} font-bold`}>
+							B
+						</RichText.Action>
+						<RichText.Action
+							wrap='_'
+							class={`${actionCls} italic`}>
+							I
+						</RichText.Action>
+					</RichText.Toolbar>
+					<RichText.Editor
+						class='min-h-32 w-full resize-none p-3 font-mono text-sm outline-none'
+						placeholder='Write some markdown…'
+					/>
+					<RichText.Preview class='min-h-32 p-3' />
+				</RichText.Root>
+			</div>
+
+			{/* Preview-only: render stored markdown read-only */}
+			<div>
+				<p class='text-xs font-medium uppercase tracking-wide text-[#6b7280] mb-2'>Preview mode</p>
+				<RichText.Root
+					defaultMode='preview'
+					defaultValue={
+						'# Release notes\n\nShipped **RichText** with edit, split and preview modes.\n\n- toolbar actions\n- live preview'
+					}
+					parse={miniParse}
+					components={previewComponents}
+					class='overflow-hidden rounded-xl border border-[#e5e7eb]'>
+					<RichText.Editor class='min-h-32 w-full resize-none p-3 font-mono text-sm outline-none' />
+					<RichText.Preview class='min-h-32 p-3' />
+				</RichText.Root>
+			</div>
+		</div>
+	),
+};
+
+export const Complex: Story = {
+	render: () => {
+		const [value, setValue] = createSignal('Looks great! Just one **nit** on the naming.');
+		const [mode, setMode] = createSignal<RichTextMode>('edit');
+
+		return (
+			<div class='w-full max-w-lg rounded-xl border border-[#e5e7eb] bg-white'>
+				<RichText.Root
+					value={value()}
+					onChange={setValue}
+					mode={mode()}
+					onModeChange={setMode}
+					parse={miniParse}
+					components={previewComponents}>
+					<RichText.Toolbar class='flex items-center gap-1 border-b border-[#e5e7eb] bg-[#fafafa] p-1.5'>
+						<RichText.Action
+							wrap='**'
+							class={`${actionCls} font-bold`}>
+							B
+						</RichText.Action>
+						<RichText.Action
+							wrap='_'
+							class={`${actionCls} italic`}>
+							I
+						</RichText.Action>
+						<RichText.Action
+							wrap={['`', '`']}
+							class={`${actionCls} font-mono`}>
+							{'</>'}
+						</RichText.Action>
+						<div class='ml-auto flex gap-1'>
+							<For each={['edit', 'preview'] as const}>
+								{(m) => (
+									<button
+										type='button'
+										onClick={() => setMode(m)}
+										class={tabCls(mode() === m)}>
+										{m === 'edit' ? 'Write' : 'Preview'}
+									</button>
+								)}
+							</For>
+						</div>
+					</RichText.Toolbar>
+
+					<RichText.Editor
+						rows={4}
+						class='min-h-28 w-full resize-none p-3 text-sm outline-none'
+						placeholder='Leave a comment…'
+					/>
+					<RichText.Preview class='min-h-28 p-3' />
+				</RichText.Root>
+
+				<div class='flex items-center justify-between border-t border-[#e5e7eb] px-3 py-2'>
+					<span class='text-xs text-[#9ca3af]'>{value().length} characters</span>
+					<button
+						type='button'
+						disabled={value().trim().length === 0}
+						class='rounded-lg bg-black px-3 py-1.5 text-sm font-medium text-white disabled:opacity-40'>
+						Comment
+					</button>
+				</div>
+			</div>
 		);
 	},
 };

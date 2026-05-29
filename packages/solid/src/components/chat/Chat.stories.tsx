@@ -48,7 +48,58 @@ const seed: Msg[] = [
 const REPLY =
 	'Great question! Wire UI ships zero CSS — you style everything with class and data-* attributes, so it drops into any design system.';
 
-export const ChatUI: Story = {
+const bubbleCls = (isUser: boolean) =>
+	`max-w-[80%] rounded-2xl px-3 py-2 text-sm leading-relaxed ${
+		isUser ? 'bg-black text-white' : 'bg-[#f3f4f6] text-black'
+	}`;
+
+export const Default: Story = {
+	render: () => {
+		const [messages, setMessages] = createSignal<Msg[]>(seed);
+		let nextId = seed.length;
+
+		const send = (text: string) => {
+			setMessages((m) => [...m, { id: nextId++, role: 'user', text }]);
+		};
+
+		return (
+			<Chat.Root
+				onSubmit={send}
+				class='mx-auto flex h-[420px] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white'>
+				<Chat.List
+					count={messages().length}
+					estimateItemHeight={88}
+					class='flex-1 px-4 py-3'>
+					{({ index }) => {
+						const msg = () => messages()[index];
+						const isUser = () => msg().role === 'user';
+						return (
+							<Chat.Message
+								role={msg().role}
+								class={`flex py-2 ${isUser() ? 'justify-end' : 'justify-start'}`}>
+								<div class={bubbleCls(isUser())}>{msg().text}</div>
+							</Chat.Message>
+						);
+					}}
+				</Chat.List>
+
+				<Chat.Composer class='flex items-end gap-2 border-t border-[#e5e7eb] p-3'>
+					<Chat.Input
+						aria-label='Message'
+						rows={1}
+						placeholder='Send a message…'
+						class='max-h-32 flex-1 resize-none rounded-xl border border-[#d1d5db] px-3 py-2 text-sm outline-none focus:border-black'
+					/>
+					<Chat.Send class='rounded-xl bg-black px-4 py-2 text-sm font-medium text-white disabled:opacity-40'>
+						Send
+					</Chat.Send>
+				</Chat.Composer>
+			</Chat.Root>
+		);
+	},
+};
+
+export const Composed: Story = {
 	render: () => {
 		const [messages, setMessages] = createSignal<Msg[]>(seed);
 		const [streaming, setStreaming] = createSignal(false);
@@ -59,11 +110,11 @@ export const ChatUI: Story = {
 			const botId = nextId++;
 			setMessages((m) => [...m, userMsg, { id: botId, role: 'assistant', text: REPLY, streaming: true }]);
 			setStreaming(true);
-			// Clear the streaming flag once the typewriter would finish revealing.
-			globalThis.setTimeout(() => {
-				setMessages((m) => m.map((msg) => (msg.id === botId ? { ...msg, streaming: false } : msg)));
-				setStreaming(false);
-			}, REPLY.length * 18 + 200);
+			globalThis.setTimeout(
+				() => setMessages((m) => m.map((msg) => (msg.id === botId ? { ...msg, streaming: false } : msg))),
+				REPLY.length * 18 + 200,
+			);
+			globalThis.setTimeout(() => setStreaming(false), REPLY.length * 18 + 200);
 		};
 
 		return (
@@ -83,10 +134,7 @@ export const ChatUI: Story = {
 								role={msg().role}
 								streaming={msg().streaming}
 								class={`flex py-2 ${isUser() ? 'justify-end' : 'justify-start'}`}>
-								<div
-									class={`max-w-[80%] rounded-2xl px-3 py-2 text-sm leading-relaxed ${
-										isUser() ? 'bg-black text-white' : 'bg-[#f3f4f6] text-black'
-									}`}>
+								<div class={bubbleCls(isUser())}>
 									<Show
 										when={msg().streaming}
 										fallback={msg().text}>
@@ -119,28 +167,39 @@ export const ChatUI: Story = {
 	},
 };
 
-/** A large, virtualized history — only the visible rows are in the DOM. */
-export const VirtualizedHistory: Story = {
+export const Complex: Story = {
 	render: () => {
 		const count = 5000;
 		return (
-			<Chat.List
-				count={count}
-				estimateItemHeight={64}
-				class='mx-auto h-[480px] w-full max-w-lg rounded-2xl border border-[#e5e7eb] bg-white px-4'>
-				{({ index }) => (
-					<Chat.Message
-						role={index % 2 === 0 ? 'assistant' : 'user'}
-						class={`flex py-2 ${index % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
-						<div
-							class={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${
-								index % 2 === 0 ? 'bg-[#f3f4f6] text-black' : 'bg-black text-white'
-							}`}>
-							Message #{index}
-						</div>
-					</Chat.Message>
-				)}
-			</Chat.List>
+			<div class='mx-auto flex h-[560px] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white'>
+				<div class='flex items-center justify-between border-b border-[#e5e7eb] px-4 py-3'>
+					<div class='flex items-center gap-2'>
+						<span class='inline-flex h-8 w-8 items-center justify-center rounded-full bg-black text-xs text-white'>
+							AI
+						</span>
+						<div class='text-sm font-medium text-black'>Support thread</div>
+					</div>
+					<span class='text-xs text-[#9ca3af]'>{count.toLocaleString()} messages</span>
+				</div>
+				<Chat.List
+					count={count}
+					estimateItemHeight={64}
+					class='flex-1 px-4 py-2'>
+					{({ index }) => {
+						const isUser = index % 2 !== 0;
+						return (
+							<Chat.Message
+								role={isUser ? 'user' : 'assistant'}
+								class={`flex py-2 ${isUser ? 'justify-end' : 'justify-start'}`}>
+								<div class={bubbleCls(isUser)}>Message #{index}</div>
+							</Chat.Message>
+						);
+					}}
+				</Chat.List>
+				<div class='border-t border-[#e5e7eb] px-4 py-2 text-center text-xs text-[#9ca3af]'>
+					Only the visible rows are mounted — the list is virtualized.
+				</div>
+			</div>
 		);
 	},
 };

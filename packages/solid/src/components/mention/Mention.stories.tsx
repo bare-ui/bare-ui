@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from 'storybook-solidjs-vite';
+import { createSignal } from 'solid-js';
 import { Mention } from './Mention';
 import type { MentionOption } from './Mention.types';
 
@@ -34,10 +35,16 @@ const people: MentionOption[] = [
 	{ id: 5, label: 'Linus Torvalds', disabled: true },
 ];
 
+const channels: MentionOption[] = [
+	{ id: 'general', label: 'general' },
+	{ id: 'random', label: 'random' },
+	{ id: 'engineering', label: 'engineering' },
+	{ id: 'design', label: 'design' },
+];
+
 const inputCls =
 	'w-full resize-none rounded-lg border border-[#d1d5db] p-3 text-sm text-black outline-none focus:border-black';
-const contentCls =
-	'z-10 mt-1 max-h-56 w-56 overflow-auto rounded-lg border border-[#e5e7eb] bg-white p-1 shadow-lg';
+const contentCls = 'z-10 mt-1 max-h-56 w-56 overflow-auto rounded-lg border border-[#e5e7eb] bg-white p-1 shadow-lg';
 const itemCls =
 	'flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm text-black data-[active]:bg-[#f3f4f6] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40';
 
@@ -70,37 +77,116 @@ export const Default: Story = {
 	),
 };
 
-const channels: MentionOption[] = [
-	{ id: 'general', label: 'general' },
-	{ id: 'random', label: 'random' },
-	{ id: 'engineering', label: 'engineering' },
-	{ id: 'design', label: 'design' },
-];
-
-/** A custom trigger character — here `#` for channels instead of `@`. */
-export const CustomTrigger: Story = {
+export const Composed: Story = {
 	render: () => (
-		<Mention.Root
-			options={channels}
-			trigger='#'
-			class='relative w-full max-w-md'>
-			<Mention.Input
-				aria-label='Message'
-				rows={3}
-				placeholder='Reference a #channel…'
-				class={inputCls}
-			/>
-			<Mention.Content class={contentCls}>
-				<Mention.Items>
-					{({ option }) => (
-						<div class={itemCls}>
-							<span class='text-[#9ca3af]'>#</span>
-							{option.label}
-						</div>
-					)}
-				</Mention.Items>
-				<Mention.Empty class='px-2 py-1.5 text-sm text-[#9ca3af]'>No channels</Mention.Empty>
-			</Mention.Content>
-		</Mention.Root>
+		<div class='flex w-full max-w-md flex-col gap-8'>
+			<div>
+				<p class='mb-1.5 text-xs font-medium text-[#6b7280]'>@ mention people</p>
+				<Mention.Root
+					options={people}
+					class='relative'>
+					<Mention.Input
+						aria-label='Mention people'
+						rows={3}
+						placeholder='Type @ to mention someone…'
+						class={inputCls}
+					/>
+					<Mention.Content class={contentCls}>
+						<Mention.Items>
+							{({ option }) => (
+								<div class={itemCls}>
+									<span class='flex size-6 items-center justify-center rounded-full bg-[#eef2ff] text-xs font-semibold text-[#4338ca]'>
+										{option.label.charAt(0)}
+									</span>
+									{option.label}
+								</div>
+							)}
+						</Mention.Items>
+						<Mention.Empty class='px-2 py-1.5 text-sm text-[#9ca3af]'>No people found</Mention.Empty>
+					</Mention.Content>
+				</Mention.Root>
+			</div>
+
+			<div>
+				<p class='mb-1.5 text-xs font-medium text-[#6b7280]'># reference channels</p>
+				<Mention.Root
+					options={channels}
+					trigger='#'
+					class='relative'>
+					<Mention.Input
+						aria-label='Reference channel'
+						rows={3}
+						placeholder='Reference a #channel…'
+						class={inputCls}
+					/>
+					<Mention.Content class={contentCls}>
+						<Mention.Items>
+							{({ option }) => (
+								<div class={itemCls}>
+									<span class='text-[#9ca3af]'>#</span>
+									{option.label}
+								</div>
+							)}
+						</Mention.Items>
+						<Mention.Empty class='px-2 py-1.5 text-sm text-[#9ca3af]'>No channels</Mention.Empty>
+					</Mention.Content>
+				</Mention.Root>
+			</div>
+		</div>
 	),
+};
+
+export const Complex: Story = {
+	render: () => {
+		const [value, setValue] = createSignal('');
+
+		return (
+			<div class='w-full max-w-md rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm'>
+				<div class='flex items-start gap-3'>
+					<div class='flex size-9 shrink-0 items-center justify-center rounded-full bg-black text-sm font-semibold text-white'>
+						You
+					</div>
+					<div class='relative flex-1'>
+						<Mention.Root
+							options={people}
+							value={value()}
+							onChange={setValue}
+							class='relative'>
+							<Mention.Input
+								aria-label='Write a comment'
+								rows={3}
+								placeholder='Add a comment… use @ to notify a teammate'
+								class={inputCls}
+							/>
+							<Mention.Content class={contentCls}>
+								<Mention.Items>
+									{({ option }) => (
+										<div class={itemCls}>
+											<span class='flex size-6 items-center justify-center rounded-full bg-[#eef2ff] text-xs font-semibold text-[#4338ca]'>
+												{option.label.charAt(0)}
+											</span>
+											{option.label}
+										</div>
+									)}
+								</Mention.Items>
+								<Mention.Empty class='px-2 py-1.5 text-sm text-[#9ca3af]'>
+									No people found
+								</Mention.Empty>
+							</Mention.Content>
+						</Mention.Root>
+					</div>
+				</div>
+				<div class='mt-3 flex items-center justify-end gap-2'>
+					<button class='rounded-lg px-3 py-1.5 text-sm font-medium text-[#6b7280] hover:bg-[#f5f5f5]'>
+						Cancel
+					</button>
+					<button
+						disabled={value().trim().length === 0}
+						class='rounded-lg bg-black px-3 py-1.5 text-sm font-medium text-white disabled:opacity-40'>
+						Comment
+					</button>
+				</div>
+			</div>
+		);
+	},
 };

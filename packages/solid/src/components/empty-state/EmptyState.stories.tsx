@@ -43,14 +43,75 @@ export const Default: Story = {
 	),
 };
 
-export const SearchEmpty: Story = {
+export const Composed: Story = {
 	render: () => (
-		<EmptyState.Root class='mx-auto flex max-w-sm flex-col items-center gap-2 p-8 text-center'>
-			<EmptyState.Media class='text-3xl'>🔍</EmptyState.Media>
-			<EmptyState.Title class='text-sm font-semibold text-black'>No results for “wireframe”</EmptyState.Title>
-			<EmptyState.Description class='text-xs text-[#6b7280]'>
-				Check the spelling or try a broader term.
-			</EmptyState.Description>
-		</EmptyState.Root>
+		<div class='flex flex-wrap items-start gap-6'>
+			<EmptyState.Root class='flex max-w-xs flex-col items-center gap-2 rounded-2xl border border-[#e5e7eb] p-8 text-center'>
+				<EmptyState.Media class='text-3xl'>🔍</EmptyState.Media>
+				<EmptyState.Title class='text-sm font-semibold text-black'>
+					No results for “wireframe”
+				</EmptyState.Title>
+				<EmptyState.Description class='text-xs text-[#6b7280]'>
+					Check the spelling or try a broader term.
+				</EmptyState.Description>
+			</EmptyState.Root>
+
+			<EmptyState.Root class='flex max-w-xs flex-col items-center gap-2 rounded-2xl border border-[#e5e7eb] p-8 text-center'>
+				<EmptyState.Media class='flex size-12 items-center justify-center rounded-full bg-[#f3f4f6] text-2xl'>
+					📁
+				</EmptyState.Media>
+				<EmptyState.Title class='text-sm font-semibold text-black'>This folder is empty</EmptyState.Title>
+				<EmptyState.Description class='text-xs text-[#6b7280]'>
+					Drag files here or upload to get started.
+				</EmptyState.Description>
+				<EmptyState.Actions class='mt-2'>
+					<button class='rounded-lg bg-black px-3 py-1.5 text-xs font-medium text-white'>Upload</button>
+				</EmptyState.Actions>
+			</EmptyState.Root>
+
+			<EmptyState.Root class='flex max-w-xs flex-col items-center gap-2 rounded-2xl border border-dashed border-[#d1d5db] p-8 text-center'>
+				<EmptyState.Media class='text-3xl'>⚠️</EmptyState.Media>
+				<EmptyState.Title class='text-sm font-semibold text-black'>Something went wrong</EmptyState.Title>
+				<EmptyState.Description class='text-xs text-[#6b7280]'>
+					We couldn’t load your data. Please try again.
+				</EmptyState.Description>
+				<EmptyState.Actions class='mt-2'>
+					<button class='rounded-lg border border-[#d1d5db] px-3 py-1.5 text-xs font-medium text-black'>
+						Retry
+					</button>
+				</EmptyState.Actions>
+			</EmptyState.Root>
+		</div>
+	),
+};
+
+export const Complex: Story = {
+	render: () => (
+		<div class='w-[28rem] overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white'>
+			<div class='flex items-center justify-between border-b border-[#e5e7eb] px-4 py-3'>
+				<div>
+					<h2 class='text-sm font-semibold text-black'>Projects</h2>
+					<p class='text-xs text-[#9ca3af]'>0 active</p>
+				</div>
+				<button class='rounded-lg bg-black px-3 py-1.5 text-xs font-medium text-white'>New project</button>
+			</div>
+			<EmptyState.Root class='flex flex-col items-center gap-3 px-6 py-12 text-center'>
+				<EmptyState.Media class='flex size-14 items-center justify-center rounded-full bg-[#f3f4f6] text-3xl'>
+					🗂️
+				</EmptyState.Media>
+				<EmptyState.Title class='text-base font-semibold text-black'>No projects yet</EmptyState.Title>
+				<EmptyState.Description class='max-w-xs text-sm text-[#6b7280]'>
+					Create your first project to organize tasks, files and collaborators in one place.
+				</EmptyState.Description>
+				<EmptyState.Actions class='mt-2 flex gap-2'>
+					<button class='rounded-lg bg-black px-3 py-1.5 text-sm font-medium text-white'>
+						Create project
+					</button>
+					<button class='rounded-lg border border-[#d1d5db] px-3 py-1.5 text-sm font-medium text-black'>
+						Import
+					</button>
+				</EmptyState.Actions>
+			</EmptyState.Root>
+		</div>
 	),
 };

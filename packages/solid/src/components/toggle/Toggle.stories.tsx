@@ -21,8 +21,9 @@ type Story = StoryObj<typeof meta>;
 
 const toggleCls =
 	'flex h-9 min-w-9 items-center justify-center rounded-md px-2.5 text-sm text-[#374151] hover:bg-[#f3f4f6] data-[state=on]:bg-black data-[state=on]:text-white data-[disabled]:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-black';
+const groupCls = 'inline-flex items-center gap-1 rounded-lg border border-[#e5e7eb] bg-white p-1';
 
-export const Standalone: Story = {
+export const Default: Story = {
 	render: () => (
 		<Toggle
 			class={toggleCls}
@@ -32,75 +33,177 @@ export const Standalone: Story = {
 	),
 };
 
-const groupCls = 'inline-flex items-center gap-1 rounded-lg border border-[#e5e7eb] bg-white p-1';
-
-export const SingleSelect: Story = {
+export const Composed: Story = {
 	render: () => {
-		const [value, setValue] = createSignal<string | null>('center');
+		const [single, setSingle] = createSignal<string | null>('center');
+		const [multi, setMulti] = createSignal<string[]>(['bold']);
 		return (
-			<div class='space-y-2'>
-				<ToggleGroup.Root
-					type='single'
-					value={value()}
-					onChange={setValue}
-					class={groupCls}
-					aria-label='Text alignment'>
-					<Toggle
-						value='left'
-						class={toggleCls}
-						aria-label='Align left'>
-						⬅
-					</Toggle>
-					<Toggle
-						value='center'
-						class={toggleCls}
-						aria-label='Align center'>
-						↔
-					</Toggle>
-					<Toggle
-						value='right'
-						class={toggleCls}
-						aria-label='Align right'>
-						➡
-					</Toggle>
-				</ToggleGroup.Root>
-				<p class='text-xs text-[#6b7280]'>Selected: {value() ?? 'none'}</p>
+			<div class='space-y-6'>
+				<div class='space-y-2'>
+					<p class='text-xs font-medium text-[#6b7280]'>Single select (alignment)</p>
+					<ToggleGroup.Root
+						type='single'
+						value={single()}
+						onChange={setSingle}
+						class={groupCls}
+						aria-label='Text alignment'>
+						<Toggle
+							value='left'
+							class={toggleCls}
+							aria-label='Align left'>
+							⬅
+						</Toggle>
+						<Toggle
+							value='center'
+							class={toggleCls}
+							aria-label='Align center'>
+							↔
+						</Toggle>
+						<Toggle
+							value='right'
+							class={toggleCls}
+							aria-label='Align right'>
+							➡
+						</Toggle>
+					</ToggleGroup.Root>
+					<p class='text-xs text-[#6b7280]'>Selected: {single() ?? 'none'}</p>
+				</div>
+
+				<div class='space-y-2'>
+					<p class='text-xs font-medium text-[#6b7280]'>Multiple select (formatting)</p>
+					<ToggleGroup.Root
+						type='multiple'
+						value={multi()}
+						onChange={setMulti}
+						class={groupCls}
+						aria-label='Text formatting'>
+						<Toggle
+							value='bold'
+							class={toggleCls}
+							aria-label='Bold'>
+							<b>B</b>
+						</Toggle>
+						<Toggle
+							value='italic'
+							class={toggleCls}
+							aria-label='Italic'>
+							<i>I</i>
+						</Toggle>
+						<Toggle
+							value='underline'
+							class={`${toggleCls} underline`}
+							aria-label='Underline'>
+							U
+						</Toggle>
+					</ToggleGroup.Root>
+					<p class='text-xs text-[#6b7280]'>Active: {multi().join(', ') || 'none'}</p>
+				</div>
+
+				<div class='space-y-2'>
+					<p class='text-xs font-medium text-[#6b7280]'>Vertical, disabled</p>
+					<ToggleGroup.Root
+						type='single'
+						defaultValue='grid'
+						orientation='vertical'
+						disabled
+						class={`${groupCls} flex-col items-stretch`}
+						aria-label='Layout'>
+						<Toggle
+							value='list'
+							class={toggleCls}>
+							List
+						</Toggle>
+						<Toggle
+							value='grid'
+							class={toggleCls}>
+							Grid
+						</Toggle>
+					</ToggleGroup.Root>
+				</div>
 			</div>
 		);
 	},
 };
 
-export const MultiSelect: Story = {
+export const Complex: Story = {
 	render: () => {
-		const [value, setValue] = createSignal<string[]>(['bold']);
+		const [marks, setMarks] = createSignal<string[]>(['bold']);
+		const [align, setAlign] = createSignal<string | null>('left');
 		return (
-			<div class='space-y-2'>
-				<ToggleGroup.Root
-					type='multiple'
-					value={value()}
-					onChange={setValue}
-					class={groupCls}
-					aria-label='Text formatting'>
+			<div class='w-[30rem] overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white'>
+				<div class='flex flex-wrap items-center gap-2 border-b border-[#e5e7eb] bg-[#f5f5f5] px-3 py-2'>
+					<ToggleGroup.Root
+						type='multiple'
+						value={marks()}
+						onChange={setMarks}
+						class='inline-flex items-center gap-1'
+						aria-label='Text formatting'>
+						<Toggle
+							value='bold'
+							class={toggleCls}
+							aria-label='Bold'>
+							<b>B</b>
+						</Toggle>
+						<Toggle
+							value='italic'
+							class={toggleCls}
+							aria-label='Italic'>
+							<i>I</i>
+						</Toggle>
+						<Toggle
+							value='underline'
+							class={`${toggleCls} underline`}
+							aria-label='Underline'>
+							U
+						</Toggle>
+					</ToggleGroup.Root>
+
+					<span class='mx-1 h-5 w-px bg-[#e5e7eb]' />
+
+					<ToggleGroup.Root
+						type='single'
+						value={align()}
+						onChange={setAlign}
+						class='inline-flex items-center gap-1'
+						aria-label='Text alignment'>
+						<Toggle
+							value='left'
+							class={toggleCls}
+							aria-label='Align left'>
+							⬅
+						</Toggle>
+						<Toggle
+							value='center'
+							class={toggleCls}
+							aria-label='Align center'>
+							↔
+						</Toggle>
+						<Toggle
+							value='right'
+							class={toggleCls}
+							aria-label='Align right'>
+							➡
+						</Toggle>
+					</ToggleGroup.Root>
+
+					<span class='mx-1 h-5 w-px bg-[#e5e7eb]' />
+
 					<Toggle
-						value='bold'
 						class={toggleCls}
-						aria-label='Bold'>
-						<b>B</b>
+						aria-label='Toggle code block'>
+						{'</>'}
 					</Toggle>
-					<Toggle
-						value='italic'
-						class={toggleCls}
-						aria-label='Italic'>
-						<i>I</i>
-					</Toggle>
-					<Toggle
-						value='underline'
-						class={`${toggleCls} underline`}
-						aria-label='Underline'>
-						U
-					</Toggle>
-				</ToggleGroup.Root>
-				<p class='text-xs text-[#6b7280]'>Active: {value().join(', ') || 'none'}</p>
+				</div>
+				<p
+					class='p-4 text-sm leading-relaxed text-black'
+					style={{
+						'font-weight': marks().includes('bold') ? '700' : '400',
+						'font-style': marks().includes('italic') ? 'italic' : 'normal',
+						'text-decoration': marks().includes('underline') ? 'underline' : 'none',
+						'text-align': (align() ?? 'left') as 'left' | 'center' | 'right',
+					}}>
+					The quick brown fox jumps over the lazy dog. Toggle the controls above to format this text.
+				</p>
 			</div>
 		);
 	},
