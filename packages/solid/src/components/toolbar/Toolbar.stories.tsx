@@ -6,6 +6,7 @@ const meta = {
 	component: Toolbar.Root,
 	subcomponents: {
 		'Toolbar.Button': Toolbar.Button,
+		'Toolbar.Toggle': Toolbar.Toggle,
 		'Toolbar.Link': Toolbar.Link,
 		'Toolbar.Separator': Toolbar.Separator,
 	},
@@ -63,6 +64,38 @@ export const Default: Story = {
 				class={`${btnCls} w-auto px-2`}>
 				Help
 			</Toolbar.Link>
+		</Toolbar.Root>
+	),
+};
+
+export const Toggles: Story = {
+	render: () => (
+		<Toolbar.Root
+			aria-label='Text formatting'
+			class='inline-flex items-center gap-1 rounded-lg border border-[#e5e7eb] bg-white p-1'>
+			<Toolbar.Toggle
+				class={btnCls}
+				aria-label='Bold'
+				defaultPressed>
+				<b>B</b>
+			</Toolbar.Toggle>
+			<Toolbar.Toggle
+				class={btnCls}
+				aria-label='Italic'>
+				<i>I</i>
+			</Toolbar.Toggle>
+			<Toolbar.Toggle
+				class={`${btnCls} underline`}
+				aria-label='Underline'>
+				U
+			</Toolbar.Toggle>
+			<Toolbar.Separator class='mx-1 h-5 w-px bg-[#e5e7eb]' />
+			<Toolbar.Toggle
+				class={btnCls}
+				aria-label='Strikethrough'
+				disabled>
+				<s>S</s>
+			</Toolbar.Toggle>
 		</Toolbar.Root>
 	),
 };

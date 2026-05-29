@@ -31,6 +31,15 @@ export interface ToolbarRootProps extends JSX.HTMLAttributes<HTMLDivElement> {
 
 export type ToolbarButtonProps = JSX.ButtonHTMLAttributes<HTMLButtonElement>;
 
+export interface ToolbarToggleProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
+	/** Controlled pressed state. */
+	pressed?: boolean;
+	/** Initial pressed state (uncontrolled). Default `false`. */
+	defaultPressed?: boolean;
+	/** Called when the pressed state changes. */
+	onPressedChange?: (pressed: boolean) => void;
+}
+
 export type ToolbarLinkProps = JSX.AnchorHTMLAttributes<HTMLAnchorElement>;
 
 export interface ToolbarSeparatorProps extends JSX.HTMLAttributes<HTMLDivElement> {

@@ -7,6 +7,7 @@ import {
 	useContext,
 	type JSX,
 } from 'solid-js';
+import { createControllableState } from '@/primitives/create-controllable-state';
 import { createId } from '@/primitives/create-id';
 import { createMergedRefs } from '@/primitives/create-merged-refs';
 import type {
@@ -15,6 +16,7 @@ import type {
 	ToolbarLinkProps,
 	ToolbarRootProps,
 	ToolbarSeparatorProps,
+	ToolbarToggleProps,
 } from './Toolbar.types';
 
 // ---------------------------------------------------------------------------
@@ -179,6 +181,72 @@ function Button(props: ToolbarButtonProps) {
 }
 
 // ---------------------------------------------------------------------------
+// Toggle
+// ---------------------------------------------------------------------------
+
+function Toggle(props: ToolbarToggleProps) {
+	// `data-state` reads the reactive `pressed()` signal, so the consumer
+	// handlers are split OUT of `rest` and applied as explicit props — never
+	// spread via the merge proxy next to a reactive attribute.
+	const [local, rest] = splitProps(props, [
+		'pressed',
+		'defaultPressed',
+		'onPressedChange',
+		'disabled',
+		'class',
+		'children',
+		'ref',
+		'onClick',
+		'onFocus',
+		'onKeyDown',
+	]);
+	const { ctx, id, mergedRef } = useRovingItem<HTMLButtonElement>((el) =>
+		(local.ref as ((el: HTMLButtonElement) => void) | undefined)?.(el),
+	);
+
+	const [pressed, setPressed] = createControllableState<boolean>({
+		get value() {
+			return local.pressed;
+		},
+		defaultValue: local.defaultPressed ?? false,
+		onChange: (next) => local.onPressedChange?.(next),
+	});
+
+	const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (e) => {
+		if (!local.disabled) setPressed(!pressed());
+		if (typeof local.onClick === 'function') local.onClick(e);
+	};
+
+	const handleFocus: JSX.EventHandler<HTMLButtonElement, FocusEvent> = (e) => {
+		ctx.onItemFocus(id);
+		if (typeof local.onFocus === 'function') local.onFocus(e);
+	};
+
+	const handleKeyDown: JSX.EventHandler<HTMLButtonElement, KeyboardEvent> = (e) => {
+		if (typeof local.onKeyDown === 'function') local.onKeyDown(e);
+		if (!e.defaultPrevented) ctx.onItemKeyDown(e);
+	};
+
+	return (
+		<button
+			ref={mergedRef}
+			type='button'
+			disabled={local.disabled}
+			tabindex={ctx.isTabbable(id) ? 0 : -1}
+			aria-pressed={pressed()}
+			data-toolbar-item=''
+			data-state={pressed() ? 'on' : 'off'}
+			class={local.class}
+			{...rest}
+			onClick={handleClick}
+			onFocus={handleFocus}
+			onKeyDown={handleKeyDown}>
+			{local.children}
+		</button>
+	);
+}
+
+// ---------------------------------------------------------------------------
 // Link
 // ---------------------------------------------------------------------------
 
@@ -240,8 +308,9 @@ function Separator(props: ToolbarSeparatorProps) {
 export const Toolbar = {
 	Root,
 	Button,
+	Toggle,
 	Link,
 	Separator,
 };
 
-export { Root, Button, Link, Separator };
+export { Root, Button, Toggle, Link, Separator };
