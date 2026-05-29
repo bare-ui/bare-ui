@@ -18,6 +18,8 @@ interface SliderBaseProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onCh
 	disabled?: boolean;
 	/** Inverted (right-to-left or top-to-bottom). */
 	inverted?: boolean;
+	/** Optional human-readable label for ARIA. */
+	'aria-label'?: string;
 }
 
 export interface SliderSingleProps extends SliderBaseProps {
@@ -43,3 +45,21 @@ export interface SliderRangeProps extends SliderBaseProps {
 }
 
 export type SliderProps = SliderSingleProps | SliderRangeProps;
+
+/**
+ * Flattened prop shape used internally by the component and read by Storybook's
+ * docgen (react-docgen-typescript) for clean per-prop descriptions — documenting
+ * the {@link SliderProps} union instead concatenates both variants' descriptions
+ * together. The four mode-specific props below must mirror
+ * {@link SliderSingleProps} / {@link SliderRangeProps}.
+ */
+export interface SliderImplProps extends SliderBaseProps {
+	/** Enable two-thumb range mode. With `range`, `value` becomes `[start, end]`. */
+	range?: boolean;
+	/** Controlled value — a number in single mode, `[start, end]` in range mode. */
+	value?: number | [number, number];
+	/** Initial value, uncontrolled — a number in single mode, `[start, end]` in range mode. */
+	defaultValue?: number | [number, number];
+	/** Called when the value changes. */
+	onChange?: (value: number | [number, number]) => void;
+}

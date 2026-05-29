@@ -45,3 +45,5 @@ function Remove(props: TagRemoveProps) {
 }
 
 export const Tag = { Root, Label, Remove };
+
+export { Root, Label, Remove };

@@ -274,3 +274,5 @@ export const Search = {
 	Item,
 	Empty,
 };
+
+export { Root, Input, Content, Item, Empty };

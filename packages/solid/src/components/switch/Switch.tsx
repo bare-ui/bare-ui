@@ -107,3 +107,5 @@ function Thumb(props: SwitchThumbProps) {
 // ---------------------------------------------------------------------------
 
 export const Switch = { Root, Thumb };
+
+export { Root, Thumb };

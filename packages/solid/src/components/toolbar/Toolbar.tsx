@@ -243,3 +243,5 @@ export const Toolbar = {
 	Link,
 	Separator,
 };
+
+export { Root, Button, Link, Separator };

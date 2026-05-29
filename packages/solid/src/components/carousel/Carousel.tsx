@@ -392,3 +392,6 @@ export const Carousel = {
 	Next,
 	Indicators,
 };
+
+// Named exports expose the sub-components to Storybook's docgen (public API stays `Carousel.*`).
+export { Root, Viewport, Content, Slide, Previous, Next, Indicators };

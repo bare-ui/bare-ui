@@ -409,3 +409,6 @@ function Grid(props: CalendarGridProps) {
 // ---------------------------------------------------------------------------
 
 export const Calendar = { Root, Nav, PrevButton, NextButton, Title, Grid };
+
+// Named exports expose the sub-components to Storybook's docgen (public API stays `Calendar.*`).
+export { Root, Nav, PrevButton, NextButton, Title, Grid };

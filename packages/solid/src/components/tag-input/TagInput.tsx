@@ -193,3 +193,5 @@ function Field(props: TagInputFieldProps) {
 // ---------------------------------------------------------------------------
 
 export const TagInput = { Root, List, Items, Field };
+
+export { Root, List, Items, Field };

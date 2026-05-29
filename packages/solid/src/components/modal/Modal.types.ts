@@ -1,14 +1,18 @@
 import type { JSX } from 'solid-js';
 
 export interface ModalRootProps {
+	/** Controlled open state. */
 	open?: boolean;
+	/** Initial open state (uncontrolled). */
 	defaultOpen?: boolean;
+	/** Called when the open state changes (overlay click, Escape, or a close trigger). */
 	onOpenChange?: (open: boolean) => void;
 	children?: JSX.Element;
 }
 
 export interface ModalPortalProps {
 	children?: JSX.Element;
+	/** DOM node to render the modal into. Defaults to `document.body`. */
 	container?: HTMLElement;
 }
 

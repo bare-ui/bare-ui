@@ -5,6 +5,15 @@ import { Select } from './Select';
 const meta = {
 	title: 'Forms/Select',
 	component: Select.Root,
+	subcomponents: {
+		'Select.Trigger': Select.Trigger,
+		'Select.Value': Select.Value,
+		'Select.Content': Select.Content,
+		'Select.Item': Select.Item,
+		'Select.Separator': Select.Separator,
+		'Select.Group': Select.Group,
+		'Select.GroupLabel': Select.GroupLabel,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

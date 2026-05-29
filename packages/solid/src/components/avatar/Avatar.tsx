@@ -151,3 +151,6 @@ export const Avatar = Object.assign(Root, {
 	Image: AvatarImage,
 	Fallback,
 });
+
+// Named exports expose the sub-components to Storybook's docgen (public API stays `Avatar.*`).
+export { Root, AvatarImage, Fallback };

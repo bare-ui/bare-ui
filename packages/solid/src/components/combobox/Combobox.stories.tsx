@@ -6,6 +6,13 @@ import type { ComboboxOption } from './Combobox.types';
 const meta = {
 	title: 'Forms/Combobox',
 	component: Combobox.Root,
+	subcomponents: {
+		'Combobox.Input': Combobox.Input,
+		'Combobox.Trigger': Combobox.Trigger,
+		'Combobox.Content': Combobox.Content,
+		'Combobox.Items': Combobox.Items,
+		'Combobox.Empty': Combobox.Empty,
+	},
 	tags: ['autodocs'],
 	args: { options: [] },
 	parameters: {

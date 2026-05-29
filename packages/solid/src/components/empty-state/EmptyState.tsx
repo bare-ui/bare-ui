@@ -100,3 +100,5 @@ export const EmptyState = {
 	Description,
 	Actions,
 };
+
+export { Root, Media, Title, Description, Actions };

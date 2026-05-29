@@ -334,3 +334,5 @@ function Items(props: FileUploadItemsProps) {
 // ---------------------------------------------------------------------------
 
 export const FileUpload = { Root, Input, Trigger, Dropzone, Items };
+
+export { Root, Input, Trigger, Dropzone, Items };

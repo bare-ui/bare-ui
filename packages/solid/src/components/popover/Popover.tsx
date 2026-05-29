@@ -214,3 +214,5 @@ function Close(props: PopoverCloseProps) {
 // ---------------------------------------------------------------------------
 
 export const Popover = { Root, Trigger, Content, Close };
+
+export { Root, Trigger, Content, Close };

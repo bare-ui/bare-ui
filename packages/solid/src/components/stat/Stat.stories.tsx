@@ -5,6 +5,13 @@ import { Stat } from './Stat';
 const meta = {
 	title: 'Feedback/Stat',
 	component: Stat.Root,
+	subcomponents: {
+		'Stat.Label': Stat.Label,
+		'Stat.Value': Stat.Value,
+		'Stat.Delta': Stat.Delta,
+		'Stat.HelpText': Stat.HelpText,
+		'Stat.Sparkline': Stat.Sparkline,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

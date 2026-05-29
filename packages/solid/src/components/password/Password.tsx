@@ -204,3 +204,5 @@ function ErrorMessage(props: PasswordErrorProps) {
 // ---------------------------------------------------------------------------
 
 export const Password = { Root, Field, Toggle, Label, Error: ErrorMessage };
+
+export { Root, Field, Toggle, Label, ErrorMessage };

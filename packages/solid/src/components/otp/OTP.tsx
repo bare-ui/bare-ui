@@ -233,3 +233,5 @@ export const OTP = {
 	Slot,
 	Separator,
 };
+
+export { Root, Slot, Separator };

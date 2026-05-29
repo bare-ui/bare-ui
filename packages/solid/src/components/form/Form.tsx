@@ -255,3 +255,5 @@ function ErrorMessage(props: FormErrorProps) {
 // ---------------------------------------------------------------------------
 
 export const Form = { Root, Field, Label, Control, Description, Error: ErrorMessage };
+
+export { Root, Field, Label, Control, Description, ErrorMessage };

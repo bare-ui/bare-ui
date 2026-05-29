@@ -184,3 +184,5 @@ export const Radio = {
 	Indicator,
 	Label,
 };
+
+export { Root, Item, Indicator, Label };

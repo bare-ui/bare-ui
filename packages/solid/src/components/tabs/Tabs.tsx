@@ -292,3 +292,5 @@ function Content(props: TabsContentProps) {
 // ---------------------------------------------------------------------------
 
 export const Tabs = { Root, List, Trigger, Content };
+
+export { Root, List, Trigger, Content };

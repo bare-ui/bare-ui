@@ -5,6 +5,13 @@ import { NavigationMenu } from './NavigationMenu';
 const meta = {
 	title: 'Layout/NavigationMenu',
 	component: NavigationMenu.Root,
+	subcomponents: {
+		'NavigationMenu.List': NavigationMenu.List,
+		'NavigationMenu.Item': NavigationMenu.Item,
+		'NavigationMenu.Trigger': NavigationMenu.Trigger,
+		'NavigationMenu.Content': NavigationMenu.Content,
+		'NavigationMenu.Link': NavigationMenu.Link,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

@@ -5,6 +5,14 @@ import { Carousel } from './Carousel';
 const meta = {
 	title: 'Layout/Carousel',
 	component: Carousel.Root,
+	subcomponents: {
+		'Carousel.Viewport': Carousel.Viewport,
+		'Carousel.Content': Carousel.Content,
+		'Carousel.Slide': Carousel.Slide,
+		'Carousel.Previous': Carousel.Previous,
+		'Carousel.Next': Carousel.Next,
+		'Carousel.Indicators': Carousel.Indicators,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

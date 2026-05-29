@@ -404,3 +404,5 @@ export const Editable = {
 	SubmitTrigger,
 	CancelTrigger,
 };
+
+export { Root, Preview, Input, Area, EditTrigger, SubmitTrigger, CancelTrigger };

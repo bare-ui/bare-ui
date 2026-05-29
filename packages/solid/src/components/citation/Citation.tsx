@@ -146,3 +146,6 @@ export const Citation = {
 	Ref,
 	List,
 };
+
+// Named exports expose the sub-components to Storybook's docgen (public API stays `Citation.*`).
+export { Root, Ref, List };

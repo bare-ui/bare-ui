@@ -154,3 +154,5 @@ export const InfiniteScroll = {
 	Loader,
 	EndMessage,
 };
+
+export { Root, Sentinel, Loader, EndMessage };

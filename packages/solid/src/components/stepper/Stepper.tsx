@@ -299,3 +299,5 @@ export const Stepper = {
 	PrevTrigger,
 	NextTrigger,
 };
+
+export { Root, List, Item, Trigger, Separator, Content, PrevTrigger, NextTrigger };

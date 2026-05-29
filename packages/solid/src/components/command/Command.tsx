@@ -424,3 +424,5 @@ export const Command = {
 	Separator,
 	Empty,
 };
+
+export { Root, Input, List, Group, Item, Separator, Empty };

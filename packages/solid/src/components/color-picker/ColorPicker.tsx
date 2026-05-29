@@ -556,3 +556,5 @@ export const ColorPicker = {
 	Swatch,
 	Input,
 };
+
+export { Root, Area, AreaThumb, Hue, HueThumb, Alpha, AlphaThumb, Swatch, Input };

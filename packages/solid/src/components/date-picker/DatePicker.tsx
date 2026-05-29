@@ -261,3 +261,5 @@ function CalendarBridge(props: DatePickerCalendarProps) {
 // ---------------------------------------------------------------------------
 
 export const DatePicker = { Root, Trigger, Value, Content, Calendar: CalendarBridge };
+
+export { Root, Trigger, Value, Content, CalendarBridge };

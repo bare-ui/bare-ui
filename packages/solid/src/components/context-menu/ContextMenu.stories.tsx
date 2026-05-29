@@ -4,6 +4,12 @@ import { ContextMenu } from './ContextMenu';
 const meta = {
 	title: 'Overlays/ContextMenu',
 	component: ContextMenu.Root,
+	subcomponents: {
+		'ContextMenu.Trigger': ContextMenu.Trigger,
+		'ContextMenu.Content': ContextMenu.Content,
+		'ContextMenu.Item': ContextMenu.Item,
+		'ContextMenu.Separator': ContextMenu.Separator,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

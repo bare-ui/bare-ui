@@ -291,3 +291,5 @@ const Next = makeNavButton('next', 'Next page');
 // ---------------------------------------------------------------------------
 
 export const Pagination = { Root, List, Items, Item, Previous, Next, Ellipsis };
+
+export { Root, List, Items, Item, Previous, Next, Ellipsis };

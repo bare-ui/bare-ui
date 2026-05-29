@@ -238,4 +238,6 @@ function Close(props: ToastCloseProps) {
 // ---------------------------------------------------------------------------
 
 export const Toast = { Provider, Viewport, Root, Title, Description, Close };
+
+export { Provider, Viewport, Root, Title, Description, Close };
 export type { ToastStatus, ToastData };

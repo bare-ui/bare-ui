@@ -152,3 +152,5 @@ function Content(props: TooltipContentProps) {
 // ---------------------------------------------------------------------------
 
 export const Tooltip = { Root, Trigger, Content };
+
+export { Root, Trigger, Content };

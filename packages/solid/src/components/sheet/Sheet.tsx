@@ -461,3 +461,5 @@ export const Sheet = {
 	Description,
 	Close,
 };
+
+export { Root, Trigger, Portal, Overlay, Content, Handle, Title, Description, Close };

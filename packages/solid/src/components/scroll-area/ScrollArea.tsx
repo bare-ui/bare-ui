@@ -342,3 +342,5 @@ export const ScrollArea = {
 	Scrollbar,
 	Thumb,
 };
+
+export { Root, Viewport, Scrollbar, Thumb };

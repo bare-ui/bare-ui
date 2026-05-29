@@ -4,6 +4,12 @@ import { Breadcrumb } from './Breadcrumb';
 const meta = {
 	title: 'Layout/Breadcrumb',
 	component: Breadcrumb.Root,
+	subcomponents: {
+		'Breadcrumb.List': Breadcrumb.List,
+		'Breadcrumb.Item': Breadcrumb.Item,
+		'Breadcrumb.Link': Breadcrumb.Link,
+		'Breadcrumb.Separator': Breadcrumb.Separator,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

@@ -4,6 +4,11 @@ import { Popover } from './Popover';
 const meta = {
 	title: 'Overlays/Popover',
 	component: Popover.Root,
+	subcomponents: {
+		'Popover.Trigger': Popover.Trigger,
+		'Popover.Content': Popover.Content,
+		'Popover.Close': Popover.Close,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

@@ -210,3 +210,5 @@ export const HoverCard = {
 	Trigger,
 	Content,
 };
+
+export { Root, Trigger, Content };

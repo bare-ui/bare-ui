@@ -195,3 +195,5 @@ export const Diff = {
 	Split,
 	Stats,
 };
+
+export { Root, Unified, Split, Stats };

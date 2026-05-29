@@ -269,3 +269,5 @@ const Decrement = makeStepButton(-1);
 // ---------------------------------------------------------------------------
 
 export const NumberInput = { Root, Field, Increment, Decrement };
+
+export { Root, Field, Increment, Decrement };

@@ -158,3 +158,6 @@ export const Alert = {
 	Description,
 	Dismiss,
 };
+
+// Named exports expose the sub-components to Storybook's docgen (public API stays `Alert.*`).
+export { Root, Title, Description, Dismiss };

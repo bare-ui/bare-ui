@@ -165,3 +165,5 @@ export const CodeBlock = {
 	Lines,
 	CopyButton,
 };
+
+export { Root, Code, Lines, CopyButton };

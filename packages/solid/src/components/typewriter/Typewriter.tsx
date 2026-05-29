@@ -242,3 +242,5 @@ export const Typewriter = {
 	Text,
 	Cursor,
 };
+
+export { Root, Text, Cursor };

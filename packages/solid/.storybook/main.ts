@@ -9,7 +9,14 @@ const config: StorybookConfig = {
     '@storybook/addon-a11y',
     '@storybook/addon-docs',
   ],
-  framework: 'storybook-solidjs-vite',
+  framework: {
+    name: 'storybook-solidjs-vite',
+    options: {
+      docgen: {
+        tsconfigPath: 'tsconfig.app.json',
+      },
+    },
+  },
   viteFinal: async (config) => {
     config.plugins = config.plugins || []
     config.plugins.push(tailwindcss())

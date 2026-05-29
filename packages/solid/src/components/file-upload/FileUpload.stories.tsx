@@ -5,6 +5,12 @@ import { FileUpload } from './FileUpload';
 const meta = {
 	title: 'Forms/FileUpload',
 	component: FileUpload.Root,
+	subcomponents: {
+		'FileUpload.Input': FileUpload.Input,
+		'FileUpload.Trigger': FileUpload.Trigger,
+		'FileUpload.Dropzone': FileUpload.Dropzone,
+		'FileUpload.Items': FileUpload.Items,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

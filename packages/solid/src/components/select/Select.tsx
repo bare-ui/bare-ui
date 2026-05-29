@@ -325,3 +325,5 @@ function GroupLabel(props: SelectGroupLabelProps) {
 // ---------------------------------------------------------------------------
 
 export const Select = { Root, Trigger, Value, Content, Item, Separator, Group, GroupLabel };
+
+export { Root, Trigger, Value, Content, Item, Separator, Group, GroupLabel };

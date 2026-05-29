@@ -418,3 +418,5 @@ function Handle(props: PanelHandleProps & { 'aria-label'?: string }) {
 // ---------------------------------------------------------------------------
 
 export const ResizablePanels = { Group, Panel, Handle };
+
+export { Group, Panel, Handle };

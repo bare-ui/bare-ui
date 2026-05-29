@@ -293,3 +293,5 @@ function Separator(props: MenuBarSeparatorProps) {
 // ---------------------------------------------------------------------------
 
 export const MenuBar = { Root, Menu, Trigger, Content, Item, Separator };
+
+export { Root, Menu, Trigger, Content, Item, Separator };

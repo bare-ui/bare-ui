@@ -167,3 +167,5 @@ export const Stat = {
 	HelpText,
 	Sparkline,
 };
+
+export { Root, Label, Value, Delta, HelpText, Sparkline };

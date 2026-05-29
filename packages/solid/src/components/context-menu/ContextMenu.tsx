@@ -311,3 +311,5 @@ function Separator(props: ContextMenuSeparatorProps) {
 // ---------------------------------------------------------------------------
 
 export const ContextMenu = { Root, Trigger, Content, Item, Separator };
+
+export { Root, Trigger, Content, Item, Separator };

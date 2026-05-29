@@ -4,6 +4,11 @@ import { Alert } from './Alert';
 const meta = {
 	title: 'Feedback/Alert',
 	component: Alert.Root,
+	subcomponents: {
+		'Alert.Title': Alert.Title,
+		'Alert.Description': Alert.Description,
+		'Alert.Dismiss': Alert.Dismiss,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

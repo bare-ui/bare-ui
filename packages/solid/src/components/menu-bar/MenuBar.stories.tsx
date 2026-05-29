@@ -5,6 +5,13 @@ import { MenuBar } from './MenuBar';
 const meta = {
 	title: 'Layout/MenuBar',
 	component: MenuBar.Root,
+	subcomponents: {
+		'MenuBar.Menu': MenuBar.Menu,
+		'MenuBar.Trigger': MenuBar.Trigger,
+		'MenuBar.Content': MenuBar.Content,
+		'MenuBar.Item': MenuBar.Item,
+		'MenuBar.Separator': MenuBar.Separator,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

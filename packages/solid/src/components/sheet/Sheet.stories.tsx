@@ -5,6 +5,15 @@ import { Sheet } from './Sheet';
 const meta = {
 	title: 'Overlays/Sheet',
 	component: Sheet.Root,
+	subcomponents: {
+		'Sheet.Trigger': Sheet.Trigger,
+		'Sheet.Overlay': Sheet.Overlay,
+		'Sheet.Content': Sheet.Content,
+		'Sheet.Handle': Sheet.Handle,
+		'Sheet.Title': Sheet.Title,
+		'Sheet.Description': Sheet.Description,
+		'Sheet.Close': Sheet.Close,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		layout: 'fullscreen',

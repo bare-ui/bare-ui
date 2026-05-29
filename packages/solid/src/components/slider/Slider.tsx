@@ -1,6 +1,6 @@
 import { createMemo, createSignal, onCleanup, splitProps, Index, type JSX } from 'solid-js';
 import { createMergedRefs } from '@/primitives/create-merged-refs';
-import type { SliderOrientation, SliderProps, SliderValue } from './Slider.types';
+import type { SliderImplProps, SliderOrientation, SliderValue } from './Slider.types';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -41,15 +41,12 @@ function callUser<E>(handler: unknown, e: E) {
 // Slider
 // ---------------------------------------------------------------------------
 
-export function Slider(props: SliderProps & { ref?: (el: HTMLDivElement) => void }) {
+// The implementation is typed with the flat `SliderImplProps` so Storybook's
+// docgen reads a single clean description per prop; consumers get the
+// discriminated `SliderProps` union via the cast on the `Slider` export below.
+function SliderImpl(props: SliderImplProps & { ref?: (el: HTMLDivElement) => void }) {
 	const [local, rest] = splitProps(
-		props as SliderProps & {
-			ref?: (el: HTMLDivElement) => void;
-			value?: number | [number, number];
-			defaultValue?: number | [number, number];
-			onChange?: (v: number | [number, number]) => void;
-			range?: boolean;
-		},
+		props,
 		[
 			'min',
 			'max',
@@ -302,3 +299,15 @@ export function Slider(props: SliderProps & { ref?: (el: HTMLDivElement) => void
 		</div>
 	);
 }
+
+// ---------------------------------------------------------------------------
+// Export
+// ---------------------------------------------------------------------------
+
+// Public component is typed with the flat `SliderImplProps` so Storybook's
+// docgen (which reads the declared type) shows one clean description per prop.
+// The discriminated `SliderProps` union remains exported for consumers who want
+// strict single/range narrowing.
+export const Slider = SliderImpl as unknown as (
+	props: SliderImplProps & { ref?: (el: HTMLDivElement) => void },
+) => JSX.Element;

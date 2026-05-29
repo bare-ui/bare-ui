@@ -7,6 +7,12 @@ import type { MarkdownNode } from '../markdown/Markdown.types';
 const meta = {
 	title: 'AI/RichText',
 	component: RichText.Root,
+	subcomponents: {
+		'RichText.Toolbar': RichText.Toolbar,
+		'RichText.Action': RichText.Action,
+		'RichText.Editor': RichText.Editor,
+		'RichText.Preview': RichText.Preview,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

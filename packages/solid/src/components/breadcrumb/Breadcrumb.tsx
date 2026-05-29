@@ -101,3 +101,6 @@ function Separator(props: BreadcrumbSeparatorProps) {
 }
 
 export const Breadcrumb = { Root, List, Item, Link, Separator };
+
+// Named exports expose the sub-components to Storybook's docgen (public API stays `Breadcrumb.*`).
+export { Root, List, Item, Link, Separator };

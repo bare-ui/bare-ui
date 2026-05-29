@@ -339,3 +339,5 @@ function Link(props: NavigationMenuLinkProps) {
 // ---------------------------------------------------------------------------
 
 export const NavigationMenu = { Root, List, Item, Trigger, Content, Link };
+
+export { Root, List, Item, Trigger, Content, Link };

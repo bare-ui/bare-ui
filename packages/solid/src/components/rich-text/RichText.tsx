@@ -248,3 +248,5 @@ export const RichText = {
 	Editor,
 	Preview,
 };
+
+export { Root, Toolbar, Action, Editor, Preview };

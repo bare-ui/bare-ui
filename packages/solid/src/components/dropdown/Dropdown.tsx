@@ -122,3 +122,5 @@ export const Dropdown = {
 	Trigger,
 	Menu,
 };
+
+export { Root, Trigger, Menu };

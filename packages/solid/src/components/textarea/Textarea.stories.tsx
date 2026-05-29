@@ -5,6 +5,11 @@ import { Textarea } from './Textarea';
 const meta = {
 	title: 'Forms/Textarea',
 	component: Textarea.Root,
+	subcomponents: {
+		'Textarea.Field': Textarea.Field,
+		'Textarea.Label': Textarea.Label,
+		'Textarea.Error': Textarea.Error,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

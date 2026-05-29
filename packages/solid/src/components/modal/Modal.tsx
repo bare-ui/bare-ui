@@ -159,3 +159,5 @@ export const Modal = {
 	Content,
 	Close,
 };
+
+export { Root, Portal, Overlay, Content, Close };

@@ -162,3 +162,5 @@ export const Input = {
 	Label,
 	Error: ErrorMessage,
 };
+
+export { Root, Field, Label, ErrorMessage };

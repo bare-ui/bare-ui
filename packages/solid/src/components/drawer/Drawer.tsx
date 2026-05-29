@@ -172,3 +172,5 @@ export const Drawer = {
 	Header,
 	Close,
 };
+
+export { Root, Portal, Overlay, Content, Header, Close };

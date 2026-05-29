@@ -486,3 +486,5 @@ function Empty(props: ComboboxEmptyProps) {
 // ---------------------------------------------------------------------------
 
 export const Combobox = { Root, Input, Trigger, Content, Items, Empty };
+
+export { Root, Input, Trigger, Content, Items, Empty };
