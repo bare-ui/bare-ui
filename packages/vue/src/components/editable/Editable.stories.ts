@@ -5,6 +5,14 @@ import { Editable } from '.';
 const meta = {
 	title: 'Forms/Editable',
 	component: Editable.Root,
+	subcomponents: {
+		'Editable.Preview': Editable.Preview,
+		'Editable.Input': Editable.Input,
+		'Editable.Area': Editable.Area,
+		'Editable.EditTrigger': Editable.EditTrigger,
+		'Editable.SubmitTrigger': Editable.SubmitTrigger,
+		'Editable.CancelTrigger': Editable.CancelTrigger,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

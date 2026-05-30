@@ -5,6 +5,15 @@ import { Stepper } from '.';
 const meta = {
 	title: 'Layout/Stepper',
 	component: Stepper.Root,
+	subcomponents: {
+		'Stepper.List': Stepper.List,
+		'Stepper.Item': Stepper.Item,
+		'Stepper.Trigger': Stepper.Trigger,
+		'Stepper.Separator': Stepper.Separator,
+		'Stepper.Content': Stepper.Content,
+		'Stepper.PrevTrigger': Stepper.PrevTrigger,
+		'Stepper.NextTrigger': Stepper.NextTrigger,
+	},
 	tags: ['autodocs'],
 	args: { count: 3 },
 	parameters: {

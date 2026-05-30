@@ -10,15 +10,25 @@ defineOptions({ name: 'DatePickerRoot' })
 
 const props = withDefaults(
 	defineProps<{
+		/** Controlled selected date (`null` when cleared). */
 		value?: Date | null
+		/** Initially selected date (uncontrolled). */
 		defaultValue?: Date | null
+		/** Called with the newly selected date, or `null` when cleared. */
 		onChange?: (date: Date | null) => void
+		/** Controlled open state of the calendar popover. */
 		open?: boolean
+		/** Initial open state of the calendar popover (uncontrolled). */
 		defaultOpen?: boolean
+		/** Called when the calendar popover opens or closes. */
 		onOpenChange?: (open: boolean) => void
+		/** Disable the trigger and prevent opening the calendar. */
 		disabled?: boolean
+		/** Close the popover automatically once a date is selected. */
 		closeOnSelect?: boolean
+		/** Locale for the formatted display value. */
 		locale?: string
+		/** Format options for the displayed date. */
 		formatOptions?: Intl.DateTimeFormatOptions
 	}>(),
 	{

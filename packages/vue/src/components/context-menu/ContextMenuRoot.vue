@@ -8,9 +8,13 @@ defineOptions({ name: 'ContextMenuRoot' })
 
 const props = withDefaults(
 	defineProps<{
+		/** Controlled open state. */
 		open?: boolean
+		/** Initial open state (uncontrolled). */
 		defaultOpen?: boolean
+		/** Called when the open state changes (right-click to open, outside click or Escape to close). */
 		onOpenChange?: (open: boolean) => void
+		/** Disable the context menu so right-click falls back to the native menu. */
 		disabled?: boolean
 	}>(),
 	{

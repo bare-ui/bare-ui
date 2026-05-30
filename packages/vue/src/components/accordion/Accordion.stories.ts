@@ -5,6 +5,11 @@ import { Accordion } from '.';
 const meta = {
 	title: 'Layout/Accordion',
 	component: Accordion.Root,
+	subcomponents: {
+		'Accordion.Item': Accordion.Item,
+		'Accordion.Trigger': Accordion.Trigger,
+		'Accordion.Content': Accordion.Content,
+	},
 	tags: ['autodocs'],
 	args: { type: 'single' as const },
 	parameters: {

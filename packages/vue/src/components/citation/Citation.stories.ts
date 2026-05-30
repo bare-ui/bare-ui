@@ -6,6 +6,10 @@ import type { CitationSource } from './Citation.types';
 const meta = {
 	title: 'AI/Citation',
 	component: Citation.Root,
+	subcomponents: {
+		'Citation.Ref': Citation.Ref,
+		'Citation.List': Citation.List,
+	},
 	tags: ['autodocs'],
 	args: { sources: [] },
 	parameters: {

@@ -3,7 +3,10 @@ import { useModalContext } from './keys'
 
 defineOptions({ name: 'ModalPortal' })
 
-defineProps<{ container?: string | HTMLElement }>()
+defineProps<{
+  /** DOM node to render the modal into. Defaults to `document.body`. */
+  container?: string | HTMLElement
+}>()
 
 const ctx = useModalContext()
 </script>

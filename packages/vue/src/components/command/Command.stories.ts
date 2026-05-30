@@ -5,6 +5,14 @@ import { Command } from '.';
 const meta = {
 	title: 'Overlays/Command',
 	component: Command.Root,
+	subcomponents: {
+		'Command.Input': Command.Input,
+		'Command.List': Command.List,
+		'Command.Group': Command.Group,
+		'Command.Item': Command.Item,
+		'Command.Separator': Command.Separator,
+		'Command.Empty': Command.Empty,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

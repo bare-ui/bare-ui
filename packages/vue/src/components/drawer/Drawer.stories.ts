@@ -5,6 +5,12 @@ import { Drawer } from '.';
 const meta = {
 	title: 'Overlays/Drawer',
 	component: Drawer.Root,
+	subcomponents: {
+		'Drawer.Overlay': Drawer.Overlay,
+		'Drawer.Content': Drawer.Content,
+		'Drawer.Header': Drawer.Header,
+		'Drawer.Close': Drawer.Close,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

@@ -8,8 +8,11 @@ import { DrawerKey } from './keys'
 defineOptions({ name: 'DrawerRoot' })
 
 const props = withDefaults(defineProps<{
+  /** Controlled open state. */
   open?: boolean
+  /** Initial open state (uncontrolled). */
   defaultOpen?: boolean
+  /** Called when the open state changes (overlay click, Escape, or a close trigger). */
   onOpenChange?: (value: boolean) => void
 }>(), { open: undefined, defaultOpen: false, onOpenChange: undefined })
 

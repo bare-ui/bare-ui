@@ -5,6 +5,11 @@ import { Modal } from '.';
 const meta = {
 	title: 'Overlays/Modal',
 	component: Modal.Root,
+	subcomponents: {
+		'Modal.Overlay': Modal.Overlay,
+		'Modal.Content': Modal.Content,
+		'Modal.Close': Modal.Close,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

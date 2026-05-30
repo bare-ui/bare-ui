@@ -5,16 +5,27 @@ import type { SliderOrientation, SliderValue } from './Slider.types';
 defineOptions({ name: 'Slider' })
 
 const props = withDefaults(defineProps<{
+	/** Minimum value. */
 	min?: number;
+	/** Maximum value. */
 	max?: number;
+	/** Step increment. */
 	step?: number;
+	/** Layout orientation. */
 	orientation?: SliderOrientation;
+	/** Disable the slider. */
 	disabled?: boolean;
+	/** Inverted (right-to-left or top-to-bottom). */
 	inverted?: boolean;
+	/** Enable two-thumb range mode. With `range`, `value` becomes `[start, end]`. */
 	range?: boolean;
+	/** Controlled value — a number in single mode, `[start, end]` in range mode. */
 	value?: number | [number, number];
+	/** Initial value, uncontrolled — a number in single mode, `[start, end]` in range mode. */
 	defaultValue?: number | [number, number];
+	/** Called when the value changes. */
 	onChange?: (value: number | [number, number]) => void;
+	/** Optional human-readable label for ARIA. */
 	'aria-label'?: string;
 }>(), {
 	min: 0,

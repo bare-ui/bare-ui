@@ -6,6 +6,13 @@ import type { ToastData } from './Toast.types';
 const meta = {
 	title: 'Feedback/Toast',
 	component: Toast.Provider,
+	subcomponents: {
+		'Toast.Viewport': Toast.Viewport,
+		'Toast.Root': Toast.Root,
+		'Toast.Title': Toast.Title,
+		'Toast.Description': Toast.Description,
+		'Toast.Close': Toast.Close,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

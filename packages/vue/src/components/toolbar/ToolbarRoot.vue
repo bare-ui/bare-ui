@@ -7,7 +7,9 @@ import { ref } from 'vue';
 defineOptions({ name: 'ToolbarRoot' });
 
 const props = withDefaults(defineProps<{
+	/** Layout + arrow-key axis. Default `'horizontal'`. */
 	orientation?: ToolbarOrientation;
+	/** Wrap focus from last → first and vice versa. Default `true`. */
 	loop?: boolean;
 }>(), {
 	orientation: 'horizontal',

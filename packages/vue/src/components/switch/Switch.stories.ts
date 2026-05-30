@@ -5,6 +5,9 @@ import { Switch } from '.';
 const meta = {
 	title: 'Forms/Switch',
 	component: Switch.Root,
+	subcomponents: {
+		'Switch.Thumb': Switch.Thumb,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

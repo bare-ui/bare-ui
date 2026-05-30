@@ -5,6 +5,10 @@ import { Avatar } from '.';
 export default {
 	title: 'Media/Avatar',
 	component: Avatar,
+	subcomponents: {
+		'Avatar.Image': Avatar.Image,
+		'Avatar.Fallback': Avatar.Fallback,
+	},
 	tags: ['autodocs'],
 };
 

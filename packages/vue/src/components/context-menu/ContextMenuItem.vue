@@ -6,7 +6,9 @@ defineOptions({ name: 'ContextMenuItem', inheritAttrs: false })
 
 const props = withDefaults(
 	defineProps<{
+		/** Disable this menu item. */
 		disabled?: boolean
+		/** Called when the item is selected (and closes the menu). */
 		onSelect?: () => void
 	}>(),
 	{

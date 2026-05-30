@@ -4,7 +4,10 @@ import type { DropdownPosition } from './Dropdown.types'
 
 defineOptions({ name: 'DropdownMenu' })
 
-defineProps<{ position?: DropdownPosition }>()
+defineProps<{
+  /** Horizontal alignment of the menu relative to the trigger. */
+  position?: DropdownPosition
+}>()
 
 const ctx = useDropdownContext()
 </script>

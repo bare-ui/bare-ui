@@ -5,6 +5,10 @@ import { Tag } from '.';
 const meta = {
 	title: 'Forms/Tag',
 	component: Tag.Root,
+	subcomponents: {
+		'Tag.Label': Tag.Label,
+		'Tag.Remove': Tag.Remove,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

@@ -6,7 +6,9 @@ import { RadioItemKey, useRadioContext } from './keys'
 defineOptions({ name: 'RadioItem' })
 
 const props = withDefaults(defineProps<{
+  /** This item's value; becomes the group's value when selected. */
   value: string | number
+  /** Disable this radio item. */
   disabled?: boolean
 }>(), { disabled: false })
 

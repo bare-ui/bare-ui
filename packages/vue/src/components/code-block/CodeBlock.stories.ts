@@ -5,6 +5,11 @@ import { CodeBlock } from '.';
 const meta = {
 	title: 'AI/CodeBlock',
 	component: CodeBlock.Root,
+	subcomponents: {
+		'CodeBlock.Code': CodeBlock.Code,
+		'CodeBlock.Lines': CodeBlock.Lines,
+		'CodeBlock.CopyButton': CodeBlock.CopyButton,
+	},
 	tags: ['autodocs'],
 	args: { code: '' },
 	parameters: {

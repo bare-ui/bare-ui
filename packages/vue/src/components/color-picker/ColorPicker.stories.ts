@@ -5,6 +5,16 @@ import { ColorPicker } from '.';
 const meta = {
 	title: 'Forms/ColorPicker',
 	component: ColorPicker.Root,
+	subcomponents: {
+		'ColorPicker.Area': ColorPicker.Area,
+		'ColorPicker.AreaThumb': ColorPicker.AreaThumb,
+		'ColorPicker.Hue': ColorPicker.Hue,
+		'ColorPicker.HueThumb': ColorPicker.HueThumb,
+		'ColorPicker.Alpha': ColorPicker.Alpha,
+		'ColorPicker.AlphaThumb': ColorPicker.AlphaThumb,
+		'ColorPicker.Swatch': ColorPicker.Swatch,
+		'ColorPicker.Input': ColorPicker.Input,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

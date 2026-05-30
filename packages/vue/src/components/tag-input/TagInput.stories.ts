@@ -6,6 +6,11 @@ import { Tag } from '../tag';
 const meta = {
 	title: 'Forms/TagInput',
 	component: TagInput.Root,
+	subcomponents: {
+		'TagInput.List': TagInput.List,
+		'TagInput.Items': TagInput.Items,
+		'TagInput.Field': TagInput.Field,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

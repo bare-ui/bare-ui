@@ -5,6 +5,12 @@ import { Password } from '.';
 const meta = {
 	title: 'Forms/Password',
 	component: Password.Root,
+	subcomponents: {
+		'Password.Field': Password.Field,
+		'Password.Toggle': Password.Toggle,
+		'Password.Label': Password.Label,
+		'Password.Error': Password.Error,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

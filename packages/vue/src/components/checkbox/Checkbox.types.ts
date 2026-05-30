@@ -12,15 +12,21 @@ export interface CheckboxItemContextValue {
 }
 
 export interface CheckboxRootProps {
+	/** Controlled list of checked item values. */
 	value?: (string | number)[];
+	/** Initially checked item values (uncontrolled). */
 	defaultValue?: (string | number)[];
+	/** Called with the new list of checked values whenever the selection changes. */
 	onChange?: (value: (string | number)[]) => void;
+	/** Form field name shared by every checkbox in the group. */
 	name?: string;
 	class?: string;
 }
 
 export interface CheckboxItemProps {
+	/** This item's value; added to the group's value array while checked. */
 	value: string | number;
+	/** Disable this checkbox item. */
 	disabled?: boolean;
 	class?: string;
 }

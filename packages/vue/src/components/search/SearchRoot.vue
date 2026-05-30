@@ -9,15 +9,25 @@ import type { SearchOption } from './Search.types'
 defineOptions({ name: 'SearchRoot' })
 
 const props = withDefaults(defineProps<{
+  /** Controlled open state of the results popover. */
   open?: boolean
+  /** Initial open state of the results popover (uncontrolled). */
   defaultOpen?: boolean
+  /** Called when the results popover opens or closes. */
   onOpenChange?: (open: boolean) => void
+  /** Controlled search input value. */
   value?: string
+  /** Initial search input value (uncontrolled). */
   defaultSearchValue?: string
+  /** Called when the search text changes, debounced by `searchDelay`. */
   onSearchChange?: (value: string) => void
+  /** Called with the option the user chooses from the results. */
   onSelect?: (option: SearchOption) => void
+  /** Called when the user submits the search (Enter with no result highlighted). */
   onSubmitSearch?: () => void
+  /** Show a loading state while results are being fetched. */
   loading?: boolean
+  /** Debounce delay in milliseconds before `onSearchChange` fires. */
   searchDelay?: number
 }>(), { open: undefined, defaultOpen: false, onOpenChange: undefined, value: undefined, defaultSearchValue: '', onSearchChange: undefined, onSelect: undefined, onSubmitSearch: undefined, loading: false, searchDelay: 1000 })
 

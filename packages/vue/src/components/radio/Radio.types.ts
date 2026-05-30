@@ -12,15 +12,21 @@ export interface RadioItemContextValue {
 }
 
 export interface RadioRootProps {
+	/** Controlled selected value. */
 	value?: string | number;
+	/** Initially selected value (uncontrolled). */
 	defaultValue?: string | number;
+	/** Called with the newly selected value. */
 	onChange?: (value: string | number) => void;
+	/** Form field name shared by every radio in the group. */
 	name?: string;
 	class?: string;
 }
 
 export interface RadioItemProps {
+	/** This item's value; becomes the group's value when selected. */
 	value: string | number;
+	/** Disable this radio item. */
 	disabled?: boolean;
 	class?: string;
 }

@@ -6,7 +6,7 @@ import type { SearchOption } from './Search.types'
 
 defineOptions({ name: 'SearchItem' })
 
-const props = defineProps<{ option: SearchOption }>()
+const props = defineProps<{ /** The option this result row represents. */ option: SearchOption }>()
 
 const ctx = useSearchContext()
 const { handlers, dataAttributes } = useInteractiveState()

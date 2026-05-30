@@ -7,9 +7,13 @@ import { useId } from '@/composables/use-id'
 defineOptions({ name: 'RadioRoot' })
 
 const props = withDefaults(defineProps<{
+  /** Controlled selected value. */
   value?: string | number
+  /** Initially selected value (uncontrolled). */
   defaultValue?: string | number
+  /** Called with the newly selected value. */
   onChange?: (value: string | number) => void
+  /** Form field name shared by every radio in the group. */
   name?: string
 }>(), {})
 

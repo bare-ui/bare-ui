@@ -6,6 +6,12 @@ import type { MentionOption } from './Mention.types';
 const meta = {
 	title: 'AI/Mention',
 	component: Mention.Root,
+	subcomponents: {
+		'Mention.Input': Mention.Input,
+		'Mention.Content': Mention.Content,
+		'Mention.Items': Mention.Items,
+		'Mention.Empty': Mention.Empty,
+	},
 	tags: ['autodocs'],
 	args: { options: [] },
 	parameters: {

@@ -5,6 +5,11 @@ import { Checkbox } from '.';
 const meta = {
 	title: 'Forms/Checkbox',
 	component: Checkbox.Root,
+	subcomponents: {
+		'Checkbox.Item': Checkbox.Item,
+		'Checkbox.Indicator': Checkbox.Indicator,
+		'Checkbox.Label': Checkbox.Label,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

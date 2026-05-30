@@ -5,6 +5,10 @@ import { ResizablePanels } from '.';
 const meta = {
 	title: 'Layout/ResizablePanels',
 	component: ResizablePanels.Group,
+	subcomponents: {
+		'ResizablePanels.Panel': ResizablePanels.Panel,
+		'ResizablePanels.Handle': ResizablePanels.Handle,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

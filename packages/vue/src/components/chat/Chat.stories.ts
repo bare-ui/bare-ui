@@ -6,6 +6,13 @@ import { Typewriter } from '../typewriter';
 const meta = {
 	title: 'AI/Chat',
 	component: Chat.Root,
+	subcomponents: {
+		'Chat.List': Chat.List,
+		'Chat.Message': Chat.Message,
+		'Chat.Composer': Chat.Composer,
+		'Chat.Input': Chat.Input,
+		'Chat.Send': Chat.Send,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		layout: 'fullscreen',

@@ -5,6 +5,10 @@ import { HoverCard } from '.';
 const meta = {
 	title: 'Overlays/HoverCard',
 	component: HoverCard.Root,
+	subcomponents: {
+		'HoverCard.Trigger': HoverCard.Trigger,
+		'HoverCard.Content': HoverCard.Content,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

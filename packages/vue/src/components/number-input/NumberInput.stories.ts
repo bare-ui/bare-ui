@@ -5,6 +5,9 @@ import { NumberInput } from '.';
 const meta = {
 	title: 'Forms/NumberInput',
 	component: NumberInput.Root,
+	subcomponents: {
+		'NumberInput.Field': NumberInput.Field,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

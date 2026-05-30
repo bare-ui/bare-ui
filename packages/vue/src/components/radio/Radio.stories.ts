@@ -5,6 +5,11 @@ import { Radio } from '.';
 const meta = {
 	title: 'Forms/Radio',
 	component: Radio.Root,
+	subcomponents: {
+		'Radio.Item': Radio.Item,
+		'Radio.Indicator': Radio.Indicator,
+		'Radio.Label': Radio.Label,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

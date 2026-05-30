@@ -5,6 +5,11 @@ import { InfiniteScroll } from '.';
 const meta = {
 	title: 'Layout/InfiniteScroll',
 	component: InfiniteScroll.Root,
+	subcomponents: {
+		'InfiniteScroll.Sentinel': InfiniteScroll.Sentinel,
+		'InfiniteScroll.Loader': InfiniteScroll.Loader,
+		'InfiniteScroll.EndMessage': InfiniteScroll.EndMessage,
+	},
 	tags: ['autodocs'],
 	args: { onLoadMore: () => {} },
 	parameters: {

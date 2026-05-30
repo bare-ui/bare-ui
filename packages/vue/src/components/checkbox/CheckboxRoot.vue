@@ -7,9 +7,13 @@ import { useId } from '@/composables/use-id'
 defineOptions({ name: 'CheckboxRoot' })
 
 const props = withDefaults(defineProps<{
+  /** Controlled list of checked item values. */
   value?: (string | number)[]
+  /** Initially checked item values (uncontrolled). */
   defaultValue?: (string | number)[]
+  /** Called with the new list of checked values whenever the selection changes. */
   onChange?: (value: (string | number)[]) => void
+  /** Form field name shared by every checkbox in the group. */
   name?: string
 }>(), {
   defaultValue: () => [],

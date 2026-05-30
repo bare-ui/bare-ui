@@ -6,6 +6,13 @@ import { Input } from '../input';
 const meta = {
 	title: 'Forms/Form',
 	component: Form.Root,
+	subcomponents: {
+		'Form.Field': Form.Field,
+		'Form.Label': Form.Label,
+		'Form.Control': Form.Control,
+		'Form.Description': Form.Description,
+		'Form.Error': Form.Error,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

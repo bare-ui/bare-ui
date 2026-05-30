@@ -8,8 +8,11 @@ import { DropdownKey } from './keys'
 defineOptions({ name: 'DropdownRoot' })
 
 const props = withDefaults(defineProps<{
+  /** Controlled open state. */
   open?: boolean
+  /** Initial open state (uncontrolled). */
   defaultOpen?: boolean
+  /** Called when the open state changes (trigger click, outside click, or Escape). */
   onOpenChange?: (value: boolean) => void
 }>(), { open: undefined, defaultOpen: false, onOpenChange: undefined })
 

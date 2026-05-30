@@ -5,6 +5,10 @@ import { OTP } from '.';
 const meta = {
 	title: 'Forms/OTP',
 	component: OTP.Root,
+	subcomponents: {
+		'OTP.Slot': OTP.Slot,
+		'OTP.Separator': OTP.Separator,
+	},
 	tags: ['autodocs'],
 	parameters: {
 		docs: {

@@ -6,7 +6,9 @@ import { CheckboxItemKey, useCheckboxContext } from './keys'
 defineOptions({ name: 'CheckboxItem' })
 
 const props = withDefaults(defineProps<{
+  /** This item's value; added to the group's value array while checked. */
   value: string | number
+  /** Disable this checkbox item. */
   disabled?: boolean
 }>(), { disabled: false })
 

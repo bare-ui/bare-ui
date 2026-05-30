@@ -6,6 +6,12 @@ import type { PaginationItemValue } from './Pagination.types';
 const meta = {
 	title: 'Forms/Pagination',
 	component: Pagination.Root,
+	subcomponents: {
+		'Pagination.List': Pagination.List,
+		'Pagination.Items': Pagination.Items,
+		'Pagination.Item': Pagination.Item,
+		'Pagination.Ellipsis': Pagination.Ellipsis,
+	},
 	tags: ['autodocs'],
 	args: { totalPages: 10 },
 	parameters: {
