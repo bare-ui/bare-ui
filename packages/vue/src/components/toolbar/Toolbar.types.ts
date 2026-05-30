@@ -34,6 +34,18 @@ export interface ToolbarButtonProps {
 	disabled?: boolean;
 }
 
+export interface ToolbarToggleProps {
+	class?: string;
+	/** Controlled pressed state. */
+	pressed?: boolean;
+	/** Initial pressed state (uncontrolled). Default `false`. */
+	defaultPressed?: boolean;
+	/** Disable the toggle — it is skipped by roving focus. */
+	disabled?: boolean;
+	/** Called when the pressed state changes. */
+	onPressedChange?: (pressed: boolean) => void;
+}
+
 export interface ToolbarLinkProps {
 	class?: string;
 	href?: string;
