@@ -80,16 +80,6 @@ export const Default: Story = {
 								),
 							),
 						),
-						...steps.map((s, i) =>
-							h(
-								Stepper.Content,
-								{ key: s.title, index: i, class: 'rounded-xl border border-[#e5e7eb] p-4 text-sm text-[#374151]' },
-								() => [
-									h('p', { class: 'mb-1 font-semibold text-black' }, s.title),
-									s.body,
-								],
-							),
-						),
 						h('div', { class: 'flex justify-between' }, [
 							h(
 								Stepper.PrevTrigger,

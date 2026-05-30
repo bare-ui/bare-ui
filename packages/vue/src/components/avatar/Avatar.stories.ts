@@ -10,6 +10,14 @@ export default {
 		'Avatar.Fallback': Avatar.Fallback,
 	},
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component:
+					'Displays a user image with a text fallback shown while it loads or if it fails. Compose `Avatar.Image` and `Avatar.Fallback` inside `Avatar.Root`; overlap several for a stacked group.',
+			},
+		},
+	},
 };
 
 export const Default: StoryObj = {

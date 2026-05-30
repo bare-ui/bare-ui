@@ -52,7 +52,7 @@ export const Default: Story = {
 								h(
 									Drawer.Content,
 									{
-										class: 'fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r-[3px] border-black bg-white',
+										class: 'fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r border-black bg-white',
 									},
 									() => [
 										h(
@@ -117,7 +117,7 @@ export const Composed: Story = {
 								h(
 									Drawer.Content,
 									{
-										class: 'fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r-[3px] border-black bg-white',
+										class: 'fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r border-black bg-white',
 									},
 									() => [
 										h(
@@ -188,7 +188,7 @@ export const Complex: Story = {
 								h(
 									Drawer.Content,
 									{
-										class: 'fixed left-0 top-0 z-50 flex h-full w-80 flex-col border-r-[3px] border-black bg-white',
+										class: 'fixed left-0 top-0 z-50 flex h-full w-80 flex-col border-r border-black bg-white',
 									},
 									() => [
 										h(

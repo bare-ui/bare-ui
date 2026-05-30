@@ -24,14 +24,8 @@ const WireframePlaceholder = (props: { width?: number; height?: number }) => {
 	return h(
 		'div',
 		{
-			style: {
-				width: `${width}px`,
-				height: `${height}px`,
-				position: 'relative',
-				background: '#f5f5f5',
-				border: '2px solid #000',
-				overflow: 'hidden',
-			},
+			class: 'relative overflow-hidden border border-black bg-[#f5f5f5] text-black',
+			style: { width: `${width}px`, height: `${height}px` },
 		},
 		[
 			h(
@@ -47,8 +41,8 @@ const WireframePlaceholder = (props: { width?: number; height?: number }) => {
 						y1: '0',
 						x2: '100',
 						y2: '100',
-						stroke: '#000',
-						'stroke-width': '2',
+						stroke: 'currentColor',
+						'stroke-width': '1',
 						'vector-effect': 'non-scaling-stroke',
 					}),
 					h('line', {
@@ -56,8 +50,8 @@ const WireframePlaceholder = (props: { width?: number; height?: number }) => {
 						y1: '0',
 						x2: '0',
 						y2: '100',
-						stroke: '#000',
-						'stroke-width': '2',
+						stroke: 'currentColor',
+						'stroke-width': '1',
 						'vector-effect': 'non-scaling-stroke',
 					}),
 				],
