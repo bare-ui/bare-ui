@@ -5,6 +5,100 @@ All notable changes to `@wire-ui/vue` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-05-30
+
+### Added
+
+#### Components
+
+- **Carousel** — snap-scrolling carousel with `orientation="horizontal" | "vertical"`, optional `loop`,
+  uncontrolled active index (`defaultIndex` / `onIndexChange`), and arrow-key navigation; `data-orientation`
+  on root; sub-components: `Carousel.Root`, `Carousel.Viewport`, `Carousel.Content`, `Carousel.Slide`,
+  `Carousel.Previous`, `Carousel.Next`, `Carousel.Indicators` (scoped slot with `{ index, selected, scrollTo }`)
+- **Chat** — streaming-aware chat surface with a virtualized message list, auto-growing composer, and
+  controlled/uncontrolled input (`value` / `defaultValue` / `onValueChange` / `onSubmit`); `isStreaming` toggles
+  `data-streaming`, list supports `stickToBottom`, `estimateItemHeight`, and `overscan`; sub-components: `Chat.Root`,
+  `Chat.List`, `Chat.Message` (per-message `role` + `streaming` → `data-role` / `data-streaming`), `Chat.Composer`,
+  `Chat.Input` (`submitOnEnter`, `autoResize`), `Chat.Send`
+- **Citation** — footnote-style references with auto-numbering and bidirectional anchors from a `sources` array; refs
+  render `role="doc-noteref"`, footnotes `role="doc-endnote"`, `data-index` on both; sub-components: `Citation.Root`,
+  `Citation.Ref` (`for` source id, scoped slot or default `<sup>`), `Citation.List` (scoped slot over sources)
+- **CodeBlock** — code display with line numbers (`startLine`), per-line `diff` markers, `highlightLines`, and
+  copy-to-clipboard (`copyResetAfter`); `data-language` on root and `<pre>`; sub-components: `CodeBlock.Root`,
+  `CodeBlock.Code`, `CodeBlock.Lines` (scoped slot with `{ line }` where `line` is `{ number, content, diff, highlighted }`),
+  `CodeBlock.CopyButton` (scoped slot with `{ copied }`)
+- **ColorPicker** — HSVA color picker with pointer-drag saturation/value area, hue and alpha tracks, controlled value
+  as a hex string (`value` / `defaultValue` / `onChange`), and toggleable `alpha`; sub-components: `ColorPicker.Root`,
+  `ColorPicker.Area`, `ColorPicker.AreaThumb`, `ColorPicker.Hue`, `ColorPicker.HueThumb`, `ColorPicker.Alpha`,
+  `ColorPicker.AlphaThumb`, `ColorPicker.Swatch`, `ColorPicker.Input`
+- **Command** — command palette with fuzzy `filter`, roving arrow-key navigation (`loop`), optional global `shortcut`
+  (e.g. `mod+k`), controlled search (`searchValue` / `defaultSearchValue` / `onSearchChange`) and open state; `data-highlighted`
+  on the active item; sub-components: `Command.Root`, `Command.Input`, `Command.List`, `Command.Group` (optional `heading`),
+  `Command.Item` (`value`, `keywords`, `onSelect`), `Command.Separator`, `Command.Empty`
+- **Diff** — line-by-line text diff (LCS-based) with unified and side-by-side views from `oldValue` / `newValue`;
+  exposes line `type` (`equal` / `insert` / `delete`) with 1-based `oldLine` / `newLine`; sub-components: `Diff.Root`,
+  `Diff.Unified`, `Diff.Split` (paired rows), `Diff.Stats` (`{ additions, deletions }`)
+- **Editable** — inline editable field toggling between preview and edit modes with a draft buffer, `submitOnBlur`, and
+  `onSubmit` / `onCancel` / `onEdit` callbacks; controlled value and editing state; sub-components: `Editable.Root`,
+  `Editable.Preview`, `Editable.Input`, `Editable.Area`, `Editable.EditTrigger`, `Editable.SubmitTrigger`,
+  `Editable.CancelTrigger`
+- **EmptyState** — placeholder layout for empty/zero-data views; root carries `role="status"`, media is
+  `aria-hidden`; sub-components: `EmptyState.Root`, `EmptyState.Media`, `EmptyState.Title`, `EmptyState.Description`,
+  `EmptyState.Actions`
+- **HoverCard** — richer hover-triggered floating card with configurable `openDelay` / `closeDelay` on `Root`, and
+  `side` / `sideOffset` / `forceMount` on `Content`, plus controlled/uncontrolled open state; sub-components:
+  `HoverCard.Root`, `HoverCard.Trigger`, `HoverCard.Content`
+- **InfiniteScroll** — sentinel-based load-more primitive built on [[use-intersection-observer]]; fires `onLoadMore`
+  when the sentinel enters view while `hasMore && !loading && !disabled`, with configurable `rootMargin`; `data-loading`
+  and `data-has-more` on root; sub-components: `InfiniteScroll.Root`, `InfiniteScroll.Sentinel`,
+  `InfiniteScroll.Loader`, `InfiniteScroll.EndMessage`
+- **Markdown** — parser-agnostic Markdown renderer that accepts a pre-parsed `nodes` tree or raw `content` + `parse`
+  function, with a `components` override map keyed by mdast node type; default renderers emit semantic HTML for
+  paragraphs, headings, lists, code, links, images, blockquotes, and inline marks
+- **Mention** — inline `@`-mention input with caret-aware suggestion detection over an `options` list, custom
+  `trigger` and `filter`, `appendSpace`, and `onSelect`; controlled/uncontrolled value (`value` / `defaultValue` /
+  `onChange`); sub-components: `Mention.Root`, `Mention.Input` (textarea), `Mention.Content`, `Mention.Items`
+  (scoped slot with `{ option, active, index }`), `Mention.Empty`
+- **RichText** — slot-based Markdown editor scaffold built on [[Markdown]] with `edit` / `preview` / `split` modes,
+  selection-wrapping and text-insertion actions, and a controlled Markdown `value`; sub-components: `RichText.Root`,
+  `RichText.Toolbar`, `RichText.Action` (`wrap` / `insert`), `RichText.Editor`, `RichText.Preview`
+- **ScrollArea** — scroll container with a custom, styleable scrollbar; independent vertical/horizontal scrollbars with
+  draggable thumbs and live `metrics` via `ResizeObserver`; `forceMount` to render bars without overflow;
+  sub-components: `ScrollArea.Root`, `ScrollArea.Viewport`, `ScrollArea.Scrollbar` (`orientation`), `ScrollArea.Thumb`
+- **Sheet** — drawer-adjacent sliding panel with `side="top" | "bottom"`, `snapPoints` (viewport-fraction or px),
+  drag-to-dismiss via a handle, optional `modal` backdrop with focus trap and scroll lock, and controlled/uncontrolled
+  open + active snap point (`activeSnapPoint` / `defaultActiveSnapPoint` / `onActiveSnapPointChange`); sub-components:
+  `Sheet.Root`, `Sheet.Trigger`, `Sheet.Portal`, `Sheet.Overlay`, `Sheet.Content`, `Sheet.Handle`, `Sheet.Title`,
+  `Sheet.Description`, `Sheet.Close`
+- **Stat** — KPI / metric display with label, value, delta (direction auto-inferred from sign, `data-direction`), help
+  text, and an SVG `Sparkline`; root carries `role="group"`; sub-components: `Stat.Root`, `Stat.Label`, `Stat.Value`,
+  `Stat.Delta`, `Stat.HelpText`, `Stat.Sparkline` (`data`, `width`, `height`, `strokeWidth`)
+- **Stepper** — multi-step / wizard flow with `count`, controlled/uncontrolled 0-based active step
+  (`value` / `defaultValue` / `onChange`), `orientation="horizontal" | "vertical"`, and `linear` mode that blocks
+  forward jumps; per-step state (`active` / `completed` / `inactive`), `data-orientation` on root; sub-components:
+  `Stepper.Root`, `Stepper.List`, `Stepper.Item`, `Stepper.Trigger`, `Stepper.Separator`, `Stepper.Content`
+  (`forceMount`), `Stepper.PrevTrigger`, `Stepper.NextTrigger` (auto-disabled at boundaries)
+- **Toggle** — two-state pressable button with `pressed` / `defaultPressed` / `onPressedChange`, `aria-pressed`, and
+  `data-state` (`on` / `off`); ships with **ToggleGroup** for `single` / `multiple` selection with roving focus,
+  arrow-key navigation, `loop`, and `orientation`; sub-components: standalone `Toggle` and `ToggleGroup.Root`. Inside a
+  group, a `Toggle` carries a `value` prop and the group owns its pressed state
+- **Toolbar** — accessible `role="toolbar"` container with roving focus and arrow-key navigation,
+  `orientation="horizontal" | "vertical"`, and `loop`; sub-components: `Toolbar.Root`, `Toolbar.Button`,
+  `Toolbar.Toggle` (`pressed` / `onPressedChange`, `data-state`), `Toolbar.Link`, `Toolbar.Separator`
+- **Typewriter** — token-by-token text reveal with `char` / `word` mode, configurable `speed`, `startDelay`,
+  `autoStart`, `loop` / `loopDelay`, streaming-friendly growing `text` (with `resetOnTextChange`), and `onComplete`;
+  scoped-slot state `{ displayed, isTyping, isDone, progress }`; respects `prefers-reduced-motion` (reveals instantly);
+  sub-components: `Typewriter.Root`, `Typewriter.Text`, `Typewriter.Cursor`
+- **Virtualizer** — windowing primitive for large lists with `count`, `estimateSize`, `overscan`,
+  `orientation="vertical" | "horizontal"`, and stable `getItemKey`; dynamic per-item measurement via `ResizeObserver`
+  with prefix-sum offsets, scoped-slot children receiving `VirtualItem` (`{ index, start, size }`) and `data-index` on
+  items; sub-components: `Virtualizer.Root`
+
+### Changed
+
+- **`useLocalStorage`** / **`useSessionStorage`** — moved into a shared `use-storage` module for naming consistency;
+  no API change (exports and behavior are unchanged)
+
 ## [0.3.0] - 2026-05-23
 
 ### Added
