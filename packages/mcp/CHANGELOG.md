@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-05-31
+
+Catches the MCP catalog up to the `0.4.0` releases of `@wire-ui/react`, `@wire-ui/solid`, and `@wire-ui/vue`.
+
+### Added
+
+- 22 new components catalogued (the 0.4 component expansion), surfaced by `list_components`, `get_component`, and `get_exports_list` across all three frameworks:
+  - **Display** — `Carousel`, `Chat`, `Citation`, `CodeBlock`, `Diff`, `Markdown`, `Stat`, `Typewriter`
+  - **Form** — `ColorPicker`, `Editable`, `Mention`, `RichText`, `Toggle` (ships with `ToggleGroup`)
+  - **Overlay** — `Command`, `HoverCard`, `Sheet`
+  - **Layout** — `InfiniteScroll`, `ScrollArea`, `Virtualizer`
+  - **Navigation** — `Stepper`, `Toolbar` (with `Toolbar.Toggle`)
+  - Render-prop parts document their children signatures and provided fields (e.g. `Carousel.Indicators`, `Chat.List`, `CodeBlock.Lines`, `Diff.Unified`/`Diff.Split`, `Mention.Items`, `Virtualizer`).
+
+### Changed
+
+- Props for `Checkbox`, `Input`, `Search`, `Slider`, `DatePicker`, `Drawer`, `Dropdown`, `ContextMenu`, `Radio`, `Textarea`, and `Modal` synced to the real component types — corrected names, types, defaults, and descriptions, and filled in missing props (e.g. `Input`/`Textarea` `onFocus`/`onBlur`/`id`, `Checkbox`/`Radio` `name`, `Search` open/value props, `Dropdown` `Trigger.asChild` + `Menu.position`, `Modal`/`Drawer` `Portal.container`).
+- `Slider` corrected from a compound `Root`/`Track`/`Range`/`Thumb` API to the actual single non-compound `<Slider>` component (`onChange`, `value: number | [number, number]`, `range`, `inverted`), and is now documented for all three frameworks (previously React-only).
+- `DatePicker` parts fixed (`Value` replaces the non-existent `Input` part).
+
 ## [0.3.0] - 2026-05-23
 
 Catches the MCP catalog up to the `0.3.0` releases of `@wire-ui/react`, `@wire-ui/solid`, and `@wire-ui/vue`.
