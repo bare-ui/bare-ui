@@ -48,51 +48,74 @@ const seed: Msg[] = [
 const REPLY =
 	'Great question! Wire UI ships zero CSS — you style everything with class and data-* attributes, so it drops into any design system.';
 
-const blinkStyle = `
-@keyframes wire-blink { 0%, 49% { opacity: 1 } 50%, 100% { opacity: 0 } }
-.wire-cursor { animation: wire-blink 1s step-end infinite }
-`;
+const bubbleCls = (isUser: boolean) =>
+	`max-w-[80%] rounded-2xl px-3 py-2 text-sm leading-relaxed ${
+		isUser ? 'bg-black text-white' : 'bg-[#f3f4f6] text-black'
+	}`;
 
-// Renders a single message bubble at the given list index. While a message is
-// streaming, its body reveals through Typewriter; otherwise it renders plain.
-function renderMessage(messages: Msg[]) {
-	return ({ index }: { index: number }) => {
-		const msg = messages[index];
-		if (!msg) return null;
-		const isUser = msg.role === 'user';
-		return h(
-			Chat.Message,
-			{
-				role: msg.role,
-				streaming: msg.streaming,
-				class: `flex py-2 ${isUser ? 'justify-end' : 'justify-start'}`,
-			},
-			() =>
+export const Default: Story = {
+	render: () => ({
+		setup() {
+			const messages = ref<Msg[]>([...seed]);
+			let nextId = seed.length;
+
+			function send(text: string) {
+				messages.value.push({ id: nextId++, role: 'user', text });
+			}
+
+			return () =>
 				h(
-					'div',
+					Chat.Root,
 					{
-						class: `max-w-[80%] rounded-2xl px-3 py-2 text-sm leading-relaxed ${
-							isUser ? 'bg-black text-white' : 'bg-[#f3f4f6] text-black'
-						}`,
+						onSubmit: send,
+						class: 'mx-auto flex h-[420px] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white',
 					},
-					msg.streaming
-						? [
-								h(Typewriter.Root, { text: msg.text, speed: 18 }, () => [
-									h(Typewriter.Text),
-									h(
-										Typewriter.Cursor,
-										{ class: 'wire-cursor ml-0.5 inline-block w-[1ch]' },
-										() => '▋',
-									),
-								]),
-							]
-						: msg.text,
-				),
-		);
-	};
-}
+					() => [
+						h(
+							Chat.List,
+							{ count: messages.value.length, estimateItemHeight: 88, class: 'flex-1 px-4 py-3' },
+							{
+								default: ({ index }: { index: number }) => {
+									const msg = messages.value[index];
+									if (!msg) return null;
+									const isUser = msg.role === 'user';
+									return h(
+										Chat.Message,
+										{
+											role: msg.role,
+											class: `flex py-2 ${isUser ? 'justify-end' : 'justify-start'}`,
+										},
+										() => h('div', { class: bubbleCls(isUser) }, msg.text),
+									);
+								},
+							},
+						),
+						h(
+							Chat.Composer,
+							{ class: 'flex items-end gap-2 border-t border-[#e5e7eb] p-3' },
+							() => [
+								h(Chat.Input, {
+									'aria-label': 'Message',
+									rows: 1,
+									placeholder: 'Send a message…',
+									class: 'max-h-32 flex-1 resize-none rounded-xl border border-[#d1d5db] px-3 py-2 text-sm outline-none focus:border-black',
+								}),
+								h(
+									Chat.Send,
+									{
+										class: 'rounded-xl bg-black px-4 py-2 text-sm font-medium text-white disabled:opacity-40',
+									},
+									() => 'Send',
+								),
+							],
+						),
+					],
+				);
+		},
+	}),
+};
 
-export const ChatUI: Story = {
+export const Composed: Story = {
 	render: () => ({
 		setup() {
 			const messages = ref<Msg[]>([...seed]);
@@ -104,7 +127,6 @@ export const ChatUI: Story = {
 				const botIndex =
 					messages.value.push({ id: nextId++, role: 'assistant', text: REPLY, streaming: true }) - 1;
 				streaming.value = true;
-				// Drop the streaming flag once the typewriter would finish.
 				setTimeout(() => {
 					const msg = messages.value[botIndex];
 					if (msg) msg.streaming = false;
@@ -113,82 +135,130 @@ export const ChatUI: Story = {
 			}
 
 			return () =>
-				h('div', null, [
-					h('style', null, blinkStyle),
-					h(
-						Chat.Root,
-						{
-							isStreaming: streaming.value,
-							onSubmit: send,
-							class: 'mx-auto flex h-[520px] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white',
-						},
-						() => [
-							h(
-								Chat.List,
-								{ count: messages.value.length, estimateItemHeight: 88, class: 'flex-1 px-4 py-3' },
-								{ default: renderMessage(messages.value) },
-							),
-							h(
-								Chat.Composer,
-								{ class: 'flex items-end gap-2 border-t border-[#e5e7eb] p-3' },
-								() => [
-									h(Chat.Input, {
-										'aria-label': 'Message',
-										rows: 1,
-										placeholder: 'Send a message…',
-										class: 'max-h-32 flex-1 resize-none rounded-xl border border-[#d1d5db] px-3 py-2 text-sm outline-none focus:border-black',
-									}),
-									h(
-										Chat.Send,
+				h(
+					Chat.Root,
+					{
+						isStreaming: streaming.value,
+						onSubmit: send,
+						class: 'mx-auto flex h-[520px] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white',
+					},
+					() => [
+						h(
+							Chat.List,
+							{ count: messages.value.length, estimateItemHeight: 88, class: 'flex-1 px-4 py-3' },
+							{
+								default: ({ index }: { index: number }) => {
+									const msg = messages.value[index];
+									if (!msg) return null;
+									const isUser = msg.role === 'user';
+									return h(
+										Chat.Message,
 										{
-											class: 'rounded-xl bg-black px-4 py-2 text-sm font-medium text-white disabled:opacity-40',
+											role: msg.role,
+											streaming: msg.streaming,
+											class: `flex py-2 ${isUser ? 'justify-end' : 'justify-start'}`,
 										},
-										() => 'Send',
-									),
-								],
-							),
-						],
-					),
-				]);
+										() =>
+											h(
+												'div',
+												{ class: bubbleCls(isUser) },
+												msg.streaming
+													? [
+															h(Typewriter.Root, { text: msg.text, speed: 18 }, () => [
+																h(Typewriter.Text),
+																h(
+																	Typewriter.Cursor,
+																	{ class: 'ml-0.5 inline-block animate-pulse' },
+																	() => '▋',
+																),
+															]),
+														]
+													: msg.text,
+											),
+									);
+								},
+							},
+						),
+						h(
+							Chat.Composer,
+							{ class: 'flex items-end gap-2 border-t border-[#e5e7eb] p-3' },
+							() => [
+								h(Chat.Input, {
+									'aria-label': 'Message',
+									rows: 1,
+									placeholder: 'Send a message…',
+									class: 'max-h-32 flex-1 resize-none rounded-xl border border-[#d1d5db] px-3 py-2 text-sm outline-none focus:border-black',
+								}),
+								h(
+									Chat.Send,
+									{
+										class: 'rounded-xl bg-black px-4 py-2 text-sm font-medium text-white disabled:opacity-40',
+									},
+									() => 'Send',
+								),
+							],
+						),
+					],
+				);
 		},
 	}),
 };
 
-/** A large, virtualized history — only the visible rows are in the DOM. */
-export const VirtualizedHistory: Story = {
+export const Complex: Story = {
 	render: () => ({
 		setup() {
 			const count = 5000;
 			return () =>
 				h(
-					Chat.List,
+					'div',
 					{
-						count,
-						estimateItemHeight: 64,
-						class: 'mx-auto h-[480px] w-full max-w-lg rounded-2xl border border-[#e5e7eb] bg-white px-4',
+						class: 'mx-auto flex h-[560px] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white',
 					},
-					{
-						default: ({ index }: { index: number }) => {
-							const isAssistant = index % 2 === 0;
-							return h(
-								Chat.Message,
-								{
-									role: isAssistant ? 'assistant' : 'user',
-									class: `flex py-2 ${isAssistant ? 'justify-start' : 'justify-end'}`,
-								},
-								() =>
+					[
+						h(
+							'div',
+							{ class: 'flex items-center justify-between border-b border-[#e5e7eb] px-4 py-3' },
+							[
+								h('div', { class: 'flex items-center gap-2' }, [
 									h(
-										'div',
+										'span',
 										{
-											class: `max-w-[80%] rounded-2xl px-3 py-2 text-sm ${
-												isAssistant ? 'bg-[#f3f4f6] text-black' : 'bg-black text-white'
-											}`,
+											class: 'inline-flex h-8 w-8 items-center justify-center rounded-full bg-black text-xs text-white',
 										},
-										`Message #${index}`,
+										'AI',
 									),
-							);
-						},
-					},
+									h('div', { class: 'text-sm font-medium text-black' }, 'Support thread'),
+								]),
+								h(
+									'span',
+									{ class: 'text-xs text-[#9ca3af]' },
+									`${count.toLocaleString()} messages`,
+								),
+							],
+						),
+						h(
+							Chat.List,
+							{ count, estimateItemHeight: 64, class: 'flex-1 px-4 py-2' },
+							{
+								default: ({ index }: { index: number }) => {
+									const isUser = index % 2 !== 0;
+									return h(
+										Chat.Message,
+										{
+											role: isUser ? 'user' : 'assistant',
+											class: `flex py-2 ${isUser ? 'justify-end' : 'justify-start'}`,
+										},
+										() => h('div', { class: bubbleCls(isUser) }, `Message #${index}`),
+									);
+								},
+							},
+						),
+						h(
+							'div',
+							{ class: 'border-t border-[#e5e7eb] px-4 py-2 text-center text-xs text-[#9ca3af]' },
+							'Only the visible rows are mounted — the list is virtualized.',
+						),
+					],
 				);
 		},
 	}),

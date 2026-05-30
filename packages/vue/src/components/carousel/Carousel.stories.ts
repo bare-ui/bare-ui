@@ -76,27 +76,119 @@ export const Default: Story = {
 	}),
 };
 
-export const MultiItem: Story = {
+export const Composed: Story = {
 	render: () => ({
 		setup: () => () =>
-			h(Carousel.Root, { loop: true, class: 'relative w-full max-w-2xl' }, () => [
-				h(Carousel.Viewport, { class: 'rounded-2xl' }, () =>
-					h(Carousel.Content, { class: 'gap-4 px-1' }, () =>
-						Array.from({ length: 8 }, (_, i) =>
-							h(Carousel.Slide, { key: i, class: 'w-[40%]' }, () =>
-								h(
-									'div',
-									{ class: 'flex h-40 items-center justify-center rounded-xl bg-[#f3f4f6] text-xl font-semibold text-black' },
-									`Card ${i + 1}`,
+			h('div', { class: 'flex flex-col gap-10' }, [
+				h('div', null, [
+					h('p', { class: 'mb-2 text-sm font-medium text-[#374151]' }, 'Looping, multi-item'),
+					h(Carousel.Root, { loop: true, class: 'relative w-full max-w-2xl' }, () => [
+						h(Carousel.Viewport, { class: 'rounded-2xl' }, () =>
+							h(Carousel.Content, { class: 'gap-4 px-1' }, () =>
+								Array.from({ length: 8 }, (_, i) =>
+									h(Carousel.Slide, { key: i, class: 'w-[40%]' }, () =>
+										h(
+											'div',
+											{ class: 'flex h-40 items-center justify-center rounded-xl bg-[#f3f4f6] text-xl font-semibold text-black' },
+											`Card ${i + 1}`,
+										),
+									),
 								),
 							),
 						),
-					),
-				),
-				h('div', { class: 'mt-3 flex justify-end gap-2' }, [
-					h(Carousel.Previous, { class: btnCls }, () => '‹'),
-					h(Carousel.Next, { class: btnCls }, () => '›'),
+						h('div', { class: 'mt-3 flex justify-end gap-2' }, [
+							h(Carousel.Previous, { class: btnCls }, () => '‹'),
+							h(Carousel.Next, { class: btnCls }, () => '›'),
+						]),
+					]),
+				]),
+
+				h('div', null, [
+					h('p', { class: 'mb-2 text-sm font-medium text-[#374151]' }, 'Vertical'),
+					h(Carousel.Root, { orientation: 'vertical', class: 'relative w-full max-w-xs' }, () => [
+						h(Carousel.Viewport, { class: 'h-56 rounded-2xl' }, () =>
+							h(Carousel.Content, null, () =>
+								slides.map((color, i) =>
+									h(Carousel.Slide, { key: color, class: 'h-56' }, () =>
+										h(
+											'div',
+											{
+												class: 'flex h-56 items-center justify-center text-3xl font-bold text-white',
+												style: { backgroundColor: color },
+											},
+											String(i + 1),
+										),
+									),
+								),
+							),
+						),
+						h('div', { class: 'absolute inset-y-3 left-1/2 flex -translate-x-1/2 flex-col justify-between' }, [
+							h(Carousel.Previous, { class: btnCls }, () => '‹'),
+							h(Carousel.Next, { class: btnCls }, () => '›'),
+						]),
+					]),
 				]),
 			]),
+	}),
+};
+
+export const Complex: Story = {
+	render: () => ({
+		setup() {
+			const products = [
+				{ name: 'Aero Headphones', color: '#374151' },
+				{ name: 'Pulse Watch', color: '#0ea5e9' },
+				{ name: 'Nimbus Speaker', color: '#8b5cf6' },
+				{ name: 'Flux Keyboard', color: '#10b981' },
+			];
+
+			return () =>
+				h('div', { class: 'w-full max-w-sm overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white' }, [
+					h(Carousel.Root, { loop: true, class: 'relative' }, () => [
+						h(Carousel.Viewport, null, () =>
+							h(Carousel.Content, null, () =>
+								products.map((p) =>
+									h(Carousel.Slide, { key: p.name, class: 'w-full' }, () =>
+										h(
+											'div',
+											{
+												class: 'flex h-52 items-center justify-center text-5xl font-bold text-white',
+												style: { backgroundColor: p.color },
+											},
+											p.name[0],
+										),
+									),
+								),
+							),
+						),
+						h('div', { class: 'absolute inset-x-3 top-[104px] flex -translate-y-1/2 justify-between' }, [
+							h(Carousel.Previous, { class: btnCls }, () => '‹'),
+							h(Carousel.Next, { class: btnCls }, () => '›'),
+						]),
+						h('div', { class: 'absolute inset-x-0 bottom-3 flex justify-center gap-2' }, [
+							h(Carousel.Indicators, null, {
+								default: ({ index, selected, scrollTo }: { index: number; selected: boolean; scrollTo: () => void }) =>
+									h('button', {
+										key: index,
+										'aria-label': `Go to product ${index + 1}`,
+										onClick: scrollTo,
+										class: `size-2 rounded-full transition-colors ${selected ? 'bg-white' : 'bg-white/50'}`,
+									}),
+							}),
+						]),
+					]),
+					h('div', { class: 'flex items-center justify-between p-4' }, [
+						h('div', null, [
+							h('p', { class: 'text-sm font-semibold text-black' }, 'Featured gear'),
+							h('p', { class: 'text-xs text-[#6b7280]' }, 'Swipe to browse the collection'),
+						]),
+						h(
+							'button',
+							{ class: 'rounded-lg bg-black px-3 py-1.5 text-sm text-white hover:bg-[#333]' },
+							'Shop',
+						),
+					]),
+				]);
+		},
 	}),
 };

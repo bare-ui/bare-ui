@@ -63,6 +63,13 @@ const actionCls = 'rounded-md px-2 py-1 text-sm text-[#374151] hover:bg-[#f3f4f6
 const tabCls = (active: boolean) =>
 	`rounded-md px-2 py-1 text-sm ${active ? 'bg-black text-white' : 'text-[#6b7280] hover:bg-[#f3f4f6]'}`;
 
+const previewComponents = {
+	heading: { props: ['node'], template: `<h3 class="mb-2 text-lg font-bold text-black"><slot /></h3>` },
+	paragraph: { props: ['node'], template: `<p class="mb-2 text-sm text-[#374151]"><slot /></p>` },
+	list: { props: ['node'], template: `<ul class="mb-2 list-disc pl-5 text-sm text-[#374151]"><slot /></ul>` },
+	strong: { props: ['node'], template: `<strong class="font-semibold text-black"><slot /></strong>` },
+};
+
 export const Default: Story = {
 	render: () => ({
 		setup() {
@@ -76,12 +83,7 @@ export const Default: Story = {
 						mode: mode.value,
 						onModeChange: (m: RichTextMode) => { mode.value = m; },
 						parse: miniParse,
-						components: {
-							heading: { props: ['node'], template: `<h3 class="mb-2 text-lg font-bold text-black"><slot /></h3>` },
-							paragraph: { props: ['node'], template: `<p class="mb-2 text-sm text-[#374151]"><slot /></p>` },
-							list: { props: ['node'], template: `<ul class="mb-2 list-disc pl-5 text-sm text-[#374151]"><slot /></ul>` },
-							strong: { props: ['node'], template: `<strong class="font-semibold text-black"><slot /></strong>` },
-						},
+						components: previewComponents,
 						class: 'w-full max-w-2xl overflow-hidden rounded-xl border border-[#e5e7eb]',
 					},
 					() => [
@@ -124,6 +126,132 @@ export const Default: Story = {
 						),
 					],
 				);
+		},
+	}),
+};
+
+export const Composed: Story = {
+	render: () => ({
+		setup: () => () =>
+			h('div', { class: 'flex w-full max-w-2xl flex-col gap-6' }, [
+				// Edit-only: a focused authoring surface
+				h('div', null, [
+					h('p', { class: 'text-xs font-medium uppercase tracking-wide text-[#6b7280] mb-2' }, 'Edit mode'),
+					h(
+						RichText.Root,
+						{
+							defaultMode: 'edit',
+							defaultValue: 'Write **markdown** here — the preview is hidden in edit mode.',
+							parse: miniParse,
+							components: previewComponents,
+							class: 'overflow-hidden rounded-xl border border-[#e5e7eb]',
+						},
+						() => [
+							h(
+								RichText.Toolbar,
+								{ class: 'flex items-center gap-1 border-b border-[#e5e7eb] bg-[#fafafa] p-1.5' },
+								() => [
+									h(RichText.Action, { wrap: '**', class: `${actionCls} font-bold` }, () => 'B'),
+									h(RichText.Action, { wrap: '_', class: `${actionCls} italic` }, () => 'I'),
+								],
+							),
+							h(RichText.Editor, {
+								class: 'min-h-32 w-full resize-none p-3 font-mono text-sm outline-none',
+								placeholder: 'Write some markdown…',
+							}),
+							h(RichText.Preview, { class: 'min-h-32 p-3' }),
+						],
+					),
+				]),
+
+				// Preview-only: render stored markdown read-only
+				h('div', null, [
+					h('p', { class: 'text-xs font-medium uppercase tracking-wide text-[#6b7280] mb-2' }, 'Preview mode'),
+					h(
+						RichText.Root,
+						{
+							defaultMode: 'preview',
+							defaultValue:
+								'# Release notes\n\nShipped **RichText** with edit, split and preview modes.\n\n- toolbar actions\n- live preview',
+							parse: miniParse,
+							components: previewComponents,
+							class: 'overflow-hidden rounded-xl border border-[#e5e7eb]',
+						},
+						() => [
+							h(RichText.Editor, { class: 'min-h-32 w-full resize-none p-3 font-mono text-sm outline-none' }),
+							h(RichText.Preview, { class: 'min-h-32 p-3' }),
+						],
+					),
+				]),
+			]),
+	}),
+};
+
+export const Complex: Story = {
+	render: () => ({
+		setup() {
+			const value = ref('Looks great! Just one **nit** on the naming.');
+			const mode = ref<RichTextMode>('edit');
+
+			return () =>
+				h('div', { class: 'w-full max-w-lg rounded-xl border border-[#e5e7eb] bg-white' }, [
+					h(
+						RichText.Root,
+						{
+							value: value.value,
+							onChange: (v: string) => { value.value = v; },
+							mode: mode.value,
+							onModeChange: (m: RichTextMode) => { mode.value = m; },
+							parse: miniParse,
+							components: previewComponents,
+						},
+						() => [
+							h(
+								RichText.Toolbar,
+								{ class: 'flex items-center gap-1 border-b border-[#e5e7eb] bg-[#fafafa] p-1.5' },
+								() => [
+									h(RichText.Action, { wrap: '**', class: `${actionCls} font-bold` }, () => 'B'),
+									h(RichText.Action, { wrap: '_', class: `${actionCls} italic` }, () => 'I'),
+									h(RichText.Action, { wrap: ['`', '`'], class: `${actionCls} font-mono` }, () => '</>'),
+									h(
+										'div',
+										{ class: 'ml-auto flex gap-1' },
+										(['edit', 'preview'] as const).map((m) =>
+											h(
+												'button',
+												{
+													key: m,
+													type: 'button',
+													onClick: () => { mode.value = m; },
+													class: tabCls(mode.value === m),
+												},
+												m === 'edit' ? 'Write' : 'Preview',
+											),
+										),
+									),
+								],
+							),
+							h(RichText.Editor, {
+								rows: 4,
+								class: 'min-h-28 w-full resize-none p-3 text-sm outline-none',
+								placeholder: 'Leave a comment…',
+							}),
+							h(RichText.Preview, { class: 'min-h-28 p-3' }),
+						],
+					),
+					h('div', { class: 'flex items-center justify-between border-t border-[#e5e7eb] px-3 py-2' }, [
+						h('span', { class: 'text-xs text-[#9ca3af]' }, `${value.value.length} characters`),
+						h(
+							'button',
+							{
+								type: 'button',
+								disabled: value.value.trim().length === 0,
+								class: 'rounded-lg bg-black px-3 py-1.5 text-sm font-medium text-white disabled:opacity-40',
+							},
+							'Comment',
+						),
+					]),
+				]);
 		},
 	}),
 };

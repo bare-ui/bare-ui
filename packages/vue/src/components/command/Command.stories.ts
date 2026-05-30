@@ -33,6 +33,7 @@ const listCls = 'max-h-72 overflow-auto p-2';
 const headingCls = 'px-2 py-1.5 text-xs font-medium text-[#9ca3af]';
 const itemCls = 'flex cursor-pointer items-center gap-2 rounded-md px-2 py-2 text-sm text-black data-[active]:bg-[#f3f4f6] data-[disabled]:opacity-40';
 
+// The grouped palette body shared by the Composed and Complex stories.
 function makePalette() {
 	return [
 		h(Command.Input, { placeholder: 'Type a command or search…', class: inputCls }),
@@ -54,7 +55,22 @@ function makePalette() {
 	];
 }
 
-export const Inline: Story = {
+export const Default: Story = {
+	render: () => ({
+		setup: () => () =>
+			h(Command.Root, { class: paletteCls }, () => [
+				h(Command.Input, { placeholder: 'Type a command or search…', class: inputCls }),
+				h(Command.List, { class: listCls }, () => [
+					h(Command.Empty, { class: 'py-6 text-center text-sm text-[#9ca3af]' }, () => 'No results found.'),
+					h(Command.Item, { value: 'New File', keywords: ['create', 'document'], class: itemCls }, () => '📄 New File'),
+					h(Command.Item, { value: 'Search Docs', keywords: ['find', 'help'], class: itemCls }, () => '🔍 Search Docs'),
+					h(Command.Item, { value: 'Open Settings', keywords: ['preferences'], class: itemCls }, () => '⚙️ Open Settings'),
+				]),
+			]),
+	}),
+};
+
+export const Composed: Story = {
 	render: () => ({
 		setup: () => () =>
 			h(
@@ -65,9 +81,7 @@ export const Inline: Story = {
 	}),
 };
 
-/** Toggle with ⌘K / Ctrl+K. A single managed `Command.Root` renders the palette
- *  only while open; its `shortcut` keeps the hotkey wired even when hidden. */
-export const WithShortcut: Story = {
+export const Complex: Story = {
 	render: () => ({
 		setup() {
 			const open = ref(false);
@@ -83,7 +97,9 @@ export const WithShortcut: Story = {
 						Command.Root,
 						{
 							open: open.value,
-							onOpenChange: (v: boolean) => { open.value = v; },
+							onOpenChange: (v: boolean) => {
+								open.value = v;
+							},
 							shortcut: 'mod+k',
 							class: `fixed left-1/2 top-[12vh] z-50 -translate-x-1/2 ${paletteCls}`,
 						},

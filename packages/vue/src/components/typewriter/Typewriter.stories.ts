@@ -40,66 +40,63 @@ export const Default: Story = {
 	}),
 };
 
-export const WithCursor: Story = {
-	render: (args) => ({
+export const Composed: Story = {
+	render: () => ({
 		setup: () => () =>
 			h('div', null, [
 				h('style', null, blinkStyle),
-				h(
-					'p',
-					{ class: 'max-w-md font-mono text-sm leading-relaxed text-black' },
-					[
-						h(Typewriter.Root, args, () => [
-							h(Typewriter.Text),
-							h(
-								Typewriter.Cursor,
-								{ keepMounted: true, class: 'wire-cursor ml-0.5 inline-block w-[1ch] text-black' },
-								() => '▋',
-							),
+				h('div', { class: 'flex max-w-md flex-col gap-8' }, [
+					h('div', null, [
+						h('p', { class: 'mb-1.5 text-xs font-medium text-[#6b7280]' }, 'With blinking cursor'),
+						h('p', { class: 'font-mono text-sm leading-relaxed text-black' }, [
+							h(Typewriter.Root, { text: 'Composing a reply…', speed: 45 }, () => [
+								h(Typewriter.Text),
+								h(
+									Typewriter.Cursor,
+									{ keepMounted: true, class: 'wire-cursor ml-0.5 inline-block w-[1ch] text-black' },
+									() => '▋',
+								),
+							]),
 						]),
-					],
-				),
+					]),
+
+					h('div', null, [
+						h('p', { class: 'mb-1.5 text-xs font-medium text-[#6b7280]' }, 'Word-by-word reveal'),
+						h('p', { class: 'text-base leading-relaxed text-black' }, [
+							h(Typewriter.Root, {
+								text: 'Revealing one whole word at a time feels more natural for prose.',
+								mode: 'word',
+								speed: 120,
+							}),
+						]),
+					]),
+
+					h('div', null, [
+						h('p', { class: 'mb-1.5 text-xs font-medium text-[#6b7280]' }, 'Render-prop progress'),
+						h(Typewriter.Root, { text: 'Drive your own UI from the reveal state.', speed: 35 }, {
+							default: ({ displayed, progress, isDone }: { displayed: string; progress: number; isDone: boolean }) =>
+								h('div', { class: 'space-y-2' }, [
+									h('p', { class: 'font-mono text-sm text-black' }, displayed),
+									h('div', { class: 'h-1 w-full overflow-hidden rounded-full bg-[#e5e7eb]' }, [
+										h('div', {
+											class: 'h-full bg-black transition-[width]',
+											style: { width: `${Math.round(progress * 100)}%` },
+										}),
+									]),
+									h(
+										'p',
+										{ class: 'text-xs text-[#6b7280]' },
+										isDone ? 'Done' : `${Math.round(progress * 100)}%`,
+									),
+								]),
+						}),
+					]),
+				]),
 			]),
 	}),
 };
 
-export const WordByWord: Story = {
-	args: { mode: 'word', speed: 120 },
-	render: (args) => ({
-		setup: () => () =>
-			h(
-				'p',
-				{ class: 'max-w-md text-base leading-relaxed text-black' },
-				[h(Typewriter.Root, args)],
-			),
-	}),
-};
-
-export const RenderProp: Story = {
-	render: (args) => ({
-		setup: () => () =>
-			h(Typewriter.Root, args, {
-				default: ({ displayed, progress, isDone }: { displayed: string; progress: number; isDone: boolean }) =>
-					h('div', { class: 'max-w-md space-y-2' }, [
-						h('p', { class: 'font-mono text-sm text-black' }, displayed),
-						h('div', { class: 'h-1 w-full overflow-hidden rounded-full bg-[#e5e7eb]' }, [
-							h('div', {
-								class: 'h-full bg-black transition-[width]',
-								style: { width: `${Math.round(progress * 100)}%` },
-							}),
-						]),
-						h(
-							'p',
-							{ class: 'text-xs text-[#6b7280]' },
-							isDone ? 'Done' : `${Math.round(progress * 100)}%`,
-						),
-					]),
-			}),
-	}),
-};
-
-/** Simulates a streamed response: `text` grows over time and the reveal keeps up. */
-export const Streaming: Story = {
+export const Complex: Story = {
 	render: () => ({
 		setup() {
 			const full =
@@ -121,20 +118,30 @@ export const Streaming: Story = {
 			return () =>
 				h('div', null, [
 					h('style', null, blinkStyle),
-					h(
-						'p',
-						{ class: 'max-w-md text-sm leading-relaxed text-black' },
-						[
-							h(Typewriter.Root, { text: text.value, speed: 20 }, () => [
-								h(Typewriter.Text),
-								h(
-									Typewriter.Cursor,
-									{ class: 'wire-cursor ml-0.5 inline-block w-[1ch]' },
-									() => '▋',
-								),
+					h('div', { class: 'w-full max-w-md rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm' }, [
+						h('div', { class: 'flex items-start gap-3' }, [
+							h(
+								'div',
+								{
+									class: 'flex size-8 shrink-0 items-center justify-center rounded-full bg-black text-xs font-bold text-white',
+								},
+								'AI',
+							),
+							h('div', { class: 'flex-1' }, [
+								h('p', { class: 'mb-1 text-xs font-medium text-[#6b7280]' }, 'Assistant'),
+								h('p', { class: 'text-sm leading-relaxed text-[#374151]' }, [
+									h(Typewriter.Root, { text: text.value, speed: 20 }, () => [
+										h(Typewriter.Text),
+										h(
+											Typewriter.Cursor,
+											{ class: 'wire-cursor ml-0.5 inline-block w-[1ch] text-black' },
+											() => '▋',
+										),
+									]),
+								]),
 							]),
-						],
-					),
+						]),
+					]),
 				]);
 		},
 	}),
