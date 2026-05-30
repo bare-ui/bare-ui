@@ -1,0 +1,295 @@
+---
+title: Diff
+description: Line-level diff viewer with unified and side-by-side layouts.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Diff
+
+Line-level diff viewer with both unified and side-by-side (split) layouts. The diff is computed with a built-in LCS algorithm — no dependencies — and exposed as render parts you style yourself.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Computes line diffs with a built-in LCS algorithm — zero dependencies.</FeatureItem>
+  <FeatureItem>Render unified (single column) or split (side-by-side) layouts.</FeatureItem>
+  <FeatureItem>Exposes additions/deletions counts through a Stats render prop.</FeatureItem>
+  <FeatureItem>Each part is a render function — you own all markup and styling.</FeatureItem>
+  <FeatureItem>Tracks old and new line numbers for gutter rendering.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><DiffPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Diff } from '@wire-ui/react'
+
+<Diff.Root oldValue={before} newValue={after}>
+  <Diff.Stats>
+    {({ additions, deletions }) => (
+      <div>+{additions} −{deletions}</div>
+    )}
+  </Diff.Stats>
+  <Diff.Unified>
+    {({ line }) => (
+      <div>{line.oldLine} {line.newLine} {line.content}</div>
+    )}
+  </Diff.Unified>
+</Diff.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Diff } from '@wire-ui/vue'
+
+const before = '...'
+const after = '...'
+</script>
+
+<template>
+  <Diff.Root :old-value="before" :new-value="after">
+    <Diff.Stats v-slot="{ additions, deletions }">
+      <div>+{{ additions }} −{{ deletions }}</div>
+    </Diff.Stats>
+    <Diff.Unified v-slot="{ line }">
+      <div>{{ line.oldLine }} {{ line.newLine }} {{ line.content }}</div>
+    </Diff.Unified>
+  </Diff.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Diff } from '@wire-ui/solid'
+
+<Diff.Root oldValue={before} newValue={after}>
+  <Diff.Stats>
+    {({ additions, deletions }) => (
+      <div>+{additions} −{deletions}</div>
+    )}
+  </Diff.Stats>
+  <Diff.Unified>
+    {({ line }) => (
+      <div>{line.oldLine} {line.newLine} {line.content}</div>
+    )}
+  </Diff.Unified>
+</Diff.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Diff } from '@wire-ui/react'
+
+const gutter = 'inline-block w-8 select-none px-2 text-right text-[#9ca3af]'
+
+function lineClass(type) {
+  if (type === 'insert') return 'bg-green-50 text-green-900'
+  if (type === 'delete') return 'bg-red-50 text-red-900'
+  return 'text-[#374151]'
+}
+
+function sign(type) {
+  if (type === 'insert') return '+'
+  if (type === 'delete') return '-'
+  return ' '
+}
+
+<div className="w-full max-w-xl overflow-hidden rounded-[8px] border border-black bg-white font-mono text-xs">
+  <Diff.Root oldValue={before} newValue={after}>
+    <Diff.Unified>
+      {({ line }) => (
+        <div className={`flex whitespace-pre px-1 ${lineClass(line.type)}`}>
+          <span className={gutter}>{line.oldLine ?? ''}</span>
+          <span className={gutter}>{line.newLine ?? ''}</span>
+          <span className="px-2">{sign(line.type)}</span>
+          <span>{line.content}</span>
+        </div>
+      )}
+    </Diff.Unified>
+  </Diff.Root>
+</div>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { Diff } from '@wire-ui/vue'
+
+const gutter = 'inline-block w-8 select-none px-2 text-right text-[#9ca3af]'
+
+function lineClass(type) {
+  if (type === 'insert') return 'bg-green-50 text-green-900'
+  if (type === 'delete') return 'bg-red-50 text-red-900'
+  return 'text-[#374151]'
+}
+
+function sign(type) {
+  if (type === 'insert') return '+'
+  if (type === 'delete') return '-'
+  return ' '
+}
+</script>
+
+<template>
+  <div class="w-full max-w-xl overflow-hidden rounded-[8px] border border-black bg-white font-mono text-xs">
+    <Diff.Root :old-value="before" :new-value="after">
+      <Diff.Unified v-slot="{ line }">
+        <div :class="`flex whitespace-pre px-1 ${lineClass(line.type)}`">
+          <span :class="gutter">{{ line.oldLine ?? '' }}</span>
+          <span :class="gutter">{{ line.newLine ?? '' }}</span>
+          <span class="px-2">{{ sign(line.type) }}</span>
+          <span>{{ line.content }}</span>
+        </div>
+      </Diff.Unified>
+    </Diff.Root>
+  </div>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { Diff } from '@wire-ui/solid'
+
+const gutter = 'inline-block w-8 select-none px-2 text-right text-[#9ca3af]'
+
+function lineClass(type) {
+  if (type === 'insert') return 'bg-green-50 text-green-900'
+  if (type === 'delete') return 'bg-red-50 text-red-900'
+  return 'text-[#374151]'
+}
+
+function sign(type) {
+  if (type === 'insert') return '+'
+  if (type === 'delete') return '-'
+  return ' '
+}
+
+<div class="w-full max-w-xl overflow-hidden rounded-[8px] border border-black bg-white font-mono text-xs">
+  <Diff.Root oldValue={before} newValue={after}>
+    <Diff.Unified>
+      {({ line }) => (
+        <div class={`flex whitespace-pre px-1 ${lineClass(line.type)}`}>
+          <span class={gutter}>{line.oldLine ?? ''}</span>
+          <span class={gutter}>{line.newLine ?? ''}</span>
+          <span class="px-2">{sign(line.type)}</span>
+          <span>{line.content}</span>
+        </div>
+      )}
+    </Diff.Unified>
+  </Diff.Root>
+</div>
+```
+</ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Split layout
+
+`Diff.Split` pairs deletes and inserts into side-by-side rows. Each row provides an optional `left` (old) and `right` (new) `DiffLine` — either may be absent when one side has no counterpart.
+
+```tsx
+<Diff.Split>
+  {({ left, right }) => (
+    <div className="grid grid-cols-2 divide-x divide-[#e5e7eb]">
+      <div className={left ? lineClass(left.type) : 'bg-[#fafafa]'}>
+        {left?.oldLine} {left?.content}
+      </div>
+      <div className={right ? lineClass(right.type) : 'bg-[#fafafa]'}>
+        {right?.newLine} {right?.content}
+      </div>
+    </div>
+  )}
+</Diff.Split>
+```
+
+## Styling
+
+Diff ships no styles. `Diff.Unified` wraps each line in a `data-diff-line` element carrying `data-type`, and `Diff.Split` wraps each row in a `data-diff-row` element carrying `data-left` / `data-right`. Style the line/row wrappers — or branch on `line.type` inside the render function — to color insertions and deletions.
+
+```css
+[data-diff-line][data-type="insert"] { background: #f0fdf4; }
+[data-diff-line][data-type="delete"] { background: #fef2f2; }
+```
+
+## Using data attributes
+
+`Diff.Unified` renders a `<div data-diff-view="unified">` whose children carry `data-diff-line` and `data-type`. `Diff.Split` renders a `<div data-diff-view="split">` whose children carry `data-diff-row`, `data-left`, and `data-right`.
+
+```css
+[data-diff-view="split"] [data-left="delete"]  { background: #fef2f2; }
+[data-diff-view="split"] [data-right="insert"] { background: #f0fdf4; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `oldValue` | `string` | required | The original ("before") text |
+| `newValue` | `string` | required | The updated ("after") text |
+
+Root also accepts all standard `div` attributes (`className`, `id`, …).
+
+## Unified props
+
+| Prop | Type | Description |
+|---|---|---|
+| `children` | `(props: { line: DiffLine }) => ReactNode` | Render function for a single unified line |
+
+## Split props
+
+| Prop | Type | Description |
+|---|---|---|
+| `children` | `(props: DiffRow) => ReactNode` | Render function for a single side-by-side row |
+
+## Stats props
+
+| Prop | Type | Description |
+|---|---|---|
+| `children` | `(props: DiffStats) => ReactNode` | Render function for the additions/deletions summary |
+
+## Types
+
+```ts
+type DiffLineType = 'equal' | 'insert' | 'delete'
+
+interface DiffLine {
+  type: DiffLineType
+  content: string   // line text, no trailing newline
+  oldLine?: number  // 1-based line in the old text (absent for inserts)
+  newLine?: number  // 1-based line in the new text (absent for deletes)
+}
+
+interface DiffRow {
+  left?: DiffLine   // old side
+  right?: DiffLine  // new side
+}
+
+interface DiffStats {
+  additions: number
+  deletions: number
+}
+```
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-diff-view` | Unified / Split container | `"unified"` / `"split"` |
+| `data-diff-line` | Unified line wrapper | Present on every line |
+| `data-type` | Unified line wrapper | `"equal"` / `"insert"` / `"delete"` |
+| `data-diff-row` | Split row wrapper | Present on every row |
+| `data-left` | Split row wrapper | Left line type, if present |
+| `data-right` | Split row wrapper | Right line type, if present |
+
+## Accessibility
+
+Diff renders plain `div` elements with no interactive behavior — it is a presentational viewer. Provide your own semantics (for example, a caption naming the file being compared) when embedding it in a larger UI.

@@ -1,0 +1,322 @@
+---
+title: Carousel
+description: Headless scroll-snap carousel with Prev/Next, indicators, keyboard arrows and optional looping.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Carousel
+
+A headless, scroll-snap carousel (Embla-style). It tracks the active slide from scroll position and exposes Previous/Next buttons, indicators, keyboard arrows, and optional looping.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Native scroll-snap — tracks the active slide from scroll position.</FeatureItem>
+  <FeatureItem>Horizontal or vertical orientation.</FeatureItem>
+  <FeatureItem>Previous/Next buttons auto-disable at the ends (unless looping).</FeatureItem>
+  <FeatureItem>Render-prop indicators reflect the selected slide.</FeatureItem>
+  <FeatureItem>Keyboard arrow navigation on the focused viewport.</FeatureItem>
+  <FeatureItem>Optional looping wraps from the last slide to the first.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><CarouselPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Carousel } from '@wire-ui/react'
+
+<Carousel.Root>
+  <Carousel.Viewport>
+    <Carousel.Content>
+      <Carousel.Slide>Slide 1</Carousel.Slide>
+      <Carousel.Slide>Slide 2</Carousel.Slide>
+      <Carousel.Slide>Slide 3</Carousel.Slide>
+    </Carousel.Content>
+  </Carousel.Viewport>
+  <Carousel.Previous>‹</Carousel.Previous>
+  <Carousel.Next>›</Carousel.Next>
+  <Carousel.Indicators>
+    {({ index, selected, scrollTo }) => (
+      <button key={index} onClick={scrollTo} aria-current={selected} />
+    )}
+  </Carousel.Indicators>
+</Carousel.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Carousel } from '@wire-ui/vue'
+
+const slides = ['Slide 1', 'Slide 2', 'Slide 3']
+</script>
+
+<template>
+  <Carousel.Root>
+    <Carousel.Viewport>
+      <Carousel.Content>
+        <Carousel.Slide v-for="slide in slides" :key="slide">{{ slide }}</Carousel.Slide>
+      </Carousel.Content>
+    </Carousel.Viewport>
+    <Carousel.Previous>‹</Carousel.Previous>
+    <Carousel.Next>›</Carousel.Next>
+    <Carousel.Indicators v-slot="{ index, selected, scrollTo }">
+      <button :key="index" :aria-current="selected" @click="scrollTo" />
+    </Carousel.Indicators>
+  </Carousel.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Carousel } from '@wire-ui/solid'
+import { For } from 'solid-js'
+
+<Carousel.Root>
+  <Carousel.Viewport>
+    <Carousel.Content>
+      <For each={['Slide 1', 'Slide 2', 'Slide 3']}>
+        {(slide) => <Carousel.Slide>{slide}</Carousel.Slide>}
+      </For>
+    </Carousel.Content>
+  </Carousel.Viewport>
+  <Carousel.Previous>‹</Carousel.Previous>
+  <Carousel.Next>›</Carousel.Next>
+  <Carousel.Indicators>
+    {({ index, selected, scrollTo }) => (
+      <button onClick={scrollTo} aria-current={selected()} />
+    )}
+  </Carousel.Indicators>
+</Carousel.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Carousel } from '@wire-ui/react'
+
+const slides = ['Slide 1', 'Slide 2', 'Slide 3', 'Slide 4']
+
+<Carousel.Root loop className="relative w-full max-w-md">
+  <Carousel.Viewport
+    tabIndex={0}
+    className="overflow-hidden rounded-[20px] border border-black bg-white outline-none focus-visible:ring-2 focus-visible:ring-black"
+  >
+    <Carousel.Content>
+      {slides.map((label) => (
+        <Carousel.Slide key={label} className="w-full">
+          <div className="flex h-56 items-center justify-center text-2xl font-semibold text-white bg-black">
+            {label}
+          </div>
+        </Carousel.Slide>
+      ))}
+    </Carousel.Content>
+  </Carousel.Viewport>
+
+  <div className="absolute inset-x-3 top-1/2 flex -translate-y-1/2 justify-between">
+    <Carousel.Previous className="flex size-8 items-center justify-center rounded-full border border-black bg-white text-black hover:bg-black hover:text-white disabled:opacity-30">‹</Carousel.Previous>
+    <Carousel.Next className="flex size-8 items-center justify-center rounded-full border border-black bg-white text-black hover:bg-black hover:text-white disabled:opacity-30">›</Carousel.Next>
+  </div>
+
+  <div className="mt-3 flex justify-center gap-2">
+    <Carousel.Indicators>
+      {({ index, selected, scrollTo }) => (
+        <button
+          key={index}
+          aria-label={`Go to slide ${index + 1}`}
+          onClick={scrollTo}
+          className={`size-2 rounded-full border border-black ${selected ? 'bg-black' : 'bg-white'}`}
+        />
+      )}
+    </Carousel.Indicators>
+  </div>
+</Carousel.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { Carousel } from '@wire-ui/vue'
+
+const slides = ['Slide 1', 'Slide 2', 'Slide 3', 'Slide 4']
+</script>
+
+<template>
+  <Carousel.Root loop class="relative w-full max-w-md">
+    <Carousel.Viewport
+      :tabindex="0"
+      class="overflow-hidden rounded-[20px] border border-black bg-white outline-none focus-visible:ring-2 focus-visible:ring-black"
+    >
+      <Carousel.Content>
+        <Carousel.Slide v-for="label in slides" :key="label" class="w-full">
+          <div class="flex h-56 items-center justify-center text-2xl font-semibold text-white bg-black">
+            {{ label }}
+          </div>
+        </Carousel.Slide>
+      </Carousel.Content>
+    </Carousel.Viewport>
+
+    <div class="absolute inset-x-3 top-1/2 flex -translate-y-1/2 justify-between">
+      <Carousel.Previous class="flex size-8 items-center justify-center rounded-full border border-black bg-white text-black hover:bg-black hover:text-white disabled:opacity-30">‹</Carousel.Previous>
+      <Carousel.Next class="flex size-8 items-center justify-center rounded-full border border-black bg-white text-black hover:bg-black hover:text-white disabled:opacity-30">›</Carousel.Next>
+    </div>
+
+    <div class="mt-3 flex justify-center gap-2">
+      <Carousel.Indicators v-slot="{ index, selected, scrollTo }">
+        <button
+          :key="index"
+          :aria-label="`Go to slide ${index + 1}`"
+          :class="`size-2 rounded-full border border-black ${selected ? 'bg-black' : 'bg-white'}`"
+          @click="scrollTo"
+        />
+      </Carousel.Indicators>
+    </div>
+  </Carousel.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { Carousel } from '@wire-ui/solid'
+import { For } from 'solid-js'
+
+const slides = ['Slide 1', 'Slide 2', 'Slide 3', 'Slide 4']
+
+<Carousel.Root loop class="relative w-full max-w-md">
+  <Carousel.Viewport
+    tabIndex={0}
+    class="overflow-hidden rounded-[20px] border border-black bg-white outline-none focus-visible:ring-2 focus-visible:ring-black"
+  >
+    <Carousel.Content>
+      <For each={slides}>
+        {(label) => (
+          <Carousel.Slide class="w-full">
+            <div class="flex h-56 items-center justify-center text-2xl font-semibold text-white bg-black">
+              {label}
+            </div>
+          </Carousel.Slide>
+        )}
+      </For>
+    </Carousel.Content>
+  </Carousel.Viewport>
+
+  <div class="absolute inset-x-3 top-1/2 flex -translate-y-1/2 justify-between">
+    <Carousel.Previous class="flex size-8 items-center justify-center rounded-full border border-black bg-white text-black hover:bg-black hover:text-white disabled:opacity-30">‹</Carousel.Previous>
+    <Carousel.Next class="flex size-8 items-center justify-center rounded-full border border-black bg-white text-black hover:bg-black hover:text-white disabled:opacity-30">›</Carousel.Next>
+  </div>
+
+  <div class="mt-3 flex justify-center gap-2">
+    <Carousel.Indicators>
+      {({ index, selected, scrollTo }) => (
+        <button
+          aria-label={`Go to slide ${index + 1}`}
+          onClick={scrollTo}
+          class={`size-2 rounded-full border border-black ${selected() ? 'bg-black' : 'bg-white'}`}
+        />
+      )}
+    </Carousel.Indicators>
+  </div>
+</Carousel.Root>
+```
+</ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Carousel is headless. The Root sets `data-orientation` and the viewport applies the native scroll-snap behavior inline. Slides snap to the start edge. Previous/Next become `disabled` automatically when they cannot scroll further (use `disabled:` variants to style that state).
+
+```tsx
+<Carousel.Previous className="
+  border border-black
+  disabled:opacity-30 disabled:cursor-not-allowed
+">
+  ‹
+</Carousel.Previous>
+```
+
+## Using data attributes
+
+Carousel.Root sets `data-orientation`; the internal elements are tagged for targeting.
+
+```css
+/* Stack a vertical carousel */
+[data-orientation="vertical"] [data-carousel-content] { flex-direction: column; }
+
+/* Target the scroll container */
+[data-carousel-viewport] { scrollbar-width: none; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Scroll axis |
+| `loop` | `boolean` | `false` | Wrap from last → first slide |
+| `defaultIndex` | `number` | `0` | Initial slide index |
+| `onIndexChange` | `(index: number) => void` | — | Called when the selected slide changes |
+
+Root also accepts all native `div` attributes (except `onChange`).
+
+## Viewport props
+
+| Prop | Type | Description |
+|---|---|---|
+| `...React.HTMLAttributes<HTMLDivElement>` | — | The scroll container. Add `tabIndex={0}` to enable arrow-key navigation. |
+
+## Content props
+
+| Prop | Type | Description |
+|---|---|---|
+| `...React.HTMLAttributes<HTMLDivElement>` | — | The flex track that holds the slides |
+
+## Slide props
+
+| Prop | Type | Description |
+|---|---|---|
+| `...React.HTMLAttributes<HTMLDivElement>` | — | A single snap target; auto-registers with Root |
+
+## Previous / Next props
+
+| Prop | Type | Description |
+|---|---|---|
+| `disabled` | `boolean` | Override the automatic disabled state |
+| `...React.ButtonHTMLAttributes<HTMLButtonElement>` | — | Standard button attributes |
+
+## Indicators props
+
+| Prop | Type | Description |
+|---|---|---|
+| `children` | `(props: { index: number; selected: boolean; scrollTo: () => void }) => ReactNode` | Render function called once per slide |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-orientation` | Root | `"horizontal"` / `"vertical"` |
+| `data-carousel-viewport` | Viewport | Present (marker) |
+| `data-carousel-content` | Content | Present (marker) |
+| `data-carousel-slide` | Slide | Present (marker) |
+
+## Accessibility
+
+- Root sets `role="region"` and `aria-roledescription="carousel"`.
+- Each Slide sets `role="group"` and `aria-roledescription="slide"`.
+- Previous/Next render as `<button>` with `aria-label="Previous slide"` / `"Next slide"` and are disabled at the ends (unless `loop`).
+
+## Keyboard Interactions
+
+Arrow keys work when the focused element is the Viewport (give it `tabIndex={0}`).
+
+| Key | Description |
+|---|---|
+| <kbd>ArrowRight</kbd> / <kbd>ArrowDown</kbd> | Scroll to the next slide (axis depends on `orientation`). |
+| <kbd>ArrowLeft</kbd> / <kbd>ArrowUp</kbd> | Scroll to the previous slide. |
+| <kbd>Tab</kbd> | Moves focus to the viewport / controls. |

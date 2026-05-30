@@ -1,0 +1,226 @@
+---
+title: InfiniteScroll
+description: A sentinel-based load-more primitive built on an intersection observer.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# InfiniteScroll
+
+A sentinel-based load-more primitive built on an intersection observer. Render your list, then drop a `Sentinel` at the end — it calls `onLoadMore` as it scrolls into view, gated by `hasMore` and `loading`.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Triggers `onLoadMore` when the sentinel scrolls into view.</FeatureItem>
+  <FeatureItem>Pre-fetches early via `rootMargin` before the sentinel is fully visible.</FeatureItem>
+  <FeatureItem>Suppresses duplicate triggers while `loading` is true.</FeatureItem>
+  <FeatureItem>Stops triggering once `hasMore` is false.</FeatureItem>
+  <FeatureItem>`Loader` and `EndMessage` render automatically based on state.</FeatureItem>
+  <FeatureItem>Can be disabled entirely with `disabled`.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><InfiniteScrollPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { InfiniteScroll } from '@wire-ui/react'
+
+<InfiniteScroll.Root onLoadMore={loadMore} hasMore={hasMore} loading={loading}>
+  <ul>
+    {items.map((i) => <li key={i}>Item #{i + 1}</li>)}
+  </ul>
+  <InfiniteScroll.Loader>Loading more…</InfiniteScroll.Loader>
+  <InfiniteScroll.EndMessage>You've reached the end</InfiniteScroll.EndMessage>
+  <InfiniteScroll.Sentinel />
+</InfiniteScroll.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { InfiniteScroll } from '@wire-ui/vue'
+</script>
+
+<template>
+  <InfiniteScroll.Root :on-load-more="loadMore" :has-more="hasMore" :loading="loading">
+    <ul>
+      <li v-for="i in items" :key="i">Item #{{ i + 1 }}</li>
+    </ul>
+    <InfiniteScroll.Loader>Loading more…</InfiniteScroll.Loader>
+    <InfiniteScroll.EndMessage>You've reached the end</InfiniteScroll.EndMessage>
+    <InfiniteScroll.Sentinel />
+  </InfiniteScroll.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { InfiniteScroll } from '@wire-ui/solid'
+import { For } from 'solid-js'
+
+<InfiniteScroll.Root onLoadMore={loadMore} hasMore={hasMore()} loading={loading()}>
+  <ul>
+    <For each={items()}>{(i) => <li>Item #{i + 1}</li>}</For>
+  </ul>
+  <InfiniteScroll.Loader>Loading more…</InfiniteScroll.Loader>
+  <InfiniteScroll.EndMessage>You've reached the end</InfiniteScroll.EndMessage>
+  <InfiniteScroll.Sentinel />
+</InfiniteScroll.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { InfiniteScroll } from '@wire-ui/react'
+
+<InfiniteScroll.Root
+  onLoadMore={loadMore}
+  hasMore={hasMore}
+  loading={loading}
+  rootMargin="120px"
+  className="h-80 w-72 overflow-auto rounded-[8px] border border-black bg-white"
+>
+  <ul className="divide-y divide-[#d4d4d4]">
+    {items.map((i) => (
+      <li key={i} className="px-4 py-3 text-sm text-black">Item #{i + 1}</li>
+    ))}
+  </ul>
+  <InfiniteScroll.Loader className="flex items-center justify-center gap-2 py-4 text-sm text-[#6b7280]">
+    <span className="size-4 animate-spin rounded-full border-2 border-[#d4d4d4] border-t-black" />
+    Loading more…
+  </InfiniteScroll.Loader>
+  <InfiniteScroll.EndMessage className="py-4 text-center text-xs text-[#9ca3af]">
+    You've reached the end
+  </InfiniteScroll.EndMessage>
+  <InfiniteScroll.Sentinel />
+</InfiniteScroll.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { InfiniteScroll } from '@wire-ui/vue'
+</script>
+
+<template>
+  <InfiniteScroll.Root
+    :on-load-more="loadMore"
+    :has-more="hasMore"
+    :loading="loading"
+    root-margin="120px"
+    class="h-80 w-72 overflow-auto rounded-[8px] border border-black bg-white"
+  >
+    <ul class="divide-y divide-[#d4d4d4]">
+      <li v-for="i in items" :key="i" class="px-4 py-3 text-sm text-black">Item #{{ i + 1 }}</li>
+    </ul>
+    <InfiniteScroll.Loader class="flex items-center justify-center gap-2 py-4 text-sm text-[#6b7280]">
+      <span class="size-4 animate-spin rounded-full border-2 border-[#d4d4d4] border-t-black" />
+      Loading more…
+    </InfiniteScroll.Loader>
+    <InfiniteScroll.EndMessage class="py-4 text-center text-xs text-[#9ca3af]">
+      You've reached the end
+    </InfiniteScroll.EndMessage>
+    <InfiniteScroll.Sentinel />
+  </InfiniteScroll.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { InfiniteScroll } from '@wire-ui/solid'
+import { For } from 'solid-js'
+
+<InfiniteScroll.Root
+  onLoadMore={loadMore}
+  hasMore={hasMore()}
+  loading={loading()}
+  rootMargin="120px"
+  class="h-80 w-72 overflow-auto rounded-[8px] border border-black bg-white"
+>
+  <ul class="divide-y divide-[#d4d4d4]">
+    <For each={items()}>
+      {(i) => <li class="px-4 py-3 text-sm text-black">Item #{i + 1}</li>}
+    </For>
+  </ul>
+  <InfiniteScroll.Loader class="flex items-center justify-center gap-2 py-4 text-sm text-[#6b7280]">
+    <span class="size-4 animate-spin rounded-full border-2 border-[#d4d4d4] border-t-black" />
+    Loading more…
+  </InfiniteScroll.Loader>
+  <InfiniteScroll.EndMessage class="py-4 text-center text-xs text-[#9ca3af]">
+    You've reached the end
+  </InfiniteScroll.EndMessage>
+  <InfiniteScroll.Sentinel />
+</InfiniteScroll.Root>
+```
+</ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+`InfiniteScroll` ships zero layout styles — give the Root a fixed height and `overflow-auto` to scroll, or omit the height to use the window/page as the scroll container. The Root exposes `data-loading` and `data-has-more` so you can style based on state. `Loader` renders only while `loading` is true; `EndMessage` renders only when `hasMore` is false.
+
+```tsx
+<InfiniteScroll.Root className="
+  h-80 overflow-auto
+  data-[loading]:opacity-90
+">
+  …
+</InfiniteScroll.Root>
+```
+
+## Using data attributes
+
+The Root sets `data-loading` (present while a load is in flight) and `data-has-more` (present while more items can load). The Sentinel sets `data-infinite-scroll-sentinel`.
+
+```css
+/* Dim the list while fetching */
+[data-loading] { opacity: 0.9; }
+
+/* Hide the load-more affordance at the end */
+:not([data-has-more]) .load-more { display: none; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `onLoadMore` | `() => void` | required | Called when the sentinel scrolls into view and more data can be loaded |
+| `hasMore` | `boolean` | `true` | Whether there are more items to load |
+| `loading` | `boolean` | `false` | Whether a load is in flight (suppresses further triggers) |
+| `rootMargin` | `string` | `'0px'` | Margin around the root used to pre-fetch before the sentinel is fully visible |
+| `disabled` | `boolean` | `false` | Disable triggering entirely |
+
+Root also accepts all standard `<div>` HTML attributes.
+
+## Sentinel props
+
+The Sentinel renders an `aria-hidden` `<div>` observed by the intersection observer. It accepts all standard `<div>` HTML attributes. Place it as the last child of the Root.
+
+## Loader props
+
+The Loader renders a `<div role="status" aria-live="polite">` only while `loading` is true. It accepts all standard `<div>` HTML attributes.
+
+## EndMessage props
+
+The EndMessage renders a `<div>` only when `hasMore` is false. It accepts all standard `<div>` HTML attributes.
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-loading` | Root | Present while loading |
+| `data-has-more` | Root | Present while more items can load |
+| `data-infinite-scroll-sentinel` | Sentinel | Always present |
+
+## Accessibility
+
+- The `Sentinel` is `aria-hidden` since it is a non-visual scroll trigger.
+- The `Loader` uses `role="status"` with `aria-live="polite"` so screen readers announce when more content is being fetched.

@@ -1,0 +1,308 @@
+---
+title: Chat
+description: Streaming-aware chat primitives — a virtualized list, role-tagged messages, and a shared-state composer.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Chat
+
+Streaming-aware chat primitives: a virtualized `Chat.List`, role-tagged `Chat.Message`, and a `Chat.Composer` + `Chat.Input` + `Chat.Send` that share state through `Chat.Root`.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Virtualized list — only the visible rows are mounted, scales to thousands of messages.</FeatureItem>
+  <FeatureItem>Sticks to the bottom as new tokens arrive (great for streaming).</FeatureItem>
+  <FeatureItem>Composer state (value, submit, streaming) is shared through Root.</FeatureItem>
+  <FeatureItem>Auto-growing textarea with submit-on-Enter (Shift+Enter for newline).</FeatureItem>
+  <FeatureItem>Submission is blocked while streaming or disabled.</FeatureItem>
+  <FeatureItem>Messages carry a data-role and data-streaming for styling.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><ChatPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Chat } from '@wire-ui/react'
+
+<Chat.Root onSubmit={send}>
+  <Chat.List count={messages.length}>
+    {({ index }) => (
+      <Chat.Message role={messages[index].role}>
+        {messages[index].text}
+      </Chat.Message>
+    )}
+  </Chat.List>
+  <Chat.Composer>
+    <Chat.Input placeholder="Send a message…" />
+    <Chat.Send>Send</Chat.Send>
+  </Chat.Composer>
+</Chat.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { ref } from 'vue'
+import { Chat } from '@wire-ui/vue'
+
+const messages = ref([{ role: 'assistant', text: 'Hi!' }])
+function send(text) {
+  messages.value.push({ role: 'user', text })
+}
+</script>
+
+<template>
+  <Chat.Root @submit="send">
+    <Chat.List :count="messages.length" v-slot="{ index }">
+      <Chat.Message :role="messages[index].role">
+        {{ messages[index].text }}
+      </Chat.Message>
+    </Chat.List>
+    <Chat.Composer>
+      <Chat.Input placeholder="Send a message…" />
+      <Chat.Send>Send</Chat.Send>
+    </Chat.Composer>
+  </Chat.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Chat } from '@wire-ui/solid'
+
+<Chat.Root onSubmit={send}>
+  <Chat.List count={messages().length}>
+    {({ index }) => (
+      <Chat.Message role={messages()[index].role}>
+        {messages()[index].text}
+      </Chat.Message>
+    )}
+  </Chat.List>
+  <Chat.Composer>
+    <Chat.Input placeholder="Send a message…" />
+    <Chat.Send>Send</Chat.Send>
+  </Chat.Composer>
+</Chat.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Chat } from '@wire-ui/react'
+
+const bubbleCls = (isUser: boolean) =>
+  `max-w-[80%] rounded-[16px] border border-black px-3 py-2 text-sm ${
+    isUser ? 'bg-black text-white' : 'bg-white text-black'
+  }`
+
+<Chat.Root
+  onSubmit={send}
+  className="flex h-[420px] w-full max-w-lg flex-col overflow-hidden rounded-[20px] border border-black bg-white"
+>
+  <Chat.List count={messages.length} estimateItemHeight={88} className="flex-1 px-4 py-3">
+    {({ index }) => {
+      const msg = messages[index]
+      const isUser = msg.role === 'user'
+      return (
+        <Chat.Message role={msg.role} className={`flex py-2 ${isUser ? 'justify-end' : 'justify-start'}`}>
+          <div className={bubbleCls(isUser)}>{msg.text}</div>
+        </Chat.Message>
+      )
+    }}
+  </Chat.List>
+
+  <Chat.Composer className="flex items-end gap-2 border-t border-black p-3">
+    <Chat.Input
+      aria-label="Message"
+      rows={1}
+      placeholder="Send a message…"
+      className="max-h-32 flex-1 resize-none rounded-[8px] border border-black px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black"
+    />
+    <Chat.Send className="rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-white hover:text-black disabled:opacity-40">
+      Send
+    </Chat.Send>
+  </Chat.Composer>
+</Chat.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { Chat } from '@wire-ui/vue'
+
+const messages = ref([{ role: 'assistant', text: 'Hi!' }])
+function send(text) {
+  messages.value.push({ role: 'user', text })
+}
+const bubbleCls = (isUser) =>
+  `max-w-[80%] rounded-[16px] border border-black px-3 py-2 text-sm ${
+    isUser ? 'bg-black text-white' : 'bg-white text-black'
+  }`
+</script>
+
+<template>
+  <Chat.Root
+    class="flex h-[420px] w-full max-w-lg flex-col overflow-hidden rounded-[20px] border border-black bg-white"
+    @submit="send"
+  >
+    <Chat.List :count="messages.length" :estimate-item-height="88" class="flex-1 px-4 py-3" v-slot="{ index }">
+      <Chat.Message
+        :role="messages[index].role"
+        :class="`flex py-2 ${messages[index].role === 'user' ? 'justify-end' : 'justify-start'}`"
+      >
+        <div :class="bubbleCls(messages[index].role === 'user')">{{ messages[index].text }}</div>
+      </Chat.Message>
+    </Chat.List>
+
+    <Chat.Composer class="flex items-end gap-2 border-t border-black p-3">
+      <Chat.Input
+        aria-label="Message"
+        :rows="1"
+        placeholder="Send a message…"
+        class="max-h-32 flex-1 resize-none rounded-[8px] border border-black px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black"
+      />
+      <Chat.Send class="rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-white hover:text-black disabled:opacity-40">
+        Send
+      </Chat.Send>
+    </Chat.Composer>
+  </Chat.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { Chat } from '@wire-ui/solid'
+
+const bubbleCls = (isUser: boolean) =>
+  `max-w-[80%] rounded-[16px] border border-black px-3 py-2 text-sm ${
+    isUser ? 'bg-black text-white' : 'bg-white text-black'
+  }`
+
+<Chat.Root
+  onSubmit={send}
+  class="flex h-[420px] w-full max-w-lg flex-col overflow-hidden rounded-[20px] border border-black bg-white"
+>
+  <Chat.List count={messages().length} estimateItemHeight={88} class="flex-1 px-4 py-3">
+    {({ index }) => {
+      const msg = messages()[index]
+      const isUser = msg.role === 'user'
+      return (
+        <Chat.Message role={msg.role} class={`flex py-2 ${isUser ? 'justify-end' : 'justify-start'}`}>
+          <div class={bubbleCls(isUser)}>{msg.text}</div>
+        </Chat.Message>
+      )
+    }}
+  </Chat.List>
+
+  <Chat.Composer class="flex items-end gap-2 border-t border-black p-3">
+    <Chat.Input
+      aria-label="Message"
+      rows={1}
+      placeholder="Send a message…"
+      class="max-h-32 flex-1 resize-none rounded-[8px] border border-black px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black"
+    />
+    <Chat.Send class="rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-white hover:text-black disabled:opacity-40">
+      Send
+    </Chat.Send>
+  </Chat.Composer>
+</Chat.Root>
+```
+</ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Chat is headless — every part is styled with `className`/`class`. The Root and Send set `data-streaming` while the assistant responds, and each Message exposes `data-role` and `data-streaming` so you can style user vs. assistant bubbles.
+
+```tsx
+<Chat.Message role="user" className="
+  data-[role=user]:justify-end
+  data-[role=assistant]:justify-start
+  data-[streaming]:animate-pulse
+" />
+```
+
+## Using data attributes
+
+```css
+/* User vs assistant alignment */
+[data-role="user"]      { justify-content: flex-end; }
+[data-role="assistant"] { justify-content: flex-start; }
+
+/* Streaming state */
+[data-streaming] .cursor { opacity: 1; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `string` | — | Controlled composer value |
+| `defaultValue` | `string` | `''` | Initial composer value (uncontrolled) |
+| `onValueChange` | `(value: string) => void` | — | Called when the composer text changes |
+| `onSubmit` | `(value: string) => void` | — | Called on submit; the composer clears afterwards |
+| `isStreaming` | `boolean` | `false` | When true, submission is blocked |
+| `disabled` | `boolean` | `false` | Disable the composer |
+
+## List props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `count` | `number` | required | Total number of messages |
+| `estimateItemHeight` | `number` | `72` | Estimated row height in px before measurement |
+| `overscan` | `number` | `6` | Extra rows rendered above/below the viewport |
+| `stickToBottom` | `boolean` | `true` | Keep the view pinned to the newest message |
+| `children` | `(props: { index: number }) => ReactNode` | required | Render a single message by index |
+
+## Message props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `role` | `'user' \| 'assistant' \| 'system' \| string` | `'user'` | Who sent the message — surfaced as `data-role` |
+| `streaming` | `boolean` | `false` | Mark as actively streaming — surfaced as `data-streaming` |
+
+## Input props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `submitOnEnter` | `boolean` | `true` | Submit on Enter (Shift+Enter inserts a newline) |
+| `autoResize` | `boolean` | `true` | Auto-grow the textarea to fit its content |
+
+## Send props
+
+| Prop | Type | Description |
+|---|---|---|
+| `disabled` | `boolean` | Override the automatic disabled state (auto-disabled while streaming, disabled, or empty) |
+| `...React.ButtonHTMLAttributes<HTMLButtonElement>` | — | Standard button attributes |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-role` | Message | `"user"` / `"assistant"` / `"system"` / custom |
+| `data-streaming` | Root, Message, Send | Present while streaming |
+| `data-chat-item` | List rows | Present (marker) |
+| `data-chat-list-sizer` | List sizer | Present (marker) |
+
+## Accessibility
+
+- `Chat.List` sets `role="log"` with `aria-live="polite"` and `aria-relevant="additions"` so screen readers announce new messages.
+- `Chat.Input` reflects `aria-disabled` when the composer is disabled.
+- `Chat.Send` and the textarea are disabled appropriately to prevent submitting empty or in-flight messages.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Enter</kbd> | Submits the message (when `submitOnEnter`). |
+| <kbd>Shift+Enter</kbd> | Inserts a newline instead of submitting. |

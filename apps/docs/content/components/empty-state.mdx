@@ -1,0 +1,176 @@
+---
+title: Empty State
+description: Composable zero-data placeholder with media, title, description and actions.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Empty State
+
+A composable empty / zero-data placeholder with media, title, description and action slots. Announced to assistive tech as a `status` region.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Composable parts: Media, Title, Description and Actions.</FeatureItem>
+  <FeatureItem>Root renders role="status" so the message is announced.</FeatureItem>
+  <FeatureItem>Media is marked aria-hidden as decorative.</FeatureItem>
+  <FeatureItem>Use any icon, emoji or illustration inside Media.</FeatureItem>
+  <FeatureItem>Fully unstyled — bring your own layout and theme.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><EmptyStatePreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { EmptyState } from '@wire-ui/react'
+
+<EmptyState.Root>
+  <EmptyState.Media>🗂️</EmptyState.Media>
+  <EmptyState.Title>No projects yet</EmptyState.Title>
+  <EmptyState.Description>
+    Create your first project to get started.
+  </EmptyState.Description>
+  <EmptyState.Actions>
+    <button>Create project</button>
+  </EmptyState.Actions>
+</EmptyState.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { EmptyState } from '@wire-ui/vue'
+</script>
+
+<template>
+  <EmptyState.Root>
+    <EmptyState.Media>🗂️</EmptyState.Media>
+    <EmptyState.Title>No projects yet</EmptyState.Title>
+    <EmptyState.Description>
+      Create your first project to get started.
+    </EmptyState.Description>
+    <EmptyState.Actions>
+      <button>Create project</button>
+    </EmptyState.Actions>
+  </EmptyState.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { EmptyState } from '@wire-ui/solid'
+
+<EmptyState.Root>
+  <EmptyState.Media>🗂️</EmptyState.Media>
+  <EmptyState.Title>No projects yet</EmptyState.Title>
+  <EmptyState.Description>
+    Create your first project to get started.
+  </EmptyState.Description>
+  <EmptyState.Actions>
+    <button>Create project</button>
+  </EmptyState.Actions>
+</EmptyState.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { EmptyState } from '@wire-ui/react'
+
+<EmptyState.Root className="mx-auto flex max-w-sm flex-col items-center gap-3 rounded-[20px] border border-black bg-white p-10 text-center">
+  <EmptyState.Media className="flex size-14 items-center justify-center rounded-full border border-black bg-[#f5f5f5] text-3xl">
+    🗂️
+  </EmptyState.Media>
+  <EmptyState.Title className="text-base font-semibold text-black">No projects yet</EmptyState.Title>
+  <EmptyState.Description className="text-sm text-[#6b7280]">
+    Create your first project to organize tasks, files and collaborators in one place.
+  </EmptyState.Description>
+  <EmptyState.Actions className="mt-2 flex gap-2">
+    <button className="rounded-[8px] bg-black px-3 py-1.5 text-sm font-medium text-white">Create project</button>
+    <button className="rounded-[8px] border border-black px-3 py-1.5 text-sm font-medium text-black">Import</button>
+  </EmptyState.Actions>
+</EmptyState.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { EmptyState } from '@wire-ui/vue'
+</script>
+
+<template>
+  <EmptyState.Root class="mx-auto flex max-w-sm flex-col items-center gap-3 rounded-[20px] border border-black bg-white p-10 text-center">
+    <EmptyState.Media class="flex size-14 items-center justify-center rounded-full border border-black bg-[#f5f5f5] text-3xl">
+      🗂️
+    </EmptyState.Media>
+    <EmptyState.Title class="text-base font-semibold text-black">No projects yet</EmptyState.Title>
+    <EmptyState.Description class="text-sm text-[#6b7280]">
+      Create your first project to organize tasks, files and collaborators in one place.
+    </EmptyState.Description>
+    <EmptyState.Actions class="mt-2 flex gap-2">
+      <button class="rounded-[8px] bg-black px-3 py-1.5 text-sm font-medium text-white">Create project</button>
+      <button class="rounded-[8px] border border-black px-3 py-1.5 text-sm font-medium text-black">Import</button>
+    </EmptyState.Actions>
+  </EmptyState.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { EmptyState } from '@wire-ui/solid'
+
+<EmptyState.Root class="mx-auto flex max-w-sm flex-col items-center gap-3 rounded-[20px] border border-black bg-white p-10 text-center">
+  <EmptyState.Media class="flex size-14 items-center justify-center rounded-full border border-black bg-[#f5f5f5] text-3xl">
+    🗂️
+  </EmptyState.Media>
+  <EmptyState.Title class="text-base font-semibold text-black">No projects yet</EmptyState.Title>
+  <EmptyState.Description class="text-sm text-[#6b7280]">
+    Create your first project to organize tasks, files and collaborators in one place.
+  </EmptyState.Description>
+  <EmptyState.Actions class="mt-2 flex gap-2">
+    <button class="rounded-[8px] bg-black px-3 py-1.5 text-sm font-medium text-white">Create project</button>
+    <button class="rounded-[8px] border border-black px-3 py-1.5 text-sm font-medium text-black">Import</button>
+  </EmptyState.Actions>
+</EmptyState.Root>
+```
+</ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Empty State ships no styles — every part forwards `className`/`class` and native attributes. Compose a centered column with Tailwind and style each slot directly. The parts render semantic elements: `Root` a `<div role="status">`, `Media` a `<div aria-hidden>`, `Title` an `<h3>`, `Description` a `<p>`, and `Actions` a `<div>`.
+
+```tsx
+<EmptyState.Root className="flex flex-col items-center gap-3 p-10 text-center">
+  <EmptyState.Media className="text-3xl" />
+  <EmptyState.Title className="text-base font-semibold" />
+  <EmptyState.Description className="text-sm text-[#6b7280]" />
+  <EmptyState.Actions className="mt-2 flex gap-2" />
+</EmptyState.Root>
+```
+
+## Sub-component props
+
+Every part extends the native attributes of its underlying element and adds no extra props.
+
+| Component | Element | Description |
+|---|---|---|
+| `EmptyState.Root` | `<div role="status">` | Wrapper; announces the empty state to assistive tech |
+| `EmptyState.Media` | `<div aria-hidden="true">` | Decorative icon / illustration slot |
+| `EmptyState.Title` | `<h3>` | Short headline |
+| `EmptyState.Description` | `<p>` | Supporting copy |
+| `EmptyState.Actions` | `<div>` | Container for call-to-action buttons |
+
+## Accessibility
+
+- `EmptyState.Root` sets `role="status"`, so screen readers announce the message when it appears
+- `EmptyState.Media` is `aria-hidden="true"` — it is treated as decorative; keep meaning in the Title/Description
+- Use `EmptyState.Title` (an `<h3>`) to give the region a clear, concise heading

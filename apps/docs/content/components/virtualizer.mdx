@@ -1,0 +1,190 @@
+---
+title: Virtualizer
+description: Windowing primitive that renders only the items currently in view.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Virtualizer
+
+A windowing primitive: renders only the items in view (plus overscan), measuring real item sizes as they appear. Supply a `count` and a render function for a single item — the Virtualizer handles scrolling, positioning, and measurement. Supports vertical and horizontal axes.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Renders only visible items plus overscan — handles lists of tens of thousands of rows.</FeatureItem>
+  <FeatureItem>Measures real item sizes via ResizeObserver; `estimateSize` is used until measured.</FeatureItem>
+  <FeatureItem>Vertical or horizontal scroll axis.</FeatureItem>
+  <FeatureItem>Render-prop / scoped slot receives each `VirtualItem` (`index`, `start`, `size`).</FeatureItem>
+  <FeatureItem>Stable keys via `getItemKey` for reordering lists.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><VirtualizerPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Virtualizer } from '@wire-ui/react'
+
+<Virtualizer.Root count={1000} estimateSize={44}>
+  {({ index }) => <div>Item number {index}</div>}
+</Virtualizer.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Virtualizer } from '@wire-ui/vue'
+
+const { Root } = Virtualizer
+</script>
+
+<template>
+  <Root :count="1000" :estimate-size="44" v-slot="{ index }">
+    <div>Item number {{ index }}</div>
+  </Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Virtualizer } from '@wire-ui/solid'
+
+<Virtualizer.Root count={1000} estimateSize={44}>
+  {({ index }) => <div>Item number {index}</div>}
+</Virtualizer.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Virtualizer } from '@wire-ui/react'
+
+<Virtualizer.Root
+  count={1000}
+  estimateSize={44}
+  className="h-80 w-72 overflow-hidden rounded-[20px] border border-black bg-white"
+>
+  {({ index }) => (
+    <div className="flex items-center gap-3 border-b border-[#e5e5e5] px-4 py-3 text-sm">
+      <span className="flex size-7 items-center justify-center rounded-full border border-black bg-[#f5f5f5] text-xs text-black">
+        {index}
+      </span>
+      <span className="text-black">Item number {index}</span>
+    </div>
+  )}
+</Virtualizer.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { Virtualizer } from '@wire-ui/vue'
+
+const { Root } = Virtualizer
+</script>
+
+<template>
+  <Root
+    :count="1000"
+    :estimate-size="44"
+    class="h-80 w-72 overflow-hidden rounded-[20px] border border-black bg-white"
+    v-slot="{ index }"
+  >
+    <div class="flex items-center gap-3 border-b border-[#e5e5e5] px-4 py-3 text-sm">
+      <span class="flex size-7 items-center justify-center rounded-full border border-black bg-[#f5f5f5] text-xs text-black">
+        {{ index }}
+      </span>
+      <span class="text-black">Item number {{ index }}</span>
+    </div>
+  </Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    ```tsx
+import { Virtualizer } from '@wire-ui/solid'
+
+<Virtualizer.Root
+  count={1000}
+  estimateSize={44}
+  class="h-80 w-72 overflow-hidden rounded-[20px] border border-black bg-white"
+>
+  {({ index }) => (
+    <div class="flex items-center gap-3 border-b border-[#e5e5e5] px-4 py-3 text-sm">
+      <span class="flex size-7 items-center justify-center rounded-full border border-black bg-[#f5f5f5] text-xs text-black">
+        {index}
+      </span>
+      <span class="text-black">Item number {index}</span>
+    </div>
+  )}
+</Virtualizer.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Sizing
+
+`Virtualizer.Root` is itself the scroll container, so give it a fixed extent along the scroll axis (e.g. `h-80` for vertical, a fixed `h-*` with width for horizontal). It applies `position: relative` and the appropriate `overflow` automatically. Each item is absolutely positioned at its computed offset.
+
+`estimateSize` is the assumed item size (px) before measurement. Real sizes are measured via `ResizeObserver` once items render, so variable-height content settles into place — set `estimateSize` close to the average for the best initial scrollbar.
+
+## Horizontal
+
+Set `orientation="horizontal"` to scroll along the x-axis. `estimateSize` then refers to item width, and items should fill the container height.
+
+```tsx
+<Virtualizer.Root count={5000} estimateSize={120} orientation="horizontal" className="h-32 w-full">
+  {({ index }) => <div className="h-full w-[120px]">#{index}</div>}
+</Virtualizer.Root>
+```
+
+## Using data attributes
+
+`Virtualizer.Root` sets `data-orientation` on the scroll container. The internal sizer carries `data-virtualizer-sizer` and each rendered item carries `data-virtual-item` and `data-index`.
+
+```css
+[data-orientation="vertical"]   { /* vertical scroll */ }
+[data-orientation="horizontal"] { /* horizontal scroll */ }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `count` | `number` | required | Total number of items. |
+| `estimateSize` | `number` | `50` | Estimated item size (px) before measurement. |
+| `overscan` | `number` | `4` | Extra items rendered beyond the viewport on each side. |
+| `orientation` | `'vertical' \| 'horizontal'` | `'vertical'` | Scroll axis. |
+| `getItemKey` | `(index: number) => Key` | — | Stable key per index (helps when the list reorders). Defaults to the index. |
+| `children` | `(item: VirtualItem) => ReactNode` | required | Render a single item. In Vue this is a scoped slot. |
+
+## VirtualItem
+
+The render function (React/Solid) or scoped slot (Vue) receives a `VirtualItem` per visible row. In Vue the slot props are spread as `item`, `index`, `start`, and `size`.
+
+| Field | Type | Description |
+|---|---|---|
+| `index` | `number` | Index of the item in the full list. |
+| `start` | `number` | Offset from the start of the list along the scroll axis, in px. |
+| `size` | `number` | Measured (or estimated) size along the scroll axis, in px. |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-orientation` | Root | `"vertical"` / `"horizontal"` |
+| `data-virtualizer-sizer` | Sizer | Present on the inner spacer element |
+| `data-virtual-item` | Item | Present on each rendered item |
+| `data-index` | Item | The item's index |
+
+## Accessibility
+
+- The Virtualizer is a layout primitive and applies no ARIA roles itself — wrap or compose it with semantic markup (e.g. a list, `Chat.List`) appropriate to your content.
+- Because off-screen items are not in the DOM, ensure any keyboard or screen-reader navigation accounts for virtualized content (e.g. drive scrolling programmatically to bring a target item into view).

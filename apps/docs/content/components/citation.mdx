@@ -1,0 +1,263 @@
+---
+title: Citation
+description: Footnote-style references that link inline markers to a list of sources.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Citation
+
+Footnote-style references that link inline tokens to a list of sources — the pattern AI assistants use to ground answers. Numbering follows source order; markers and footnotes are both fully renderable.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Inline markers auto-number in source order.</FeatureItem>
+  <FeatureItem>Markers link to their footnote and back, with proper ARIA roles.</FeatureItem>
+  <FeatureItem>Render-prop markers and footnotes — show anything you want.</FeatureItem>
+  <FeatureItem>Sensible defaults: a numbered <code>&lt;sup&gt;</code> marker and a title + link footnote.</FeatureItem>
+  <FeatureItem>Unknown ids render nothing — safe against missing sources.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><CitationPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Citation } from '@wire-ui/react'
+
+const sources = [
+  { id: 'rfc', title: 'RFC 9110', url: 'https://www.rfc-editor.org/rfc/rfc9110' },
+  { id: 'mdn', title: 'MDN — HTTP', url: 'https://developer.mozilla.org/' },
+]
+
+<Citation.Root sources={sources}>
+  <p>
+    A 200 means success<Citation.Ref for="rfc" />. Codes group into five classes
+    <Citation.Ref for="mdn" />.
+  </p>
+  <Citation.List />
+</Citation.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Citation } from '@wire-ui/vue'
+
+const sources = [
+  { id: 'rfc', title: 'RFC 9110', url: 'https://www.rfc-editor.org/rfc/rfc9110' },
+  { id: 'mdn', title: 'MDN — HTTP', url: 'https://developer.mozilla.org/' },
+]
+</script>
+
+<template>
+  <Citation.Root :sources="sources">
+    <p>
+      A 200 means success<Citation.Ref for="rfc" />. Codes group into five classes<Citation.Ref for="mdn" />.
+    </p>
+    <Citation.List />
+  </Citation.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Citation } from '@wire-ui/solid'
+
+const sources = [
+  { id: 'rfc', title: 'RFC 9110', url: 'https://www.rfc-editor.org/rfc/rfc9110' },
+  { id: 'mdn', title: 'MDN — HTTP', url: 'https://developer.mozilla.org/' },
+]
+
+<Citation.Root sources={sources}>
+  <p>
+    A 200 means success<Citation.Ref for="rfc" />. Codes group into five classes
+    <Citation.Ref for="mdn" />.
+  </p>
+  <Citation.List />
+</Citation.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Citation } from '@wire-ui/react'
+
+const sources = [
+  { id: 'rfc', title: 'RFC 9110 — HTTP Semantics', url: 'https://www.rfc-editor.org/rfc/rfc9110' },
+  { id: 'mdn', title: 'MDN — HTTP response status codes', url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Status' },
+]
+
+const markerCls =
+  'ml-0.5 inline-flex items-center rounded-[4px] border border-black bg-white px-1 text-[0.65rem] font-semibold text-black no-underline align-super hover:bg-black hover:text-white'
+
+<Citation.Root
+  sources={sources}
+  className="w-full max-w-lg space-y-4 rounded-[20px] border border-black bg-white p-5 text-sm text-black"
+>
+  <p className="leading-relaxed">
+    A <code>200 OK</code> response means the request succeeded
+    <Citation.Ref for="rfc" className={markerCls} />. Status codes are grouped into five classes
+    <Citation.Ref for="mdn" className={markerCls} />.
+  </p>
+  <Citation.List className="space-y-1 border-t border-black pt-3 text-xs text-[#6b7280]">
+    {({ index, source }) => (
+      <div className="flex gap-2">
+        <span className="font-semibold text-black">{index}.</span>
+        <a href={source.url} target="_blank" rel="noreferrer" className="text-black hover:underline">
+          {source.title}
+        </a>
+      </div>
+    )}
+  </Citation.List>
+</Citation.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { h } from 'vue'
+import { Citation } from '@wire-ui/vue'
+
+const sources = [
+  { id: 'rfc', title: 'RFC 9110 — HTTP Semantics', url: 'https://www.rfc-editor.org/rfc/rfc9110' },
+  { id: 'mdn', title: 'MDN — HTTP response status codes', url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Status' },
+]
+
+const markerCls =
+  'ml-0.5 inline-flex items-center rounded-[4px] border border-black bg-white px-1 text-[0.65rem] font-semibold text-black no-underline align-super hover:bg-black hover:text-white'
+</script>
+
+<template>
+  <Citation.Root
+    :sources="sources"
+    class="w-full max-w-lg space-y-4 rounded-[20px] border border-black bg-white p-5 text-sm text-black"
+  >
+    <p class="leading-relaxed">
+      A <code>200 OK</code> response means the request succeeded<Citation.Ref for="rfc" :class="markerCls" />. Status codes are grouped into five classes<Citation.Ref for="mdn" :class="markerCls" />.
+    </p>
+    <Citation.List class="space-y-1 border-t border-black pt-3 text-xs text-[#6b7280]" v-slot="{ index, source }">
+      <div class="flex gap-2">
+        <span class="font-semibold text-black">{{ index }}.</span>
+        <a :href="source.url" target="_blank" rel="noreferrer" class="text-black hover:underline">
+          {{ source.title }}
+        </a>
+      </div>
+    </Citation.List>
+  </Citation.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { Citation } from '@wire-ui/solid'
+
+const sources = [
+  { id: 'rfc', title: 'RFC 9110 — HTTP Semantics', url: 'https://www.rfc-editor.org/rfc/rfc9110' },
+  { id: 'mdn', title: 'MDN — HTTP response status codes', url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Status' },
+]
+
+const markerCls =
+  'ml-0.5 inline-flex items-center rounded-[4px] border border-black bg-white px-1 text-[0.65rem] font-semibold text-black no-underline align-super hover:bg-black hover:text-white'
+
+<Citation.Root
+  sources={sources}
+  class="w-full max-w-lg space-y-4 rounded-[20px] border border-black bg-white p-5 text-sm text-black"
+>
+  <p class="leading-relaxed">
+    A <code>200 OK</code> response means the request succeeded
+    <Citation.Ref for="rfc" class={markerCls} />. Status codes are grouped into five classes
+    <Citation.Ref for="mdn" class={markerCls} />.
+  </p>
+  <Citation.List class="space-y-1 border-t border-black pt-3 text-xs text-[#6b7280]">
+    {({ index, source }) => (
+      <div class="flex gap-2">
+        <span class="font-semibold text-black">{index}.</span>
+        <a href={source.url} target="_blank" rel="noreferrer" class="text-black hover:underline">
+          {source.title}
+        </a>
+      </div>
+    )}
+  </Citation.List>
+</Citation.Root>
+```
+</ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Citation is headless. The inline marker is an `<a>` with `data-citation` and a `data-index`; each footnote is an `<li>` with `data-citation-source` and a `data-index`. Pass a render function to `Citation.Ref` or `Citation.List` to fully control the markup, or rely on the defaults.
+
+```tsx
+<Citation.Ref for="rfc" className="
+  align-super text-xs font-semibold
+  hover:underline
+" />
+```
+
+## Using data attributes
+
+```css
+/* Inline marker */
+[data-citation] { vertical-align: super; font-size: 0.7em; }
+
+/* Footnote rows */
+[data-citation-source] { display: flex; gap: 0.5rem; }
+[data-citation-source]::before { content: attr(data-index) "."; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `sources` | `CitationSource[]` | required | Ordered list of sources; numbering follows array order |
+
+Root also accepts all native `div` attributes.
+
+## Ref props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `for` | `string` | required | Id of the source this reference points to |
+| `children` | `ReactNode \| ((props: { source, index }) => ReactNode)` | `<sup>{label}</sup>` | Static content or a render function |
+
+Ref also accepts native `<a>` attributes (except `children`/`href`). Renders `null` when the id is unknown.
+
+## List props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `children` | `(props: { source, index }) => ReactNode` | title + link row | Render a single footnote |
+
+List also accepts native `<ol>` attributes (except `children`).
+
+## CitationSource
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` | Stable identifier referenced by `Citation.Ref`'s `for` prop |
+| `label` | `string` | Marker label override; defaults to the 1-based position |
+| `title` | `string` | Human-readable title shown in the footnote list |
+| `url` | `string` | Link to the source |
+| `excerpt` | `string` | Optional excerpt/snippet for the footnote list |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-citation` | Ref | Present (marker) |
+| `data-index` | Ref, List items | 1-based position |
+| `data-citation-source` | List items | Present (marker) |
+
+## Accessibility
+
+- `Citation.Ref` renders an `<a role="doc-noteref">` with `href` pointing to its footnote and `aria-describedby` linking the two.
+- Each footnote `<li>` uses `role="doc-endnote"` and a generated id so markers can link to it.
+- Markers and footnotes share a stable id namespace generated per Root instance.

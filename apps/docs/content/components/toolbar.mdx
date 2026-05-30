@@ -1,0 +1,239 @@
+---
+title: Toolbar
+description: An accessible toolbar container with roving tabindex and arrow-key navigation.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Toolbar
+
+An accessible `role="toolbar"` container with roving tabindex — the whole group is a single tab stop and arrow keys move focus between items (Home/End jump to the ends). Compose it from `Toolbar.Button`, `Toolbar.Toggle`, `Toolbar.Link`, and `Toolbar.Separator`.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Renders as role="toolbar" with aria-orientation.</FeatureItem>
+  <FeatureItem>Roving tabindex — a single tab stop, arrow keys move focus between items.</FeatureItem>
+  <FeatureItem>Home/End jump to the first/last item; disabled items are skipped.</FeatureItem>
+  <FeatureItem>Horizontal or vertical orientation with optional focus looping.</FeatureItem>
+  <FeatureItem>Built-in Toggle item with controlled/uncontrolled pressed state.</FeatureItem>
+  <FeatureItem>Button, Toggle, Link, and Separator sub-components.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><ToolbarPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Toolbar } from '@wire-ui/react'
+
+<Toolbar.Root aria-label="Text formatting">
+  <Toolbar.Toggle aria-label="Bold"><b>B</b></Toolbar.Toggle>
+  <Toolbar.Toggle aria-label="Italic"><i>I</i></Toolbar.Toggle>
+  <Toolbar.Separator />
+  <Toolbar.Button aria-label="Align left">⬅</Toolbar.Button>
+  <Toolbar.Link href="#">Help</Toolbar.Link>
+</Toolbar.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Toolbar } from '@wire-ui/vue'
+</script>
+
+<template>
+  <Toolbar.Root aria-label="Text formatting">
+    <Toolbar.Toggle aria-label="Bold"><b>B</b></Toolbar.Toggle>
+    <Toolbar.Toggle aria-label="Italic"><i>I</i></Toolbar.Toggle>
+    <Toolbar.Separator />
+    <Toolbar.Button aria-label="Align left">⬅</Toolbar.Button>
+    <Toolbar.Link href="#">Help</Toolbar.Link>
+  </Toolbar.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Toolbar } from '@wire-ui/solid'
+
+<Toolbar.Root aria-label="Text formatting">
+  <Toolbar.Toggle aria-label="Bold"><b>B</b></Toolbar.Toggle>
+  <Toolbar.Toggle aria-label="Italic"><i>I</i></Toolbar.Toggle>
+  <Toolbar.Separator />
+  <Toolbar.Button aria-label="Align left">⬅</Toolbar.Button>
+  <Toolbar.Link href="#">Help</Toolbar.Link>
+</Toolbar.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Toolbar } from '@wire-ui/react'
+
+const btnCls =
+  'flex size-9 cursor-pointer items-center justify-center rounded-[8px] text-sm text-black outline-none transition-colors hover:bg-[#f5f5f5] data-[state=on]:bg-black data-[state=on]:text-white data-[focus-visible]:ring-2 data-[focus-visible]:ring-black'
+
+<Toolbar.Root
+  aria-label="Text formatting"
+  className="inline-flex items-center gap-1 rounded-[8px] border border-black bg-white p-1"
+>
+  <Toolbar.Toggle className={btnCls} aria-label="Bold" defaultPressed><b>B</b></Toolbar.Toggle>
+  <Toolbar.Toggle className={btnCls} aria-label="Italic"><i>I</i></Toolbar.Toggle>
+  <Toolbar.Toggle className={`${btnCls} underline`} aria-label="Underline">U</Toolbar.Toggle>
+  <Toolbar.Separator className="mx-1 h-5 w-px bg-black" />
+  <Toolbar.Button className={btnCls} aria-label="Align left">⬅</Toolbar.Button>
+  <Toolbar.Button className={btnCls} aria-label="Align center">↔</Toolbar.Button>
+  <Toolbar.Separator className="mx-1 h-5 w-px bg-black" />
+  <Toolbar.Link href="#" className={`${btnCls} w-auto px-2`}>Help</Toolbar.Link>
+</Toolbar.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { Toolbar } from '@wire-ui/vue'
+
+const btnCls =
+  'flex size-9 cursor-pointer items-center justify-center rounded-[8px] text-sm text-black outline-none transition-colors hover:bg-[#f5f5f5] data-[state=on]:bg-black data-[state=on]:text-white data-[focus-visible]:ring-2 data-[focus-visible]:ring-black'
+</script>
+
+<template>
+  <Toolbar.Root
+    aria-label="Text formatting"
+    class="inline-flex items-center gap-1 rounded-[8px] border border-black bg-white p-1"
+  >
+    <Toolbar.Toggle :class="btnCls" aria-label="Bold" :default-pressed="true"><b>B</b></Toolbar.Toggle>
+    <Toolbar.Toggle :class="btnCls" aria-label="Italic"><i>I</i></Toolbar.Toggle>
+    <Toolbar.Toggle :class="`${btnCls} underline`" aria-label="Underline">U</Toolbar.Toggle>
+    <Toolbar.Separator class="mx-1 h-5 w-px bg-black" />
+    <Toolbar.Button :class="btnCls" aria-label="Align left">⬅</Toolbar.Button>
+    <Toolbar.Button :class="btnCls" aria-label="Align center">↔</Toolbar.Button>
+    <Toolbar.Separator class="mx-1 h-5 w-px bg-black" />
+    <Toolbar.Link href="#" :class="`${btnCls} w-auto px-2`">Help</Toolbar.Link>
+  </Toolbar.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    ```tsx
+import { Toolbar } from '@wire-ui/solid'
+
+const btnCls =
+  'flex size-9 cursor-pointer items-center justify-center rounded-[8px] text-sm text-black outline-none transition-colors hover:bg-[#f5f5f5] data-[state=on]:bg-black data-[state=on]:text-white data-[focus-visible]:ring-2 data-[focus-visible]:ring-black'
+
+<Toolbar.Root
+  aria-label="Text formatting"
+  class="inline-flex items-center gap-1 rounded-[8px] border border-black bg-white p-1"
+>
+  <Toolbar.Toggle class={btnCls} aria-label="Bold" defaultPressed><b>B</b></Toolbar.Toggle>
+  <Toolbar.Toggle class={btnCls} aria-label="Italic"><i>I</i></Toolbar.Toggle>
+  <Toolbar.Toggle class={`${btnCls} underline`} aria-label="Underline">U</Toolbar.Toggle>
+  <Toolbar.Separator class="mx-1 h-5 w-px bg-black" />
+  <Toolbar.Button class={btnCls} aria-label="Align left">⬅</Toolbar.Button>
+  <Toolbar.Button class={btnCls} aria-label="Align center">↔</Toolbar.Button>
+  <Toolbar.Separator class="mx-1 h-5 w-px bg-black" />
+  <Toolbar.Link href="#" class={`${btnCls} w-auto px-2`}>Help</Toolbar.Link>
+</Toolbar.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+`Toolbar.Toggle` exposes `data-state` (`"on"` / `"off"`) and `aria-pressed` for the pressed look. `Toolbar.Root` and `Toolbar.Separator` expose `data-orientation`. Each interactive item is wired into roving tabindex automatically.
+
+```tsx
+<Toolbar.Toggle className="
+  text-black
+  data-[state=on]:bg-black data-[state=on]:text-white
+">
+  <b>B</b>
+</Toolbar.Toggle>
+
+<Toolbar.Root className="
+  inline-flex gap-1
+  data-[orientation=vertical]:flex-col
+" />
+```
+
+## Using data attributes
+
+`Toolbar.Root` sets `data-orientation`. `Toolbar.Toggle` sets `data-state`. All interactive items carry `data-toolbar-item`. `Toolbar.Separator` sets `data-orientation` (perpendicular to the toolbar's axis).
+
+```css
+/* Pressed toggle */
+[data-state="on"] { background: #000; color: #fff; }
+
+/* Vertical toolbar */
+[data-orientation="vertical"] { flex-direction: column; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout + arrow-key axis |
+| `loop` | `boolean` | `true` | Wrap focus from last → first and vice versa |
+
+Also accepts all native `<div>` attributes.
+
+## Button props
+
+`Toolbar.Button` accepts all native `<button>` attributes. It is registered into the toolbar's roving-focus group.
+
+## Toggle props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `pressed` | `boolean` | — | Controlled pressed state |
+| `defaultPressed` | `boolean` | `false` | Initial pressed state (uncontrolled) |
+| `onPressedChange` | `(pressed: boolean) => void` | — | Called when the pressed state changes |
+
+Also accepts all native `<button>` attributes (including `disabled`).
+
+## Link props
+
+`Toolbar.Link` accepts all native `<a>` attributes (e.g. `href`). It is registered into the toolbar's roving-focus group.
+
+## Separator props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `orientation` | `'horizontal' \| 'vertical'` | perpendicular to Root | Visual orientation; defaults to the axis perpendicular to the toolbar |
+
+Also accepts all native `<div>` attributes.
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-orientation` | Root, Separator | `"horizontal"` / `"vertical"` |
+| `data-state` | Toggle | `"on"` / `"off"` |
+| `data-toolbar-item` | Button, Toggle, Link | Present on every roving-focus item |
+
+Root sets `role="toolbar"` and `aria-orientation`. Separator sets `role="separator"` and `aria-orientation`. Toggle sets `aria-pressed`. Each item uses roving tabindex (`tabIndex={0}` for the active item, `-1` for the rest).
+
+## Accessibility
+
+- Implements the WAI-ARIA toolbar pattern with roving tabindex.
+- The toolbar is a single tab stop; arrow keys move focus between items along the orientation axis.
+- Disabled items (`disabled` or `aria-disabled="true"`) are skipped during arrow-key navigation.
+- Provide an `aria-label` (or `aria-labelledby`) on `Toolbar.Root` to name the toolbar.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>ArrowRight</kbd> / <kbd>ArrowDown</kbd> | Focus the next item (axis depends on `orientation`). |
+| <kbd>ArrowLeft</kbd> / <kbd>ArrowUp</kbd> | Focus the previous item. |
+| <kbd>Home</kbd> | Focus the first item. |
+| <kbd>End</kbd> | Focus the last item. |
+| <kbd>Space</kbd> / <kbd>Enter</kbd> | Activates a Button/Link or toggles a Toggle. |
+| <kbd>Tab</kbd> | Moves focus into the toolbar (single tab stop), then out of it. |

@@ -1,0 +1,258 @@
+---
+title: Toggle
+description: A two-state pressable button, usable standalone or grouped for segmented/multi-select controls.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Toggle
+
+A two-state pressable button — renders as a `<button>` with `aria-pressed` and `data-state="on"|"off"`. Use it standalone, or drop several inside `ToggleGroup.Root` (single or multiple selection) for a segmented control or formatting pill bar. Distinct from `Switch`, which is a settings on/off control.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Renders as a button with aria-pressed and data-state.</FeatureItem>
+  <FeatureItem>Works standalone (controlled or uncontrolled) or inside a ToggleGroup.</FeatureItem>
+  <FeatureItem>ToggleGroup supports single (one active) or multiple selection.</FeatureItem>
+  <FeatureItem>Roving-tabindex focus with arrow-key navigation inside a group.</FeatureItem>
+  <FeatureItem>Horizontal or vertical orientation; optional focus looping.</FeatureItem>
+  <FeatureItem>Supports disabled state per toggle or for the whole group.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><TogglePreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Toggle, ToggleGroup } from '@wire-ui/react'
+
+// Standalone
+<Toggle defaultPressed aria-label="Toggle italic">
+  <i>I</i>
+</Toggle>
+
+// Grouped (multiple selection)
+<ToggleGroup.Root type="multiple" defaultValue={['bold']} aria-label="Text formatting">
+  <Toggle value="bold" aria-label="Bold"><b>B</b></Toggle>
+  <Toggle value="italic" aria-label="Italic"><i>I</i></Toggle>
+  <Toggle value="underline" aria-label="Underline">U</Toggle>
+</ToggleGroup.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { ref } from 'vue'
+import { Toggle, ToggleGroup } from '@wire-ui/vue'
+
+const marks = ref(['bold'])
+</script>
+
+<template>
+  <!-- Standalone -->
+  <Toggle :default-pressed="true" aria-label="Toggle italic"><i>I</i></Toggle>
+
+  <!-- Grouped (multiple selection) -->
+  <ToggleGroup.Root type="multiple" :value="marks" @change="marks = $event" aria-label="Text formatting">
+    <Toggle value="bold" aria-label="Bold"><b>B</b></Toggle>
+    <Toggle value="italic" aria-label="Italic"><i>I</i></Toggle>
+    <Toggle value="underline" aria-label="Underline">U</Toggle>
+  </ToggleGroup.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Toggle, ToggleGroup } from '@wire-ui/solid'
+
+// Standalone
+<Toggle defaultPressed aria-label="Toggle italic">
+  <i>I</i>
+</Toggle>
+
+// Grouped (multiple selection)
+<ToggleGroup.Root type="multiple" defaultValue={['bold']} aria-label="Text formatting">
+  <Toggle value="bold" aria-label="Bold"><b>B</b></Toggle>
+  <Toggle value="italic" aria-label="Italic"><i>I</i></Toggle>
+  <Toggle value="underline" aria-label="Underline">U</Toggle>
+</ToggleGroup.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Toggle, ToggleGroup } from '@wire-ui/react'
+
+const toggleCls =
+  'flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-[8px] px-2.5 text-sm text-black outline-none transition-colors hover:bg-[#f5f5f5] data-[state=on]:bg-black data-[state=on]:text-white data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40 data-[focus-visible]:ring-2 data-[focus-visible]:ring-black'
+
+<ToggleGroup.Root
+  type="multiple"
+  defaultValue={['bold']}
+  aria-label="Text formatting"
+  className="inline-flex items-center gap-1 rounded-[8px] border border-black bg-white p-1"
+>
+  <Toggle value="bold" className={toggleCls} aria-label="Bold"><b>B</b></Toggle>
+  <Toggle value="italic" className={toggleCls} aria-label="Italic"><i>I</i></Toggle>
+  <Toggle value="underline" className={`${toggleCls} underline`} aria-label="Underline">U</Toggle>
+</ToggleGroup.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { Toggle, ToggleGroup } from '@wire-ui/vue'
+
+const marks = ref(['bold'])
+const toggleCls =
+  'flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-[8px] px-2.5 text-sm text-black outline-none transition-colors hover:bg-[#f5f5f5] data-[state=on]:bg-black data-[state=on]:text-white data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40 data-[focus-visible]:ring-2 data-[focus-visible]:ring-black'
+</script>
+
+<template>
+  <ToggleGroup.Root
+    type="multiple"
+    :value="marks"
+    @change="marks = $event"
+    aria-label="Text formatting"
+    class="inline-flex items-center gap-1 rounded-[8px] border border-black bg-white p-1"
+  >
+    <Toggle value="bold" :class="toggleCls" aria-label="Bold"><b>B</b></Toggle>
+    <Toggle value="italic" :class="toggleCls" aria-label="Italic"><i>I</i></Toggle>
+    <Toggle value="underline" :class="`${toggleCls} underline`" aria-label="Underline">U</Toggle>
+  </ToggleGroup.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    ```tsx
+import { Toggle, ToggleGroup } from '@wire-ui/solid'
+
+const toggleCls =
+  'flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-[8px] px-2.5 text-sm text-black outline-none transition-colors hover:bg-[#f5f5f5] data-[state=on]:bg-black data-[state=on]:text-white data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40 data-[focus-visible]:ring-2 data-[focus-visible]:ring-black'
+
+<ToggleGroup.Root
+  type="multiple"
+  defaultValue={['bold']}
+  aria-label="Text formatting"
+  class="inline-flex items-center gap-1 rounded-[8px] border border-black bg-white p-1"
+>
+  <Toggle value="bold" class={toggleCls} aria-label="Bold"><b>B</b></Toggle>
+  <Toggle value="italic" class={toggleCls} aria-label="Italic"><i>I</i></Toggle>
+  <Toggle value="underline" class={`${toggleCls} underline`} aria-label="Underline">U</Toggle>
+</ToggleGroup.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Toggle exposes `data-state` (`"on"` / `"off"`) plus the standard interactive-state attributes from `useInteractiveState`. Use these to style the pressed appearance and focus ring.
+
+```tsx
+<Toggle className="
+  text-black
+  data-[state=on]:bg-black data-[state=on]:text-white
+  data-[disabled]:opacity-40 data-[disabled]:cursor-not-allowed
+  data-[focus-visible]:ring-2 data-[focus-visible]:ring-black
+">
+  <b>B</b>
+</Toggle>
+```
+
+`ToggleGroup.Root` exposes `data-orientation` so a single group can flip between row and column layouts:
+
+```tsx
+<ToggleGroup.Root className="
+  inline-flex gap-1
+  data-[orientation=vertical]:flex-col
+  data-[disabled]:opacity-50
+" />
+```
+
+## Using data attributes
+
+Toggle sets `data-state` (`"on"` / `"off"`) and `data-disabled`. `ToggleGroup.Root` sets `data-orientation` and `data-disabled`.
+
+```css
+/* Pressed toggle */
+[data-state="on"]  { background: #000; color: #fff; }
+[data-state="off"] { /* default */ }
+
+/* Disabled */
+[data-disabled] { opacity: 0.4; cursor: not-allowed; }
+
+/* Vertical group */
+[data-orientation="vertical"] { flex-direction: column; }
+```
+
+## Toggle props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `pressed` | `boolean` | — | Controlled pressed state (standalone use) |
+| `defaultPressed` | `boolean` | `false` | Initial pressed state (uncontrolled, standalone use) |
+| `onPressedChange` | `(pressed: boolean) => void` | — | Called when the pressed state changes (standalone use) |
+| `value` | `string` | — | Identity within a `ToggleGroup.Root`. When set inside a group, the group owns the pressed state |
+| `disabled` | `boolean` | `false` | Disables this toggle |
+
+Also accepts all native `<button>` attributes (except `value` and `onChange`).
+
+## ToggleGroup.Root props (single)
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `type` | `'single'` | required | One toggle active at a time |
+| `value` | `string \| null` | — | Controlled selected value (`null` when none) |
+| `defaultValue` | `string \| null` | — | Initial selected value (uncontrolled) |
+| `onChange` | `(value: string \| null) => void` | — | Called when the selection changes |
+| `disabled` | `boolean` | `false` | Disable the whole group |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout + arrow-key axis |
+| `loop` | `boolean` | `true` | Wrap arrow-key focus from last → first |
+| `rovingFocus` | `boolean` | `true` | Manage focus as a single tab stop with arrow-key navigation |
+
+## ToggleGroup.Root props (multiple)
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `type` | `'multiple'` | required | Any number of toggles active |
+| `value` | `string[]` | — | Controlled selected values |
+| `defaultValue` | `string[]` | `[]` | Initial selected values (uncontrolled) |
+| `onChange` | `(value: string[]) => void` | — | Called when the selection changes |
+| `disabled` | `boolean` | `false` | Disable the whole group |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout + arrow-key axis |
+| `loop` | `boolean` | `true` | Wrap arrow-key focus from last → first |
+| `rovingFocus` | `boolean` | `true` | Manage focus as a single tab stop with arrow-key navigation |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-state` | Toggle | `"on"` / `"off"` |
+| `data-disabled` | Toggle, ToggleGroup.Root | Present when disabled |
+| `data-orientation` | ToggleGroup.Root | `"horizontal"` / `"vertical"` |
+| `data-hover` / `data-active` / `data-focus-visible` | Toggle | Standard interactive states |
+
+## Accessibility
+
+- Each Toggle renders as `<button>` with `aria-pressed` reflecting the current state.
+- `ToggleGroup.Root` sets `role="group"` and `aria-orientation`.
+- Inside a group with `rovingFocus`, the group is a single tab stop: only the active item is tabbable (`tabindex={0}`), the rest are `tabindex={-1}`, and arrow keys move focus. Disabled toggles are skipped.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Space</kbd> / <kbd>Enter</kbd> | Toggles the focused button on/off. |
+| <kbd>ArrowRight</kbd> / <kbd>ArrowDown</kbd> | Move focus to the next toggle in the group (axis depends on `orientation`). |
+| <kbd>ArrowLeft</kbd> / <kbd>ArrowUp</kbd> | Move focus to the previous toggle in the group. |
+| <kbd>Home</kbd> | Focus the first toggle in the group. |
+| <kbd>End</kbd> | Focus the last toggle in the group. |
+| <kbd>Tab</kbd> | Moves focus to the group (single tab stop), then out of it. |

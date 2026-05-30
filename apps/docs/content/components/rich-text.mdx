@@ -1,0 +1,241 @@
+---
+title: Rich Text
+description: A slot-based Markdown editor with a toolbar, editor textarea, and live preview across edit, split, and preview modes.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Rich Text
+
+A slot-based Markdown editor scaffold built on top of `Markdown`. It provides a toolbar with selection-wrapping actions, an editor textarea, and a live preview, with `edit`, `preview`, and `split` modes.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Three view modes: edit, preview, and split.</FeatureItem>
+  <FeatureItem>Toolbar actions wrap the current selection or insert text at the caret.</FeatureItem>
+  <FeatureItem>Live Markdown preview powered by a pluggable parser (wrap remark/marked).</FeatureItem>
+  <FeatureItem>Custom render-part overrides forwarded to the Markdown preview.</FeatureItem>
+  <FeatureItem>Controlled or uncontrolled value and mode.</FeatureItem>
+  <FeatureItem>Actions preserve the editor selection — they never steal focus.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><RichTextPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { RichText } from '@wire-ui/react'
+
+<RichText.Root defaultMode="split" parse={parse}>
+  <RichText.Toolbar>
+    <RichText.Action wrap="**">B</RichText.Action>
+    <RichText.Action wrap="_">I</RichText.Action>
+    <RichText.Action wrap={['[', '](url)']}>Link</RichText.Action>
+    <RichText.Action insert={'\n- '}>List</RichText.Action>
+  </RichText.Toolbar>
+  <RichText.Editor placeholder="Write some markdown…" />
+  <RichText.Preview />
+</RichText.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { RichText } from '@wire-ui/vue'
+import { parse } from './my-parser'
+</script>
+
+<template>
+  <RichText.Root default-mode="split" :parse="parse">
+    <RichText.Toolbar>
+      <RichText.Action wrap="**">B</RichText.Action>
+      <RichText.Action wrap="_">I</RichText.Action>
+      <RichText.Action :wrap="['[', '](url)']">Link</RichText.Action>
+      <RichText.Action insert="\n- ">List</RichText.Action>
+    </RichText.Toolbar>
+    <RichText.Editor placeholder="Write some markdown…" />
+    <RichText.Preview />
+  </RichText.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { RichText } from '@wire-ui/solid'
+
+<RichText.Root defaultMode="split" parse={parse}>
+  <RichText.Toolbar>
+    <RichText.Action wrap="**">B</RichText.Action>
+    <RichText.Action wrap="_">I</RichText.Action>
+    <RichText.Action wrap={['[', '](url)']}>Link</RichText.Action>
+    <RichText.Action insert={'\n- '}>List</RichText.Action>
+  </RichText.Toolbar>
+  <RichText.Editor placeholder="Write some markdown…" />
+  <RichText.Preview />
+</RichText.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { RichText } from '@wire-ui/react'
+
+<RichText.Root
+  defaultMode="split"
+  parse={parse}
+  components={components}
+  className="w-full max-w-2xl overflow-hidden rounded-[20px] border border-black bg-white"
+>
+  <RichText.Toolbar className="flex items-center gap-1 border-b border-black bg-[#fafafa] p-1.5">
+    <RichText.Action wrap="**" className="rounded-[6px] px-2 py-1 text-sm font-bold text-black hover:bg-[#f5f5f5]">
+      B
+    </RichText.Action>
+    <RichText.Action wrap="_" className="rounded-[6px] px-2 py-1 text-sm italic text-black hover:bg-[#f5f5f5]">
+      I
+    </RichText.Action>
+  </RichText.Toolbar>
+  <div className="grid grid-cols-2">
+    <RichText.Editor
+      className="min-h-48 w-full resize-none border-r border-black p-3 font-mono text-sm outline-none"
+      placeholder="Write some markdown…"
+    />
+    <RichText.Preview className="min-h-48 p-3" />
+  </div>
+</RichText.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { RichText } from '@wire-ui/vue'
+import { parse, components } from './my-parser'
+</script>
+
+<template>
+  <RichText.Root
+    default-mode="split"
+    :parse="parse"
+    :components="components"
+    class="w-full max-w-2xl overflow-hidden rounded-[20px] border border-black bg-white"
+  >
+    <RichText.Toolbar class="flex items-center gap-1 border-b border-black bg-[#fafafa] p-1.5">
+      <RichText.Action wrap="**" class="rounded-[6px] px-2 py-1 text-sm font-bold text-black hover:bg-[#f5f5f5]">
+        B
+      </RichText.Action>
+      <RichText.Action wrap="_" class="rounded-[6px] px-2 py-1 text-sm italic text-black hover:bg-[#f5f5f5]">
+        I
+      </RichText.Action>
+    </RichText.Toolbar>
+    <div class="grid grid-cols-2">
+      <RichText.Editor
+        class="min-h-48 w-full resize-none border-r border-black p-3 font-mono text-sm outline-none"
+        placeholder="Write some markdown…"
+      />
+      <RichText.Preview class="min-h-48 p-3" />
+    </div>
+  </RichText.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { RichText } from '@wire-ui/solid'
+
+<RichText.Root
+  defaultMode="split"
+  parse={parse}
+  components={components}
+  class="w-full max-w-2xl overflow-hidden rounded-[20px] border border-black bg-white"
+>
+  <RichText.Toolbar class="flex items-center gap-1 border-b border-black bg-[#fafafa] p-1.5">
+    <RichText.Action wrap="**" class="rounded-[6px] px-2 py-1 text-sm font-bold text-black hover:bg-[#f5f5f5]">
+      B
+    </RichText.Action>
+    <RichText.Action wrap="_" class="rounded-[6px] px-2 py-1 text-sm italic text-black hover:bg-[#f5f5f5]">
+      I
+    </RichText.Action>
+  </RichText.Toolbar>
+  <div class="grid grid-cols-2">
+    <RichText.Editor
+      class="min-h-48 w-full resize-none border-r border-black p-3 font-mono text-sm outline-none"
+      placeholder="Write some markdown…"
+    />
+    <RichText.Preview class="min-h-48 p-3" />
+  </div>
+</RichText.Root>
+```
+</ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+`RichText.Root` sets `data-mode` (`"edit"` / `"preview"` / `"split"`) so you can lay out the editor and preview differently per mode — for example switching the inner wrapper between one and two columns. `Editor` and `Preview` also carry `data-mode`, and `Editor` is unmounted in `preview` mode while `Preview` is unmounted in `edit` mode.
+
+```tsx
+<RichText.Root className="
+  data-[mode=split]:grid-cols-2
+">
+  <RichText.Editor className="font-mono" />
+  <RichText.Preview />
+</RichText.Root>
+```
+
+## Using data attributes
+
+`RichText.Root`, `Editor`, and `Preview` all set `data-mode` reflecting the current view mode.
+
+```css
+[data-mode="edit"]    { /* editor only */ }
+[data-mode="preview"] { /* preview only */ }
+[data-mode="split"]   { /* both side by side */ }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `string` | — | Controlled Markdown source |
+| `defaultValue` | `string` | `''` | Initial Markdown source (uncontrolled) |
+| `onChange` | `(value: string) => void` | — | Called when the source changes |
+| `mode` | `'edit' \| 'preview' \| 'split'` | — | Controlled view mode |
+| `defaultMode` | `'edit' \| 'preview' \| 'split'` | `'edit'` | Initial view mode (uncontrolled) |
+| `onModeChange` | `(mode: RichTextMode) => void` | — | Called when the view mode changes |
+| `parse` | `(content: string) => MarkdownNode[]` | — | Parser used by `Preview` (wrap remark/marked) |
+| `components` | `MarkdownComponents` | — | Render-part overrides forwarded to the `Markdown` preview |
+
+## Action props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `wrap` | `string \| [string, string]` | — | Wrap the selection — a single string is used for both sides, or pass `[before, after]` |
+| `insert` | `string` | — | Insert text at the caret |
+
+Also accepts all native `<button>` attributes.
+
+## Editor props
+
+Accepts all native `<textarea>` attributes except `value` / `onChange` (managed by `Root`). Examples: `rows`, `placeholder`.
+
+## Toolbar / Preview props
+
+Both accept all native `<div>` attributes. `Toolbar` renders with `role="toolbar"`. `Preview` renders the parsed Markdown via the `Markdown` component.
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-mode` | Root, Editor, Preview | `"edit"` / `"preview"` / `"split"` |
+
+`Toolbar` sets `role="toolbar"`.
+
+## Accessibility
+
+- The toolbar is exposed as `role="toolbar"`.
+- `Action` buttons call `preventDefault` on mousedown so clicking a button never steals the editor's text selection — the wrap/insert applies to whatever was selected.

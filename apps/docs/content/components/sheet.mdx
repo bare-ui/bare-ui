@@ -1,0 +1,264 @@
+---
+title: Sheet
+description: Edge-anchored panel with iOS-style snap points and drag-to-dismiss.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Sheet
+
+A Drawer-adjacent panel that slides in from the top or bottom edge with iOS-style snap points. Drag the handle to rest at configured heights, or flick past the smallest snap to dismiss. Modal by default — it traps focus and locks page scroll.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Slides from the top or bottom edge via the `side` prop.</FeatureItem>
+  <FeatureItem>Snap points let the sheet rest at multiple heights.</FeatureItem>
+  <FeatureItem>Drag the handle to resize, or past the smallest snap to dismiss.</FeatureItem>
+  <FeatureItem>Closes on Escape and overlay click when dismissible.</FeatureItem>
+  <FeatureItem>Portal rendering with focus trap and scroll lock when modal.</FeatureItem>
+  <FeatureItem>Can be controlled or uncontrolled.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><SheetPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Sheet } from '@wire-ui/react'
+
+<Sheet.Root snapPoints={[0.4]}>
+  <Sheet.Trigger>Open Sheet</Sheet.Trigger>
+  <Sheet.Portal>
+    <Sheet.Overlay />
+    <Sheet.Content>
+      <Sheet.Handle />
+      <Sheet.Title>Bottom sheet</Sheet.Title>
+      <Sheet.Description>Slides up from the bottom edge.</Sheet.Description>
+      <Sheet.Close>Done</Sheet.Close>
+    </Sheet.Content>
+  </Sheet.Portal>
+</Sheet.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Sheet } from '@wire-ui/vue'
+</script>
+
+<template>
+  <Sheet.Root :snap-points="[0.4]">
+    <Sheet.Trigger>Open Sheet</Sheet.Trigger>
+    <Sheet.Portal>
+      <Sheet.Overlay />
+      <Sheet.Content>
+        <Sheet.Handle />
+        <Sheet.Title>Bottom sheet</Sheet.Title>
+        <Sheet.Description>Slides up from the bottom edge.</Sheet.Description>
+        <Sheet.Close>Done</Sheet.Close>
+      </Sheet.Content>
+    </Sheet.Portal>
+  </Sheet.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Sheet } from '@wire-ui/solid'
+
+<Sheet.Root snapPoints={[0.4]}>
+  <Sheet.Trigger>Open Sheet</Sheet.Trigger>
+  <Sheet.Portal>
+    <Sheet.Overlay />
+    <Sheet.Content>
+      <Sheet.Handle />
+      <Sheet.Title>Bottom sheet</Sheet.Title>
+      <Sheet.Description>Slides up from the bottom edge.</Sheet.Description>
+      <Sheet.Close>Done</Sheet.Close>
+    </Sheet.Content>
+  </Sheet.Portal>
+</Sheet.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { useState } from 'react'
+import { Sheet } from '@wire-ui/react'
+
+const [open, setOpen] = useState(false)
+
+<Sheet.Root open={open} onOpenChange={setOpen} snapPoints={[0.4]}>
+  <Sheet.Trigger className="inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]">
+    Open Sheet
+  </Sheet.Trigger>
+  <Sheet.Portal>
+    <Sheet.Overlay className="fixed inset-0 z-40 bg-black/50" />
+    <Sheet.Content className="z-50 flex flex-col rounded-t-[20px] border-t-[3px] border-black bg-white transition-transform duration-300 ease-out data-[dragging]:transition-none">
+      <Sheet.Handle className="mx-auto mt-3 h-1.5 w-10 shrink-0 cursor-grab rounded-full bg-[#d4d4d4] active:cursor-grabbing" />
+      <div className="p-5">
+        <Sheet.Title className="text-lg font-bold text-black">Bottom sheet</Sheet.Title>
+        <Sheet.Description className="mt-1 text-sm text-[#6b7280]">
+          Slides up from the bottom edge. Drag the handle down or tap the overlay to dismiss.
+        </Sheet.Description>
+        <Sheet.Close className="mt-4 w-full rounded-[8px] border border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]">
+          Done
+        </Sheet.Close>
+      </div>
+    </Sheet.Content>
+  </Sheet.Portal>
+</Sheet.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { Sheet } from '@wire-ui/vue'
+
+const open = ref(false)
+</script>
+
+<template>
+  <Sheet.Root :open="open" :snap-points="[0.4]" @open-change="open = $event">
+    <Sheet.Trigger class="inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]">
+      Open Sheet
+    </Sheet.Trigger>
+    <Sheet.Portal>
+      <Sheet.Overlay class="fixed inset-0 z-40 bg-black/50" />
+      <Sheet.Content class="z-50 flex flex-col rounded-t-[20px] border-t-[3px] border-black bg-white transition-transform duration-300 ease-out data-[dragging]:transition-none">
+        <Sheet.Handle class="mx-auto mt-3 h-1.5 w-10 shrink-0 cursor-grab rounded-full bg-[#d4d4d4] active:cursor-grabbing" />
+        <div class="p-5">
+          <Sheet.Title class="text-lg font-bold text-black">Bottom sheet</Sheet.Title>
+          <Sheet.Description class="mt-1 text-sm text-[#6b7280]">
+            Slides up from the bottom edge. Drag the handle down or tap the overlay to dismiss.
+          </Sheet.Description>
+          <Sheet.Close class="mt-4 w-full rounded-[8px] border border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]">
+            Done
+          </Sheet.Close>
+        </div>
+      </Sheet.Content>
+    </Sheet.Portal>
+  </Sheet.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    ```tsx
+import { createSignal } from 'solid-js'
+import { Sheet } from '@wire-ui/solid'
+
+const [open, setOpen] = createSignal(false)
+
+<Sheet.Root open={open()} onOpenChange={setOpen} snapPoints={[0.4]}>
+  <Sheet.Trigger class="inline-flex items-center rounded-[8px] border border-black bg-black px-4 py-2 text-sm font-medium text-white hover:bg-[#333]">
+    Open Sheet
+  </Sheet.Trigger>
+  <Sheet.Portal>
+    <Sheet.Overlay class="fixed inset-0 z-40 bg-black/50" />
+    <Sheet.Content class="z-50 flex flex-col rounded-t-[20px] border-t-[3px] border-black bg-white transition-transform duration-300 ease-out data-[dragging]:transition-none">
+      <Sheet.Handle class="mx-auto mt-3 h-1.5 w-10 shrink-0 cursor-grab rounded-full bg-[#d4d4d4] active:cursor-grabbing" />
+      <div class="p-5">
+        <Sheet.Title class="text-lg font-bold text-black">Bottom sheet</Sheet.Title>
+        <Sheet.Description class="mt-1 text-sm text-[#6b7280]">
+          Slides up from the bottom edge. Drag the handle down or tap the overlay to dismiss.
+        </Sheet.Description>
+        <Sheet.Close class="mt-4 w-full rounded-[8px] border border-black py-2 text-sm font-medium text-black hover:bg-[#f5f5f5]">
+          Done
+        </Sheet.Close>
+      </div>
+    </Sheet.Content>
+  </Sheet.Portal>
+</Sheet.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Sheet sets `data-state` on Overlay and Content, plus `data-side` and `data-dragging` on Content. Use them to drive slide-in transitions and to disable the transition while dragging.
+
+```tsx
+<Sheet.Overlay className="
+  bg-black/50
+  data-[state=closed]:opacity-0
+  transition-opacity
+" />
+
+<Sheet.Content className="
+  transition-transform
+  data-[side=top]:rounded-b-[20px]
+  data-[side=bottom]:rounded-t-[20px]
+  data-[dragging]:transition-none
+" />
+```
+
+## Using data attributes
+
+Overlay receives `data-state`; Content receives `data-state`, `data-side`, and (while dragging) `data-dragging`.
+
+```css
+/* Slide up from bottom */
+[data-side="bottom"][data-state="closed"] { transform: translateY(100%); }
+[data-side="bottom"][data-state="open"]   { transform: translateY(0); }
+
+/* Kill the transition mid-drag so the handle tracks the pointer */
+[data-dragging] { transition: none; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `open` | `boolean` | — | Controlled open state |
+| `defaultOpen` | `boolean` | `false` | Initial open state (uncontrolled) |
+| `onOpenChange` | `(open: boolean) => void` | — | Called when the open state changes |
+| `side` | `'top' \| 'bottom'` | `'bottom'` | Edge the sheet slides from |
+| `snapPoints` | `number[]` | `[1]` | Rest positions. Values ≤ 1 are a fraction of the viewport; values > 1 are px. Order smallest → largest |
+| `activeSnapPoint` | `number` | — | Controlled active snap index |
+| `defaultActiveSnapPoint` | `number` | largest snap | Initial active snap index |
+| `onActiveSnapPointChange` | `(index: number) => void` | — | Called when the active snap index changes |
+| `modal` | `boolean` | `true` | Render a focus-trapping, scroll-locking modal |
+| `dismissible` | `boolean` | `true` | Allow closing by dragging past the smallest snap, Escape, or overlay click |
+
+## Trigger / Portal / Overlay / Handle / Title / Description / Close props
+
+| Sub-component | Type | Description |
+|---|---|---|
+| `Sheet.Trigger` | `ButtonHTMLAttributes` | Opens the sheet on click. Sets `aria-haspopup="dialog"` and `aria-expanded` |
+| `Sheet.Portal` | `{ container?: Element \| null }` | Renders children into `container` (defaults to `document.body`) when open |
+| `Sheet.Overlay` | `HTMLAttributes` | Backdrop. Closes the sheet on click when dismissible |
+| `Sheet.Content` | `HTMLAttributes` | The panel; `role="dialog"`, `aria-modal`, labelled/described by Title/Description |
+| `Sheet.Handle` | `HTMLAttributes` | Drag affordance; `role="button"`, `aria-label="Drag to resize"` |
+| `Sheet.Title` | `HTMLAttributes` | Renders an `<h2>` referenced by `aria-labelledby` |
+| `Sheet.Description` | `HTMLAttributes` | Renders a `<p>` referenced by `aria-describedby` |
+| `Sheet.Close` | `ButtonHTMLAttributes` | Closes the sheet on click |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-state` | Overlay, Content | `"open"` / `"closed"` |
+| `data-side` | Content | `"top"` / `"bottom"` |
+| `data-dragging` | Content | Present while the handle is being dragged |
+
+## Accessibility
+
+- `Sheet.Content` renders `role="dialog"` with `aria-modal` and is labelled by `Sheet.Title` (`aria-labelledby`) and described by `Sheet.Description` (`aria-describedby`).
+- When `modal` is set, focus is trapped inside the content and page scroll is locked.
+- `Sheet.Trigger` exposes `aria-haspopup="dialog"` and reflects open state via `aria-expanded`.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Escape</kbd> | Closes the sheet when dismissible. |
+| <kbd>Tab</kbd> | Moves focus to the next focusable element inside the sheet. |
+| <kbd>Shift+Tab</kbd> | Moves focus to the previous focusable element inside the sheet. |

@@ -1,0 +1,234 @@
+---
+title: Typewriter
+description: Token-by-token text reveal with cursor state and configurable cadence.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Typewriter
+
+Reveals `text` one token at a time at a steady cadence. Streaming-aware — grow the `text` prop as tokens arrive and the reveal continues from where it left off. Compose with `Typewriter.Text` and `Typewriter.Cursor`, or drive your own UI with the render-prop state.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Reveals character-by-character or word-by-word via `mode`.</FeatureItem>
+  <FeatureItem>Streaming-aware — append to `text` and the reveal continues from where it left off.</FeatureItem>
+  <FeatureItem>Optional blinking cursor that unmounts when typing finishes (or stays via `keepMounted`).</FeatureItem>
+  <FeatureItem>Render-prop exposes `displayed`, `isTyping`, `isDone`, and `progress`.</FeatureItem>
+  <FeatureItem>Loop, start delay, and configurable speed.</FeatureItem>
+  <FeatureItem>Respects `prefers-reduced-motion` — reveals everything at once.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><TypewriterPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Typewriter } from '@wire-ui/react'
+
+<Typewriter.Root text="Composing a reply…" speed={45}>
+  <Typewriter.Text />
+  <Typewriter.Cursor keepMounted>▋</Typewriter.Cursor>
+</Typewriter.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Typewriter } from '@wire-ui/vue'
+
+const { Root, Text, Cursor } = Typewriter
+</script>
+
+<template>
+  <Root text="Composing a reply…" :speed="45">
+    <Text />
+    <Cursor keep-mounted>▋</Cursor>
+  </Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Typewriter } from '@wire-ui/solid'
+
+<Typewriter.Root text="Composing a reply…" speed={45}>
+  <Typewriter.Text />
+  <Typewriter.Cursor keepMounted>▋</Typewriter.Cursor>
+</Typewriter.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Typewriter } from '@wire-ui/react'
+
+<p className="font-mono text-sm leading-relaxed text-black">
+  <Typewriter.Root text="The quick brown fox jumps over the lazy dog." speed={45}>
+    <Typewriter.Text data-state="typing" />
+    <Typewriter.Cursor
+      keepMounted
+      className="ml-0.5 inline-block w-[1ch] text-black data-[state=done]:opacity-0"
+    >
+      ▋
+    </Typewriter.Cursor>
+  </Typewriter.Root>
+</p>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { Typewriter } from '@wire-ui/vue'
+
+const { Root, Text, Cursor } = Typewriter
+</script>
+
+<template>
+  <p class="font-mono text-sm leading-relaxed text-black">
+    <Root text="The quick brown fox jumps over the lazy dog." :speed="45">
+      <Text />
+      <Cursor
+        keep-mounted
+        class="ml-0.5 inline-block w-[1ch] text-black data-[state=done]:opacity-0"
+      >
+        ▋
+      </Cursor>
+    </Root>
+  </p>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    ```tsx
+import { Typewriter } from '@wire-ui/solid'
+
+<p class="font-mono text-sm leading-relaxed text-black">
+  <Typewriter.Root text="The quick brown fox jumps over the lazy dog." speed={45}>
+    <Typewriter.Text />
+    <Typewriter.Cursor
+      keepMounted
+      class="ml-0.5 inline-block w-[1ch] text-black data-[state=done]:opacity-0"
+    >
+      ▋
+    </Typewriter.Cursor>
+  </Typewriter.Root>
+</p>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Render-prop state
+
+Pass a function as the child of `Typewriter.Root` to drive your own UI from the reveal state instead of using `Typewriter.Text`/`Typewriter.Cursor`.
+
+```tsx
+<Typewriter.Root text="Drive your own UI from the reveal state." speed={35}>
+  {({ displayed, progress, isDone }) => (
+    <div>
+      <p className="font-mono text-sm text-black">{displayed}</p>
+      <div className="h-1 w-full overflow-hidden rounded-full bg-[#e5e7eb]">
+        <div className="h-full bg-black" style={{ width: `${progress * 100}%` }} />
+      </div>
+      <p className="text-xs text-[#6b7280]">{isDone ? 'Done' : `${Math.round(progress * 100)}%`}</p>
+    </div>
+  )}
+</Typewriter.Root>
+```
+
+When no children are provided, `Typewriter.Root` renders the revealed text directly.
+
+## Streaming
+
+Leave `resetOnTextChange` at its default (`false`) and grow the `text` prop incrementally as tokens arrive. The reveal continues from where it left off rather than restarting, smoothing out a bursty network stream.
+
+```tsx
+const [text, setText] = useState('')
+// append chunks as they stream in: setText((t) => t + chunk)
+
+<Typewriter.Root text={text} speed={20}>
+  <Typewriter.Text />
+  <Typewriter.Cursor>▋</Typewriter.Cursor>
+</Typewriter.Root>
+```
+
+## Styling
+
+Both `Typewriter.Text` and `Typewriter.Cursor` (and `Root`) expose `data-state` with the value `"typing"` or `"done"`. Use it to fade or hide the cursor when typing finishes, or to style the text while in progress.
+
+```tsx
+<Typewriter.Cursor className="
+  data-[state=typing]:opacity-100
+  data-[state=done]:opacity-0
+">
+  ▋
+</Typewriter.Cursor>
+```
+
+A blinking cursor is purely CSS:
+
+```css
+@keyframes blink { 0%, 49% { opacity: 1 } 50%, 100% { opacity: 0 } }
+.cursor { animation: blink 1s step-end infinite }
+```
+
+## Using data attributes
+
+```css
+/* Style text while typing */
+[data-state="typing"] { /* in progress */ }
+[data-state="done"]    { /* finished   */ }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `text` | `string` | required | Full text to reveal. Grow it over time for streaming. |
+| `speed` | `number` | `30` | Milliseconds per revealed token (char or word). |
+| `mode` | `'char' \| 'word'` | `'char'` | Reveal one character or one whole word per tick. |
+| `startDelay` | `number` | `0` | Delay in ms before the first token is revealed. |
+| `autoStart` | `boolean` | `true` | Begin revealing automatically on mount. |
+| `resetOnTextChange` | `boolean` | `false` | Restart from the beginning when `text` changes instead of continuing. |
+| `loop` | `boolean` | `false` | Clear and retype once complete. |
+| `loopDelay` | `number` | `1000` | Ms to wait before looping when `loop` is set. |
+| `onComplete` | `() => void` | — | Called once all text has been revealed. |
+| `children` | `ReactNode \| ((state: TypewriterState) => ReactNode)` | — | Compose with `Text`/`Cursor`, or a render function. Omitted renders the revealed text directly. |
+
+## Text props
+
+`Typewriter.Text` renders the revealed portion of `text`. It accepts standard element attributes (e.g. `className`).
+
+## Cursor props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `keepMounted` | `boolean` | `false` | Keep the cursor mounted after typing finishes. When `false`, it unmounts once `isDone` is true. |
+
+## Render-prop state (`TypewriterState`)
+
+| Field | Type | Description |
+|---|---|---|
+| `displayed` | `string` | The portion of `text` currently revealed. |
+| `isTyping` | `boolean` | True while tokens are still being revealed. |
+| `isDone` | `boolean` | True once all of `text` has been revealed. |
+| `progress` | `number` | Fraction revealed, 0–1. |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-state` | Root, Text, Cursor | `"typing"` / `"done"` |
+
+## Accessibility
+
+- `Typewriter.Root` sets `aria-busy` while typing is in progress.
+- `Typewriter.Cursor` is rendered with `aria-hidden="true"` so it is not announced.
+- Respects `prefers-reduced-motion`: when set, all text is revealed immediately rather than animated.

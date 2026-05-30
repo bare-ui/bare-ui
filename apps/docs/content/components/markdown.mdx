@@ -1,0 +1,239 @@
+---
+title: Markdown
+description: A headless Markdown renderer — bring your own parser and own every element.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Markdown
+
+Headless Markdown renderer. Bring your own parser (`remark` / `marked`) — Wire UI exposes the render parts via the `components` map so you control every element. Pass a pre-parsed `nodes` tree, or `content` plus a `parse` function.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Renders a normalized, `mdast`-compatible node tree.</FeatureItem>
+  <FeatureItem>Bring your own parser — pass `nodes`, or `content` + `parse`.</FeatureItem>
+  <FeatureItem>Override any node renderer through the `components` map.</FeatureItem>
+  <FeatureItem>Ships semantic HTML with zero styling out of the box.</FeatureItem>
+  <FeatureItem>Unknown node types fall back to rendering their children, so custom output never breaks.</FeatureItem>
+  <FeatureItem>Task-list items, fenced code with language hints, links, images, and more.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><MarkdownPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Markdown } from '@wire-ui/react'
+import type { MarkdownNode } from '@wire-ui/react'
+
+const nodes: MarkdownNode[] = [
+  { type: 'heading', depth: 2, children: [{ type: 'text', value: 'Wire UI' }] },
+  { type: 'paragraph', children: [{ type: 'text', value: 'A headless library.' }] },
+]
+
+<Markdown nodes={nodes} />
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Markdown } from '@wire-ui/vue'
+
+const nodes = [
+  { type: 'heading', depth: 2, children: [{ type: 'text', value: 'Wire UI' }] },
+  { type: 'paragraph', children: [{ type: 'text', value: 'A headless library.' }] },
+]
+</script>
+
+<template>
+  <Markdown :nodes="nodes" />
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Markdown } from '@wire-ui/solid'
+import type { MarkdownNode } from '@wire-ui/solid'
+
+const nodes: MarkdownNode[] = [
+  { type: 'heading', depth: 2, children: [{ type: 'text', value: 'Wire UI' }] },
+  { type: 'paragraph', children: [{ type: 'text', value: 'A headless library.' }] },
+]
+
+<Markdown nodes={nodes} />
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Markdown } from '@wire-ui/react'
+import type { MarkdownComponents } from '@wire-ui/react'
+
+const components: MarkdownComponents = {
+  heading: ({ children }) => <h2 className="mb-2 text-lg font-semibold text-black">{children}</h2>,
+  paragraph: ({ children }) => <p className="mb-3 text-sm leading-relaxed text-[#374151]">{children}</p>,
+  strong: ({ children }) => <strong className="font-semibold text-black">{children}</strong>,
+  inlineCode: ({ node }) => (
+    <code className="rounded border border-black bg-[#f5f5f5] px-1 py-0.5 font-mono text-[0.8em] text-black">
+      {node.value}
+    </code>
+  ),
+  code: ({ node }) => (
+    <pre className="overflow-x-auto rounded-[8px] border border-black bg-black p-3 font-mono text-xs text-white">
+      <code>{node.value}</code>
+    </pre>
+  ),
+}
+
+<Markdown
+  nodes={nodes}
+  components={components}
+  className="rounded-[8px] border border-black bg-white p-5"
+/>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { h } from 'vue'
+import { Markdown } from '@wire-ui/vue'
+
+const components = {
+  heading: (props) => h('h2', { class: 'mb-2 text-lg font-semibold text-black' }, props.children),
+  paragraph: (props) => h('p', { class: 'mb-3 text-sm leading-relaxed text-[#374151]' }, props.children),
+  inlineCode: (props) =>
+    h('code', { class: 'rounded border border-black bg-[#f5f5f5] px-1 py-0.5 font-mono text-[0.8em] text-black' }, props.node.value),
+  code: (props) =>
+    h('pre', { class: 'overflow-x-auto rounded-[8px] border border-black bg-black p-3 font-mono text-xs text-white' }, [
+      h('code', props.node.value),
+    ]),
+}
+</script>
+
+<template>
+  <Markdown
+    :nodes="nodes"
+    :components="components"
+    class="rounded-[8px] border border-black bg-white p-5"
+  />
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { Markdown } from '@wire-ui/solid'
+import type { MarkdownComponents } from '@wire-ui/solid'
+
+const components: MarkdownComponents = {
+  heading: (props) => <h2 class="mb-2 text-lg font-semibold text-black">{props.children}</h2>,
+  paragraph: (props) => <p class="mb-3 text-sm leading-relaxed text-[#374151]">{props.children}</p>,
+  inlineCode: (props) => (
+    <code class="rounded border border-black bg-[#f5f5f5] px-1 py-0.5 font-mono text-[0.8em] text-black">
+      {props.node.value}
+    </code>
+  ),
+  code: (props) => (
+    <pre class="overflow-x-auto rounded-[8px] border border-black bg-black p-3 font-mono text-xs text-white">
+      <code>{props.node.value}</code>
+    </pre>
+  ),
+}
+
+<Markdown
+  nodes={nodes}
+  components={components}
+  class="rounded-[8px] border border-black bg-white p-5"
+/>
+```
+</ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+`Markdown` ships unstyled, semantic HTML. The cleanest way to style it is to override renderers through the `components` map — each entry receives `{ node, children }` and returns your own element. Overrides merge over the built-ins, so you only need to supply the node types you care about.
+
+The default renderers set a few data attributes you can also target with CSS: `data-inline` on inline code, `data-language` on fenced code, and `data-task` / `data-checked` on task-list items.
+
+```css
+/* Default fenced-code block */
+pre[data-language] code { font-family: ui-monospace, monospace; }
+
+/* Inline code */
+code[data-inline] { background: #f5f5f5; padding: 0 0.25rem; }
+
+/* Task-list items */
+li[data-task]    { list-style: none; }
+li[data-checked] { text-decoration: line-through; }
+```
+
+## Wiring a real parser
+
+`parse` turns a raw string into the normalized node tree. Wrap `remark` (whose `mdast` output matches the `MarkdownNode` shape) or map another parser's output onto it.
+
+```tsx
+import { Markdown } from '@wire-ui/react'
+import { unified } from 'unified'
+import remarkParse from 'remark-parse'
+
+const parse = (content: string) =>
+  unified().use(remarkParse).parse(content).children
+
+<Markdown content="# Hello\n\nWorld" parse={parse} />
+```
+
+When `content` is provided without `parse`, the raw string is rendered as a single paragraph as a graceful fallback.
+
+## Markdown props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `nodes` | `MarkdownNode[]` | — | Pre-parsed node tree. Provide this, or `content` + `parse` |
+| `content` | `string` | — | Raw Markdown source. Parsed with `parse` when provided |
+| `parse` | `(content: string) => MarkdownNode[]` | — | Turns `content` into normalized nodes — wrap `remark` / `marked` here |
+| `components` | `MarkdownComponents` | — | Override the renderer used for one or more node types |
+
+`Markdown` also accepts all standard `<div>` HTML attributes (except `children`).
+
+## MarkdownNode
+
+| Field | Type | Description |
+|---|---|---|
+| `type` | `MarkdownNodeType` | Node type (`heading`, `paragraph`, `text`, `link`, …). Unknown strings fall back to rendering children |
+| `value` | `string` | Literal text for leaf nodes (`text`, `inlineCode`, `code`) |
+| `depth` | `number` | Heading level, 1–6 |
+| `url` | `string` | Destination for `link` / `image` |
+| `title` | `string \| null` | Advisory title for `link` / `image` |
+| `alt` | `string` | Alternate text for `image` |
+| `ordered` | `boolean` | Whether a `list` is ordered |
+| `start` | `number` | Starting number for an ordered `list` |
+| `checked` | `boolean \| null` | Task-list state for a `listItem` (`null` when not a checkbox item) |
+| `lang` | `string` | Language hint for a fenced `code` block |
+| `children` | `MarkdownNode[]` | Child nodes |
+
+## Component props (renderer)
+
+Each entry in `components` is a component receiving these props:
+
+| Prop | Type | Description |
+|---|---|---|
+| `node` | `MarkdownNode` | The node being rendered |
+| `children` | `ReactNode` | Pre-rendered child nodes (or the leaf `value`) |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-inline` | Default `inlineCode` | Always present |
+| `data-language` | Default `code` `<pre>` / `<code>` | The `lang` value (when present) |
+| `data-task` | Default task `listItem` | Present for checkbox items |
+| `data-checked` | Default task `listItem` | Present when the task is checked |
+
+These come from the built-in renderers; supply your own via `components` to change them.

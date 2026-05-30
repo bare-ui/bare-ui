@@ -1,0 +1,275 @@
+---
+title: Mention
+description: Inline @-mention combobox that tracks the caret inside a textarea and inserts the chosen token.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Mention
+
+Inline `@`-mention primitive: a combobox that tracks the caret inside a textarea, filters options as you type, and inserts the chosen token. The trigger character, options, and filtering are all configurable.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Detects the trigger token at the caret and anchors a listbox to it.</FeatureItem>
+  <FeatureItem>Configurable trigger character (default `@`) and custom filter predicate.</FeatureItem>
+  <FeatureItem>Full keyboard navigation: arrows to move, Enter/Tab to select, Escape to dismiss.</FeatureItem>
+  <FeatureItem>Render-prop items with active/disabled state via data attributes.</FeatureItem>
+  <FeatureItem>Controlled or uncontrolled text value.</FeatureItem>
+  <FeatureItem>Implements the WAI-ARIA combobox pattern with aria-activedescendant.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><MentionPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Mention } from '@wire-ui/react'
+
+const people = [
+  { id: 1, label: 'Ada Lovelace' },
+  { id: 2, label: 'Alan Turing' },
+  { id: 3, label: 'Grace Hopper' },
+]
+
+<Mention.Root options={people} className="relative">
+  <Mention.Input placeholder="Type @ to mention someone…" />
+  <Mention.Content>
+    <Mention.Items>
+      {({ option }) => <div>{option.label}</div>}
+    </Mention.Items>
+    <Mention.Empty>No people found</Mention.Empty>
+  </Mention.Content>
+</Mention.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Mention } from '@wire-ui/vue'
+
+const people = [
+  { id: 1, label: 'Ada Lovelace' },
+  { id: 2, label: 'Alan Turing' },
+  { id: 3, label: 'Grace Hopper' },
+]
+</script>
+
+<template>
+  <Mention.Root :options="people" class="relative">
+    <Mention.Input placeholder="Type @ to mention someone…" />
+    <Mention.Content>
+      <Mention.Items v-slot="{ option }">
+        <div>{{ option.label }}</div>
+      </Mention.Items>
+      <Mention.Empty>No people found</Mention.Empty>
+    </Mention.Content>
+  </Mention.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Mention } from '@wire-ui/solid'
+
+const people = [
+  { id: 1, label: 'Ada Lovelace' },
+  { id: 2, label: 'Alan Turing' },
+  { id: 3, label: 'Grace Hopper' },
+]
+
+<Mention.Root options={people} class="relative">
+  <Mention.Input placeholder="Type @ to mention someone…" />
+  <Mention.Content>
+    <Mention.Items>
+      {({ option }) => <div>{option.label}</div>}
+    </Mention.Items>
+    <Mention.Empty>No people found</Mention.Empty>
+  </Mention.Content>
+</Mention.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Mention } from '@wire-ui/react'
+
+<Mention.Root options={people} className="relative w-full max-w-md">
+  <Mention.Input
+    rows={4}
+    placeholder="Type @ to mention someone…"
+    className="w-full resize-none rounded-[8px] border border-black bg-white p-3 text-sm text-black outline-none data-[focus-visible]:ring-2 data-[focus-visible]:ring-black"
+  />
+  <Mention.Content className="z-10 mt-1 max-h-56 w-56 overflow-auto rounded-[8px] border border-black bg-white p-1">
+    <Mention.Items>
+      {({ option }) => (
+        <div className="flex cursor-pointer items-center gap-2 rounded-[6px] px-2 py-1.5 text-sm text-black data-[active]:bg-black data-[active]:text-white data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40">
+          <span className="flex size-6 items-center justify-center rounded-full border border-black bg-white text-xs font-semibold text-black">
+            {option.label.charAt(0)}
+          </span>
+          {option.label}
+        </div>
+      )}
+    </Mention.Items>
+    <Mention.Empty className="px-2 py-1.5 text-sm text-[#6b7280]">No people found</Mention.Empty>
+  </Mention.Content>
+</Mention.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { Mention } from '@wire-ui/vue'
+
+const people = [
+  { id: 1, label: 'Ada Lovelace' },
+  { id: 2, label: 'Alan Turing' },
+  { id: 3, label: 'Grace Hopper' },
+]
+</script>
+
+<template>
+  <Mention.Root :options="people" class="relative w-full max-w-md">
+    <Mention.Input
+      :rows="4"
+      placeholder="Type @ to mention someone…"
+      class="w-full resize-none rounded-[8px] border border-black bg-white p-3 text-sm text-black outline-none data-[focus-visible]:ring-2 data-[focus-visible]:ring-black"
+    />
+    <Mention.Content class="z-10 mt-1 max-h-56 w-56 overflow-auto rounded-[8px] border border-black bg-white p-1">
+      <Mention.Items v-slot="{ option }">
+        <div class="flex cursor-pointer items-center gap-2 rounded-[6px] px-2 py-1.5 text-sm text-black data-[active]:bg-black data-[active]:text-white data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40">
+          <span class="flex size-6 items-center justify-center rounded-full border border-black bg-white text-xs font-semibold text-black">
+            {{ option.label.charAt(0) }}
+          </span>
+          {{ option.label }}
+        </div>
+      </Mention.Items>
+      <Mention.Empty class="px-2 py-1.5 text-sm text-[#6b7280]">No people found</Mention.Empty>
+    </Mention.Content>
+  </Mention.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { Mention } from '@wire-ui/solid'
+
+<Mention.Root options={people} class="relative w-full max-w-md">
+  <Mention.Input
+    rows={4}
+    placeholder="Type @ to mention someone…"
+    class="w-full resize-none rounded-[8px] border border-black bg-white p-3 text-sm text-black outline-none data-[focus-visible]:ring-2 data-[focus-visible]:ring-black"
+  />
+  <Mention.Content class="z-10 mt-1 max-h-56 w-56 overflow-auto rounded-[8px] border border-black bg-white p-1">
+    <Mention.Items>
+      {({ option }) => (
+        <div class="flex cursor-pointer items-center gap-2 rounded-[6px] px-2 py-1.5 text-sm text-black data-[active]:bg-black data-[active]:text-white data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40">
+          <span class="flex size-6 items-center justify-center rounded-full border border-black bg-white text-xs font-semibold text-black">
+            {option.label.charAt(0)}
+          </span>
+          {option.label}
+        </div>
+      )}
+    </Mention.Items>
+    <Mention.Empty class="px-2 py-1.5 text-sm text-[#6b7280]">No people found</Mention.Empty>
+  </Mention.Content>
+</Mention.Root>
+```
+</ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+`Mention.Root` must be positioned (`relative`) so the `Content` listbox can anchor to the caret — it is absolutely positioned at the computed coordinates. Each option exposes `data-active` (the highlighted item) and `data-disabled`, so you can style hover/active and disabled states with attribute selectors.
+
+```tsx
+<div className="
+  data-[active]:bg-black data-[active]:text-white
+  data-[disabled]:opacity-40 data-[disabled]:cursor-not-allowed
+">
+  {option.label}
+</div>
+```
+
+## Using data attributes
+
+`Mention.Content` sets `data-state="open"` (it only renders while open). Each rendered option sets `data-active` when highlighted and `data-disabled` when the option is disabled. `Mention.Root` sets `data-disabled` when the whole control is disabled.
+
+```css
+/* Highlighted option */
+[data-active]   { background: #000; color: #fff; }
+
+/* Disabled option */
+[data-disabled] { opacity: 0.4; cursor: not-allowed; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `options` | `MentionOption[]` | required | Options shown when the trigger is active |
+| `value` | `string` | — | Controlled text value |
+| `defaultValue` | `string` | `''` | Initial text value (uncontrolled) |
+| `onChange` | `(value: string) => void` | — | Called whenever the text changes |
+| `trigger` | `string` | `'@'` | Character that opens the menu |
+| `filter` | `(option: MentionOption, query: string) => boolean` | label includes query | Predicate used to filter options against the current query |
+| `onSelect` | `(option: MentionOption) => void` | — | Called when an option is chosen |
+| `appendSpace` | `boolean` | `true` | Append a space after the inserted mention |
+| `disabled` | `boolean` | `false` | Disable the whole control |
+
+## Input props
+
+Accepts all native `<textarea>` attributes (e.g. `rows`, `placeholder`, `aria-label`). The `value` and `disabled` are managed by `Mention.Root`.
+
+## Items props
+
+| Prop | Type | Description |
+|---|---|---|
+| `children` | `(props: MentionItemRenderProps) => ReactNode` | Render function called for each filtered option |
+
+`MentionItemRenderProps` is `{ option: MentionOption; active: boolean; index: number }`.
+
+## Content / Empty props
+
+Both accept all native `<div>` attributes. `Content` renders only while the menu is open; `Empty` renders only while the menu is open and no options match.
+
+## MentionOption
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string \| number` | Unique key |
+| `label` | `string` | Display text — also inserted after the trigger by default |
+| `value` | `string` | Optional value inserted instead of `label` |
+| `disabled` | `boolean` | Skip during keyboard navigation and ignore on click |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-state` | Content | `"open"` |
+| `data-active` | Option | Present on the highlighted option |
+| `data-disabled` | Root, Option | Present when disabled |
+
+`Input` also sets `aria-autocomplete="list"`, `aria-expanded`, `aria-controls`, and `aria-activedescendant`. `Content` sets `role="listbox"`; each option sets `role="option"` and `aria-selected`.
+
+## Accessibility
+
+- Implements the WAI-ARIA combobox/listbox pattern. The textarea owns the listbox via `aria-controls` and tracks the highlighted option via `aria-activedescendant`.
+- The trigger only opens at the start of the text or after whitespace, so addresses like `a@b.com` do not trigger the menu.
+- Disabled options are skipped during arrow-key navigation and cannot be selected.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>ArrowDown</kbd> | Move to the next option (skips disabled). |
+| <kbd>ArrowUp</kbd> | Move to the previous option (skips disabled). |
+| <kbd>Enter</kbd> / <kbd>Tab</kbd> | Selects the highlighted option. |
+| <kbd>Escape</kbd> | Dismisses the menu for the current token. |

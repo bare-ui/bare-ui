@@ -1,0 +1,344 @@
+---
+title: Stepper
+description: Multi-step wizard flow with horizontal/vertical layout and linear mode.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Stepper
+
+Multi-step / wizard flow. Steps expose `data-state` (`active` / `completed` / `inactive`); navigate with per-step triggers or the built-in Prev/Next buttons. Set `linear` to prevent skipping ahead. Controlled and uncontrolled.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Horizontal or vertical orientation.</FeatureItem>
+  <FeatureItem>Steps expose data-state for active, completed, and inactive styling.</FeatureItem>
+  <FeatureItem>Built-in Prev/Next triggers that auto-disable at the ends.</FeatureItem>
+  <FeatureItem>Linear mode blocks jumping to steps ahead of the current one.</FeatureItem>
+  <FeatureItem>Per-step Content panels with optional forceMount.</FeatureItem>
+  <FeatureItem>Can be controlled or uncontrolled.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><StepperPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Stepper } from '@wire-ui/react'
+
+<Stepper.Root count={3} defaultValue={0}>
+  <Stepper.List>
+    <Stepper.Item index={0}>
+      <Stepper.Trigger>Account</Stepper.Trigger>
+      <Stepper.Separator />
+    </Stepper.Item>
+    <Stepper.Item index={1}>
+      <Stepper.Trigger>Profile</Stepper.Trigger>
+      <Stepper.Separator />
+    </Stepper.Item>
+    <Stepper.Item index={2}>
+      <Stepper.Trigger>Review</Stepper.Trigger>
+    </Stepper.Item>
+  </Stepper.List>
+
+  <Stepper.Content index={0}>Account step</Stepper.Content>
+  <Stepper.Content index={1}>Profile step</Stepper.Content>
+  <Stepper.Content index={2}>Review step</Stepper.Content>
+
+  <Stepper.PrevTrigger>Back</Stepper.PrevTrigger>
+  <Stepper.NextTrigger>Next</Stepper.NextTrigger>
+</Stepper.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Stepper } from '@wire-ui/vue'
+</script>
+
+<template>
+  <Stepper.Root :count="3" :default-value="0">
+    <Stepper.List>
+      <Stepper.Item :index="0">
+        <Stepper.Trigger>Account</Stepper.Trigger>
+        <Stepper.Separator />
+      </Stepper.Item>
+      <Stepper.Item :index="1">
+        <Stepper.Trigger>Profile</Stepper.Trigger>
+        <Stepper.Separator />
+      </Stepper.Item>
+      <Stepper.Item :index="2">
+        <Stepper.Trigger>Review</Stepper.Trigger>
+      </Stepper.Item>
+    </Stepper.List>
+
+    <Stepper.Content :index="0">Account step</Stepper.Content>
+    <Stepper.Content :index="1">Profile step</Stepper.Content>
+    <Stepper.Content :index="2">Review step</Stepper.Content>
+
+    <Stepper.PrevTrigger>Back</Stepper.PrevTrigger>
+    <Stepper.NextTrigger>Next</Stepper.NextTrigger>
+  </Stepper.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Stepper } from '@wire-ui/solid'
+
+<Stepper.Root count={3} defaultValue={0}>
+  <Stepper.List>
+    <Stepper.Item index={0}>
+      <Stepper.Trigger>Account</Stepper.Trigger>
+      <Stepper.Separator />
+    </Stepper.Item>
+    <Stepper.Item index={1}>
+      <Stepper.Trigger>Profile</Stepper.Trigger>
+      <Stepper.Separator />
+    </Stepper.Item>
+    <Stepper.Item index={2}>
+      <Stepper.Trigger>Review</Stepper.Trigger>
+    </Stepper.Item>
+  </Stepper.List>
+
+  <Stepper.Content index={0}>Account step</Stepper.Content>
+  <Stepper.Content index={1}>Profile step</Stepper.Content>
+  <Stepper.Content index={2}>Review step</Stepper.Content>
+
+  <Stepper.PrevTrigger>Back</Stepper.PrevTrigger>
+  <Stepper.NextTrigger>Next</Stepper.NextTrigger>
+</Stepper.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { useState } from 'react'
+import { Stepper } from '@wire-ui/react'
+
+const steps = ['Account', 'Profile', 'Review']
+const [step, setStep] = useState(0)
+
+const triggerCls =
+  'flex items-center gap-2 text-sm font-medium text-[#9ca3af] outline-none data-[state=active]:text-black data-[state=completed]:text-black disabled:cursor-not-allowed'
+const dotCls =
+  'flex size-7 items-center justify-center rounded-full border border-[#d4d4d4] text-xs data-[state=active]:border-black data-[state=active]:bg-black data-[state=active]:text-white data-[state=completed]:border-black data-[state=completed]:bg-black data-[state=completed]:text-white'
+
+<Stepper.Root count={steps.length} value={step} onChange={setStep} className="w-full max-w-md space-y-6">
+  <Stepper.List className="flex items-center">
+    {steps.map((title, i) => (
+      <Stepper.Item key={title} index={i} className="flex flex-1 items-center last:flex-none">
+        <Stepper.Trigger className={triggerCls}>
+          <span className={dotCls} data-state={i === step ? 'active' : i < step ? 'completed' : 'inactive'}>
+            {i < step ? '✓' : i + 1}
+          </span>
+          {title}
+        </Stepper.Trigger>
+        {i < steps.length - 1 && (
+          <Stepper.Separator className="mx-3 h-px flex-1 bg-[#d4d4d4] data-[state=completed]:bg-black" />
+        )}
+      </Stepper.Item>
+    ))}
+  </Stepper.List>
+
+  <div className="flex justify-between">
+    <Stepper.PrevTrigger className="rounded-[8px] border border-black px-3 py-1.5 text-sm disabled:opacity-40">
+      Back
+    </Stepper.PrevTrigger>
+    <Stepper.NextTrigger className="rounded-[8px] bg-black px-3 py-1.5 text-sm text-white disabled:opacity-40">
+      Next
+    </Stepper.NextTrigger>
+  </div>
+</Stepper.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { Stepper } from '@wire-ui/vue'
+
+const steps = ['Account', 'Profile', 'Review']
+const step = ref(0)
+
+const triggerCls =
+  'flex items-center gap-2 text-sm font-medium text-[#9ca3af] outline-none data-[state=active]:text-black data-[state=completed]:text-black disabled:cursor-not-allowed'
+const dotCls =
+  'flex size-7 items-center justify-center rounded-full border border-[#d4d4d4] text-xs data-[state=active]:border-black data-[state=active]:bg-black data-[state=active]:text-white data-[state=completed]:border-black data-[state=completed]:bg-black data-[state=completed]:text-white'
+</script>
+
+<template>
+  <Stepper.Root :count="steps.length" :value="step" class="w-full max-w-md space-y-6" @change="step = $event">
+    <Stepper.List class="flex items-center">
+      <Stepper.Item v-for="(title, i) in steps" :key="title" :index="i" class="flex flex-1 items-center last:flex-none">
+        <Stepper.Trigger :class="triggerCls">
+          <span :class="dotCls" :data-state="i === step ? 'active' : i < step ? 'completed' : 'inactive'">
+            {{ i < step ? '✓' : i + 1 }}
+          </span>
+          {{ title }}
+        </Stepper.Trigger>
+        <Stepper.Separator
+          v-if="i < steps.length - 1"
+          class="mx-3 h-px flex-1 bg-[#d4d4d4] data-[state=completed]:bg-black"
+        />
+      </Stepper.Item>
+    </Stepper.List>
+
+    <div class="flex justify-between">
+      <Stepper.PrevTrigger class="rounded-[8px] border border-black px-3 py-1.5 text-sm disabled:opacity-40">
+        Back
+      </Stepper.PrevTrigger>
+      <Stepper.NextTrigger class="rounded-[8px] bg-black px-3 py-1.5 text-sm text-white disabled:opacity-40">
+        Next
+      </Stepper.NextTrigger>
+    </div>
+  </Stepper.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    ```tsx
+import { createSignal, For, Show } from 'solid-js'
+import { Stepper } from '@wire-ui/solid'
+
+const steps = ['Account', 'Profile', 'Review']
+const [step, setStep] = createSignal(0)
+
+const triggerCls =
+  'flex items-center gap-2 text-sm font-medium text-[#9ca3af] outline-none data-[state=active]:text-black data-[state=completed]:text-black disabled:cursor-not-allowed'
+const dotCls =
+  'flex size-7 items-center justify-center rounded-full border border-[#d4d4d4] text-xs data-[state=active]:border-black data-[state=active]:bg-black data-[state=active]:text-white data-[state=completed]:border-black data-[state=completed]:bg-black data-[state=completed]:text-white'
+
+<Stepper.Root count={steps.length} value={step()} onChange={setStep} class="w-full max-w-md space-y-6">
+  <Stepper.List class="flex items-center">
+    <For each={steps}>
+      {(title, i) => (
+        <Stepper.Item index={i()} class="flex flex-1 items-center last:flex-none">
+          <Stepper.Trigger class={triggerCls}>
+            <span class={dotCls} data-state={i() === step() ? 'active' : i() < step() ? 'completed' : 'inactive'}>
+              {i() < step() ? '✓' : i() + 1}
+            </span>
+            {title}
+          </Stepper.Trigger>
+          <Show when={i() < steps.length - 1}>
+            <Stepper.Separator class="mx-3 h-px flex-1 bg-[#d4d4d4] data-[state=completed]:bg-black" />
+          </Show>
+        </Stepper.Item>
+      )}
+    </For>
+  </Stepper.List>
+
+  <div class="flex justify-between">
+    <Stepper.PrevTrigger class="rounded-[8px] border border-black px-3 py-1.5 text-sm disabled:opacity-40">
+      Back
+    </Stepper.PrevTrigger>
+    <Stepper.NextTrigger class="rounded-[8px] bg-black px-3 py-1.5 text-sm text-white disabled:opacity-40">
+      Next
+    </Stepper.NextTrigger>
+  </div>
+</Stepper.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Stepper sets `data-state` on Item, Trigger, and Content (and on Separator when it sits inside an Item). Use it to highlight the active step, mark completed steps, and fill completed connectors.
+
+```tsx
+<Stepper.Trigger className="
+  text-gray-400
+  data-[state=active]:text-black
+  data-[state=completed]:text-black
+">
+  Step
+</Stepper.Trigger>
+
+<Stepper.Separator className="
+  bg-gray-200
+  data-[state=completed]:bg-black
+" />
+```
+
+## Using data attributes
+
+Item, Trigger, and Content carry `data-state` with `"active"`, `"completed"`, or `"inactive"`. Root and List carry `data-orientation`. Separators inside an Item carry `data-state` (`"completed"` / `"inactive"`).
+
+```css
+/* Completed connector */
+[data-state="completed"] { background: #000; }
+
+/* Vertical layout tweaks */
+[data-orientation="vertical"] .connector { width: 1px; height: 100%; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `count` | `number` | required | Total number of steps (used to clamp next/prev) |
+| `value` | `number` | — | Controlled current step (0-based) |
+| `defaultValue` | `number` | `0` | Initial current step (uncontrolled) |
+| `onChange` | `(index: number) => void` | — | Called when the current step changes |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout orientation |
+| `linear` | `boolean` | `false` | Prevent jumping to steps ahead of the current one |
+
+Renders a `<div>` with `data-orientation`; accepts standard div attributes (except `onChange`).
+
+## Item props
+
+| Prop | Type | Description |
+|---|---|---|
+| `index` | `number` | 0-based position of this step |
+
+Renders a `<div role="listitem">` with `data-state` and `data-index`.
+
+## Content props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `index` | `number` | required | Step index this panel belongs to |
+| `forceMount` | `boolean` | `false` | Keep the panel mounted (hidden) when inactive |
+
+Renders a `<div role="tabpanel">` with `data-state` and `data-index`.
+
+## Trigger / Separator / PrevTrigger / NextTrigger props
+
+| Sub-component | Type | Description |
+|---|---|---|
+| `Stepper.Trigger` | `ButtonHTMLAttributes` | Navigates to its Item's step. Sets `aria-current="step"` when active; auto-disabled for steps ahead in linear mode |
+| `Stepper.Separator` | `HTMLAttributes` | Connector; `role="separator"`, `aria-hidden="true"`, `data-orientation` |
+| `Stepper.PrevTrigger` | `ButtonHTMLAttributes` | Goes to the previous step; disabled at the first step |
+| `Stepper.NextTrigger` | `ButtonHTMLAttributes` | Goes to the next step; disabled at the last step |
+| `Stepper.List` | `HTMLAttributes` | Wraps the items; `role="list"`, `aria-orientation`, `data-orientation` |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-state` | Item, Trigger, Content, Separator (in Item) | `"active"` / `"completed"` / `"inactive"` |
+| `data-orientation` | Root, List, Separator | `"horizontal"` / `"vertical"` |
+| `data-index` | Item, Content | The step's 0-based index |
+
+## Accessibility
+
+- `Stepper.List` renders `role="list"` with `aria-orientation`; each `Stepper.Item` is a `role="listitem"`.
+- The active `Stepper.Trigger` sets `aria-current="step"`.
+- `Stepper.Content` renders `role="tabpanel"`; with `forceMount` an inactive panel is rendered with `hidden`.
+- In linear mode, triggers for steps ahead of the current one are disabled.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Enter</kbd> | Activates the focused step trigger or Prev/Next button. |
+| <kbd>Space</kbd> | Activates the focused step trigger or Prev/Next button. |
+| <kbd>Tab</kbd> | Moves focus to the next trigger. |
+| <kbd>Shift+Tab</kbd> | Moves focus to the previous trigger. |

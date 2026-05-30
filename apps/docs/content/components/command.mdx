@@ -1,0 +1,270 @@
+---
+title: Command
+description: A command palette with grouped, filterable actions and keyboard navigation.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Command
+
+A command palette (cmdk/kbar-style): grouped, filterable actions with keyboard navigation and an optional global hotkey. Distinct from Combobox — it selects actions, not form values.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Case-insensitive substring filtering, or a custom `filter` matcher.</FeatureItem>
+  <FeatureItem>Per-item `keywords` to broaden what each item matches.</FeatureItem>
+  <FeatureItem>Arrow-key navigation with optional looping and an `Command.Empty` fallback.</FeatureItem>
+  <FeatureItem>Groups hide automatically when none of their items match.</FeatureItem>
+  <FeatureItem>Optional toggleable palette with a global `shortcut` hotkey (e.g. `mod+k`).</FeatureItem>
+  <FeatureItem>Controlled or uncontrolled search query and open state.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><CommandPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Command } from '@wire-ui/react'
+
+<Command.Root>
+  <Command.Input placeholder="Type a command or search…" />
+  <Command.List>
+    <Command.Empty>No results found.</Command.Empty>
+    <Command.Group heading="Suggestions">
+      <Command.Item value="New File" keywords={['create']}>New File</Command.Item>
+      <Command.Item value="Search Docs">Search Docs</Command.Item>
+    </Command.Group>
+    <Command.Separator />
+    <Command.Group heading="Settings">
+      <Command.Item value="Profile">Profile</Command.Item>
+      <Command.Item value="Billing" disabled>Billing</Command.Item>
+    </Command.Group>
+  </Command.List>
+</Command.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Command } from '@wire-ui/vue'
+</script>
+
+<template>
+  <Command.Root>
+    <Command.Input placeholder="Type a command or search…" />
+    <Command.List>
+      <Command.Empty>No results found.</Command.Empty>
+      <Command.Group heading="Suggestions">
+        <Command.Item value="New File" :keywords="['create']">New File</Command.Item>
+        <Command.Item value="Search Docs">Search Docs</Command.Item>
+      </Command.Group>
+      <Command.Separator />
+      <Command.Group heading="Settings">
+        <Command.Item value="Profile">Profile</Command.Item>
+        <Command.Item value="Billing" disabled>Billing</Command.Item>
+      </Command.Group>
+    </Command.List>
+  </Command.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Command } from '@wire-ui/solid'
+
+<Command.Root>
+  <Command.Input placeholder="Type a command or search…" />
+  <Command.List>
+    <Command.Empty>No results found.</Command.Empty>
+    <Command.Group heading="Suggestions">
+      <Command.Item value="New File" keywords={['create']}>New File</Command.Item>
+      <Command.Item value="Search Docs">Search Docs</Command.Item>
+    </Command.Group>
+    <Command.Separator />
+    <Command.Group heading="Settings">
+      <Command.Item value="Profile">Profile</Command.Item>
+      <Command.Item value="Billing" disabled>Billing</Command.Item>
+    </Command.Group>
+  </Command.List>
+</Command.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Command } from '@wire-ui/react'
+
+const itemCls =
+  'flex cursor-pointer items-center gap-2 rounded-[8px] px-2 py-2 text-sm text-black data-[active]:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40'
+
+<Command.Root className="w-full max-w-md overflow-hidden rounded-[20px] border border-black bg-white">
+  <Command.Input
+    placeholder="Type a command or search…"
+    className="w-full border-b border-black px-4 py-3 text-sm text-black outline-none placeholder:text-[#9ca3af]"
+  />
+  <Command.List className="max-h-72 overflow-auto p-2">
+    <Command.Empty className="py-6 text-center text-sm text-[#9ca3af]">No results found.</Command.Empty>
+    <Command.Group heading="Suggestions">
+      <div className="px-2 py-1.5 text-xs font-medium text-[#9ca3af]">Suggestions</div>
+      <Command.Item value="New File" keywords={['create']} className={itemCls}>📄 New File</Command.Item>
+      <Command.Item value="Search Docs" className={itemCls}>🔍 Search Docs</Command.Item>
+    </Command.Group>
+    <Command.Separator className="my-1 h-px bg-[#e5e5e5]" />
+    <Command.Group>
+      <div className="px-2 py-1.5 text-xs font-medium text-[#9ca3af]">Settings</div>
+      <Command.Item value="Profile" className={itemCls}>👤 Profile</Command.Item>
+      <Command.Item value="Billing" disabled className={itemCls}>💳 Billing</Command.Item>
+    </Command.Group>
+  </Command.List>
+</Command.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { Command } from '@wire-ui/vue'
+
+const itemCls =
+  'flex cursor-pointer items-center gap-2 rounded-[8px] px-2 py-2 text-sm text-black data-[active]:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40'
+</script>
+
+<template>
+  <Command.Root class="w-full max-w-md overflow-hidden rounded-[20px] border border-black bg-white">
+    <Command.Input
+      placeholder="Type a command or search…"
+      class="w-full border-b border-black px-4 py-3 text-sm text-black outline-none placeholder:text-[#9ca3af]"
+    />
+    <Command.List class="max-h-72 overflow-auto p-2">
+      <Command.Empty class="py-6 text-center text-sm text-[#9ca3af]">No results found.</Command.Empty>
+      <Command.Group heading="Suggestions">
+        <div class="px-2 py-1.5 text-xs font-medium text-[#9ca3af]">Suggestions</div>
+        <Command.Item value="New File" :keywords="['create']" :class="itemCls">📄 New File</Command.Item>
+        <Command.Item value="Search Docs" :class="itemCls">🔍 Search Docs</Command.Item>
+      </Command.Group>
+      <Command.Separator class="my-1 h-px bg-[#e5e5e5]" />
+      <Command.Group>
+        <div class="px-2 py-1.5 text-xs font-medium text-[#9ca3af]">Settings</div>
+        <Command.Item value="Profile" :class="itemCls">👤 Profile</Command.Item>
+        <Command.Item value="Billing" disabled :class="itemCls">💳 Billing</Command.Item>
+      </Command.Group>
+    </Command.List>
+  </Command.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { Command } from '@wire-ui/solid'
+
+const itemCls =
+  'flex cursor-pointer items-center gap-2 rounded-[8px] px-2 py-2 text-sm text-black data-[active]:bg-[#f5f5f5] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40'
+
+<Command.Root class="w-full max-w-md overflow-hidden rounded-[20px] border border-black bg-white">
+  <Command.Input
+    placeholder="Type a command or search…"
+    class="w-full border-b border-black px-4 py-3 text-sm text-black outline-none placeholder:text-[#9ca3af]"
+  />
+  <Command.List class="max-h-72 overflow-auto p-2">
+    <Command.Empty class="py-6 text-center text-sm text-[#9ca3af]">No results found.</Command.Empty>
+    <Command.Group heading="Suggestions">
+      <div class="px-2 py-1.5 text-xs font-medium text-[#9ca3af]">Suggestions</div>
+      <Command.Item value="New File" keywords={['create']} class={itemCls}>📄 New File</Command.Item>
+      <Command.Item value="Search Docs" class={itemCls}>🔍 Search Docs</Command.Item>
+    </Command.Group>
+    <Command.Separator class="my-1 h-px bg-[#e5e5e5]" />
+    <Command.Group>
+      <div class="px-2 py-1.5 text-xs font-medium text-[#9ca3af]">Settings</div>
+      <Command.Item value="Profile" class={itemCls}>👤 Profile</Command.Item>
+      <Command.Item value="Billing" disabled class={itemCls}>💳 Billing</Command.Item>
+    </Command.Group>
+  </Command.List>
+</Command.Root>
+```
+</ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Items expose `data-active` (the keyboard/pointer-highlighted item) and `data-disabled`. Hovering or arrow-keying moves the active item; style it as the highlight. Groups whose items are all filtered out get the native `hidden` attribute — collapse them with `[&[hidden]]:hidden` if needed. The `heading` prop renders a labelled element for the group; you can also render your own visible heading inside the group.
+
+```tsx
+<Command.Item value="Profile" className="
+  text-black
+  data-[active]:bg-[#f5f5f5]
+  data-[disabled]:opacity-40 data-[disabled]:cursor-not-allowed
+">
+  Profile
+</Command.Item>
+```
+
+## Using data attributes
+
+```css
+/* Highlighted (active) item */
+[data-active]   { background: #f5f5f5; }
+
+/* Disabled item */
+[data-disabled] { opacity: 0.4; cursor: not-allowed; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `searchValue` | `string` | — | Controlled search query |
+| `defaultSearchValue` | `string` | `''` | Initial search query (uncontrolled) |
+| `onSearchChange` | `(value: string) => void` | — | Called when the query changes |
+| `filter` | `(value: string, search: string, keywords: string[]) => boolean` | substring match | Custom matcher |
+| `onSelect` | `(value: string) => void` | — | Called when any item is selected, with its value |
+| `loop` | `boolean` | `true` | Wrap active-item navigation |
+| `open` | `boolean` | — | Controlled open state (toggleable palette) |
+| `defaultOpen` | `boolean` | — | Initial open state |
+| `onOpenChange` | `(open: boolean) => void` | — | Called when the open state changes |
+| `shortcut` | `string` | — | Global hotkey (e.g. `'mod+k'`) that toggles `open` |
+
+## Group props
+
+| Prop | Type | Description |
+|---|---|---|
+| `heading` | `ReactNode` | Optional heading rendered above the group's items |
+
+## Item props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `string` | required | Unique value — used as identity and default search text |
+| `keywords` | `string[]` | — | Extra terms to match against |
+| `disabled` | `boolean` | `false` | Disable this item |
+| `onSelect` | `(value: string) => void` | — | Called when this item is chosen |
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-command-root` | Root | Present on the root element |
+| `data-active` | Item | Present on the active (highlighted) item |
+| `data-disabled` | Item | Present when the item is disabled |
+| `data-command-group-heading` | Group heading | Present on the rendered `heading` element |
+
+## Accessibility
+
+- Input renders as `role="combobox"` with `aria-expanded`, `aria-controls` pointing at the list, and `aria-activedescendant` tracking the active item.
+- List renders as `role="listbox"`; items as `role="option"` with `aria-selected` and `aria-disabled`.
+- Groups render as `role="group"` (with `aria-labelledby` when a `heading` is set); separators as `role="separator"`.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>ArrowDown</kbd> | Move the active item down. |
+| <kbd>ArrowUp</kbd> | Move the active item up. |
+| <kbd>Enter</kbd> | Select the active item. |
+| <kbd>Escape</kbd> | Close the palette (when used as a toggleable palette). |
+| `shortcut` (e.g. <kbd>⌘</kbd><kbd>K</kbd>) | Toggle the palette open/closed when `shortcut` is set. |

@@ -1,0 +1,216 @@
+---
+title: HoverCard
+description: A rich, interactive card that opens on hover or focus after a delay.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# HoverCard
+
+A richer, interactive alternative to Tooltip — opens on hover/focus after a delay and stays open while you move the pointer into the card. Content is fully interactive (links, buttons). Renders with `role="dialog"`.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Opens on hover after `openDelay`, closes after `closeDelay`.</FeatureItem>
+  <FeatureItem>Opens immediately on focus and closes on blur for keyboard users.</FeatureItem>
+  <FeatureItem>Stays open while the pointer moves from the trigger into the card.</FeatureItem>
+  <FeatureItem>Positionable on any side with a configurable offset.</FeatureItem>
+  <FeatureItem>Can be controlled or uncontrolled.</FeatureItem>
+  <FeatureItem>`forceMount` keeps the card mounted for CSS exit animations.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><HoverCardPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { HoverCard } from '@wire-ui/react'
+
+<HoverCard.Root>
+  <HoverCard.Trigger>@wire-ui</HoverCard.Trigger>
+  <HoverCard.Content side="bottom">
+    Headless, AI-native component primitives with zero CSS.
+  </HoverCard.Content>
+</HoverCard.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { HoverCard } from '@wire-ui/vue'
+</script>
+
+<template>
+  <HoverCard.Root>
+    <HoverCard.Trigger>@wire-ui</HoverCard.Trigger>
+    <HoverCard.Content side="bottom">
+      Headless, AI-native component primitives with zero CSS.
+    </HoverCard.Content>
+  </HoverCard.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { HoverCard } from '@wire-ui/solid'
+
+<HoverCard.Root>
+  <HoverCard.Trigger>@wire-ui</HoverCard.Trigger>
+  <HoverCard.Content side="bottom">
+    Headless, AI-native component primitives with zero CSS.
+  </HoverCard.Content>
+</HoverCard.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { HoverCard } from '@wire-ui/react'
+
+<HoverCard.Root openDelay={150}>
+  <HoverCard.Trigger className="cursor-pointer font-medium text-black underline underline-offset-2">
+    @grace
+  </HoverCard.Trigger>
+  <HoverCard.Content
+    side="top"
+    sideOffset={8}
+    className="w-64 rounded-[8px] border border-black bg-white p-4 text-sm shadow-[4px_4px_0_0_#000]"
+  >
+    <p className="font-semibold text-black">Grace Hopper</p>
+    <p className="text-xs text-[#6b7280]">@grace · Staff Engineer</p>
+    <button className="mt-3 w-full rounded-[8px] border border-black bg-black py-1.5 text-xs font-medium text-white hover:bg-white hover:text-black">
+      Follow
+    </button>
+  </HoverCard.Content>
+</HoverCard.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { HoverCard } from '@wire-ui/vue'
+</script>
+
+<template>
+  <HoverCard.Root :open-delay="150">
+    <HoverCard.Trigger class="cursor-pointer font-medium text-black underline underline-offset-2">
+      @grace
+    </HoverCard.Trigger>
+    <HoverCard.Content
+      side="top"
+      :side-offset="8"
+      class="w-64 rounded-[8px] border border-black bg-white p-4 text-sm shadow-[4px_4px_0_0_#000]"
+    >
+      <p class="font-semibold text-black">Grace Hopper</p>
+      <p class="text-xs text-[#6b7280]">@grace · Staff Engineer</p>
+      <button class="mt-3 w-full rounded-[8px] border border-black bg-black py-1.5 text-xs font-medium text-white hover:bg-white hover:text-black">
+        Follow
+      </button>
+    </HoverCard.Content>
+  </HoverCard.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { HoverCard } from '@wire-ui/solid'
+
+<HoverCard.Root openDelay={150}>
+  <HoverCard.Trigger class="cursor-pointer font-medium text-black underline underline-offset-2">
+    @grace
+  </HoverCard.Trigger>
+  <HoverCard.Content
+    side="top"
+    sideOffset={8}
+    class="w-64 rounded-[8px] border border-black bg-white p-4 text-sm shadow-[4px_4px_0_0_#000]"
+  >
+    <p class="font-semibold text-black">Grace Hopper</p>
+    <p class="text-xs text-[#6b7280]">@grace · Staff Engineer</p>
+    <button class="mt-3 w-full rounded-[8px] border border-black bg-black py-1.5 text-xs font-medium text-white hover:bg-white hover:text-black">
+      Follow
+    </button>
+  </HoverCard.Content>
+</HoverCard.Root>
+```
+</ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+Trigger and Content set `data-state` (`"open"` / `"closed"`); Content also sets `data-side`. Use these to drive enter/exit transitions and side-specific styling. Content is absolutely positioned relative to the Root (an `inline-block` wrapper) and given `z-index: 50`.
+
+```tsx
+<HoverCard.Content className="
+  opacity-0 transition-opacity
+  data-[state=open]:opacity-100
+  data-[side=top]:origin-bottom
+  data-[side=bottom]:origin-top
+">
+  …
+</HoverCard.Content>
+```
+
+## Using data attributes
+
+```css
+/* Animate based on open/closed state */
+[data-state="open"]   { opacity: 1; }
+[data-state="closed"] { opacity: 0; }
+
+/* Side-specific transform origin */
+[data-side="top"]    { transform-origin: bottom center; }
+[data-side="bottom"] { transform-origin: top center; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `open` | `boolean` | — | Controlled open state |
+| `defaultOpen` | `boolean` | `false` | Initial open state (uncontrolled) |
+| `onOpenChange` | `(open: boolean) => void` | — | Called when the open state changes |
+| `openDelay` | `number` | `300` | ms to wait before opening on hover |
+| `closeDelay` | `number` | `200` | ms to wait before closing after leaving |
+
+## Trigger props
+
+The Trigger renders a `<span>` and accepts all standard `<span>` HTML attributes. It manages `onMouseEnter`, `onMouseLeave`, `onFocus`, and `onBlur` internally (your handlers are still called).
+
+## Content props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `side` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'bottom'` | Side of the trigger to render on |
+| `sideOffset` | `number` | `8` | Gap in px between trigger and card |
+| `forceMount` | `boolean` | `false` | Keep the card mounted while closed (for CSS exit animations) |
+
+Content also accepts all standard `<div>` HTML attributes.
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-state` | Trigger, Content | `"open"` / `"closed"` |
+| `data-side` | Content | `"top"` / `"right"` / `"bottom"` / `"left"` |
+
+Content sets `role="dialog"`.
+
+## Accessibility
+
+- Content renders with `role="dialog"`.
+- Opens immediately on Trigger focus and closes on blur, so keyboard users can reach interactive content inside the card.
+- Pointer users can move from the Trigger into the Content without it closing — the close timer is cancelled while hovering the card.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Tab</kbd> | Moves focus to the trigger, opening the card immediately. |
+| <kbd>Shift+Tab</kbd> | Moves focus away from the trigger, closing the card. |

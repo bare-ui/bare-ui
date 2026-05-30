@@ -1,0 +1,213 @@
+---
+title: Stat
+description: KPI/metric display with label, value, directional delta, and inline sparkline.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Stat
+
+A KPI / metric display: a label, a value, a delta that exposes `data-direction` (`increase` / `decrease` / `neutral`), help text, and a built-in inline `Sparkline` — or bring your own chart.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Composable label, value, delta, and help text parts.</FeatureItem>
+  <FeatureItem>Delta infers direction from its numeric value, or accepts an explicit `direction`.</FeatureItem>
+  <FeatureItem>Delta exposes `data-direction` for color-coded styling.</FeatureItem>
+  <FeatureItem>Built-in inline SVG `Sparkline` from a series of numbers.</FeatureItem>
+  <FeatureItem>Root renders `role="group"` for assistive tech.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><StatPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Stat } from '@wire-ui/react'
+
+<Stat.Root>
+  <Stat.Label>Monthly revenue</Stat.Label>
+  <Stat.Value>$48,250</Stat.Value>
+  <Stat.Delta value={12.5}>▲ 12.5%</Stat.Delta>
+  <Stat.HelpText>vs. previous month</Stat.HelpText>
+  <Stat.Sparkline data={[12, 18, 15, 22, 19, 28, 24, 30]} />
+</Stat.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Stat } from '@wire-ui/vue'
+</script>
+
+<template>
+  <Stat.Root>
+    <Stat.Label>Monthly revenue</Stat.Label>
+    <Stat.Value>$48,250</Stat.Value>
+    <Stat.Delta :value="12.5">▲ 12.5%</Stat.Delta>
+    <Stat.HelpText>vs. previous month</Stat.HelpText>
+    <Stat.Sparkline :data="[12, 18, 15, 22, 19, 28, 24, 30]" />
+  </Stat.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Stat } from '@wire-ui/solid'
+
+<Stat.Root>
+  <Stat.Label>Monthly revenue</Stat.Label>
+  <Stat.Value>$48,250</Stat.Value>
+  <Stat.Delta value={12.5}>▲ 12.5%</Stat.Delta>
+  <Stat.HelpText>vs. previous month</Stat.HelpText>
+  <Stat.Sparkline data={[12, 18, 15, 22, 19, 28, 24, 30]} />
+</Stat.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Stat } from '@wire-ui/react'
+
+const deltaCls =
+  'inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-xs font-medium data-[direction=increase]:bg-[#dcfce7] data-[direction=increase]:text-[#15803d] data-[direction=decrease]:bg-[#fee2e2] data-[direction=decrease]:text-[#b91c1c] data-[direction=neutral]:bg-[#f5f5f5] data-[direction=neutral]:text-[#6b7280]'
+
+<Stat.Root className="w-64 rounded-[20px] border border-black bg-white p-4">
+  <div className="flex items-center justify-between">
+    <Stat.Label className="text-xs text-[#6b7280]">Revenue</Stat.Label>
+    <Stat.Delta value={12.5} className={deltaCls}>▲ 12.5%</Stat.Delta>
+  </div>
+  <Stat.Value className="mt-1 block text-2xl font-semibold text-black">$48,250</Stat.Value>
+  <Stat.Sparkline
+    data={[20, 24, 22, 30, 28, 36, 34, 42]}
+    width={220}
+    height={32}
+    className="mt-3 w-full text-black"
+  />
+  <Stat.HelpText className="mt-1 block text-xs text-[#9ca3af]">vs. previous month</Stat.HelpText>
+</Stat.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { Stat } from '@wire-ui/vue'
+
+const deltaCls =
+  'inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-xs font-medium data-[direction=increase]:bg-[#dcfce7] data-[direction=increase]:text-[#15803d] data-[direction=decrease]:bg-[#fee2e2] data-[direction=decrease]:text-[#b91c1c] data-[direction=neutral]:bg-[#f5f5f5] data-[direction=neutral]:text-[#6b7280]'
+</script>
+
+<template>
+  <Stat.Root class="w-64 rounded-[20px] border border-black bg-white p-4">
+    <div class="flex items-center justify-between">
+      <Stat.Label class="text-xs text-[#6b7280]">Revenue</Stat.Label>
+      <Stat.Delta :value="12.5" :class="deltaCls">▲ 12.5%</Stat.Delta>
+    </div>
+    <Stat.Value class="mt-1 block text-2xl font-semibold text-black">$48,250</Stat.Value>
+    <Stat.Sparkline
+      :data="[20, 24, 22, 30, 28, 36, 34, 42]"
+      :width="220"
+      :height="32"
+      class="mt-3 w-full text-black"
+    />
+    <Stat.HelpText class="mt-1 block text-xs text-[#9ca3af]">vs. previous month</Stat.HelpText>
+  </Stat.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+    ```tsx
+import { Stat } from '@wire-ui/solid'
+
+const deltaCls =
+  'inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-xs font-medium data-[direction=increase]:bg-[#dcfce7] data-[direction=increase]:text-[#15803d] data-[direction=decrease]:bg-[#fee2e2] data-[direction=decrease]:text-[#b91c1c] data-[direction=neutral]:bg-[#f5f5f5] data-[direction=neutral]:text-[#6b7280]'
+
+<Stat.Root class="w-64 rounded-[20px] border border-black bg-white p-4">
+  <div class="flex items-center justify-between">
+    <Stat.Label class="text-xs text-[#6b7280]">Revenue</Stat.Label>
+    <Stat.Delta value={12.5} class={deltaCls}>▲ 12.5%</Stat.Delta>
+  </div>
+  <Stat.Value class="mt-1 block text-2xl font-semibold text-black">$48,250</Stat.Value>
+  <Stat.Sparkline
+    data={[20, 24, 22, 30, 28, 36, 34, 42]}
+    width={220}
+    height={32}
+    class="mt-3 w-full text-black"
+  />
+  <Stat.HelpText class="mt-1 block text-xs text-[#9ca3af]">vs. previous month</Stat.HelpText>
+</Stat.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+`Stat.Delta` sets `data-direction` so you can color increases, decreases, and neutral changes from a single class string.
+
+```tsx
+<Stat.Delta value={12.5} className="
+  data-[direction=increase]:text-green-700
+  data-[direction=decrease]:text-red-700
+  data-[direction=neutral]:text-gray-500
+">
+  ▲ 12.5%
+</Stat.Delta>
+```
+
+`Stat.Sparkline` draws with `stroke="currentColor"`, so its line color follows the `text-*` color of the SVG.
+
+## Using data attributes
+
+`Stat.Delta` exposes `data-direction`, resolved from the `direction` prop, or inferred from the sign of `value` (positive → `increase`, negative → `decrease`, zero/undefined → `neutral`).
+
+```css
+[data-direction="increase"] { color: #15803d; }
+[data-direction="decrease"] { color: #b91c1c; }
+[data-direction="neutral"]  { color: #6b7280; }
+```
+
+## Root props
+
+`Stat.Root` renders a `<div role="group">` and accepts all standard `div` attributes.
+
+## Label / Value / HelpText props
+
+`Stat.Label`, `Stat.Value`, and `Stat.HelpText` each render a `<span>` and accept all standard span attributes. They carry no extra props.
+
+## Delta props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `number` | — | Numeric change. Its sign derives `direction` when `direction` is omitted, and renders as the content when there are no children |
+| `direction` | `'increase' \| 'decrease' \| 'neutral'` | inferred from `value` | Force the direction |
+
+Renders a `<span>` and accepts all standard span attributes.
+
+## Sparkline props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `data` | `number[]` | required | Series of values to plot. Renders nothing if fewer than 2 points |
+| `width` | `number` | `100` | Viewport width in px |
+| `height` | `number` | `24` | Viewport height in px |
+| `strokeWidth` | `number` | `1.5` | Stroke width of the line |
+
+Renders an `<svg aria-hidden="true">` and accepts all standard SVG attributes except `children`.
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-direction` | Delta | `"increase"` / `"decrease"` / `"neutral"` |
+
+## Accessibility
+
+- `Stat.Root` renders `role="group"` so the label, value, and delta are announced together.
+- `Stat.Sparkline` is decorative and marked `aria-hidden="true"`; convey the trend in text where it matters.

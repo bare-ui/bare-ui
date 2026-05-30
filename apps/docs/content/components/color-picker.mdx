@@ -1,0 +1,242 @@
+---
+title: ColorPicker
+description: A headless HSVA color picker with saturation area, hue and alpha sliders, swatch and hex input.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# ColorPicker
+
+A headless HSVA color picker: a saturation/value area, hue and alpha sliders, a swatch and a hex input. Pointer-draggable and keyboard-accessible; emits hex strings.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Saturation/value area plus hue and optional alpha sliders.</FeatureItem>
+  <FeatureItem>Pointer-draggable tracks and arrow-key adjustment on each slider.</FeatureItem>
+  <FeatureItem>Editable hex input synced to the current color.</FeatureItem>
+  <FeatureItem>Controlled or uncontrolled via hex strings (`#rgb`, `#rrggbb`, `#rrggbbaa`).</FeatureItem>
+  <FeatureItem>Toggle the alpha channel with a single prop.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><ColorPickerPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { ColorPicker } from '@wire-ui/react'
+
+<ColorPicker.Root value={color} onChange={setColor}>
+  <ColorPicker.Area>
+    <ColorPicker.AreaThumb />
+  </ColorPicker.Area>
+  <ColorPicker.Swatch />
+  <ColorPicker.Hue>
+    <ColorPicker.HueThumb />
+  </ColorPicker.Hue>
+  <ColorPicker.Alpha>
+    <ColorPicker.AlphaThumb />
+  </ColorPicker.Alpha>
+  <ColorPicker.Input />
+</ColorPicker.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { ref } from 'vue'
+import { ColorPicker } from '@wire-ui/vue'
+
+const color = ref('#6d28d9')
+</script>
+
+<template>
+  <ColorPicker.Root :value="color" @change="color = $event">
+    <ColorPicker.Area>
+      <ColorPicker.AreaThumb />
+    </ColorPicker.Area>
+    <ColorPicker.Swatch />
+    <ColorPicker.Hue>
+      <ColorPicker.HueThumb />
+    </ColorPicker.Hue>
+    <ColorPicker.Alpha>
+      <ColorPicker.AlphaThumb />
+    </ColorPicker.Alpha>
+    <ColorPicker.Input />
+  </ColorPicker.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { ColorPicker } from '@wire-ui/solid'
+
+<ColorPicker.Root value={color()} onChange={setColor}>
+  <ColorPicker.Area>
+    <ColorPicker.AreaThumb />
+  </ColorPicker.Area>
+  <ColorPicker.Swatch />
+  <ColorPicker.Hue>
+    <ColorPicker.HueThumb />
+  </ColorPicker.Hue>
+  <ColorPicker.Alpha>
+    <ColorPicker.AlphaThumb />
+  </ColorPicker.Alpha>
+  <ColorPicker.Input />
+</ColorPicker.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { ColorPicker } from '@wire-ui/react'
+
+const thumb = 'size-3.5 rounded-full border-2 border-white shadow ring-1 ring-black/30'
+
+<ColorPicker.Root value={color} onChange={setColor}>
+  <ColorPicker.Area className="relative mb-3 h-36 w-full rounded-[8px]">
+    <ColorPicker.AreaThumb className={thumb} />
+  </ColorPicker.Area>
+  <div className="flex items-center gap-3">
+    <ColorPicker.Swatch className="size-9 shrink-0 rounded-full ring-1 ring-black/20" />
+    <div className="flex-1 space-y-2">
+      <ColorPicker.Hue className="relative h-3 w-full rounded-full">
+        <ColorPicker.HueThumb className={thumb} />
+      </ColorPicker.Hue>
+      <ColorPicker.Alpha className="relative h-3 w-full rounded-full">
+        <ColorPicker.AlphaThumb className={thumb} />
+      </ColorPicker.Alpha>
+    </div>
+  </div>
+  <ColorPicker.Input className="mt-3 w-full rounded-[8px] border border-black px-2 py-1 font-mono text-sm uppercase text-black outline-none focus:ring-2 focus:ring-black" />
+</ColorPicker.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ref } from 'vue'
+import { ColorPicker } from '@wire-ui/vue'
+
+const color = ref('#0ea5e9')
+const thumb = 'size-3.5 rounded-full border-2 border-white shadow ring-1 ring-black/30'
+</script>
+
+<template>
+  <ColorPicker.Root :value="color" @change="color = $event">
+    <ColorPicker.Area class="relative mb-3 h-36 w-full rounded-[8px]">
+      <ColorPicker.AreaThumb :class="thumb" />
+    </ColorPicker.Area>
+    <div class="flex items-center gap-3">
+      <ColorPicker.Swatch class="size-9 shrink-0 rounded-full ring-1 ring-black/20" />
+      <div class="flex-1 space-y-2">
+        <ColorPicker.Hue class="relative h-3 w-full rounded-full">
+          <ColorPicker.HueThumb :class="thumb" />
+        </ColorPicker.Hue>
+        <ColorPicker.Alpha class="relative h-3 w-full rounded-full">
+          <ColorPicker.AlphaThumb :class="thumb" />
+        </ColorPicker.Alpha>
+      </div>
+    </div>
+    <ColorPicker.Input class="mt-3 w-full rounded-[8px] border border-black px-2 py-1 font-mono text-sm uppercase text-black outline-none focus:ring-2 focus:ring-black" />
+  </ColorPicker.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { ColorPicker } from '@wire-ui/solid'
+
+const thumb = 'size-3.5 rounded-full border-2 border-white shadow ring-1 ring-black/30'
+
+<ColorPicker.Root value={color()} onChange={setColor}>
+  <ColorPicker.Area class="relative mb-3 h-36 w-full rounded-[8px]">
+    <ColorPicker.AreaThumb class={thumb} />
+  </ColorPicker.Area>
+  <div class="flex items-center gap-3">
+    <ColorPicker.Swatch class="size-9 shrink-0 rounded-full ring-1 ring-black/20" />
+    <div class="flex-1 space-y-2">
+      <ColorPicker.Hue class="relative h-3 w-full rounded-full">
+        <ColorPicker.HueThumb class={thumb} />
+      </ColorPicker.Hue>
+      <ColorPicker.Alpha class="relative h-3 w-full rounded-full">
+        <ColorPicker.AlphaThumb class={thumb} />
+      </ColorPicker.Alpha>
+    </div>
+  </div>
+  <ColorPicker.Input class="mt-3 w-full rounded-[8px] border border-black px-2 py-1 font-mono text-sm uppercase text-black outline-none focus:ring-2 focus:ring-black" />
+</ColorPicker.Root>
+```
+</ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+The Area, Hue and Alpha tracks set their own background gradients inline (the hue spectrum, the current hue for the area, and a transparency gradient for alpha) — you only need to size and round them. Thumbs are absolutely positioned for you; style their appearance. The Swatch fills with the current `rgba()` color. Each part also carries an identifying data attribute for CSS targeting.
+
+```tsx
+<ColorPicker.Area className="relative h-36 w-full rounded-[8px]">
+  <ColorPicker.AreaThumb className="size-3.5 rounded-full border-2 border-white" />
+</ColorPicker.Area>
+```
+
+## Using data attributes
+
+Each sub-component sets a unique data attribute so you can scope styles without class names.
+
+```css
+[data-color-picker-area]  { height: 9rem; border-radius: 8px; }
+[data-color-picker-hue]   { height: 0.75rem; border-radius: 9999px; }
+[data-color-picker-alpha] { height: 0.75rem; border-radius: 9999px; }
+[data-color-picker-area-thumb],
+[data-color-picker-hue-thumb],
+[data-color-picker-alpha-thumb] {
+  width: 0.875rem; height: 0.875rem;
+  border: 2px solid #fff; border-radius: 9999px;
+}
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `string` | — | Controlled value as a hex string (`#rgb`, `#rrggbb`, `#rrggbbaa`) |
+| `defaultValue` | `string` | `'#000000'` | Initial value (uncontrolled) |
+| `onChange` | `(hex: string) => void` | — | Called with the hex string whenever the color changes |
+| `alpha` | `boolean` | `true` | Enable the alpha channel |
+
+## Sub-component props
+
+`Area`, `AreaThumb`, `Hue`, `HueThumb`, `Alpha`, `AlphaThumb` and `Swatch` accept the standard `div` attributes (`className`, `style`, …). `Input` accepts the standard `input` attributes except `value` and `onChange`, which are managed internally.
+
+## Data attributes
+
+| Attribute | Element |
+|---|---|
+| `data-color-picker-area` | Area |
+| `data-color-picker-area-thumb` | AreaThumb |
+| `data-color-picker-hue` | Hue |
+| `data-color-picker-hue-thumb` | HueThumb |
+| `data-color-picker-alpha` | Alpha |
+| `data-color-picker-alpha-thumb` | AlphaThumb |
+| `data-color-picker-swatch` | Swatch |
+
+## Accessibility
+
+- Area, Hue and Alpha render as `role="slider"` with `tabIndex={0}` and descriptive `aria-label` / `aria-valuetext` / `aria-valuenow`.
+- The hex Input exposes `aria-label="Hex color"`.
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>ArrowRight</kbd> / <kbd>ArrowUp</kbd> | Increase the focused slider (saturation, hue or alpha). |
+| <kbd>ArrowLeft</kbd> / <kbd>ArrowDown</kbd> | Decrease the focused slider. On the Area, Up/Down adjust brightness and Left/Right adjust saturation. |
+| <kbd>Enter</kbd> | Commit the typed value in the hex Input. |
+| <kbd>Tab</kbd> | Move focus between the Area and sliders. |

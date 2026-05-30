@@ -1,0 +1,234 @@
+---
+title: Editable
+description: Inline text editing — click to edit, Enter or blur to commit, Escape to cancel.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Editable
+
+Inline text editing: click the preview to edit, Enter/blur to commit, Escape to discard. Pair with `Editable.Area` for multiline. Controlled and uncontrolled.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Click the preview to switch into an editable input.</FeatureItem>
+  <FeatureItem>Enter or blur commits, Escape discards the edit.</FeatureItem>
+  <FeatureItem>Single-line Input or multiline Area (Cmd/Ctrl+Enter to save).</FeatureItem>
+  <FeatureItem>Optional explicit Edit, Submit and Cancel triggers.</FeatureItem>
+  <FeatureItem>Can be controlled or uncontrolled for both value and editing state.</FeatureItem>
+  <FeatureItem>Supports disabled and placeholder states.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><EditablePreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { Editable } from '@wire-ui/react'
+
+<Editable.Root defaultValue="Click to edit me" placeholder="Enter some text…">
+  <Editable.Preview />
+  <Editable.Input />
+</Editable.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { Editable } from '@wire-ui/vue'
+</script>
+
+<template>
+  <Editable.Root default-value="Click to edit me" placeholder="Enter some text…">
+    <Editable.Preview />
+    <Editable.Input />
+  </Editable.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { Editable } from '@wire-ui/solid'
+
+<Editable.Root defaultValue="Click to edit me" placeholder="Enter some text…">
+  <Editable.Preview />
+  <Editable.Input />
+</Editable.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { Editable } from '@wire-ui/react'
+
+<Editable.Root
+  defaultValue="Project title"
+  submitOnBlur={false}
+  className="flex items-center gap-2"
+>
+  <Editable.Preview className="cursor-text rounded-[8px] px-2 py-1 text-sm text-black hover:bg-[#f5f5f5] data-[empty]:text-[#9ca3af]" />
+  <Editable.Input className="rounded-[8px] border border-black px-2 py-1 text-sm text-black outline-none" />
+  <Editable.SubmitTrigger className="rounded-[8px] bg-black px-2 py-1 text-xs font-medium text-white">
+    Save
+  </Editable.SubmitTrigger>
+  <Editable.CancelTrigger className="rounded-[8px] border border-black px-2 py-1 text-xs font-medium text-black">
+    Cancel
+  </Editable.CancelTrigger>
+  <Editable.EditTrigger className="rounded-[8px] border border-black px-2 py-1 text-xs font-medium text-black">
+    Edit
+  </Editable.EditTrigger>
+</Editable.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { Editable } from '@wire-ui/vue'
+</script>
+
+<template>
+  <Editable.Root
+    :default-value="'Project title'"
+    :submit-on-blur="false"
+    class="flex items-center gap-2"
+  >
+    <Editable.Preview class="cursor-text rounded-[8px] px-2 py-1 text-sm text-black hover:bg-[#f5f5f5] data-[empty]:text-[#9ca3af]" />
+    <Editable.Input class="rounded-[8px] border border-black px-2 py-1 text-sm text-black outline-none" />
+    <Editable.SubmitTrigger class="rounded-[8px] bg-black px-2 py-1 text-xs font-medium text-white">
+      Save
+    </Editable.SubmitTrigger>
+    <Editable.CancelTrigger class="rounded-[8px] border border-black px-2 py-1 text-xs font-medium text-black">
+      Cancel
+    </Editable.CancelTrigger>
+    <Editable.EditTrigger class="rounded-[8px] border border-black px-2 py-1 text-xs font-medium text-black">
+      Edit
+    </Editable.EditTrigger>
+  </Editable.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { Editable } from '@wire-ui/solid'
+
+<Editable.Root
+  defaultValue="Project title"
+  submitOnBlur={false}
+  class="flex items-center gap-2"
+>
+  <Editable.Preview class="cursor-text rounded-[8px] px-2 py-1 text-sm text-black hover:bg-[#f5f5f5] data-[empty]:text-[#9ca3af]" />
+  <Editable.Input class="rounded-[8px] border border-black px-2 py-1 text-sm text-black outline-none" />
+  <Editable.SubmitTrigger class="rounded-[8px] bg-black px-2 py-1 text-xs font-medium text-white">
+    Save
+  </Editable.SubmitTrigger>
+  <Editable.CancelTrigger class="rounded-[8px] border border-black px-2 py-1 text-xs font-medium text-black">
+    Cancel
+  </Editable.CancelTrigger>
+  <Editable.EditTrigger class="rounded-[8px] border border-black px-2 py-1 text-xs font-medium text-black">
+    Edit
+  </Editable.EditTrigger>
+</Editable.Root>
+```
+</ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Multiline
+
+Swap `Editable.Input` for `Editable.Area` to edit longer text in a `<textarea>`. In multiline mode a plain Enter inserts a newline — commit with <kbd>Cmd</kbd>/<kbd>Ctrl</kbd>+<kbd>Enter</kbd> (or blur, unless `submitOnBlur` is `false`).
+
+```tsx
+<Editable.Root defaultValue="A longer description…">
+  <Editable.Preview />
+  <Editable.Area rows={3} />
+</Editable.Root>
+```
+
+## Styling
+
+Editable ships no styles. `Editable.Root` sets `data-editing` while editing and `data-disabled` when disabled. `Editable.Preview` sets `data-empty` when the committed value is empty — use it to style placeholder text.
+
+```tsx
+<Editable.Preview className="
+  text-black
+  data-[empty]:text-[#9ca3af]
+" />
+
+<Editable.Root className="
+  data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed
+" />
+```
+
+Note that `Editable.Preview` is only rendered while not editing, and `Editable.Input` / `Editable.Area` / `Editable.SubmitTrigger` / `Editable.CancelTrigger` only while editing, so they never overlap.
+
+## Using data attributes
+
+```css
+/* Placeholder styling on an empty preview */
+[data-empty] { color: #9ca3af; }
+
+/* Disabled root */
+[data-disabled] { opacity: 0.5; cursor: not-allowed; }
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `string` | — | Controlled committed value |
+| `defaultValue` | `string` | `''` | Initial committed value (uncontrolled) |
+| `onChange` | `(value: string) => void` | — | Called when the committed value changes |
+| `editing` | `boolean` | — | Controlled editing state |
+| `defaultEditing` | `boolean` | `false` | Initial editing state (uncontrolled) |
+| `onEditingChange` | `(editing: boolean) => void` | — | Called when editing starts or stops |
+| `onSubmit` | `(value: string) => void` | — | Called with the new value when an edit is committed |
+| `onCancel` | `() => void` | — | Called when an edit is discarded |
+| `onEdit` | `() => void` | — | Called when editing begins |
+| `submitOnBlur` | `boolean` | `true` | Commit when the field loses focus |
+| `disabled` | `boolean` | `false` | Prevent editing |
+| `placeholder` | `string` | — | Shown by `Preview` when the value is empty |
+
+## Sub-component props
+
+| Component | Element | Notes |
+|---|---|---|
+| `Editable.Preview` | `<span role="button">` | Click or Enter/Space to start editing; only shown when not editing |
+| `Editable.Input` | `<input type="text">` | Single-line field; only shown while editing |
+| `Editable.Area` | `<textarea>` | Multiline field; only shown while editing |
+| `Editable.EditTrigger` | `<button type="button">` | Starts editing; only shown when not editing |
+| `Editable.SubmitTrigger` | `<button type="button">` | Commits the edit; only shown while editing |
+| `Editable.CancelTrigger` | `<button type="button">` | Discards the edit; only shown while editing |
+
+`Input` and `Area` manage their own `value`/`onChange`/`defaultValue` from context, so those props are omitted from their types; all other native attributes pass through.
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-editing` | Root | Present while editing |
+| `data-disabled` | Root | Present when disabled |
+| `data-empty` | Preview | Present when the committed value is empty |
+
+`Preview` also sets `role="button"`, `tabindex` (`0`, or `-1` when disabled), and `aria-disabled` when disabled.
+
+## Accessibility
+
+- `Editable.Preview` is exposed as a button (`role="button"`, focusable) and starts editing on Enter or Space
+- `Input` and `Area` receive focus and select their contents automatically when editing begins
+- When disabled, the preview is removed from the tab order (`tabindex="-1"`) and marked `aria-disabled`
+
+## Keyboard Interactions
+
+| Key | Description |
+|---|---|
+| <kbd>Enter</kbd> / <kbd>Space</kbd> | On a focused preview, starts editing. |
+| <kbd>Enter</kbd> | In single-line Input, commits the edit. |
+| <kbd>Cmd</kbd>/<kbd>Ctrl</kbd>+<kbd>Enter</kbd> | In multiline Area, commits the edit. |
+| <kbd>Escape</kbd> | Discards the edit and restores the previous value. |
+| <kbd>Tab</kbd> | Moves focus to the field or the next trigger. |

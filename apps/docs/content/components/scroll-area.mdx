@@ -1,0 +1,201 @@
+---
+title: Scroll Area
+description: A scroll container with a custom, stylable scrollbar that reflects scroll position and supports drag.
+---
+
+import { Tabs } from 'nextra/components'
+
+
+# Scroll Area
+
+A scroll container with a custom, fully stylable scrollbar. The native scrollbar is hidden; the `Scrollbar` and `Thumb` reflect the scroll position and support dragging.
+
+## Features
+
+<FeatureList>
+  <FeatureItem>Hides the native scrollbar and renders a custom, stylable one.</FeatureItem>
+  <FeatureItem>Vertical and horizontal scrollbars — use one or both.</FeatureItem>
+  <FeatureItem>Thumb size and position track the content via a ResizeObserver.</FeatureItem>
+  <FeatureItem>Drag the thumb to scroll, with pointer capture.</FeatureItem>
+  <FeatureItem>Scrollbars auto-hide when content does not overflow, or use forceMount to keep them.</FeatureItem>
+</FeatureList>
+
+### Example
+
+<Preview><ScrollAreaPreview /></Preview>
+
+<Tabs items={['Anatomy', 'Styled (Tailwind)']}>
+  <Tabs.Tab>
+    <ForReact>
+    ```tsx
+import { ScrollArea } from '@wire-ui/react'
+
+<ScrollArea.Root>
+  <ScrollArea.Viewport>
+    {/* long content */}
+  </ScrollArea.Viewport>
+  <ScrollArea.Scrollbar orientation="vertical">
+    <ScrollArea.Thumb />
+  </ScrollArea.Scrollbar>
+</ScrollArea.Root>
+    ```
+    </ForReact>
+    <ForVue>
+    ```vue
+<script setup>
+import { ScrollArea } from '@wire-ui/vue'
+</script>
+
+<template>
+  <ScrollArea.Root>
+    <ScrollArea.Viewport>
+      <!-- long content -->
+    </ScrollArea.Viewport>
+    <ScrollArea.Scrollbar orientation="vertical">
+      <ScrollArea.Thumb />
+    </ScrollArea.Scrollbar>
+  </ScrollArea.Root>
+</template>
+    ```
+    </ForVue>
+    <ForSolid>
+    ```tsx
+import { ScrollArea } from '@wire-ui/solid'
+
+<ScrollArea.Root>
+  <ScrollArea.Viewport>
+    {/* long content */}
+  </ScrollArea.Viewport>
+  <ScrollArea.Scrollbar orientation="vertical">
+    <ScrollArea.Thumb />
+  </ScrollArea.Scrollbar>
+</ScrollArea.Root>
+    ```
+    </ForSolid>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ForReact>
+```tsx
+import { ScrollArea } from '@wire-ui/react'
+
+<ScrollArea.Root className="h-72 w-56 rounded-[20px] border border-black bg-white">
+  <ScrollArea.Viewport className="h-full w-full p-3">
+    <div className="space-y-1">
+      {tags.map((t) => (
+        <div key={t} className="rounded-[6px] px-2 py-1.5 text-sm text-black hover:bg-[#f5f5f5]">
+          {t}
+        </div>
+      ))}
+    </div>
+  </ScrollArea.Viewport>
+  <ScrollArea.Scrollbar orientation="vertical" className="flex w-2.5 touch-none select-none p-0.5">
+    <ScrollArea.Thumb className="flex-1 rounded-full border border-black bg-black/70 hover:bg-black" />
+  </ScrollArea.Scrollbar>
+</ScrollArea.Root>
+```
+</ForReact>
+<ForVue>
+```vue
+<script setup>
+import { ScrollArea } from '@wire-ui/vue'
+
+const tags = Array.from({ length: 40 }, (_, i) => `Tag ${i + 1}`)
+</script>
+
+<template>
+  <ScrollArea.Root class="h-72 w-56 rounded-[20px] border border-black bg-white">
+    <ScrollArea.Viewport class="h-full w-full p-3">
+      <div class="space-y-1">
+        <div v-for="t in tags" :key="t" class="rounded-[6px] px-2 py-1.5 text-sm text-black hover:bg-[#f5f5f5]">
+          {{ t }}
+        </div>
+      </div>
+    </ScrollArea.Viewport>
+    <ScrollArea.Scrollbar orientation="vertical" class="flex w-2.5 touch-none select-none p-0.5">
+      <ScrollArea.Thumb class="flex-1 rounded-full border border-black bg-black/70 hover:bg-black" />
+    </ScrollArea.Scrollbar>
+  </ScrollArea.Root>
+</template>
+```
+</ForVue>
+    <ForSolid>
+```tsx
+import { ScrollArea } from '@wire-ui/solid'
+import { For } from 'solid-js'
+
+<ScrollArea.Root class="h-72 w-56 rounded-[20px] border border-black bg-white">
+  <ScrollArea.Viewport class="h-full w-full p-3">
+    <div class="space-y-1">
+      <For each={tags}>
+        {(t) => (
+          <div class="rounded-[6px] px-2 py-1.5 text-sm text-black hover:bg-[#f5f5f5]">{t}</div>
+        )}
+      </For>
+    </div>
+  </ScrollArea.Viewport>
+  <ScrollArea.Scrollbar orientation="vertical" class="flex w-2.5 touch-none select-none p-0.5">
+    <ScrollArea.Thumb class="flex-1 rounded-full border border-black bg-black/70 hover:bg-black" />
+  </ScrollArea.Scrollbar>
+</ScrollArea.Root>
+```
+</ForSolid>
+  </Tabs.Tab>
+</Tabs>
+
+## Styling
+
+The `Viewport` hides the native scrollbar (`scrollbar-width: none`) and sets `overflow: auto`. The `Scrollbar` is absolutely positioned along its edge and the `Thumb` is sized/positioned as a percentage of the scrollable content. Style the track via `Scrollbar` and the draggable handle via `Thumb`; add `touch-none select-none` to prevent text selection while dragging.
+
+```tsx
+<ScrollArea.Scrollbar
+  orientation="vertical"
+  className="flex w-2.5 touch-none select-none p-0.5 data-[state=hidden]:opacity-0"
+>
+  <ScrollArea.Thumb className="flex-1 rounded-full bg-black/70 hover:bg-black" />
+</ScrollArea.Scrollbar>
+```
+
+## Using data attributes
+
+`Scrollbar` sets `data-state` (`"visible"` / `"hidden"`) reflecting whether the content overflows, and `data-orientation`. `Thumb` sets `data-orientation`. The `Viewport`, `Scrollbar`, and `Thumb` also carry identifier attributes (`data-scroll-area-viewport`, `data-scroll-area-scrollbar`, `data-scroll-area-thumb`) for targeting.
+
+```css
+[data-scroll-area-scrollbar][data-state="hidden"] { opacity: 0; }
+[data-scroll-area-thumb][data-orientation="horizontal"] { /* … */ }
+```
+
+## Root props
+
+Accepts all native `<div>` attributes. `Root` is set to `position: relative` so scrollbars can anchor to its edges.
+
+## Viewport props
+
+Accepts all native `<div>` attributes. The scrollable content goes inside. Sets `overflow: auto` and hides the native scrollbar.
+
+## Scrollbar props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `orientation` | `'vertical' \| 'horizontal'` | `'vertical'` | Which axis this scrollbar controls |
+| `forceMount` | `boolean` | `false` | Render even when the content doesn't overflow |
+
+Also accepts all native `<div>` attributes.
+
+## Thumb props
+
+Accepts all native `<div>` attributes. Size and position are computed automatically; pointer handlers drive drag-to-scroll.
+
+## Data attributes
+
+| Attribute | Element | Values |
+|---|---|---|
+| `data-state` | Scrollbar | `"visible"` / `"hidden"` |
+| `data-orientation` | Scrollbar, Thumb | `"vertical"` / `"horizontal"` |
+| `data-scroll-area-viewport` | Viewport | Present (identifier) |
+| `data-scroll-area-scrollbar` | Scrollbar | Present (identifier) |
+| `data-scroll-area-thumb` | Thumb | Present (identifier) |
+
+## Accessibility
+
+- The `Viewport` is a natively scrollable region, so keyboard scrolling and wheel/trackpad behavior work as usual.
+- The custom scrollbar is supplementary; content remains reachable without it.
