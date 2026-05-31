@@ -1,7 +1,7 @@
 ---
 name: wire-ui
 description: AI-native unstyled primitives framework. Headless, compound components with zero CSS.
-version: 0.3.0
+version: 0.4.0
 tags:
   - react
   - headless
@@ -480,6 +480,346 @@ import { Icon } from '@wire-ui/react'
 <Icon name="check" icons={{ check: '<svg>...</svg>' }} size="medium" />
 ```
 
+### Carousel
+
+```tsx
+import { Carousel } from '@wire-ui/react'
+
+<Carousel.Root>
+  <Carousel.Viewport>
+    <Carousel.Content>
+      <Carousel.Slide>Slide 1</Carousel.Slide>
+      <Carousel.Slide>Slide 2</Carousel.Slide>
+    </Carousel.Content>
+  </Carousel.Viewport>
+  <Carousel.Previous>‹</Carousel.Previous>
+  <Carousel.Next>›</Carousel.Next>
+  <Carousel.Indicators>
+    {({ index, selected, scrollTo }) => <button key={index} onClick={scrollTo} aria-current={selected} />}
+  </Carousel.Indicators>
+</Carousel.Root>
+```
+
+Root props: `orientation` (`"horizontal"` / `"vertical"`), `loop`, `index`, `defaultIndex`, `onIndexChange`.
+Data attributes: `data-orientation` on Root.
+
+### InfiniteScroll
+
+```tsx
+import { InfiniteScroll } from '@wire-ui/react'
+
+<InfiniteScroll.Root onLoadMore={loadMore} hasMore={hasMore} loading={loading}>
+  <ul>{items.map((i) => <li key={i}>{i}</li>)}</ul>
+  <InfiniteScroll.Loader>Loading…</InfiniteScroll.Loader>
+  <InfiniteScroll.EndMessage>No more</InfiniteScroll.EndMessage>
+  <InfiniteScroll.Sentinel />
+</InfiniteScroll.Root>
+```
+
+Root props: `onLoadMore`, `hasMore`, `loading`, `disabled`, `rootMargin`. Built on `useIntersectionObserver`.
+Data attributes: `data-loading`, `data-has-more` on Root.
+
+### ScrollArea
+
+```tsx
+import { ScrollArea } from '@wire-ui/react'
+
+<ScrollArea.Root>
+  <ScrollArea.Viewport>{/* content */}</ScrollArea.Viewport>
+  <ScrollArea.Scrollbar orientation="vertical"><ScrollArea.Thumb /></ScrollArea.Scrollbar>
+</ScrollArea.Root>
+```
+
+Scrollbar props: `orientation` (`"vertical"` / `"horizontal"`), `forceMount`.
+
+### Virtualizer
+
+```tsx
+import { Virtualizer } from '@wire-ui/react'
+
+<Virtualizer.Root count={1000} estimateSize={44}>
+  {({ index }) => <div>Row {index}</div>}
+</Virtualizer.Root>
+```
+
+Root props: `count`, `estimateSize`, `overscan`, `orientation`, `getItemKey`. Render-prop children receive a `VirtualItem` (`{ index, start, size }`).
+
+### EmptyState
+
+```tsx
+import { EmptyState } from '@wire-ui/react'
+
+<EmptyState.Root>
+  <EmptyState.Media>🗂️</EmptyState.Media>
+  <EmptyState.Title>No projects yet</EmptyState.Title>
+  <EmptyState.Description>Create your first project.</EmptyState.Description>
+  <EmptyState.Actions><button>Create</button></EmptyState.Actions>
+</EmptyState.Root>
+```
+
+Parts: `Root` (`role="status"`), `Media` (`aria-hidden`), `Title`, `Description`, `Actions`.
+
+### Stat
+
+```tsx
+import { Stat } from '@wire-ui/react'
+
+<Stat.Root>
+  <Stat.Label>Revenue</Stat.Label>
+  <Stat.Value>$48,250</Stat.Value>
+  <Stat.Delta value={12.5}>▲ 12.5%</Stat.Delta>
+  <Stat.HelpText>vs last month</Stat.HelpText>
+  <Stat.Sparkline data={[12, 18, 15, 22, 28]} />
+</Stat.Root>
+```
+
+`Stat.Delta` infers direction from the sign of `value` (`data-direction`). `Stat.Sparkline` props: `data`, `width`, `height`, `strokeWidth`.
+
+### ColorPicker
+
+```tsx
+import { ColorPicker } from '@wire-ui/react'
+
+<ColorPicker.Root value={color} onChange={setColor}>
+  <ColorPicker.Area><ColorPicker.AreaThumb /></ColorPicker.Area>
+  <ColorPicker.Hue><ColorPicker.HueThumb /></ColorPicker.Hue>
+  <ColorPicker.Alpha><ColorPicker.AlphaThumb /></ColorPicker.Alpha>
+  <ColorPicker.Swatch />
+  <ColorPicker.Input />
+</ColorPicker.Root>
+```
+
+Root props: `value` / `defaultValue` (hex string), `onChange`, `alpha`.
+
+### Editable
+
+```tsx
+import { Editable } from '@wire-ui/react'
+
+<Editable.Root defaultValue="Click to edit" submitOnBlur>
+  <Editable.Preview />
+  <Editable.Input />
+</Editable.Root>
+```
+
+Root props: `value` / `defaultValue`, `editing`, `submitOnBlur`, `onSubmit`, `onCancel`, `onEdit`. Parts also include `Area`, `EditTrigger`, `SubmitTrigger`, `CancelTrigger`.
+
+### RichText
+
+```tsx
+import { RichText } from '@wire-ui/react'
+
+<RichText.Root defaultMode="split" parse={parse}>
+  <RichText.Toolbar>
+    <RichText.Action wrap="**">B</RichText.Action>
+    <RichText.Action insert={'\n- '}>List</RichText.Action>
+  </RichText.Toolbar>
+  <RichText.Editor />
+  <RichText.Preview />
+</RichText.Root>
+```
+
+Root props: `value`, `defaultMode` (`"edit"` / `"preview"` / `"split"`), `parse`, `components`. `RichText.Action` takes `wrap` (string | `[string, string]`) or `insert`. Built on `Markdown`.
+
+### Toggle
+
+```tsx
+import { Toggle, ToggleGroup } from '@wire-ui/react'
+
+<Toggle defaultPressed aria-label="Bold"><b>B</b></Toggle>
+
+<ToggleGroup.Root type="multiple" defaultValue={['bold']}>
+  <Toggle value="bold"><b>B</b></Toggle>
+  <Toggle value="italic"><i>I</i></Toggle>
+</ToggleGroup.Root>
+```
+
+`Toggle` props: `pressed` / `defaultPressed` / `onPressedChange` (`aria-pressed`, `data-state` `"on"` / `"off"`). `ToggleGroup.Root` props: `type` (`"single"` / `"multiple"`), `value` / `defaultValue` / `onValueChange`, `loop`, `orientation`.
+
+### Stepper
+
+```tsx
+import { Stepper } from '@wire-ui/react'
+
+<Stepper.Root count={3} defaultValue={0} linear>
+  <Stepper.List>
+    <Stepper.Item index={0}><Stepper.Trigger>Account</Stepper.Trigger><Stepper.Separator /></Stepper.Item>
+    <Stepper.Item index={1}><Stepper.Trigger>Review</Stepper.Trigger></Stepper.Item>
+  </Stepper.List>
+  <Stepper.Content index={0}>…</Stepper.Content>
+  <Stepper.PrevTrigger>Back</Stepper.PrevTrigger>
+  <Stepper.NextTrigger>Next</Stepper.NextTrigger>
+</Stepper.Root>
+```
+
+Root props: `count`, `value` / `defaultValue` / `onValueChange` (0-based), `orientation`, `linear` (blocks forward jumps). Prev/Next triggers auto-disable at boundaries.
+
+### Toolbar
+
+```tsx
+import { Toolbar } from '@wire-ui/react'
+
+<Toolbar.Root aria-label="Format">
+  <Toolbar.Toggle aria-label="Bold"><b>B</b></Toolbar.Toggle>
+  <Toolbar.Separator />
+  <Toolbar.Button>Align</Toolbar.Button>
+  <Toolbar.Link href="#">Help</Toolbar.Link>
+</Toolbar.Root>
+```
+
+`role="toolbar"` with roving focus + arrow-key navigation. Root props: `orientation`, `loop`. `Toolbar.Toggle`: `pressed` / `onPressedChange` (`data-state`).
+
+### Command
+
+```tsx
+import { Command } from '@wire-ui/react'
+
+<Command.Root shortcut="mod+k">
+  <Command.Input placeholder="Search…" />
+  <Command.List>
+    <Command.Empty>No results.</Command.Empty>
+    <Command.Group heading="Actions">
+      <Command.Item value="New File" keywords={['create']} onSelect={create}>New File</Command.Item>
+    </Command.Group>
+  </Command.List>
+</Command.Root>
+```
+
+Root props: `filter`, `loop`, `shortcut` (e.g. `mod+k`), `searchValue` / `onSearchChange`, `open` / `onOpenChange`. `Command.Item`: `value`, `keywords`, `onSelect`, `disabled` (`data-highlighted` on the active item).
+
+### HoverCard
+
+```tsx
+import { HoverCard } from '@wire-ui/react'
+
+<HoverCard.Root openDelay={200}>
+  <HoverCard.Trigger>@wire-ui</HoverCard.Trigger>
+  <HoverCard.Content side="bottom">Profile preview…</HoverCard.Content>
+</HoverCard.Root>
+```
+
+Root props: `openDelay`, `closeDelay`, `open` / `defaultOpen` / `onOpenChange`. `HoverCard.Content`: `side`, `sideOffset`, `forceMount`. (Hover/focus intent — for click menus use `Dropdown`, for tooltips use `Tooltip`.)
+
+### Sheet
+
+```tsx
+import { Sheet } from '@wire-ui/react'
+
+<Sheet.Root side="bottom" snapPoints={[0.4]} modal>
+  <Sheet.Trigger>Open</Sheet.Trigger>
+  <Sheet.Portal>
+    <Sheet.Overlay />
+    <Sheet.Content>
+      <Sheet.Handle />
+      <Sheet.Title>Bottom sheet</Sheet.Title>
+      <Sheet.Close>Done</Sheet.Close>
+    </Sheet.Content>
+  </Sheet.Portal>
+</Sheet.Root>
+```
+
+Root props: `side` (`"top"` / `"bottom"`), `snapPoints` (fraction or px), `modal`, `open` / `defaultOpen` / `onOpenChange`, `activeSnapPoint` / `onActiveSnapPointChange`. Drag-to-dismiss via `Sheet.Handle`.
+
+### Chat
+
+```tsx
+import { Chat } from '@wire-ui/react'
+
+<Chat.Root onSubmit={send} isStreaming={streaming}>
+  <Chat.List count={messages.length}>
+    {({ index }) => <Chat.Message role={messages[index].role}>{messages[index].text}</Chat.Message>}
+  </Chat.List>
+  <Chat.Composer>
+    <Chat.Input placeholder="Send a message…" />
+    <Chat.Send>Send</Chat.Send>
+  </Chat.Composer>
+</Chat.Root>
+```
+
+Root props: `value` / `defaultValue` / `onValueChange`, `onSubmit`, `isStreaming` (`data-streaming`). `Chat.List`: `count`, `stickToBottom`, `overscan` (virtualized). `Chat.Message`: `role`, `streaming` (`data-role`, `data-streaming`). `Chat.Input`: `submitOnEnter`, `autoResize`.
+
+### Citation
+
+```tsx
+import { Citation } from '@wire-ui/react'
+
+<Citation.Root sources={sources}>
+  <p>HTTP defines status codes<Citation.Ref for="rfc" />.</p>
+  <Citation.List />
+</Citation.Root>
+```
+
+Root props: `sources` (array of `{ id, title, url }`). `Citation.Ref` takes `for` (source id), renders `role="doc-noteref"`; `Citation.List` renders footnotes (`role="doc-endnote"`). Auto-numbered with `data-index` on both.
+
+### CodeBlock
+
+```tsx
+import { CodeBlock } from '@wire-ui/react'
+
+<CodeBlock.Root code={src} language="js" startLine={1} highlightLines={[2]}>
+  <CodeBlock.CopyButton>{({ copied }) => (copied ? 'Copied!' : 'Copy')}</CodeBlock.CopyButton>
+  <CodeBlock.Code>
+    <CodeBlock.Lines>{({ line }) => <span>{line.number}: {line.content}</span>}</CodeBlock.Lines>
+  </CodeBlock.Code>
+</CodeBlock.Root>
+```
+
+Root props: `code`, `language`, `startLine`, `highlightLines`, `copyResetAfter`. `CodeBlock.Lines` render-prop carries `{ number, content, diff, highlighted }`; `CodeBlock.CopyButton` carries `{ copied }`. `data-language` on Root and `<pre>`.
+
+### Diff
+
+```tsx
+import { Diff } from '@wire-ui/react'
+
+<Diff.Root oldValue={before} newValue={after}>
+  <Diff.Stats>{({ additions, deletions }) => <span>+{additions} −{deletions}</span>}</Diff.Stats>
+  <Diff.Unified>{({ line }) => <div>{line.content}</div>}</Diff.Unified>
+</Diff.Root>
+```
+
+Root props: `oldValue`, `newValue` (LCS-based). `Diff.Unified` / `Diff.Split` render lines with `type` (`equal` / `insert` / `delete`) and 1-based `oldLine` / `newLine`. `Diff.Stats` carries `{ additions, deletions }`.
+
+### Markdown
+
+```tsx
+import { Markdown } from '@wire-ui/react'
+
+<Markdown content={text} parse={parse} components={{ a: MyLink }} />
+// or pre-parsed:
+<Markdown nodes={nodes} />
+```
+
+Parser-agnostic. Props: `nodes` (pre-parsed mdast tree) or `content` + `parse`, plus a `components` override map keyed by node type. Default renderers emit semantic HTML.
+
+### Mention
+
+```tsx
+import { Mention } from '@wire-ui/react'
+
+<Mention.Root options={people}>
+  <Mention.Input placeholder="Type @ to mention…" />
+  <Mention.Content>
+    <Mention.Items>{({ option }) => <div>{option.label}</div>}</Mention.Items>
+    <Mention.Empty>No matches</Mention.Empty>
+  </Mention.Content>
+</Mention.Root>
+```
+
+Root props: `options`, `trigger` (default `@`), `filter`, `appendSpace`, `onSelect`, `value` / `defaultValue`. `Mention.Input` is a textarea; `Mention.Items` render-prop carries `{ option, active, index }`.
+
+### Typewriter
+
+```tsx
+import { Typewriter } from '@wire-ui/react'
+
+<Typewriter.Root text="Composing a reply…" speed={45}>
+  <Typewriter.Text />
+  <Typewriter.Cursor>▋</Typewriter.Cursor>
+</Typewriter.Root>
+```
+
+Root props: `text` (streaming-friendly — appends as it grows), `granularity` (`"char"` / `"word"`), `speed`, `startDelay`, `autoStart`, `loop` / `loopDelay`, `onComplete`. Render-prop state: `{ displayed, isTyping, isDone, progress }`. Respects `prefers-reduced-motion`.
+
 ## Hooks
 
 `@wire-ui/react` exports 33 hooks. Vue exposes the same APIs as `useX` composables; Solid exposes them as `createX` primitives. The list below uses React names.
@@ -745,15 +1085,32 @@ const mergedRef = useMergedRefs(localRef, forwardedRef)
 - Need a search with results? → `Search`
 - Need multi-select? → `Checkbox`
 - Need single-select from visible options? → `Radio`
-- Need an on/off toggle? → `Switch`
+- Need an on/off toggle (form value)? → `Switch`
+- Need a pressed/unpressed button (e.g. toolbar formatting)? → `Toggle` / `ToggleGroup`
 - Need a star rating? → `Rating`
+- Need a color value? → `ColorPicker`
+- Need inline edit-in-place? → `Editable`
+- Need a Markdown editor? → `RichText`
+- Need a command palette (Cmd-K)? → `Command`
 
 ### Choosing an overlay
 
 - Need a centered dialog? → `Modal`
 - Need a side panel? → `Drawer`
+- Need a bottom/top sheet with snap points and drag-to-dismiss? → `Sheet`
 - Need a menu from a trigger? → `Dropdown`
+- Need hover-intent rich content? → `HoverCard` (use `Tooltip` for plain text labels)
 - Need hover/focus info? → `Tooltip`
+
+### Choosing an AI / content component
+
+- Streaming chat UI? → `Chat`
+- Render Markdown? → `Markdown` (editable? → `RichText`)
+- Display source code with copy / line numbers? → `CodeBlock`
+- Show a text diff? → `Diff`
+- Footnote-style references? → `Citation`
+- `@`-mention autocomplete? → `Mention`
+- Typing / streaming text animation? → `Typewriter`
 
 ### Styling approach
 

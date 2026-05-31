@@ -908,6 +908,28 @@ Props: orientation ("horizontal" | "vertical"), decorative (boolean).
 
 ---
 
+### InfiniteScroll
+
+Sentinel-based load-more primitive built on `useIntersectionObserver`. Fires `onLoadMore` when the sentinel enters view while `hasMore && !loading && !disabled`, with a configurable `rootMargin`.
+
+```tsx
+import { InfiniteScroll } from '@wire-ui/react'
+
+<InfiniteScroll.Root onLoadMore={loadMore} hasMore={hasMore} loading={loading}>
+  <ul>
+    {items.map((i) => <li key={i}>Item #{i + 1}</li>)}
+  </ul>
+  <InfiniteScroll.Loader>Loading more…</InfiniteScroll.Loader>
+  <InfiniteScroll.EndMessage>You've reached the end</InfiniteScroll.EndMessage>
+  <InfiniteScroll.Sentinel />
+</InfiniteScroll.Root>
+```
+
+Props (Root): onLoadMore (fn), hasMore (boolean), loading (boolean), disabled (boolean), rootMargin (string).
+Data attributes: data-loading, data-has-more on Root.
+
+---
+
 ### List
 
 Ordered or unordered list container. Variant attributes used as CSS hooks.
@@ -946,6 +968,28 @@ Data attributes: data-orientation on Group/Panel/Handle, data-panel on Panel, da
 
 ---
 
+### ScrollArea
+
+Scroll container with a custom, styleable scrollbar. Independent vertical/horizontal scrollbars with draggable thumbs and live `metrics` via ResizeObserver; `forceMount` renders bars without overflow.
+
+```tsx
+import { ScrollArea } from '@wire-ui/react'
+
+<ScrollArea.Root>
+  <ScrollArea.Viewport>
+    {/* long content */}
+  </ScrollArea.Viewport>
+  <ScrollArea.Scrollbar orientation="vertical">
+    <ScrollArea.Thumb />
+  </ScrollArea.Scrollbar>
+</ScrollArea.Root>
+```
+
+Props (Scrollbar): orientation ("vertical" | "horizontal"), forceMount (boolean).
+Data attributes: data-orientation on Scrollbar.
+
+---
+
 ### Skeleton
 
 A loading placeholder that swaps in real children when `loading` is false; announces itself as a polite live region while loading.
@@ -962,6 +1006,23 @@ import { Skeleton } from '@wire-ui/react'
 
 Props (Root): loading (boolean, default true), aria-label (string, default "Loading"), ...HTMLAttributes.
 Data attributes: data-loading (always present on the placeholder).
+
+---
+
+### Virtualizer
+
+Windowing primitive for large lists. Configurable `count`, `estimateSize`, `overscan`, and orientation, with dynamic per-item measurement via ResizeObserver and stable `getItemKey`. Render-prop children receive a `VirtualItem`.
+
+```tsx
+import { Virtualizer } from '@wire-ui/react'
+
+<Virtualizer.Root count={1000} estimateSize={44}>
+  {({ index }) => <div>Item number {index}</div>}
+</Virtualizer.Root>
+```
+
+Props (Root): count (number), estimateSize (number | fn), overscan (number), orientation ("vertical" | "horizontal"), getItemKey (fn).
+Data attributes: data-index on items.
 
 ---
 
@@ -1002,6 +1063,30 @@ import { Badge } from '@wire-ui/react'
 ```
 
 Props: count (number). Data attributes: data-count (raw number value).
+
+---
+
+### EmptyState
+
+Placeholder layout for empty / zero-data views. Root carries `role="status"`; media is `aria-hidden`.
+
+```tsx
+import { EmptyState } from '@wire-ui/react'
+
+<EmptyState.Root>
+  <EmptyState.Media>🗂️</EmptyState.Media>
+  <EmptyState.Title>No projects yet</EmptyState.Title>
+  <EmptyState.Description>
+    Create your first project to get started.
+  </EmptyState.Description>
+  <EmptyState.Actions>
+    <button>Create project</button>
+  </EmptyState.Actions>
+</EmptyState.Root>
+```
+
+Sub-components: Root, Media, Title, Description, Actions.
+Data attributes: role="status" on Root, aria-hidden on Media.
 
 ---
 
@@ -1059,6 +1144,28 @@ import { Spinner } from '@wire-ui/react'
 
 Props (Root): label (string, default "Loading"), decorative (boolean, default true), ...HTMLAttributes.
 Data attributes: none (purely semantic — uses role="status" + aria-live="polite").
+
+---
+
+### Stat
+
+KPI / metric display with label, value, delta (direction auto-inferred from sign), help text, and an SVG sparkline. Root carries `role="group"`.
+
+```tsx
+import { Stat } from '@wire-ui/react'
+
+<Stat.Root>
+  <Stat.Label>Monthly revenue</Stat.Label>
+  <Stat.Value>$48,250</Stat.Value>
+  <Stat.Delta value={12.5}>▲ 12.5%</Stat.Delta>
+  <Stat.HelpText>vs. previous month</Stat.HelpText>
+  <Stat.Sparkline data={[12, 18, 15, 22, 19, 28, 24, 30]} />
+</Stat.Root>
+```
+
+Props (Delta): value (number).
+Props (Sparkline): data (number[]), width (number), height (number), strokeWidth (number).
+Data attributes: data-direction on Delta.
 
 ---
 
@@ -1141,6 +1248,32 @@ Props (Group): value (array), onChange (fn). Data attributes: data-checked on It
 
 ---
 
+### ColorPicker
+
+HSVA color picker with a pointer-drag saturation/value area, hue and alpha tracks, a controlled value as a hex string (`value` / `defaultValue` / `onChange`), and a toggleable `alpha` channel.
+
+```tsx
+import { ColorPicker } from '@wire-ui/react'
+
+<ColorPicker.Root value={color} onChange={setColor}>
+  <ColorPicker.Area>
+    <ColorPicker.AreaThumb />
+  </ColorPicker.Area>
+  <ColorPicker.Swatch />
+  <ColorPicker.Hue>
+    <ColorPicker.HueThumb />
+  </ColorPicker.Hue>
+  <ColorPicker.Alpha>
+    <ColorPicker.AlphaThumb />
+  </ColorPicker.Alpha>
+  <ColorPicker.Input />
+</ColorPicker.Root>
+```
+
+Props (Root): value (hex string), defaultValue (hex string), onChange (fn), alpha (boolean).
+
+---
+
 ### Combobox
 
 Filterable autocomplete with full keyboard navigation, ARIA listbox semantics, and a render-prop items API.
@@ -1192,6 +1325,24 @@ import { Calendar, DatePicker } from '@wire-ui/react'
 Props (Root): value/defaultValue/onChange (Date | null), open/defaultOpen/onOpenChange, disabled (boolean), closeOnSelect (boolean, default true), locale (string), formatOptions (Intl.DateTimeFormatOptions).
 Props (Value): placeholder (ReactNode), children ((date, formatted) => ReactNode).
 Data attributes: data-state ("open" | "closed") on Root/Trigger, data-disabled on Root, data-placeholder on Value when empty.
+
+---
+
+### Editable
+
+Inline editable field that toggles between preview and edit modes with a draft buffer, `submitOnBlur`, and `onSubmit` / `onCancel` / `onEdit` callbacks. Controlled value and editing state.
+
+```tsx
+import { Editable } from '@wire-ui/react'
+
+<Editable.Root defaultValue="Click to edit me" placeholder="Enter some text…">
+  <Editable.Preview />
+  <Editable.Input />
+</Editable.Root>
+```
+
+Props (Root): value (string), defaultValue (string), placeholder (string), editing (boolean), submitOnBlur (boolean), onSubmit (fn), onCancel (fn), onEdit (fn).
+Sub-components: Preview, Input, Area, EditTrigger, SubmitTrigger, CancelTrigger.
 
 ---
 
@@ -1358,6 +1509,31 @@ Data attributes: data-checked on Item/Indicator when selected.
 
 ---
 
+### RichText
+
+Slot-based Markdown editor scaffold built on the Markdown renderer with `edit` / `preview` / `split` modes, selection-wrapping and text-insertion actions, and a controlled Markdown `value`.
+
+```tsx
+import { RichText } from '@wire-ui/react'
+
+<RichText.Root defaultMode="split" parse={parse}>
+  <RichText.Toolbar>
+    <RichText.Action wrap="**">B</RichText.Action>
+    <RichText.Action wrap="_">I</RichText.Action>
+    <RichText.Action wrap={['[', '](url)']}>Link</RichText.Action>
+    <RichText.Action insert={'\n- '}>List</RichText.Action>
+  </RichText.Toolbar>
+  <RichText.Editor placeholder="Write some markdown…" />
+  <RichText.Preview />
+</RichText.Root>
+```
+
+Props (Root): value (string), defaultMode ("edit" | "preview" | "split"), parse (fn), components (map).
+Props (Action): wrap (string | [string, string]), insert (string).
+Sub-components: Toolbar, Editor, Preview.
+
+---
+
 ### Select
 
 Accessible select menu with groups, separators, and a fully custom trigger.
@@ -1386,7 +1562,7 @@ import { Select } from '@wire-ui/react'
 
 ### Slider
 
-Single-value or two-thumb range slider with pointer drag and full keyboard support; horizontal/vertical and optionally inverted. (React only)
+Single-value or two-thumb range slider with pointer drag and full keyboard support; horizontal/vertical and optionally inverted.
 
 ```tsx
 import { Slider } from '@wire-ui/react'
@@ -1482,6 +1658,30 @@ import { Textarea } from '@wire-ui/react'
   <Textarea.Error className="text-sm text-red-500 mt-1" />
 </Textarea.Root>
 ```
+
+---
+
+### Toggle
+
+Two-state pressable button with `pressed` / `defaultPressed` / `onPressedChange`, `aria-pressed`, and `data-state` ("on" | "off"). Ships with **ToggleGroup** for single / multiple selection with roving focus and arrow-key navigation.
+
+```tsx
+import { Toggle, ToggleGroup } from '@wire-ui/react'
+
+// Standalone
+<Toggle defaultPressed aria-label="Toggle italic"><i>I</i></Toggle>
+
+// Grouped (multiple selection)
+<ToggleGroup.Root type="multiple" defaultValue={['bold']} aria-label="Text formatting">
+  <Toggle value="bold" aria-label="Bold"><b>B</b></Toggle>
+  <Toggle value="italic" aria-label="Italic"><i>I</i></Toggle>
+  <Toggle value="underline" aria-label="Underline">U</Toggle>
+</ToggleGroup.Root>
+```
+
+Props (Toggle): pressed (boolean), defaultPressed (boolean), onPressedChange (fn).
+Props (ToggleGroup.Root): type ("single" | "multiple"), value, defaultValue, onValueChange (fn), loop (boolean), orientation ("horizontal" | "vertical").
+Data attributes: data-state ("on" | "off") on Toggle.
 
 ---
 
@@ -1604,9 +1804,47 @@ Data attributes: data-active on current Item (also `aria-current="page"`), data-
 
 ---
 
+### Stepper
+
+Multi-step / wizard flow with `count`, a controlled/uncontrolled 0-based active step, horizontal or vertical orientation, and `linear` mode that blocks forward jumps. Per-step state is active / completed / inactive.
+
+```tsx
+import { Stepper } from '@wire-ui/react'
+
+<Stepper.Root count={3} defaultValue={0}>
+  <Stepper.List>
+    <Stepper.Item index={0}>
+      <Stepper.Trigger>Account</Stepper.Trigger>
+      <Stepper.Separator />
+    </Stepper.Item>
+    <Stepper.Item index={1}>
+      <Stepper.Trigger>Profile</Stepper.Trigger>
+      <Stepper.Separator />
+    </Stepper.Item>
+    <Stepper.Item index={2}>
+      <Stepper.Trigger>Review</Stepper.Trigger>
+    </Stepper.Item>
+  </Stepper.List>
+
+  <Stepper.Content index={0}>Account step</Stepper.Content>
+  <Stepper.Content index={1}>Profile step</Stepper.Content>
+  <Stepper.Content index={2}>Review step</Stepper.Content>
+
+  <Stepper.PrevTrigger>Back</Stepper.PrevTrigger>
+  <Stepper.NextTrigger>Next</Stepper.NextTrigger>
+</Stepper.Root>
+```
+
+Props (Root): count (number), value (number), defaultValue (number), onValueChange (fn), orientation ("horizontal" | "vertical"), linear (boolean).
+Props (Item): index (number).
+Props (Content): index (number), forceMount (boolean).
+Data attributes: data-orientation on Root; per-step active/completed/inactive state; PrevTrigger/NextTrigger auto-disable at boundaries.
+
+---
+
 ### Tabs
 
-Accessible tabs with horizontal/vertical orientation, automatic or manual activation, full keyboard navigation (Arrows, Home, End), and optional `forceMount` for state-preserving panels. (React only)
+Accessible tabs with horizontal/vertical orientation, automatic or manual activation, full keyboard navigation (Arrows, Home, End), and optional `forceMount` for state-preserving panels.
 
 ```tsx
 import { Tabs } from '@wire-ui/react'
@@ -1625,6 +1863,28 @@ Props (Root): value/defaultValue (string), onChange, orientation ("horizontal" |
 Props (Trigger): value (string, required), disabled (boolean).
 Props (Content): value (string, required), forceMount (boolean).
 Data attributes: data-state ("active" | "inactive") on Trigger/Content, data-orientation on Root/List/Trigger/Content, data-disabled on Trigger.
+
+---
+
+### Toolbar
+
+Accessible `role="toolbar"` container with roving focus and arrow-key navigation, horizontal or vertical orientation, and optional looping. Includes a pressable `Toggle` item.
+
+```tsx
+import { Toolbar } from '@wire-ui/react'
+
+<Toolbar.Root aria-label="Text formatting">
+  <Toolbar.Toggle aria-label="Bold"><b>B</b></Toolbar.Toggle>
+  <Toolbar.Toggle aria-label="Italic"><i>I</i></Toolbar.Toggle>
+  <Toolbar.Separator />
+  <Toolbar.Button aria-label="Align left">⬅</Toolbar.Button>
+  <Toolbar.Link href="#">Help</Toolbar.Link>
+</Toolbar.Root>
+```
+
+Props (Root): orientation ("horizontal" | "vertical"), loop (boolean).
+Props (Toggle): pressed (boolean), onPressedChange (fn).
+Data attributes: data-state on Toggle.
 
 ---
 
@@ -1663,6 +1923,37 @@ Note: nest the toggle button under `data-tree-toggle` and stop propagation so ro
 ---
 
 ### Overlays
+
+### Command
+
+Command palette with fuzzy `filter`, roving arrow-key navigation (`loop`), an optional global `shortcut` (e.g. `mod+k`), controlled search (`searchValue` / `onSearchChange`) and open state.
+
+```tsx
+import { Command } from '@wire-ui/react'
+
+<Command.Root>
+  <Command.Input placeholder="Type a command or search…" />
+  <Command.List>
+    <Command.Empty>No results found.</Command.Empty>
+    <Command.Group heading="Suggestions">
+      <Command.Item value="New File" keywords={['create']}>New File</Command.Item>
+      <Command.Item value="Search Docs">Search Docs</Command.Item>
+    </Command.Group>
+    <Command.Separator />
+    <Command.Group heading="Settings">
+      <Command.Item value="Profile">Profile</Command.Item>
+      <Command.Item value="Billing" disabled>Billing</Command.Item>
+    </Command.Group>
+  </Command.List>
+</Command.Root>
+```
+
+Props (Root): filter (fn), loop (boolean), shortcut (string), searchValue (string), onSearchChange (fn), open (boolean), onOpenChange (fn).
+Props (Group): heading (string).
+Props (Item): value (string), keywords (string[]), onSelect (fn), disabled (boolean).
+Data attributes: data-highlighted on the active Item.
+
+---
 
 ### ContextMenu
 
@@ -1735,6 +2026,26 @@ Data attributes: data-state ("open" | "closed") on Menu.
 
 ---
 
+### HoverCard
+
+Richer hover-triggered floating card with configurable open/close delays and side placement. Supports `forceMount` and controlled/uncontrolled open state.
+
+```tsx
+import { HoverCard } from '@wire-ui/react'
+
+<HoverCard.Root>
+  <HoverCard.Trigger>@wire-ui</HoverCard.Trigger>
+  <HoverCard.Content side="bottom">
+    Headless, AI-native component primitives with zero CSS.
+  </HoverCard.Content>
+</HoverCard.Root>
+```
+
+Props (Root): openDelay (number), closeDelay (number), open (boolean), defaultOpen (boolean), onOpenChange (fn).
+Props (Content): side ("top" | "right" | "bottom" | "left"), sideOffset (number), forceMount (boolean).
+
+---
+
 ### Modal
 
 Compound modal dialog. Renders into a portal, closes on overlay click or Escape key.
@@ -1765,7 +2076,7 @@ Data attributes: data-state ("open" | "closed") on Panel, Backdrop.
 
 ### Popover
 
-Floating panel anchored to a trigger; closes on outside click or Escape, supports `forceMount` for animations, and exposes `data-side`/`data-align` for position-aware styling. (React only — caller positions Content manually.)
+Floating panel anchored to a trigger; closes on outside click or Escape, supports `forceMount` for animations, and exposes `data-side`/`data-align` for position-aware styling. (Caller positions Content manually.)
 
 ```tsx
 import { Popover } from '@wire-ui/react'
@@ -1813,6 +2124,32 @@ import { Search } from '@wire-ui/react'
 ```
 
 Data attributes: data-loading on Root, data-highlighted on the keyboard-focused Item.
+
+---
+
+### Sheet
+
+Sliding panel with `side="top" | "bottom"`, `snapPoints` (viewport-fraction or px), and drag-to-dismiss via a handle. Optional `modal` backdrop with focus trap and scroll lock; controlled/uncontrolled open and active snap point.
+
+```tsx
+import { Sheet } from '@wire-ui/react'
+
+<Sheet.Root snapPoints={[0.4]}>
+  <Sheet.Trigger>Open Sheet</Sheet.Trigger>
+  <Sheet.Portal>
+    <Sheet.Overlay />
+    <Sheet.Content>
+      <Sheet.Handle />
+      <Sheet.Title>Bottom sheet</Sheet.Title>
+      <Sheet.Description>Slides up from the bottom edge.</Sheet.Description>
+      <Sheet.Close>Done</Sheet.Close>
+    </Sheet.Content>
+  </Sheet.Portal>
+</Sheet.Root>
+```
+
+Props (Root): side ("top" | "bottom"), snapPoints (number[]), modal (boolean), open (boolean), defaultOpen (boolean), onOpenChange (fn), activeSnapPoint, onActiveSnapPointChange (fn).
+Sub-components: Root, Trigger, Portal, Overlay, Content, Handle, Title, Description, Close.
 
 ---
 
@@ -1902,6 +2239,37 @@ Data attributes: data-status ("loading" | "loaded" | "error") on Avatar.Image.
 
 ---
 
+### Carousel
+
+Snap-scrolling carousel with horizontal or vertical orientation, optional looping, and arrow-key navigation. Active index is controlled or uncontrolled.
+
+```tsx
+import { Carousel } from '@wire-ui/react'
+
+<Carousel.Root>
+  <Carousel.Viewport>
+    <Carousel.Content>
+      <Carousel.Slide>Slide 1</Carousel.Slide>
+      <Carousel.Slide>Slide 2</Carousel.Slide>
+      <Carousel.Slide>Slide 3</Carousel.Slide>
+    </Carousel.Content>
+  </Carousel.Viewport>
+  <Carousel.Previous>‹</Carousel.Previous>
+  <Carousel.Next>›</Carousel.Next>
+  <Carousel.Indicators>
+    {({ index, selected, scrollTo }) => (
+      <button key={index} onClick={scrollTo} aria-current={selected} />
+    )}
+  </Carousel.Indicators>
+</Carousel.Root>
+```
+
+Props (Root): orientation ("horizontal" | "vertical"), loop (boolean), defaultIndex (number), index (number), onIndexChange (fn).
+Props (Indicators): children (render-prop with { index, selected, scrollTo }).
+Data attributes: data-orientation on Root.
+
+---
+
 ### Icon
 
 Renders an SVG from a consumer-supplied icon map. Wire UI ships no SVG assets — you bring your own.
@@ -1955,3 +2323,190 @@ import { Timeago } from '@wire-ui/react'
 ```
 
 Props: date (Date | string | number), isDuration (boolean), format (string), updateInterval (number ms).
+
+---
+
+### AI
+
+### Chat
+
+Streaming-aware chat surface with a virtualized message list, auto-growing composer, and controlled/uncontrolled input. `isStreaming` toggles `data-streaming`; the list supports `stickToBottom` and `overscan`.
+
+```tsx
+import { Chat } from '@wire-ui/react'
+
+<Chat.Root onSubmit={send}>
+  <Chat.List count={messages.length}>
+    {({ index }) => (
+      <Chat.Message role={messages[index].role}>
+        {messages[index].text}
+      </Chat.Message>
+    )}
+  </Chat.List>
+  <Chat.Composer>
+    <Chat.Input placeholder="Send a message…" />
+    <Chat.Send>Send</Chat.Send>
+  </Chat.Composer>
+</Chat.Root>
+```
+
+Props (Root): value (string), defaultValue (string), onValueChange (fn), onSubmit (fn), isStreaming (boolean).
+Props (List): count (number), stickToBottom (boolean), overscan (number).
+Props (Message): role (string), streaming (boolean).
+Props (Input): submitOnEnter (boolean), autoResize (boolean).
+Data attributes: data-streaming on Root, data-role and data-streaming on Message.
+
+---
+
+### Citation
+
+Footnote-style references with auto-numbering and bidirectional anchors generated from a `sources` array. Refs render `role="doc-noteref"` and footnotes `role="doc-endnote"`.
+
+```tsx
+import { Citation } from '@wire-ui/react'
+
+const sources = [
+  { id: 'rfc', title: 'RFC 9110', url: 'https://www.rfc-editor.org/rfc/rfc9110' },
+  { id: 'mdn', title: 'MDN — HTTP', url: 'https://developer.mozilla.org/' },
+]
+
+<Citation.Root sources={sources}>
+  <p>
+    A 200 means success<Citation.Ref for="rfc" />. Codes group into five classes
+    <Citation.Ref for="mdn" />.
+  </p>
+  <Citation.List />
+</Citation.Root>
+```
+
+Props (Root): sources (array of { id, title, url }).
+Props (Ref): for (source id) — render-prop or default `<sup>`.
+Props (List): render-prop over sources `{ index, source }`.
+Data attributes: data-index on Ref and List footnotes.
+
+---
+
+### CodeBlock
+
+Code display with line numbers (`startLine`), per-line `diff` markers, `highlightLines`, and copy-to-clipboard (`copyResetAfter`).
+
+```tsx
+import { CodeBlock } from '@wire-ui/react'
+
+<CodeBlock.Root code={source} language="js">
+  <CodeBlock.CopyButton>
+    {({ copied }) => (copied ? 'Copied!' : 'Copy')}
+  </CodeBlock.CopyButton>
+  <CodeBlock.Code>
+    <CodeBlock.Lines>
+      {({ line }) => (
+        <>
+          <span>{line.number}</span>
+          {line.content}
+        </>
+      )}
+    </CodeBlock.Lines>
+  </CodeBlock.Code>
+</CodeBlock.Root>
+```
+
+Props (Root): code (string), language (string), startLine (number), highlightLines (number[]), copyResetAfter (number).
+Props (Lines): render-prop with `{ number, content, diff, highlighted }`.
+Props (CopyButton): render-prop with `{ copied }`.
+Data attributes: data-language on Root and `<pre>`.
+
+---
+
+### Diff
+
+Line-by-line text diff (LCS-based) with unified and side-by-side views from `oldValue` / `newValue`. Each line exposes `type` (`equal` / `insert` / `delete`) with 1-based `oldLine` / `newLine`.
+
+```tsx
+import { Diff } from '@wire-ui/react'
+
+<Diff.Root oldValue={before} newValue={after}>
+  <Diff.Stats>
+    {({ additions, deletions }) => (
+      <div>+{additions} −{deletions}</div>
+    )}
+  </Diff.Stats>
+  <Diff.Unified>
+    {({ line }) => (
+      <div>{line.oldLine} {line.newLine} {line.content}</div>
+    )}
+  </Diff.Unified>
+</Diff.Root>
+```
+
+Props (Root): oldValue (string), newValue (string).
+Props (Unified): render-prop with `{ line }` (`type`, `oldLine`, `newLine`, `content`).
+Props (Split): paired-rows render-prop.
+Props (Stats): render-prop with `{ additions, deletions }`.
+
+---
+
+### Markdown
+
+Parser-agnostic Markdown renderer that accepts a pre-parsed `nodes` tree or raw `content` + `parse` function, with a `components` override map keyed by mdast node type. Default renderers emit semantic HTML for paragraphs, headings, lists, code, links, images, blockquotes, and inline marks.
+
+```tsx
+import { Markdown } from '@wire-ui/react'
+import type { MarkdownNode } from '@wire-ui/react'
+
+const nodes: MarkdownNode[] = [
+  { type: 'heading', depth: 2, children: [{ type: 'text', value: 'Wire UI' }] },
+  { type: 'paragraph', children: [{ type: 'text', value: 'A headless library.' }] },
+]
+
+<Markdown nodes={nodes} />
+```
+
+Props (Root): nodes (MarkdownNode[]), content (string), parse (fn), components (override map keyed by node type).
+
+---
+
+### Mention
+
+Inline `@`-mention input with caret-aware suggestion detection over an `options` list, custom `trigger` and `filter`, `appendSpace`, and `onSelect`. Controlled or uncontrolled value.
+
+```tsx
+import { Mention } from '@wire-ui/react'
+
+const people = [
+  { id: 1, label: 'Ada Lovelace' },
+  { id: 2, label: 'Alan Turing' },
+  { id: 3, label: 'Grace Hopper' },
+]
+
+<Mention.Root options={people} className="relative">
+  <Mention.Input placeholder="Type @ to mention someone…" />
+  <Mention.Content>
+    <Mention.Items>
+      {({ option }) => <div>{option.label}</div>}
+    </Mention.Items>
+    <Mention.Empty>No people found</Mention.Empty>
+  </Mention.Content>
+</Mention.Root>
+```
+
+Props (Root): options (array), trigger (string), filter (fn), appendSpace (boolean), onSelect (fn), value (string), defaultValue (string).
+Props (Input): renders a textarea.
+Props (Items): render-prop with `{ option, active, index }`.
+
+---
+
+### Typewriter
+
+Token-by-token text reveal with `char` / `word` granularity, configurable `speed`, `startDelay`, `autoStart`, `loop` / `loopDelay`, streaming-friendly growing `text`, and `onComplete`. Respects `prefers-reduced-motion` (reveals instantly).
+
+```tsx
+import { Typewriter } from '@wire-ui/react'
+
+<Typewriter.Root text="Composing a reply…" speed={45}>
+  <Typewriter.Text />
+  <Typewriter.Cursor keepMounted>▋</Typewriter.Cursor>
+</Typewriter.Root>
+```
+
+Props (Root): text (string), granularity ("char" | "word"), speed (number), startDelay (number), autoStart (boolean), loop (boolean), loopDelay (number), onComplete (fn).
+Render-prop state: `{ displayed, isTyping, isDone, progress }`.
