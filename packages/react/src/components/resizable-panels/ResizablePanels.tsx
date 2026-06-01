@@ -93,6 +93,9 @@ const Group = React.forwardRef<HTMLDivElement, PanelGroupProps>(
 
 		// Compute the active sizes for the current panel count.
 		const sizes = useMemo(() => {
+			// Reading the panel registry during render is intentional: `registryVersion`
+			// bumps on every panel mutation, forcing this memo to recompute.
+			/* eslint-disable react-hooks/refs */
 			const panels = panelsRef.current;
 			if (panels.length === 0) return [] as number[];
 			if (isControlled && controlledSizes && controlledSizes.length === panels.length) {
@@ -103,6 +106,7 @@ const Group = React.forwardRef<HTMLDivElement, PanelGroupProps>(
 			}
 			// Fallback: distribute defaults until uncontrolled state catches up.
 			return distributeRemaining(panels.map((p) => p.config));
+			/* eslint-enable react-hooks/refs */
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, [registryVersion, isControlled, controlledSizes, uncontrolled]);
 
@@ -121,7 +125,7 @@ const Group = React.forwardRef<HTMLDivElement, PanelGroupProps>(
 				if (!isControlled) setUncontrolled(next);
 				onSizesChange?.(next);
 			},
-			[isControlled, onSizesChange],
+			[isControlled, onSizesChange, setUncontrolled],
 		);
 
 		// --- Registry APIs (panels + handles) -----------------------------------

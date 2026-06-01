@@ -105,7 +105,11 @@ const Root = React.forwardRef<HTMLDivElement, CommandRootProps>(
 
 		const visible = useMemo(() => {
 			const result: string[] = [];
-			for (const [value, entry] of registryRef.current) {
+			// Reading the item registry during render is intentional: `version` bumps on
+			// every register/unregister, forcing this memo to recompute.
+			// eslint-disable-next-line react-hooks/refs
+			const registry = registryRef.current;
+			for (const [value, entry] of registry) {
 				if (filter(value, query, entry.keywords)) result.push(value);
 			}
 			return result;

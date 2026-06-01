@@ -112,11 +112,16 @@ const List = React.forwardRef<HTMLDivElement, ChatListProps>(
 		const offsets = useMemo(() => {
 			const arr = new Array<number>(count + 1);
 			arr[0] = 0;
+			// Reading the measurement registry during render is intentional: `version`
+			// bumps whenever a measurement changes, forcing this memo to recompute.
+			/* eslint-disable react-hooks/refs */
+			const measurements = measuredRef.current;
 			for (let i = 0; i < count; i++) {
-				const measured = measuredRef.current.get(i);
+				const measured = measurements.get(i);
 				const h = measured && measured > 0 ? measured : estimateItemHeight;
 				arr[i + 1] = arr[i] + h;
 			}
+			/* eslint-enable react-hooks/refs */
 			return arr;
 			// `version` bumps whenever a measurement changes.
 			// eslint-disable-next-line react-hooks/exhaustive-deps

@@ -120,12 +120,15 @@ const Field = React.forwardRef<HTMLInputElement, NumberInputFieldProps>(
 		const ctx = useNumberInputContext();
 		const [text, setText] = useState<string>(() => (ctx.value === null ? '' : String(ctx.value)));
 
-		// Sync visible text whenever the committed value changes. (Typing alone
-		// doesn't change ctx.value — the field commits on blur — so this won't
-		// stomp on in-progress user input.)
-		React.useEffect(() => {
+		// Sync visible text whenever the committed value changes, adjusting state
+		// during render rather than in an effect. (Typing alone doesn't change
+		// ctx.value — the field commits on blur — so this won't stomp on in-progress
+		// user input.) See https://react.dev/reference/react/useState#storing-information-from-previous-renders
+		const [prevValue, setPrevValue] = useState(ctx.value);
+		if (ctx.value !== prevValue) {
+			setPrevValue(ctx.value);
 			setText(ctx.value === null ? '' : String(ctx.value));
-		}, [ctx.value]);
+		}
 
 		const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 			onKeyDown?.(e);

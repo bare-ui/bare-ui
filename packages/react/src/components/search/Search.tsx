@@ -210,6 +210,9 @@ const Item = React.forwardRef<HTMLDivElement, SearchItemProps>(({ option, childr
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	// Reading the registered index during render is intentional: the index is assigned
+	// once on mount and the parent re-renders all items when highlightedIndex changes.
+	// eslint-disable-next-line react-hooks/refs
 	const isHighlighted = ctx.highlightedIndex === indexRef.current;
 
 	const handleKeyDown = (e: React.KeyboardEvent) => {

@@ -32,8 +32,9 @@ export function useMergedRefs<T>(...refs: AnyRef<T>[]): RefCallback<T> {
 			for (const ref of refs) assignRef(ref, value);
 		},
 		// Each ref identity is stable across renders in normal usage; depending on the
-		// spread keeps the callback stable when those identities don't change.
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+		// spread keeps the callback stable when those identities don't change. The deps
+		// are a variadic rest param rather than an array literal, which is intentional here.
+		// eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/use-memo
 		refs,
 	);
 }
