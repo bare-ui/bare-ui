@@ -260,6 +260,42 @@ import type {
 
 ---
 
+## Accessibility
+
+Accessibility is verified in three layers, from static markup to real assistive technology:
+
+1. **Static audit (axe-core).** Every Storybook story is rendered in a real browser and run
+   through axe-core via `@storybook/addon-a11y` (`a11y.test = 'error'`). This fails the build on
+   any invalid ARIA, missing required parent/child roles, or other static violations.
+   Run with `npm run test:a11y`. Because the library ships zero CSS, `color-contrast` is the
+   consumer's responsibility and is disabled in the audit.
+
+2. **Screen-reader semantics (`*.sr.test.tsx`).** axe proves the markup is _valid_; these tests
+   prove it _says the right thing_ to a screen reader — the part axe cannot check. Each
+   interactive component has a `<Component>.sr.test.tsx` suite asserting the things VoiceOver,
+   NVDA, and JAWS actually convey:
+
+   - the computed **accessible name** a control is announced by,
+   - the **role** it is exposed as,
+   - ARIA **state** (expanded / selected / checked / pressed / current / disabled) and that it
+     **transitions** on interaction,
+   - exposed **relationships** (`aria-labelledby` / `describedby` / `controls` / `activedescendant`),
+   - **live-region** announcements when content changes without focus moving (toasts, alerts,
+     status, async results),
+   - **focus management** for overlays (focus moves into a dialog on open, returns to the trigger
+     on close).
+
+   These run in the fast jsdom unit project. Run just this layer with `npm run test:sr`. Shared
+   assertions live in [`src/test/sr.ts`](src/test/sr.ts) (`expectExposedAs`, `expectAnnounced`,
+   `liveRegionText`, `accessibleNameVia`).
+
+3. **Manual screen-reader pass.** Layers 1–2 make the manual pass repeatable and guard against
+   regressions, but they are not a substitute for it. Before a release, smoke-test the primary
+   flows with **VoiceOver (Safari)**, **NVDA (Firefox/Chrome)**, and **JAWS** — the `*.sr.test.tsx`
+   files document the expected announcements to check against.
+
+---
+
 ## Development
 
 ```bash
@@ -277,6 +313,12 @@ npm run test:run
 
 # Unit tests with coverage
 npm run test:coverage
+
+# Screen-reader semantics tests (accessible name/role/state/live regions)
+npm run test:sr
+
+# Accessibility audit (axe-core over every story)
+npm run test:a11y
 
 # Type check + build
 npm run build
