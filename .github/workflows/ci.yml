@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   quality:
-    name: ${{ matrix.package }} · lint · unit · a11y
+    name: ${{ matrix.package }} · lint · unit · sr · a11y
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -38,6 +38,13 @@ jobs:
 
       - name: Unit tests
         run: npm run test:unit --workspace @wire-ui/${{ matrix.package }}
+
+      # Screen-reader semantics: accessible name/role/state/relationships and
+      # live-region announcements that axe-core's static audit can't verify.
+      # These run in jsdom (no browser) and are also covered by `test:unit`;
+      # this dedicated step surfaces the screen-reader pass as its own signal.
+      - name: Screen reader semantics
+        run: npm run test:sr --workspace @wire-ui/${{ matrix.package }}
 
       # axe-core runs against every story in a real browser, so we need the
       # Playwright Chromium binary the Vitest browser project drives.
