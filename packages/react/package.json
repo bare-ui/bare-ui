@@ -52,6 +52,7 @@
 		"test": "vitest --config vitest.config.ts",
 		"test:run": "vitest run --config vitest.config.ts",
 		"test:unit": "vitest run --project unit --config vitest.config.ts",
+		"test:sr": "vitest run --project unit --config vitest.config.ts .sr.test",
 		"test:a11y": "vitest run --project storybook --config vitest.config.ts",
 		"test:coverage": "vitest run --project unit --coverage --config vitest.config.ts",
 		"clean": "rm -rf dist"
