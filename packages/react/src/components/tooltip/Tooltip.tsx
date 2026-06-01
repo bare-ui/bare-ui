@@ -1,5 +1,6 @@
 import React, { createContext, useContext } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
+import { useId } from '@/hooks/use-id';
 import { useTimeout } from '@/hooks/use-timeout';
 import type { TooltipContextValue, TooltipRootProps, TooltipTriggerProps, TooltipContentProps } from './Tooltip.types';
 
@@ -10,6 +11,7 @@ import type { TooltipContextValue, TooltipRootProps, TooltipTriggerProps, Toolti
 const TooltipContext = createContext<TooltipContextValue>({
 	open: false,
 	setOpen: () => {},
+	contentId: '',
 });
 
 // ---------------------------------------------------------------------------
@@ -29,6 +31,7 @@ const Root = ({
 		onChange: onOpenChange,
 	});
 	const { start, stop } = useTimeout(() => setOpenState(true), delayDuration, { autoStart: false });
+	const contentId = useId('tooltip');
 
 	const setOpen = (value: boolean) => {
 		if (value) {
@@ -40,7 +43,7 @@ const Root = ({
 	};
 
 	return (
-		<TooltipContext.Provider value={{ open, setOpen }}>
+		<TooltipContext.Provider value={{ open, setOpen, contentId }}>
 			<span style={{ position: 'relative', display: 'inline-block' }}>{children}</span>
 		</TooltipContext.Provider>
 	);
@@ -54,11 +57,12 @@ Root.displayName = 'Tooltip.Root';
 
 const Trigger = React.forwardRef<HTMLSpanElement, TooltipTriggerProps>(
 	({ children, onMouseEnter, onMouseLeave, onFocus, onBlur, ...rest }, ref) => {
-		const { setOpen } = useContext(TooltipContext);
+		const { setOpen, contentId } = useContext(TooltipContext);
 
 		return (
 			<span
 				ref={ref}
+				aria-describedby={contentId}
 				onMouseEnter={(e) => {
 					setOpen(true);
 					onMouseEnter?.(e);
@@ -89,8 +93,8 @@ Trigger.displayName = 'Tooltip.Trigger';
 // ---------------------------------------------------------------------------
 
 const Content = React.forwardRef<HTMLSpanElement, TooltipContentProps>(
-	({ side = 'top', className, children, style, ...rest }, ref) => {
-		const { open } = useContext(TooltipContext);
+	({ side = 'top', id, className, children, style, ...rest }, ref) => {
+		const { open, contentId } = useContext(TooltipContext);
 
 		const positionStyle: React.CSSProperties = {
 			position: 'absolute',
@@ -125,6 +129,7 @@ const Content = React.forwardRef<HTMLSpanElement, TooltipContentProps>(
 		return (
 			<span
 				ref={ref}
+				id={id ?? contentId}
 				role='tooltip'
 				data-state={open ? 'open' : 'closed'}
 				data-side={side}

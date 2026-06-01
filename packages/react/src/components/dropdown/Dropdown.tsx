@@ -72,6 +72,7 @@ const Trigger = React.forwardRef<HTMLButtonElement, DropdownTriggerProps>(({ chi
 			ref={ref}
 			type='button'
 			className={className}
+			aria-haspopup='menu'
 			aria-expanded={open}
 			data-state={open ? 'open' : 'closed'}
 			{...dataAttributes}

@@ -3,6 +3,8 @@ import React from 'react';
 export interface TooltipContextValue {
 	open: boolean;
 	setOpen: (open: boolean) => void;
+	/** id of the tooltip content, referenced by the trigger via aria-describedby. */
+	contentId: string;
 }
 
 export interface TooltipRootProps {

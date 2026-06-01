@@ -58,6 +58,7 @@ const Root = React.forwardRef<HTMLDivElement, SearchRootProps>(
 
 		const [highlightedIndex, setHighlightedIndex] = useState(-1);
 		const [itemCount, setItemCount] = useState(0);
+		const nextItemIndex = useRef(0);
 		const inputRef = useRef<HTMLInputElement>(null);
 		const rootRef = useRef<HTMLDivElement>(null);
 		const mergedRootRef = useMergedRefs<HTMLDivElement>(rootRef, ref);
@@ -92,12 +93,18 @@ const Root = React.forwardRef<HTMLDivElement, SearchRootProps>(
 		);
 
 		const registerItem = useCallback(() => {
-			const index = itemCount;
+			// Assign a unique index from a ref so items mounting in the same commit
+			// each get a distinct value. Reading `itemCount` state here returned 0 for
+			// every item in the batch, so they all shared index 0 and the highlighted
+			// option's aria-selected leaked onto every option for a screen reader.
+			const index = nextItemIndex.current;
+			nextItemIndex.current += 1;
 			setItemCount((prev) => prev + 1);
 			return index;
-		}, [itemCount]);
+		}, []);
 
 		const unregisterItem = useCallback(() => {
+			nextItemIndex.current = Math.max(0, nextItemIndex.current - 1);
 			setItemCount((prev) => Math.max(0, prev - 1));
 		}, []);
 

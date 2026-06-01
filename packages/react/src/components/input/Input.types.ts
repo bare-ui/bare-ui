@@ -38,6 +38,7 @@ export interface InputErrorProps {
 export interface InputContextValue {
 	value: string;
 	inputId: string;
+	errorId: string;
 	isActive: boolean;
 	invalidType: string;
 	isSuccess: boolean;

@@ -133,9 +133,14 @@ const Timeago = React.forwardRef<HTMLTimeElement, TimeagoProps>(
 
 		const display = computeDisplay();
 
+		// Expose the machine-readable ISO value so screen readers (and crawlers)
+		// get an unambiguous full timestamp, not just the relative/short display text.
+		const machineValue = toDate(datetime).toISOString();
+
 		return (
 			<time
 				ref={ref}
+				dateTime={machineValue}
 				className={className}
 				{...rest}>
 				{display}

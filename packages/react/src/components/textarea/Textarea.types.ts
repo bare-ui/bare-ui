@@ -43,6 +43,7 @@ export interface TextareaErrorProps {
 export interface TextareaContextValue {
 	value: string;
 	textareaId: string;
+	errorId: string;
 	isActive: boolean;
 	invalidType: string;
 	isSuccess: boolean;

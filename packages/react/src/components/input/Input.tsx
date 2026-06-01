@@ -45,6 +45,7 @@ const Root = React.forwardRef<HTMLDivElement, InputRootProps>(
 		});
 		const [isActive, setIsActive] = useState(false);
 		const inputId = useMemo(() => id || Helper.generateUUID(), [id]);
+		const errorId = useMemo(() => `${inputId}-error`, [inputId]);
 
 		const handleChange = useCallback((newValue: string) => setValue(newValue), [setValue]);
 
@@ -61,6 +62,7 @@ const Root = React.forwardRef<HTMLDivElement, InputRootProps>(
 		const contextValue: InputContextValue = {
 			value,
 			inputId,
+			errorId,
 			isActive,
 			invalidType,
 			isSuccess,
@@ -98,6 +100,7 @@ const Field = React.forwardRef<HTMLInputElement, InputFieldProps>(({ className, 
 			className={className}
 			aria-required={ctx.isRequired || undefined}
 			aria-invalid={ctx.invalidType ? true : undefined}
+			aria-describedby={ctx.invalidType ? ctx.errorId : undefined}
 			data-invalid={ctx.invalidType ? '' : undefined}
 			data-active={ctx.isActive ? '' : undefined}
 			data-success={ctx.isSuccess ? '' : undefined}
@@ -138,6 +141,7 @@ const Error = React.forwardRef<HTMLElement, InputErrorProps>(({ children, classN
 	return (
 		<small
 			ref={ref}
+			id={ctx.errorId}
 			role='alert'
 			className={className}
 			{...rest}>
