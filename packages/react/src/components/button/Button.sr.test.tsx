@@ -31,9 +31,9 @@ describe('Button — screen reader semantics', () => {
 
 	it('exposes aria-pressed as a toggle button and reflects updates', () => {
 		const { rerender } = render(<Button aria-pressed={false}>Mute</Button>);
-		expect(expectExposedAs('button', { pressed: false }, { name: 'Mute' })).toBeInTheDocument();
+		expect(expectExposedAs('button', 'Mute', { pressed: false })).toBeInTheDocument();
 		rerender(<Button aria-pressed={true}>Mute</Button>);
-		expect(expectExposedAs('button', { pressed: true }, { name: 'Mute' })).toBeInTheDocument();
+		expect(expectExposedAs('button', 'Mute', { pressed: true })).toBeInTheDocument();
 	});
 
 	it('exposes aria-expanded for a disclosure button', () => {

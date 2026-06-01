@@ -28,7 +28,7 @@ import { within, type ByRoleMatcher, type ByRoleOptions } from '@testing-library
  */
 export function expectExposedAs(
 	role: ByRoleMatcher,
-	name: string | RegExp,
+	name?: string | RegExp,
 	options: Omit<ByRoleOptions, 'name'> = {},
 	container: HTMLElement = document.body,
 ): HTMLElement {

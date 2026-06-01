@@ -24,7 +24,9 @@ function DrawerHarness() {
 						<Drawer.Content
 							aria-labelledby='drawer-title'
 							aria-describedby='drawer-body'>
-							<Drawer.Header id='drawer-title'>Navigation</Drawer.Header>
+							<Drawer.Header>
+								<span id='drawer-title'>Navigation</span>
+							</Drawer.Header>
 							<p id='drawer-body'>Choose a destination.</p>
 							<Drawer.Close>Close</Drawer.Close>
 						</Drawer.Content>

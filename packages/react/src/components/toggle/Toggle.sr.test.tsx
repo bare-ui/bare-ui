@@ -22,7 +22,7 @@ describe('Toggle — screen reader semantics', () => {
 
 	it('exposes the initial pressed state from defaultPressed', () => {
 		render(<Toggle defaultPressed>Bold</Toggle>);
-		expect(expectExposedAs('button', { pressed: true }, { name: 'Bold' })).toBeInTheDocument();
+		expect(expectExposedAs('button', 'Bold', { pressed: true })).toBeInTheDocument();
 	});
 
 	it('exposes a disabled toggle as disabled to assistive tech', () => {
