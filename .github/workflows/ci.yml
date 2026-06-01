@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   quality:
-    name: ${{ matrix.package }} · lint · unit · sr · a11y
+    name: ${{ matrix.package }} · lint · types · unit · sr · a11y
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -35,6 +35,12 @@ jobs:
 
       - name: Lint
         run: npm run lint --workspace @wire-ui/${{ matrix.package }}
+
+      # Vitest transpiles via esbuild and does NOT type-check, so type errors in
+      # tests/source slip past unit/a11y and only fail the Vercel build (tsc -b).
+      # This step type-checks the same way the deploy does, failing CI first.
+      - name: Type check
+        run: npm run typecheck --workspace @wire-ui/${{ matrix.package }}
 
       - name: Unit tests
         run: npm run test:unit --workspace @wire-ui/${{ matrix.package }}
