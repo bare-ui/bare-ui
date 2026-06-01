@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Cancel in-progress runs for the same ref (e.g. new push to a PR).
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: ${{ matrix.package }} · lint · unit · a11y
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Vue and Solid join the matrix once their a11y harness lands.
+        package: [react]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # package-lock.json is intentionally git-ignored (the macOS-generated
+      # lockfile breaks rolldown's native bindings on Linux), so each env
+      # resolves its own deps — hence `npm install`, not `npm ci`, and no
+      # lockfile-keyed setup-node cache.
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint
+        run: npm run lint --workspace @wire-ui/${{ matrix.package }}
+
+      - name: Unit tests
+        run: npm run test:unit --workspace @wire-ui/${{ matrix.package }}
+
+      # axe-core runs against every story in a real browser, so we need the
+      # Playwright Chromium binary the Vitest browser project drives.
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Accessibility (axe-core via Storybook)
+        run: npm run test:a11y --workspace @wire-ui/${{ matrix.package }}
