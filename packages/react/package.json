@@ -46,6 +46,7 @@
 		"build": "tsc -b && vite build",
 		"prepublishOnly": "npm run build",
 		"lint": "eslint .",
+		"typecheck": "tsc -b",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build",
 		"format": "prettier --write \"src/**/*.{ts,tsx}\"",
