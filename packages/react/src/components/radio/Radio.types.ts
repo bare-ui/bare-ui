@@ -24,7 +24,7 @@ export interface RadioIndicatorProps {
 	className?: string;
 }
 
-export interface RadioLabelProps {
+export interface RadioLabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
 	children?: React.ReactNode;
 	className?: string;
 }
@@ -40,4 +40,6 @@ export interface RadioItemContextValue {
 	value: string | number;
 	disabled: boolean;
 	checked: boolean;
+	/** id of the underlying radio input, used by Radio.Label's htmlFor. */
+	inputId: string;
 }

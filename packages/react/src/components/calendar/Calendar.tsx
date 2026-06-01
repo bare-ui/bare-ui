@@ -10,6 +10,7 @@ import type {
 	CalendarPrevButtonProps,
 	CalendarRootProps,
 	CalendarTitleProps,
+	CalendarWeekday,
 	WeekStart,
 } from './Calendar.types';
 
@@ -273,85 +274,111 @@ const Grid = React.forwardRef<HTMLDivElement, CalendarGridProps>(
 		const weekdays = useMemo(() => getWeekdayNames(ctx.weekStartsOn, ctx.locale), [ctx.weekStartsOn, ctx.locale]);
 		const days = useMemo(() => buildMonthGrid(ctx.month, ctx.weekStartsOn), [ctx.month, ctx.weekStartsOn]);
 
-		const gridStyle: React.CSSProperties = {
+		const rowStyle: React.CSSProperties = {
 			display: 'grid',
 			gridTemplateColumns: 'repeat(7, minmax(0, 1fr))',
 		};
+
+		// Split the flat 42-day list into 6 weeks of 7 days so each week can be
+		// wrapped in a role="row" (required by the ARIA grid pattern).
+		const weeks = useMemo(() => {
+			const chunks: Date[][] = [];
+			for (let i = 0; i < days.length; i += 7) chunks.push(days.slice(i, i + 7));
+			return chunks;
+		}, [days]);
 
 		return (
 			<div
 				ref={ref}
 				role='grid'
 				className={className}
-				style={gridStyle}
 				{...rest}>
-				{weekdays.map((wd) =>
-					renderWeekday ? (
-						<React.Fragment key={wd.name}>{renderWeekday(wd)}</React.Fragment>
-					) : (
-						<div
-							key={wd.name}
-							role='columnheader'
-							aria-label={wd.name}
-							style={{ textAlign: 'center', padding: '4px 0' }}>
-							{wd.short}
-						</div>
-					),
-				)}
-				{days.map((d, i) => {
-					const isOutsideMonth = !isSameMonth(d, ctx.month);
-					const isToday = isSameDay(d, today);
-					const isSelected = ctx.value ? isSameDay(d, ctx.value) : false;
-					const beforeMin = ctx.minDate ? d < startOfDay(ctx.minDate) : false;
-					const afterMax = ctx.maxDate ? d > startOfDay(ctx.maxDate) : false;
-					const customDisabled = ctx.isDateDisabled?.(d) ?? false;
-					const isDisabled = beforeMin || afterMax || customDisabled;
-					const isWeekend = d.getDay() === 0 || d.getDay() === 6;
-
-					const day: CalendarDay = {
-						date: d,
-						dayOfMonth: d.getDate(),
-						isToday,
-						isSelected,
-						isOutsideMonth,
-						isDisabled,
-						isWeekend,
-						props: {
-							role: 'gridcell',
-							type: 'button',
-							tabIndex: isSelected ? 0 : -1,
-							disabled: isDisabled,
-							'aria-selected': isSelected,
-							'aria-current': isToday ? 'date' : undefined,
-							'data-today': isToday ? '' : undefined,
-							'data-selected': isSelected ? '' : undefined,
-							'data-outside-month': isOutsideMonth ? '' : undefined,
-							'data-disabled': isDisabled ? '' : undefined,
-							'data-weekend': isWeekend ? '' : undefined,
-							onClick: () => {
-								if (!isDisabled) ctx.selectDate(d);
+				<div
+					role='row'
+					style={rowStyle}>
+					{weekdays.map((wd) => {
+						const weekday: CalendarWeekday = {
+							name: wd.name,
+							short: wd.short,
+							props: {
+								role: 'columnheader',
+								'aria-label': wd.name,
 							},
-						},
-					};
+						};
 
-					if (renderDay) return <React.Fragment key={i}>{renderDay(day)}</React.Fragment>;
+						if (renderWeekday) return <React.Fragment key={wd.name}>{renderWeekday(weekday)}</React.Fragment>;
 
-					return (
-						<button
-							key={i}
-							{...day.props}
-							style={{
-								padding: '6px',
-								background: 'transparent',
-								border: 'none',
-								color: isOutsideMonth ? '#a3a3a3' : 'inherit',
-								cursor: isDisabled ? 'not-allowed' : 'pointer',
-								opacity: isDisabled ? 0.4 : 1,
-							}}>
-							{day.dayOfMonth}
-						</button>
-					);
-				})}
+						return (
+							<div
+								key={wd.name}
+								{...weekday.props}
+								style={{ textAlign: 'center', padding: '4px 0' }}>
+								{wd.short}
+							</div>
+						);
+					})}
+				</div>
+				{weeks.map((week, weekIndex) => (
+					<div
+						key={weekIndex}
+						role='row'
+						style={rowStyle}>
+						{week.map((d, dayIndex) => {
+							const isOutsideMonth = !isSameMonth(d, ctx.month);
+							const isToday = isSameDay(d, today);
+							const isSelected = ctx.value ? isSameDay(d, ctx.value) : false;
+							const beforeMin = ctx.minDate ? d < startOfDay(ctx.minDate) : false;
+							const afterMax = ctx.maxDate ? d > startOfDay(ctx.maxDate) : false;
+							const customDisabled = ctx.isDateDisabled?.(d) ?? false;
+							const isDisabled = beforeMin || afterMax || customDisabled;
+							const isWeekend = d.getDay() === 0 || d.getDay() === 6;
+
+							const day: CalendarDay = {
+								date: d,
+								dayOfMonth: d.getDate(),
+								isToday,
+								isSelected,
+								isOutsideMonth,
+								isDisabled,
+								isWeekend,
+								props: {
+									role: 'gridcell',
+									type: 'button',
+									tabIndex: isSelected ? 0 : -1,
+									disabled: isDisabled,
+									'aria-selected': isSelected,
+									'aria-current': isToday ? 'date' : undefined,
+									'data-today': isToday ? '' : undefined,
+									'data-selected': isSelected ? '' : undefined,
+									'data-outside-month': isOutsideMonth ? '' : undefined,
+									'data-disabled': isDisabled ? '' : undefined,
+									'data-weekend': isWeekend ? '' : undefined,
+									onClick: () => {
+										if (!isDisabled) ctx.selectDate(d);
+									},
+								},
+							};
+
+							if (renderDay) return <React.Fragment key={dayIndex}>{renderDay(day)}</React.Fragment>;
+
+							return (
+								<button
+									key={dayIndex}
+									{...day.props}
+									style={{
+										padding: '6px',
+										background: 'transparent',
+										border: 'none',
+										color: isOutsideMonth ? '#a3a3a3' : 'inherit',
+										cursor: isDisabled ? 'not-allowed' : 'pointer',
+										opacity: isDisabled ? 0.4 : 1,
+									}}>
+									{day.dayOfMonth}
+								</button>
+							);
+						})}
+					</div>
+				))}
 			</div>
 		);
 	},

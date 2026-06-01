@@ -169,6 +169,6 @@ describe('ToggleGroup (roving focus)', () => {
 				<Toggle value='a'>A</Toggle>
 			</ToggleGroup.Root>,
 		);
-		expect(screen.getByRole('group')).toHaveAttribute('aria-orientation', 'vertical');
+		expect(screen.getByRole('toolbar')).toHaveAttribute('aria-orientation', 'vertical');
 	});
 });

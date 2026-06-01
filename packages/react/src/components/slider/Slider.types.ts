@@ -18,8 +18,10 @@ interface SliderBaseProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'on
 	disabled?: boolean;
 	/** Inverted (right-to-left or top-to-bottom). */
 	inverted?: boolean;
-	/** Optional human-readable label for ARIA. */
+	/** Optional human-readable label for ARIA. Applied to the slider thumb(s). */
 	'aria-label'?: string;
+	/** Id of a visible element labelling the slider. Applied to the thumb (single mode). */
+	'aria-labelledby'?: string;
 }
 
 export interface SliderSingleProps extends SliderBaseProps {

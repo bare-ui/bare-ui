@@ -14,6 +14,10 @@ export interface AccordionItemContextValue {
 	value: string;
 	isOpen: boolean;
 	disabled: boolean;
+	/** Stable id for the Trigger button — Content references it via aria-labelledby */
+	triggerId: string;
+	/** Stable id for the Content region — Trigger references it via aria-controls */
+	contentId: string;
 }
 
 // ---------------------------------------------------------------------------

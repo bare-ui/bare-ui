@@ -162,7 +162,7 @@ Root.displayName = 'Carousel.Root';
 // ---------------------------------------------------------------------------
 
 const Viewport = React.forwardRef<HTMLDivElement, CarouselViewportProps>(
-	({ className, children, style, onScroll, onKeyDown, ...rest }, ref) => {
+	({ className, children, style, tabIndex, onScroll, onKeyDown, ...rest }, ref) => {
 		const ctx = useCarouselContext();
 		const mergedRef = useMergedRefs(ctx.viewportRef, ref);
 		const vertical = ctx.orientation === 'vertical';
@@ -171,6 +171,9 @@ const Viewport = React.forwardRef<HTMLDivElement, CarouselViewportProps>(
 			<div
 				ref={mergedRef}
 				data-carousel-viewport=''
+				// The viewport is a scrollable region; make it keyboard-focusable so
+				// arrow-key navigation works and axe `scrollable-region-focusable` passes.
+				tabIndex={tabIndex ?? 0}
 				className={className}
 				style={{
 					overflowX: vertical ? 'hidden' : 'auto',

@@ -61,6 +61,12 @@ const SliderImpl = React.forwardRef<HTMLDivElement, SliderImplProps>((props, ref
 
 	const range = props.range === true;
 
+	// Accessible name supplied by the consumer. The wrapper carries it for the
+	// group (range mode), but the `role="slider"` thumbs are the actual ARIA
+	// input fields and must each expose a name of their own.
+	const ariaLabel = (rest as { 'aria-label'?: string })['aria-label'];
+	const ariaLabelledBy = (rest as { 'aria-labelledby'?: string })['aria-labelledby'];
+
 	// --- Controlled / uncontrolled value state -------------------------------
 	const initial: SliderValue = range
 		? ((props.defaultValue as [number, number] | undefined) ?? [min, max])
@@ -218,7 +224,8 @@ const SliderImpl = React.forwardRef<HTMLDivElement, SliderImplProps>((props, ref
 		<div
 			ref={setMergedRef}
 			role={range ? 'group' : undefined}
-			aria-label={range ? (rest as { 'aria-label'?: string })['aria-label'] : undefined}
+			aria-label={range ? ariaLabel : undefined}
+			aria-labelledby={range ? ariaLabelledBy : undefined}
 			className={className}
 			data-orientation={orientation}
 			data-disabled={disabled ? '' : undefined}
@@ -230,35 +237,52 @@ const SliderImpl = React.forwardRef<HTMLDivElement, SliderImplProps>((props, ref
 			{...stripStyleAndChildren(rest as Record<string, unknown>)}>
 			<span data-part='track' style={{ position: 'absolute', inset: 0 }} />
 			<span data-part='fill' style={{ position: 'absolute', ...fillStyle }} />
-			{value.map((v, i) => (
-				<span
-					key={i}
-					role='slider'
-					tabIndex={disabled ? -1 : 0}
-					aria-valuemin={min}
-					aria-valuemax={max}
-					aria-valuenow={roundFixed(v, decimals)}
-					aria-orientation={orientation}
-					aria-disabled={disabled || undefined}
-					data-part='thumb'
-					data-thumb-index={i}
-					data-disabled={disabled ? '' : undefined}
-					onKeyDown={handleThumbKeyDown(i)}
-					style={{ position: 'absolute', ...thumbStyle(i) }}
-				/>
-			))}
+			{value.map((v, i) => {
+				// Each thumb is an ARIA input field and needs its own accessible
+				// name. In single mode it inherits the consumer's label directly.
+				// In range mode the group carries the overall label, so each thumb
+				// gets a distinguishing name. `aria-labelledby` (single mode) takes
+				// precedence over `aria-label` when both are supplied.
+				const thumbLabelledBy = !range ? ariaLabelledBy : undefined;
+				const thumbLabel = thumbLabelledBy
+					? undefined
+					: range
+						? [i === 0 ? 'Minimum' : 'Maximum', ariaLabel].filter(Boolean).join(' ')
+						: ariaLabel;
+				return (
+					<span
+						key={i}
+						role='slider'
+						tabIndex={disabled ? -1 : 0}
+						aria-label={thumbLabel || undefined}
+						aria-labelledby={thumbLabelledBy}
+						aria-valuemin={min}
+						aria-valuemax={max}
+						aria-valuenow={roundFixed(v, decimals)}
+						aria-orientation={orientation}
+						aria-disabled={disabled || undefined}
+						data-part='thumb'
+						data-thumb-index={i}
+						data-disabled={disabled ? '' : undefined}
+						onKeyDown={handleThumbKeyDown(i)}
+						style={{ position: 'absolute', ...thumbStyle(i) }}
+					/>
+				);
+			})}
 		</div>
 	);
 });
 
 SliderImpl.displayName = 'Slider';
 
-// `style` and `aria-label` are extracted; pass everything else through.
-function stripStyleAndChildren<T extends Record<string, unknown>>(props: T): Omit<T, 'style' | 'aria-label'> {
-	const { style: _s, ['aria-label']: _a, ...rest } = props;
+// `style`, `aria-label`, and `aria-labelledby` are extracted and applied to the
+// thumb(s) (and the group wrapper in range mode); pass everything else through.
+function stripStyleAndChildren<T extends Record<string, unknown>>(props: T): Omit<T, 'style' | 'aria-label' | 'aria-labelledby'> {
+	const { style: _s, ['aria-label']: _a, ['aria-labelledby']: _al, ...rest } = props;
 	void _s;
 	void _a;
-	return rest as Omit<T, 'style' | 'aria-label'>;
+	void _al;
+	return rest as Omit<T, 'style' | 'aria-label' | 'aria-labelledby'>;
 }
 
 export const Slider = SliderImpl as React.ForwardRefExoticComponent<

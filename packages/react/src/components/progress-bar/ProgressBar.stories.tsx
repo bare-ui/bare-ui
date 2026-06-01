@@ -23,7 +23,7 @@ const trackCls =
 export const Default: Story = {
 	render: () => (
 		<div className='w-80'>
-			<ProgressBar percentage={60} className={['h-2', trackCls].join(' ')} />
+			<ProgressBar percentage={60} aria-label='Loading progress' className={['h-2', trackCls].join(' ')} />
 		</div>
 	),
 };
@@ -34,7 +34,7 @@ export const Composed: Story = {
 			{[0, 25, 50, 75, 100].map((p) => (
 				<div key={p} className='flex items-center gap-3'>
 					<div className='w-8 text-right text-xs text-[#6b7280]'>{p}%</div>
-					<ProgressBar percentage={p} className={['flex-1 h-2', trackCls].join(' ')} />
+					<ProgressBar percentage={p} aria-label={`Progress ${p}%`} className={['flex-1 h-2', trackCls].join(' ')} />
 				</div>
 			))}
 		</div>
@@ -45,10 +45,10 @@ export const Complex: Story = {
 	render: () => (
 		<div className='w-80'>
 			<div className='mb-1 flex justify-between text-sm'>
-				<span className='font-medium text-black'>Storage used</span>
+				<span id='storage-used-label' className='font-medium text-black'>Storage used</span>
 				<span className='text-[#6b7280]'>68%</span>
 			</div>
-			<ProgressBar percentage={68} className={['h-2', trackCls].join(' ')} />
+			<ProgressBar percentage={68} aria-labelledby='storage-used-label' className={['h-2', trackCls].join(' ')} />
 			<p className='mt-1 text-xs text-[#6b7280]'>6.8 GB of 10 GB used</p>
 		</div>
 	),

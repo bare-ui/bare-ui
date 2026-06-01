@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useMemo } from 'react';
+import React, { createContext, useCallback, useContext, useId, useMemo } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { Helper } from '@/utils/helper';
@@ -83,13 +83,15 @@ const Root = React.forwardRef<HTMLDivElement, RadioRootProps>(
 Root.displayName = 'Radio.Root';
 
 const Item = React.forwardRef<HTMLInputElement, RadioItemProps>(
-	({ value, disabled = false, children, className, onClick, ...rest }, ref) => {
+	({ value, disabled = false, children, className, onClick, id, ...rest }, ref) => {
 		const ctx = useRadioContext();
 		const checked = ctx.isSelected(value);
 		const { handlers, dataAttributes } = useInteractiveState({ disabled });
+		const generatedId = useId();
+		const inputId = id || generatedId;
 
 		return (
-			<RadioItemContext.Provider value={{ value, disabled, checked }}>
+			<RadioItemContext.Provider value={{ value, disabled, checked, inputId }}>
 				<div
 					className={className}
 					data-checked={checked ? '' : undefined}
@@ -105,6 +107,7 @@ const Item = React.forwardRef<HTMLInputElement, RadioItemProps>(
 					{...rest}>
 					<input
 						ref={ref}
+						id={inputId}
 						type='radio'
 						name={ctx.name}
 						value={String(value)}
@@ -150,12 +153,13 @@ const Indicator = React.forwardRef<HTMLSpanElement, RadioIndicatorProps>(({ chil
 
 Indicator.displayName = 'Radio.Indicator';
 
-const Label = React.forwardRef<HTMLLabelElement, RadioLabelProps>(({ children, className, ...rest }, ref) => {
-	const { disabled } = useRadioItemContext();
+const Label = React.forwardRef<HTMLLabelElement, RadioLabelProps>(({ children, className, htmlFor, ...rest }, ref) => {
+	const { disabled, inputId } = useRadioItemContext();
 
 	return (
 		<label
 			ref={ref}
+			htmlFor={htmlFor ?? inputId}
 			className={className}
 			data-disabled={disabled ? '' : undefined}
 			{...rest}>

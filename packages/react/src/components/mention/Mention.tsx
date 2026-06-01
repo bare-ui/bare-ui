@@ -333,6 +333,9 @@ const Input = React.forwardRef<HTMLTextAreaElement, MentionInputProps>(
 		const ctx = useMentionContext();
 		const mergedRef = useMergedRefs(ctx.inputRef, ref);
 		const activeId = ctx.open && ctx.filtered[ctx.activeIndex] ? ctx.getOptionId(ctx.activeIndex) : undefined;
+		// The `role="combobox"` wrapper needs its own accessible name; share the
+		// one the consumer provides for the textbox so both are named.
+		const { 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledBy } = rest;
 
 		const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 			onKeyDown?.(e);
@@ -356,35 +359,46 @@ const Input = React.forwardRef<HTMLTextAreaElement, MentionInputProps>(
 			}
 		};
 
+		// ARIA 1.2 combobox pattern: a `role="combobox"` wrapper owns the
+		// listbox (`aria-controls`/`aria-expanded`), while the focusable
+		// textarea stays a `textbox`. `aria-expanded`/`aria-controls` are not
+		// allowed on a bare textarea, so they live on the wrapper; the textarea
+		// keeps the textbox-allowed `aria-autocomplete`/`aria-activedescendant`.
 		return (
-			<textarea
-				ref={mergedRef}
-				value={ctx.text}
-				disabled={ctx.disabled}
-				aria-autocomplete='list'
+			<div
+				role='combobox'
 				aria-expanded={ctx.open}
 				aria-controls={ctx.listboxId}
-				aria-activedescendant={activeId}
-				className={className}
-				{...rest}
-				onChange={(e) => {
-					ctx.handleChange(e.target.value, e.target.selectionStart ?? e.target.value.length);
-					onChange?.(e);
-				}}
-				onKeyDown={handleKeyDown}
-				onKeyUp={(e) => {
-					ctx.handleCaret(e.currentTarget.selectionStart ?? 0);
-					onKeyUp?.(e);
-				}}
-				onClick={(e) => {
-					ctx.handleCaret(e.currentTarget.selectionStart ?? 0);
-					onClick?.(e);
-				}}
-				onBlur={(e) => {
-					ctx.close();
-					onBlur?.(e);
-				}}
-			/>
+				aria-haspopup='listbox'
+				aria-label={ariaLabel}
+				aria-labelledby={ariaLabelledBy}>
+				<textarea
+					ref={mergedRef}
+					value={ctx.text}
+					disabled={ctx.disabled}
+					aria-autocomplete='list'
+					aria-activedescendant={activeId}
+					className={className}
+					{...rest}
+					onChange={(e) => {
+						ctx.handleChange(e.target.value, e.target.selectionStart ?? e.target.value.length);
+						onChange?.(e);
+					}}
+					onKeyDown={handleKeyDown}
+					onKeyUp={(e) => {
+						ctx.handleCaret(e.currentTarget.selectionStart ?? 0);
+						onKeyUp?.(e);
+					}}
+					onClick={(e) => {
+						ctx.handleCaret(e.currentTarget.selectionStart ?? 0);
+						onClick?.(e);
+					}}
+					onBlur={(e) => {
+						ctx.close();
+						onBlur?.(e);
+					}}
+				/>
+			</div>
 		);
 	},
 );

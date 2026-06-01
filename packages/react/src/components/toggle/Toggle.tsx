@@ -233,7 +233,7 @@ const Root = React.forwardRef<HTMLDivElement, ToggleGroupRootProps>((props, ref)
 		<ToggleGroupContext.Provider value={ctx}>
 			<div
 				ref={ref}
-				role='group'
+				role='toolbar'
 				aria-orientation={orientation}
 				className={className}
 				data-orientation={orientation}

@@ -44,7 +44,7 @@ const PickerContent = () => (
 				</button>
 			)}
 			renderWeekday={(wd) => (
-				<div className='text-center text-xs font-medium text-[#6b7280] py-1'>{wd.short}</div>
+				<div {...wd.props} className='text-center text-xs font-medium text-[#6b7280] py-1'>{wd.short}</div>
 			)}
 		/>
 	</DatePicker.Calendar>
@@ -52,7 +52,7 @@ const PickerContent = () => (
 
 export const Default: Story = {
 	render: () => (
-		<DatePicker.Root className='relative inline-block'>
+		<DatePicker.Root defaultOpen className='relative inline-block'>
 			<DatePicker.Trigger className={triggerCls}>
 				<DatePicker.Value placeholder={<span className='text-[#a3a3a3]'>Pick a date</span>} />
 				<svg className='size-4 text-[#6b7280]' viewBox='0 0 20 20' fill='currentColor'>

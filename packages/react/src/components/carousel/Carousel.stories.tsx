@@ -32,10 +32,10 @@ const btnCls =
 
 export const Default: Story = {
 	render: () => (
-		<Carousel.Root className='relative w-full max-w-md'>
-			<Carousel.Viewport
-				tabIndex={0}
-				className='rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-black'>
+		<Carousel.Root
+			aria-label='Featured colors'
+			className='relative w-full max-w-md'>
+			<Carousel.Viewport className='rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-black'>
 				<Carousel.Content>
 					{slides.map((color, i) => (
 						<Carousel.Slide
@@ -79,6 +79,7 @@ export const Composed: Story = {
 				<p className='mb-2 text-sm font-medium text-[#374151]'>Looping, multi-item</p>
 				<Carousel.Root
 					loop
+					aria-label='Looping product cards'
 					className='relative w-full max-w-2xl'>
 					<Carousel.Viewport className='rounded-2xl'>
 						<Carousel.Content className='gap-4 px-1'>
@@ -104,6 +105,7 @@ export const Composed: Story = {
 				<p className='mb-2 text-sm font-medium text-[#374151]'>Vertical</p>
 				<Carousel.Root
 					orientation='vertical'
+					aria-label='Vertical color gallery'
 					className='relative w-full max-w-xs'>
 					<Carousel.Viewport className='h-56 rounded-2xl'>
 						<Carousel.Content>
@@ -143,6 +145,7 @@ export const Complex: Story = {
 			<div className='w-full max-w-sm overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white'>
 				<Carousel.Root
 					loop
+					aria-label='Featured gear'
 					className='relative'>
 					<Carousel.Viewport>
 						<Carousel.Content>

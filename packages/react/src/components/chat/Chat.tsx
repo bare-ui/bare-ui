@@ -220,6 +220,7 @@ const List = React.forwardRef<HTMLDivElement, ChatListProps>(
 				role='log'
 				aria-live='polite'
 				aria-relevant='additions'
+				tabIndex={0}
 				className={className}
 				style={{ overflowY: 'auto', position: 'relative', ...style }}
 				{...rest}

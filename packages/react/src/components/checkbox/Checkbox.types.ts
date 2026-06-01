@@ -40,4 +40,6 @@ export interface CheckboxItemContextValue {
 	value: string | number;
 	disabled: boolean;
 	checked: boolean;
+	/** Unique id of the item's native input, used to associate the label via htmlFor. */
+	inputId: string;
 }

@@ -124,6 +124,8 @@ const Viewport = React.forwardRef<HTMLDivElement, ScrollAreaViewportProps>(
 			<div
 				ref={mergedRef}
 				data-scroll-area-viewport=''
+				// Scrollable region must be keyboard-operable so keyboard-only users can scroll it.
+				tabIndex={0}
 				className={className}
 				style={{ overflow: 'auto', scrollbarWidth: 'none', ...style }}
 				{...rest}

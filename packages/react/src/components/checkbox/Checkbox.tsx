@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useMemo } from 'react';
+import React, { createContext, useCallback, useContext, useId, useMemo } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { Helper } from '@/utils/helper';
@@ -94,10 +94,11 @@ const Item = React.forwardRef<HTMLInputElement, CheckboxItemProps>(
 	({ value, disabled = false, children, className, onClick, ...rest }, ref) => {
 		const ctx = useCheckboxContext();
 		const checked = ctx.isChecked(value);
+		const inputId = useId();
 		const { handlers, dataAttributes } = useInteractiveState({ disabled });
 
 		return (
-			<CheckboxItemContext.Provider value={{ value, disabled, checked }}>
+			<CheckboxItemContext.Provider value={{ value, disabled, checked, inputId }}>
 				<div
 					className={className}
 					data-checked={checked ? '' : undefined}
@@ -113,6 +114,7 @@ const Item = React.forwardRef<HTMLInputElement, CheckboxItemProps>(
 					{...rest}>
 					<input
 						ref={ref}
+						id={inputId}
 						type='checkbox'
 						name={ctx.name}
 						value={String(value)}
@@ -159,11 +161,12 @@ const Indicator = React.forwardRef<HTMLSpanElement, CheckboxIndicatorProps>(({ c
 Indicator.displayName = 'Checkbox.Indicator';
 
 const Label = React.forwardRef<HTMLLabelElement, CheckboxLabelProps>(({ children, className, ...rest }, ref) => {
-	const { disabled } = useCheckboxItemContext();
+	const { disabled, inputId } = useCheckboxItemContext();
 
 	return (
 		<label
 			ref={ref}
+			htmlFor={inputId}
 			className={className}
 			data-disabled={disabled ? '' : undefined}
 			{...rest}>

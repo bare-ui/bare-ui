@@ -46,7 +46,7 @@ export const Default: Story = {
 					</button>
 				)}
 				renderWeekday={(wd) => (
-					<div className='text-center text-xs font-medium text-[#6b7280] py-1'>{wd.short}</div>
+					<div {...wd.props} className='text-center text-xs font-medium text-[#6b7280] py-1'>{wd.short}</div>
 				)}
 			/>
 		</Calendar.Root>
@@ -71,7 +71,7 @@ export const Composed: Story = {
 							</button>
 						)}
 						renderWeekday={(wd) => (
-							<div className='text-center text-xs font-medium text-[#6b7280] py-1'>{wd.short}</div>
+							<div {...wd.props} className='text-center text-xs font-medium text-[#6b7280] py-1'>{wd.short}</div>
 						)}
 					/>
 				</Calendar.Root>
@@ -112,7 +112,7 @@ export const Complex: Story = {
 							</button>
 						)}
 						renderWeekday={(wd) => (
-							<div className='text-center text-xs font-medium text-[#6b7280] py-1'>{wd.short}</div>
+							<div {...wd.props} className='text-center text-xs font-medium text-[#6b7280] py-1'>{wd.short}</div>
 						)}
 					/>
 				</Calendar.Root>

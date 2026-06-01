@@ -47,6 +47,7 @@ interface InternalGroupContext {
 	registerHandle: (id: string) => void;
 	unregisterHandle: (id: string) => void;
 	getHandleIndex: (id: string) => number;
+	getHandleValues: (id: string) => { now: number; min: number; max: number } | null;
 	startDrag: (handleId: string, pointer: { x: number; y: number }) => void;
 }
 
@@ -177,6 +178,23 @@ const Group = React.forwardRef<HTMLDivElement, PanelGroupProps>(
 
 		const getPanelIndex = useCallback((id: string) => panelsRef.current.findIndex((p) => p.id === id), []);
 		const getHandleIndex = useCallback((id: string) => handlesRef.current.indexOf(id), []);
+
+		// A handle at index k controls the boundary between panel k and panel k+1.
+		// Per the ARIA window-splitter pattern, expose the *primary* (preceding) panel's
+		// current/min/max size as aria-valuenow/min/max so AT can announce the split.
+		const getHandleValues = useCallback(
+			(id: string) => {
+				const handleIndex = handlesRef.current.indexOf(id);
+				if (handleIndex < 0) return null;
+				const panel = panelsRef.current[handleIndex];
+				if (!panel) return null;
+				const now = sizes[handleIndex] ?? panel.config.defaultSize ?? 0;
+				const min = panel.config.minSize ?? 0;
+				const max = panel.config.maxSize ?? 100;
+				return { now: Math.round(now), min: Math.round(min), max: Math.round(max) };
+			},
+			[sizes],
+		);
 		const getPanelSize = useCallback(
 			(id: string) => {
 				const idx = panelsRef.current.findIndex((p) => p.id === id);
@@ -264,6 +282,7 @@ const Group = React.forwardRef<HTMLDivElement, PanelGroupProps>(
 				registerHandle,
 				unregisterHandle,
 				getHandleIndex,
+				getHandleValues,
 				startDrag,
 			}),
 			[
@@ -276,6 +295,7 @@ const Group = React.forwardRef<HTMLDivElement, PanelGroupProps>(
 				registerHandle,
 				unregisterHandle,
 				getHandleIndex,
+				getHandleValues,
 				startDrag,
 			],
 		);
@@ -380,12 +400,18 @@ const Handle = React.forwardRef<HTMLDivElement, InternalHandleProps>(
 
 		const cursor = ctx.orientation === 'horizontal' ? 'col-resize' : 'row-resize';
 
+		// A focusable role="separator" is a window splitter and REQUIRES aria-valuenow.
+		const values = ctx.getHandleValues(id);
+
 		return (
 			<div
 				ref={ref}
 				role='separator'
 				aria-orientation={ctx.orientation === 'horizontal' ? 'vertical' : 'horizontal'}
 				aria-label={ariaLabel ?? 'Resize handle'}
+				aria-valuenow={values?.now}
+				aria-valuemin={values?.min}
+				aria-valuemax={values?.max}
 				tabIndex={disabled ? -1 : 0}
 				data-handle=''
 				data-orientation={ctx.orientation}

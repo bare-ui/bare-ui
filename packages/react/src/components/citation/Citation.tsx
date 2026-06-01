@@ -125,7 +125,6 @@ const List = React.forwardRef<HTMLOListElement, CitationListProps>(({ children, 
 					<li
 						key={source.id}
 						id={ctx.getFootnoteId(source.id)}
-						role='doc-endnote'
 						data-citation-source=''
 						data-index={index}>
 						{children ? children({ source, index }) : defaultFootnote(source)}

@@ -41,7 +41,9 @@ const badgeCls =
 export const Default: Story = {
 	render: () => (
 		<div className='relative inline-flex'>
-			<button className='rounded-full p-2 text-black hover:bg-[#f5f5f5]'>
+			<button
+				aria-label='Notifications'
+				className='rounded-full p-2 text-black hover:bg-[#f5f5f5]'>
 				{bellIcon}
 			</button>
 			<Badge count={3} className={badgeCls} />
@@ -53,19 +55,25 @@ export const Composed: Story = {
 	render: () => (
 		<div className='flex items-center gap-8'>
 			<div className='relative inline-flex'>
-				<button className='rounded-full p-2 text-black hover:bg-[#f5f5f5]'>
+				<button
+					aria-label='Notifications'
+					className='rounded-full p-2 text-black hover:bg-[#f5f5f5]'>
 					{bellIcon}
 				</button>
 				<Badge count={3} className={badgeCls} />
 			</div>
 			<div className='relative inline-flex'>
-				<button className='rounded-full p-2 text-black hover:bg-[#f5f5f5]'>
+				<button
+					aria-label='Messages'
+					className='rounded-full p-2 text-black hover:bg-[#f5f5f5]'>
 					{chatIcon}
 				</button>
 				<Badge count={12} className={badgeCls} />
 			</div>
 			<div className='relative inline-flex'>
-				<button className='rounded-full p-2 text-black hover:bg-[#f5f5f5]'>
+				<button
+					aria-label='Mail'
+					className='rounded-full p-2 text-black hover:bg-[#f5f5f5]'>
 					{mailIcon}
 				</button>
 				<Badge count={99} className={badgeCls} />

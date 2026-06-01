@@ -122,6 +122,8 @@ const Root = React.forwardRef<HTMLDivElement, VirtualizerRootProps>(
 				ref={mergedRef}
 				className={className}
 				data-orientation={orientation}
+				// Scrollable region must be keyboard-operable so keyboard-only users can scroll it.
+				tabIndex={0}
 				style={{
 					position: 'relative',
 					overflowY: isVertical ? 'auto' : 'hidden',

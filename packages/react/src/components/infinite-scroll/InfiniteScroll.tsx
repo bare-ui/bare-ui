@@ -45,6 +45,9 @@ const Root = React.forwardRef<HTMLDivElement, InfiniteScrollRootProps>(
 			<InfiniteScrollContext.Provider value={ctx}>
 				<div
 					ref={ref}
+					// Root owns the scroll viewport (consumers apply `overflow`), so it must be
+					// keyboard-focusable for users who scroll without a pointer (scrollable-region-focusable).
+					tabIndex={0}
 					className={className}
 					data-loading={loading ? '' : undefined}
 					data-has-more={hasMore ? '' : undefined}

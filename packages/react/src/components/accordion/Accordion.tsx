@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext } from 'react';
+import React, { createContext, useCallback, useContext, useId } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { mergeProps } from '@/utils/merge-props';
@@ -129,8 +129,12 @@ const Item = React.forwardRef<HTMLDivElement, AccordionItemProps>(
 		const isDisabled = disabled || ctx.disabled;
 		const isOpen = ctx.isOpen(value);
 
+		const baseId = useId();
+		const triggerId = `${baseId}-trigger`;
+		const contentId = `${baseId}-content`;
+
 		return (
-			<AccordionItemContext.Provider value={{ value, isOpen, disabled: isDisabled }}>
+			<AccordionItemContext.Provider value={{ value, isOpen, disabled: isDisabled, triggerId, contentId }}>
 				<div
 					ref={ref}
 					className={className}
@@ -152,7 +156,7 @@ Item.displayName = 'Accordion.Item';
 
 const Trigger = React.forwardRef<HTMLButtonElement, AccordionTriggerProps>(
 	({ children, className, onClick, ...rest }, ref) => {
-		const { isOpen, disabled, value } = useAccordionItemContext();
+		const { isOpen, disabled, value, triggerId, contentId } = useAccordionItemContext();
 		const { toggle } = useAccordionContext();
 		const { handlers, dataAttributes } = useInteractiveState({ disabled });
 
@@ -162,8 +166,10 @@ const Trigger = React.forwardRef<HTMLButtonElement, AccordionTriggerProps>(
 			<button
 				ref={ref}
 				type='button'
+				id={triggerId}
 				disabled={disabled}
 				aria-expanded={isOpen}
+				aria-controls={contentId}
 				data-state={isOpen ? 'open' : 'closed'}
 				data-disabled={disabled ? '' : undefined}
 				className={className}
@@ -187,7 +193,7 @@ Trigger.displayName = 'Accordion.Trigger';
 
 const Content = React.forwardRef<HTMLDivElement, AccordionContentProps>(
 	({ forceMount = false, children, className, ...rest }, ref) => {
-		const { isOpen } = useAccordionItemContext();
+		const { isOpen, triggerId, contentId } = useAccordionItemContext();
 
 		if (!forceMount && !isOpen) return null;
 
@@ -195,6 +201,8 @@ const Content = React.forwardRef<HTMLDivElement, AccordionContentProps>(
 			<div
 				ref={ref}
 				role='region'
+				id={contentId}
+				aria-labelledby={triggerId}
 				hidden={forceMount && !isOpen ? true : undefined}
 				className={className}
 				data-state={isOpen ? 'open' : 'closed'}

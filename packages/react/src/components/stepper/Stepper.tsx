@@ -106,7 +106,6 @@ const List = React.forwardRef<HTMLDivElement, StepperListProps>(({ className, ch
 		<div
 			ref={ref}
 			role='list'
-			aria-orientation={ctx.orientation}
 			className={className}
 			data-orientation={ctx.orientation}
 			{...rest}>

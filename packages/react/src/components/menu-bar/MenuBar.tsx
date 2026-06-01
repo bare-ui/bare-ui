@@ -124,6 +124,7 @@ const Menu = React.forwardRef<HTMLDivElement, MenuBarMenuProps>(
 			<MenuContext.Provider value={menuCtx}>
 				<div
 					ref={ref}
+					role='none'
 					className={className}
 					data-state={open ? 'open' : 'closed'}
 					{...rest}>
@@ -150,6 +151,7 @@ const Trigger = React.forwardRef<HTMLButtonElement, MenuBarTriggerProps>(
 			<button
 				ref={ref}
 				type='button'
+				role='menuitem'
 				disabled={disabled}
 				aria-haspopup='menu'
 				aria-expanded={menu.open}

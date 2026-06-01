@@ -373,10 +373,13 @@ const Separator = React.forwardRef<HTMLDivElement, CommandSeparatorProps>(({ cla
 	const ctx = useCommandContext();
 	// Separators are noise while filtering.
 	if (ctx.searching) return null;
+	// `role="separator"` is not an allowed child of `role="listbox"` (per the ARIA
+	// listbox spec, which permits only `option` and `group`). The divider is purely
+	// a visual cue between groups, so it is presentational and carries no semantics.
 	return (
 		<div
 			ref={ref}
-			role='separator'
+			role='none'
 			className={className}
 			{...rest}
 		/>
