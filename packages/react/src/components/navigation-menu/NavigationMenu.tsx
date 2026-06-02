@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useContext, useMemo, useRef } from '
 import { useClickOutside } from '@/hooks/use-click-outside';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect';
 import { useKeyboard } from '@/hooks/use-keyboard';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { useTimeout } from '@/hooks/use-timeout';
@@ -65,6 +66,7 @@ const Root = React.forwardRef<HTMLElement, NavigationMenuRootProps>(
 
 		const internalRef = useRef<HTMLElement | null>(null);
 		const mergedRef = useMergedRefs<HTMLElement>(internalRef, ref);
+		const focusContentOnOpenRef = useRef(false);
 
 		// Single shared close timer. Without this, each Trigger and Content owns its
 		// own local timer — so when the cursor moves from Trigger into Content,
@@ -91,7 +93,15 @@ const Root = React.forwardRef<HTMLElement, NavigationMenuRootProps>(
 		);
 
 		const ctx = useMemo<NavigationMenuRootContextValue>(
-			() => ({ value: value ?? null, setValue, delayDuration, skipDelayDuration, cancelClose, scheduleClose }),
+			() => ({
+				value: value ?? null,
+				setValue,
+				delayDuration,
+				skipDelayDuration,
+				cancelClose,
+				scheduleClose,
+				focusContentOnOpenRef,
+			}),
 			[value, setValue, delayDuration, skipDelayDuration, cancelClose, scheduleClose],
 		);
 
@@ -155,7 +165,7 @@ Item.displayName = 'NavigationMenu.Item';
 // ---------------------------------------------------------------------------
 
 const Trigger = React.forwardRef<HTMLButtonElement, NavigationMenuTriggerProps>(
-	({ disabled = false, children, className, onClick, onPointerEnter, onPointerLeave, ...rest }, ref) => {
+	({ disabled = false, children, className, onClick, onPointerEnter, onPointerLeave, onKeyDown, ...rest }, ref) => {
 		const root = useRootContext();
 		const item = useItemContext();
 		const open = root.value === item.value;
@@ -202,6 +212,18 @@ const Trigger = React.forwardRef<HTMLButtonElement, NavigationMenuTriggerProps>(
 					clearOpenTimer();
 					root.scheduleClose();
 					onPointerLeave?.(e);
+				}}
+				onKeyDown={(e) => {
+					// ArrowDown/ArrowUp open the menu and move focus into its first link.
+					if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+						e.preventDefault();
+						clearOpenTimer();
+						root.cancelClose();
+						const { focusContentOnOpenRef } = root;
+						focusContentOnOpenRef.current = true;
+						root.setValue(item.value);
+					}
+					onKeyDown?.(e);
 				}}>
 				{children}
 			</button>
@@ -214,17 +236,37 @@ Trigger.displayName = 'NavigationMenu.Trigger';
 // Content
 // ---------------------------------------------------------------------------
 
+const FOCUSABLE_IN_CONTENT = 'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])';
+
 const Content = React.forwardRef<HTMLDivElement, NavigationMenuContentProps>(
-	({ children, className, onPointerEnter, onPointerLeave, ...rest }, ref) => {
+	({ children, className, onPointerEnter, onPointerLeave, onKeyDown, ...rest }, ref) => {
 		const root = useRootContext();
 		const item = useItemContext();
 		const open = root.value === item.value;
+		const contentRef = useRef<HTMLDivElement | null>(null);
+		const mergedRef = useMergedRefs<HTMLDivElement>(contentRef, ref);
+		const { focusContentOnOpenRef } = root;
+
+		// When opened from the keyboard, move focus to the first link. Pointer/hover
+		// opens leave the flag false so the cursor isn't yanked away.
+		useIsomorphicLayoutEffect(() => {
+			if (!open || !focusContentOnOpenRef.current) return;
+			focusContentOnOpenRef.current = false;
+			contentRef.current?.querySelector<HTMLElement>(FOCUSABLE_IN_CONTENT)?.focus();
+		}, [open, focusContentOnOpenRef]);
+
+		const returnFocusToTrigger = () => {
+			const trigger = contentRef.current
+				?.closest('li')
+				?.querySelector<HTMLElement>('[aria-haspopup="menu"]');
+			trigger?.focus();
+		};
 
 		if (!open) return null;
 
 		return (
 			<div
-				ref={ref}
+				ref={mergedRef}
 				role='menu'
 				className={className}
 				data-state='open'
@@ -238,6 +280,14 @@ const Content = React.forwardRef<HTMLDivElement, NavigationMenuContentProps>(
 				onPointerLeave={(e) => {
 					root.scheduleClose();
 					onPointerLeave?.(e);
+				}}
+				onKeyDown={(e) => {
+					// Escape closes and returns focus to the trigger (APG disclosure nav).
+					if (e.key === 'Escape') {
+						returnFocusToTrigger();
+						root.setValue(null);
+					}
+					onKeyDown?.(e);
 				}}>
 				{children}
 			</div>

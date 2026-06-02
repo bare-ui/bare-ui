@@ -70,4 +70,49 @@ describe('MenuBar', () => {
 		await userEvent.keyboard('{Escape}');
 		expect(screen.queryByRole('menu')).not.toBeInTheDocument();
 	});
+
+	describe('keyboard navigation', () => {
+		it('marks the menubar orientation horizontal', () => {
+			renderBar();
+			expect(screen.getByRole('menubar')).toHaveAttribute('aria-orientation', 'horizontal');
+		});
+
+		it('ArrowRight/ArrowLeft move focus between top-level triggers', async () => {
+			renderBar();
+			screen.getByRole('menuitem', { name: 'File' }).focus();
+			await userEvent.keyboard('{ArrowRight}');
+			expect(screen.getByRole('menuitem', { name: 'Edit' })).toHaveFocus();
+			await userEvent.keyboard('{ArrowLeft}');
+			expect(screen.getByRole('menuitem', { name: 'File' })).toHaveFocus();
+		});
+
+		it('ArrowDown opens a menu and focuses the first submenu item', async () => {
+			renderBar();
+			screen.getByRole('menuitem', { name: 'File' }).focus();
+			await userEvent.keyboard('{ArrowDown}');
+			expect(screen.getByRole('menu')).toBeInTheDocument();
+			expect(screen.getByRole('menuitem', { name: 'New' })).toHaveFocus();
+		});
+
+		it('ArrowDown/ArrowUp move focus within an open submenu', async () => {
+			renderBar();
+			screen.getByRole('menuitem', { name: 'File' }).focus();
+			await userEvent.keyboard('{ArrowDown}'); // open, focus New
+			await userEvent.keyboard('{ArrowDown}'); // Open
+			expect(screen.getByRole('menuitem', { name: 'Open' })).toHaveFocus();
+			await userEvent.keyboard('{ArrowUp}');
+			expect(screen.getByRole('menuitem', { name: 'New' })).toHaveFocus();
+		});
+
+		it('returns focus to the trigger when the submenu closes via Escape', async () => {
+			renderBar();
+			const fileTrigger = screen.getByRole('menuitem', { name: 'File' });
+			fileTrigger.focus();
+			await userEvent.keyboard('{ArrowDown}');
+			expect(screen.getByRole('menuitem', { name: 'New' })).toHaveFocus();
+			await userEvent.keyboard('{Escape}');
+			expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+			expect(fileTrigger).toHaveFocus();
+		});
+	});
 });

@@ -1,8 +1,10 @@
 import React, { createContext, useCallback, useContext, useMemo, useRef } from 'react';
 import { useClickOutside } from '@/hooks/use-click-outside';
 import { useControllableState } from '@/hooks/use-controllable-state';
+import { useFocusTrap } from '@/hooks/use-focus-trap';
 import { useId } from '@/hooks/use-id';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect';
 import { useKeyboard } from '@/hooks/use-keyboard';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
@@ -191,11 +193,27 @@ Value.displayName = 'DatePicker.Value';
 const Content = React.forwardRef<HTMLDivElement, DatePickerContentProps>(
 	({ children, className, ...rest }, ref) => {
 		const ctx = useDatePickerContext();
+		const contentRef = useRef<HTMLDivElement | null>(null);
+		const mergedRef = useMergedRefs<HTMLDivElement>(contentRef, ref);
+
+		// Prefer landing focus on the calendar's active day (the roving-tabindex
+		// cell) rather than the first nav button, per the date-picker dialog pattern.
+		const initialFocusRef = useRef<HTMLElement | null>(null);
+		useIsomorphicLayoutEffect(() => {
+			if (!ctx.open) return;
+			initialFocusRef.current =
+				contentRef.current?.querySelector<HTMLElement>('[role="gridcell"][tabindex="0"]') ?? null;
+		}, [ctx.open]);
+
+		// Trap focus inside the popover while open and restore it to the trigger on
+		// close (Escape, outside click, or selection).
+		useFocusTrap(contentRef, { active: ctx.open, initialFocus: initialFocusRef });
+
 		if (!ctx.open) return null;
 
 		return (
 			<div
-				ref={ref}
+				ref={mergedRef}
 				id={ctx.contentId}
 				role='dialog'
 				aria-labelledby={ctx.triggerId}

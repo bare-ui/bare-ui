@@ -61,6 +61,14 @@ describe('HoverCard', () => {
 		expect(screen.queryByText('Profile card')).toBeNull();
 	});
 
+	it('Escape dismisses the hover card while the trigger is focused', () => {
+		const trigger = renderCard();
+		fireEvent.focus(trigger);
+		expect(screen.getByText('Profile card')).toBeInTheDocument();
+		fireEvent.keyDown(trigger, { key: 'Escape' });
+		expect(screen.queryByText('Profile card')).toBeNull();
+	});
+
 	it('sets data-state and data-side on the content', () => {
 		render(
 			<HoverCard.Root defaultOpen>

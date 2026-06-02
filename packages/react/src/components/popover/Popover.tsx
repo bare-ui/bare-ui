@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useMemo, useRef } from 'react';
 import { useClickOutside } from '@/hooks/use-click-outside';
 import { useControllableState } from '@/hooks/use-controllable-state';
+import { useFocusTrap } from '@/hooks/use-focus-trap';
 import { useId } from '@/hooks/use-id';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { useKeyboard } from '@/hooks/use-keyboard';
@@ -67,7 +68,7 @@ const Root = React.forwardRef<HTMLDivElement, PopoverRootProps>(
 					if (open) setOpen(false);
 				},
 			},
-			{ event: 'keyup', enabled: closeOnEscape },
+			{ event: 'keydown', enabled: open && closeOnEscape },
 		);
 
 		const triggerId = useId('popover-trigger');
@@ -133,15 +134,22 @@ Trigger.displayName = 'Popover.Trigger';
 const Content = React.forwardRef<HTMLDivElement, PopoverContentProps>(
 	({ side = 'bottom', align = 'center', forceMount = false, className, children, ...rest }, ref) => {
 		const { open, triggerId, contentId } = usePopoverContext();
+		const contentRef = useRef<HTMLDivElement | null>(null);
+		const mergedRef = useMergedRefs<HTMLDivElement>(contentRef, ref);
+
+		// Non-modal dialog: move focus into the popover on open and restore it to
+		// the trigger on close, but let Tab leave naturally (trap: false).
+		useFocusTrap(contentRef, { active: open, trap: false });
 
 		if (!open && !forceMount) return null;
 
 		return (
 			<div
-				ref={ref}
+				ref={mergedRef}
 				id={contentId}
 				role='dialog'
 				aria-labelledby={triggerId}
+				tabIndex={-1}
 				className={className}
 				hidden={!open && forceMount ? true : undefined}
 				data-state={open ? 'open' : 'closed'}

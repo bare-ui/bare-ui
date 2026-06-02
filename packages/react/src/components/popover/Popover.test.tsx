@@ -43,6 +43,23 @@ describe('Popover', () => {
 		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 	});
 
+	it('moves focus into the popover content on open', async () => {
+		renderPopover();
+		await userEvent.click(screen.getByRole('button', { name: 'Open' }));
+		const dialog = screen.getByRole('dialog');
+		// Focus lands inside the dialog (the first focusable, or the dialog container
+		// itself — jsdom can't compute layout so it falls back to the container).
+		expect(dialog === document.activeElement || dialog.contains(document.activeElement)).toBe(true);
+	});
+
+	it('returns focus to the trigger when closed via Escape', async () => {
+		renderPopover();
+		const trigger = screen.getByRole('button', { name: 'Open' });
+		await userEvent.click(trigger);
+		await userEvent.keyboard('{Escape}');
+		expect(trigger).toHaveFocus();
+	});
+
 	it('controlled mode reflects open prop and calls onOpenChange', async () => {
 		const onOpenChange = vi.fn();
 		render(

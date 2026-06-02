@@ -40,6 +40,11 @@ export interface NavigationMenuRootContextValue {
 	cancelClose: () => void;
 	/** Schedule a close after `skipDelayDuration`. Called when cursor leaves a Trigger or Content. */
 	scheduleClose: () => void;
+	/**
+	 * Set true by a keyboard-driven open so Content moves focus to its first link;
+	 * left false for pointer/hover opens (which must not steal focus).
+	 */
+	focusContentOnOpenRef: React.MutableRefObject<boolean>;
 }
 
 export interface NavigationMenuItemContextValue {

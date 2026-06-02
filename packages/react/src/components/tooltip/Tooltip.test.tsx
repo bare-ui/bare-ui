@@ -70,6 +70,14 @@ describe('Tooltip', () => {
 		await userEvent.tab();
 	});
 
+	it('Escape dismisses the tooltip while the trigger is focused', async () => {
+		const onOpenChange = vi.fn();
+		renderTooltip({ open: true, onOpenChange });
+		screen.getByRole('button', { name: 'Hover me' }).focus();
+		await userEvent.keyboard('{Escape}');
+		expect(onOpenChange).toHaveBeenCalledWith(false);
+	});
+
 	it('controlled open=true shows tooltip', () => {
 		renderTooltip({ open: true });
 		expect(screen.getByTestId('tooltip-content')).toHaveAttribute('data-state', 'open');

@@ -106,4 +106,58 @@ describe('TreeView', () => {
 		expect(middle).toHaveAttribute('aria-level', '2');
 		expect(deep).toHaveAttribute('aria-level', '3');
 	});
+
+	const row = (label: string) => screen.getByText(label).closest('[role=treeitem]') as HTMLElement;
+
+	describe('keyboard navigation', () => {
+		it('exposes exactly one tabbable treeitem (roving tabindex)', () => {
+			renderTree({ defaultExpanded: ['src'] });
+			const tabbable = screen.getAllByRole('treeitem').filter((i) => i.getAttribute('tabindex') === '0');
+			expect(tabbable).toHaveLength(1);
+			// Defaults to the first node.
+			expect(tabbable[0]).toBe(row('src'));
+		});
+
+		it('ArrowDown/ArrowUp move through visible nodes in display order', async () => {
+			renderTree({ defaultExpanded: ['src'] });
+			row('src').focus();
+			await userEvent.keyboard('{ArrowDown}');
+			expect(row('index.ts')).toHaveFocus();
+			await userEvent.keyboard('{ArrowDown}');
+			expect(row('components')).toHaveFocus();
+			await userEvent.keyboard('{ArrowUp}');
+			expect(row('index.ts')).toHaveFocus();
+		});
+
+		it('ArrowRight on an expanded node moves focus to the first child', async () => {
+			renderTree({ defaultExpanded: ['src'] });
+			row('src').focus();
+			await userEvent.keyboard('{ArrowRight}');
+			expect(row('index.ts')).toHaveFocus();
+		});
+
+		it('ArrowLeft on a leaf moves focus to the parent', async () => {
+			renderTree({ defaultExpanded: ['src'] });
+			row('index.ts').focus();
+			await userEvent.keyboard('{ArrowLeft}');
+			expect(row('src')).toHaveFocus();
+		});
+
+		it('Home/End jump to the first and last visible nodes', async () => {
+			renderTree({ defaultExpanded: ['src', 'src/components'] });
+			row('index.ts').focus();
+			await userEvent.keyboard('{End}');
+			expect(row('README.md')).toHaveFocus();
+			await userEvent.keyboard('{Home}');
+			expect(row('src')).toHaveFocus();
+		});
+
+		it('moves the roving tabindex to the focused node', async () => {
+			renderTree({ defaultExpanded: ['src'] });
+			row('src').focus();
+			await userEvent.keyboard('{ArrowDown}');
+			expect(row('index.ts')).toHaveAttribute('tabindex', '0');
+			expect(row('src')).toHaveAttribute('tabindex', '-1');
+		});
+	});
 });

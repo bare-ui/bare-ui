@@ -99,7 +99,7 @@ Root.displayName = 'HoverCard.Root';
 // ---------------------------------------------------------------------------
 
 const Trigger = React.forwardRef<HTMLSpanElement, HoverCardTriggerProps>(
-	({ children, onMouseEnter, onMouseLeave, onFocus, onBlur, ...rest }, ref) => {
+	({ children, onMouseEnter, onMouseLeave, onFocus, onBlur, onKeyDown, ...rest }, ref) => {
 		const ctx = useHoverCardContext();
 		return (
 			<span
@@ -121,6 +121,11 @@ const Trigger = React.forwardRef<HTMLSpanElement, HoverCardTriggerProps>(
 				onBlur={(e) => {
 					ctx.closeNow();
 					onBlur?.(e);
+				}}
+				onKeyDown={(e) => {
+					// APG: Escape dismisses the hover card while the trigger is focused.
+					if (e.key === 'Escape' && ctx.open) ctx.closeNow();
+					onKeyDown?.(e);
 				}}>
 				{children}
 			</span>

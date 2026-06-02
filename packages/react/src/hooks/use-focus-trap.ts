@@ -7,6 +7,13 @@ export interface UseFocusTrapOptions {
 	returnFocus?: boolean;
 	/** Element to focus initially. Defaults to the first focusable child. */
 	initialFocus?: RefObject<HTMLElement | null> | HTMLElement | null;
+	/**
+	 * Cycle Tab/Shift+Tab within the container. Set `false` for non-modal surfaces
+	 * (e.g. a popover) that should still move focus in on open and restore it on
+	 * close, but let Tab leave naturally.
+	 * @default true
+	 */
+	trap?: boolean;
 }
 
 const FOCUSABLE_SELECTOR = [
@@ -41,7 +48,7 @@ function getFocusable(container: HTMLElement): HTMLElement[] {
  * useFocusTrap(dialogRef, { active: open })
  */
 export function useFocusTrap(containerRef: RefObject<HTMLElement | null>, options: UseFocusTrapOptions = {}) {
-	const { active = true, returnFocus = true, initialFocus } = options;
+	const { active = true, returnFocus = true, initialFocus, trap = true } = options;
 
 	useEffect(() => {
 		if (!active) return;
@@ -79,13 +86,13 @@ export function useFocusTrap(containerRef: RefObject<HTMLElement | null>, option
 			}
 		}
 
-		document.addEventListener('keydown', handleKeyDown);
+		if (trap) document.addEventListener('keydown', handleKeyDown);
 
 		return () => {
-			document.removeEventListener('keydown', handleKeyDown);
+			if (trap) document.removeEventListener('keydown', handleKeyDown);
 			if (returnFocus && previouslyFocused && typeof previouslyFocused.focus === 'function') {
 				previouslyFocused.focus();
 			}
 		};
-	}, [active, containerRef, returnFocus, initialFocus]);
+	}, [active, containerRef, returnFocus, initialFocus, trap]);
 }

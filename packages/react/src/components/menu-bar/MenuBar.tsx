@@ -3,6 +3,7 @@ import { useClickOutside } from '@/hooks/use-click-outside';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { useKeyboard } from '@/hooks/use-keyboard';
+import { useMenuNavigation } from '@/hooks/use-menu-navigation';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type {
@@ -87,6 +88,7 @@ const Root = React.forwardRef<HTMLDivElement, MenuBarRootProps>(
 				<div
 					ref={mergedRef}
 					role='menubar'
+					aria-orientation='horizontal'
 					className={className}
 					{...rest}>
 					{children}
@@ -141,11 +143,28 @@ Menu.displayName = 'MenuBar.Menu';
 // ---------------------------------------------------------------------------
 
 const Trigger = React.forwardRef<HTMLButtonElement, MenuBarTriggerProps>(
-	({ disabled = false, children, className, onClick, onPointerEnter, ...rest }, ref) => {
+	({ disabled = false, children, className, onClick, onPointerEnter, onKeyDown, ...rest }, ref) => {
 		const bar = useBarContext();
 		const menu = useMenuContext();
 		const { handlers, dataAttributes } = useInteractiveState({ disabled });
 		const merged = mergeProps(rest as Record<string, unknown>, handlers as Record<string, unknown>);
+
+		// Move focus between top-level triggers; if a menu is already open, opening
+		// follows focus (APG Menubar).
+		const focusSibling = (current: HTMLElement, delta: number) => {
+			const menubarEl = current.closest('[role="menubar"]');
+			if (!menubarEl) return;
+			const triggers = Array.from(
+				menubarEl.querySelectorAll<HTMLElement>('[role="menuitem"][aria-haspopup="menu"]'),
+			).filter((t) => !t.hasAttribute('disabled'));
+			const idx = triggers.indexOf(current);
+			if (idx < 0) return;
+			const wasOpen = current.getAttribute('aria-expanded') === 'true';
+			const next = triggers[(idx + delta + triggers.length) % triggers.length];
+			next.focus();
+			// If a menu was open, opening follows focus to the adjacent menu.
+			if (wasOpen && next !== current) next.click();
+		};
 
 		return (
 			<button
@@ -155,6 +174,7 @@ const Trigger = React.forwardRef<HTMLButtonElement, MenuBarTriggerProps>(
 				disabled={disabled}
 				aria-haspopup='menu'
 				aria-expanded={menu.open}
+				data-menu-value={menu.value}
 				className={className}
 				data-state={menu.open ? 'open' : 'closed'}
 				{...dataAttributes}
@@ -167,6 +187,25 @@ const Trigger = React.forwardRef<HTMLButtonElement, MenuBarTriggerProps>(
 					// If any other menu is open, hovering switches focus to this one.
 					if (bar.openMenu && bar.openMenu !== menu.value) bar.setOpenMenu(menu.value);
 					onPointerEnter?.(e);
+				}}
+				onKeyDown={(e) => {
+					switch (e.key) {
+						case 'ArrowRight':
+							e.preventDefault();
+							focusSibling(e.currentTarget, 1);
+							break;
+						case 'ArrowLeft':
+							e.preventDefault();
+							focusSibling(e.currentTarget, -1);
+							break;
+						case 'ArrowDown':
+						case 'ArrowUp':
+							// Open this menu; focus moves into the first submenu item.
+							e.preventDefault();
+							if (!menu.open) menu.open_();
+							break;
+					}
+					onKeyDown?.(e);
 				}}>
 				{children}
 			</button>
@@ -180,16 +219,27 @@ Trigger.displayName = 'MenuBar.Trigger';
 // ---------------------------------------------------------------------------
 
 const Content = React.forwardRef<HTMLDivElement, MenuBarContentProps>(
-	({ children, className, ...rest }, ref) => {
+	({ children, className, onKeyDown, ...rest }, ref) => {
 		const menu = useMenuContext();
+		const contentRef = useRef<HTMLDivElement | null>(null);
+		const mergedRef = useMergedRefs<HTMLDivElement>(contentRef, ref);
+		const { onKeyDown: onMenuKeyDown } = useMenuNavigation(contentRef, {
+			open: menu.open,
+			onClose: menu.close,
+		});
+
 		if (!menu.open) return null;
 
 		return (
 			<div
-				ref={ref}
+				ref={mergedRef}
 				role='menu'
 				className={className}
 				data-state='open'
+				onKeyDown={(e) => {
+					onMenuKeyDown(e);
+					onKeyDown?.(e);
+				}}
 				{...rest}>
 				{children}
 			</div>
@@ -218,7 +268,8 @@ const Item = React.forwardRef<HTMLDivElement, MenuBarItemProps>(
 			<div
 				ref={ref}
 				role='menuitem'
-				tabIndex={disabled ? -1 : 0}
+				// Roving tabindex managed by useMenuNavigation on the parent menu.
+				tabIndex={-1}
 				aria-disabled={disabled || undefined}
 				className={className}
 				data-disabled={disabled ? '' : undefined}

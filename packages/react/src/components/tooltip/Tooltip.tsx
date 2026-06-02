@@ -56,8 +56,8 @@ Root.displayName = 'Tooltip.Root';
 // ---------------------------------------------------------------------------
 
 const Trigger = React.forwardRef<HTMLSpanElement, TooltipTriggerProps>(
-	({ children, onMouseEnter, onMouseLeave, onFocus, onBlur, ...rest }, ref) => {
-		const { setOpen, contentId } = useContext(TooltipContext);
+	({ children, onMouseEnter, onMouseLeave, onFocus, onBlur, onKeyDown, ...rest }, ref) => {
+		const { open, setOpen, contentId } = useContext(TooltipContext);
 
 		return (
 			<span
@@ -78,6 +78,11 @@ const Trigger = React.forwardRef<HTMLSpanElement, TooltipTriggerProps>(
 				onBlur={(e) => {
 					setOpen(false);
 					onBlur?.(e);
+				}}
+				onKeyDown={(e) => {
+					// APG: Escape dismisses the tooltip while the trigger is focused.
+					if (e.key === 'Escape' && open) setOpen(false);
+					onKeyDown?.(e);
 				}}
 				{...rest}>
 				{children}

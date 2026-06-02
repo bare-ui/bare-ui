@@ -52,4 +52,19 @@ describe('DatePicker', () => {
 		await userEvent.keyboard('{Escape}');
 		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 	});
+
+	it('moves focus into the calendar grid when opened', async () => {
+		renderDP();
+		await userEvent.click(screen.getByRole('button', { name: 'Pick a date' }));
+		expect(document.activeElement).toHaveAttribute('role', 'gridcell');
+		expect(document.activeElement).toHaveAttribute('tabindex', '0');
+	});
+
+	it('returns focus to the trigger when closed via Escape', async () => {
+		renderDP();
+		const trigger = screen.getByRole('button', { name: 'Pick a date' });
+		await userEvent.click(trigger);
+		await userEvent.keyboard('{Escape}');
+		expect(trigger).toHaveFocus();
+	});
 });
