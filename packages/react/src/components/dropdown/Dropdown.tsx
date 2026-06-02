@@ -3,6 +3,7 @@ import { useClickOutside } from '@/hooks/use-click-outside';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { useKeyboard } from '@/hooks/use-keyboard';
+import { useMenuNavigation } from '@/hooks/use-menu-navigation';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type {
@@ -80,6 +81,14 @@ const Trigger = React.forwardRef<HTMLButtonElement, DropdownTriggerProps>(({ chi
 			onClick={(e) => {
 				onOpenChange(!open);
 				(rest.onClick as ((e: React.MouseEvent<HTMLButtonElement>) => void) | undefined)?.(e);
+			}}
+			onKeyDown={(e) => {
+				// ArrowDown/ArrowUp open the menu; focus then moves to the first item.
+				if (!open && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+					e.preventDefault();
+					onOpenChange(true);
+				}
+				(rest.onKeyDown as ((e: React.KeyboardEvent<HTMLButtonElement>) => void) | undefined)?.(e);
 			}}>
 			{children}
 		</button>
@@ -88,23 +97,35 @@ const Trigger = React.forwardRef<HTMLButtonElement, DropdownTriggerProps>(({ chi
 
 Trigger.displayName = 'Dropdown.Trigger';
 
-const Menu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(({ position, children, className, ...rest }, ref) => {
-	const { open } = useDropdownContext();
+const Menu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
+	({ position, children, className, onKeyDown, ...rest }, ref) => {
+		const { open, onOpenChange } = useDropdownContext();
+		const menuRef = useRef<HTMLDivElement | null>(null);
+		const mergedRef = useMergedRefs<HTMLDivElement>(menuRef, ref);
+		const { onKeyDown: onMenuKeyDown } = useMenuNavigation(menuRef, {
+			open,
+			onClose: () => onOpenChange(false),
+		});
 
-	if (!open) return null;
+		if (!open) return null;
 
-	return (
-		<div
-			ref={ref}
-			role='menu'
-			className={className}
-			data-state={open ? 'open' : 'closed'}
-			data-position={position}
-			{...rest}>
-			{children}
-		</div>
-	);
-});
+		return (
+			<div
+				ref={mergedRef}
+				role='menu'
+				className={className}
+				data-state={open ? 'open' : 'closed'}
+				data-position={position}
+				onKeyDown={(e) => {
+					onMenuKeyDown(e);
+					onKeyDown?.(e);
+				}}
+				{...rest}>
+				{children}
+			</div>
+		);
+	},
+);
 
 Menu.displayName = 'Dropdown.Menu';
 

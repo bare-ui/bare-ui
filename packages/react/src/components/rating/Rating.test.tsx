@@ -115,4 +115,45 @@ describe('Rating', () => {
 		renderRating();
 		expect(screen.getByRole('group')).toBeInTheDocument();
 	});
+
+	describe('keyboard navigation', () => {
+		it('exposes a single tabbable star (roving tabindex), defaulting to the selection', () => {
+			renderRating({ defaultValue: 3 });
+			const tabbable = screen.getAllByRole('button').filter((s) => s.getAttribute('tabindex') === '0');
+			expect(tabbable).toHaveLength(1);
+			expect(tabbable[0]).toHaveAccessibleName('3 out of 5 stars');
+		});
+
+		it('ArrowRight/ArrowLeft increase and decrease the rating', async () => {
+			const onChange = vi.fn();
+			renderRating({ defaultValue: 2, onChange });
+			screen.getByRole('button', { name: '2 out of 5 stars' }).focus();
+			await userEvent.keyboard('{ArrowRight}');
+			expect(onChange).toHaveBeenLastCalledWith(3);
+			expect(screen.getByRole('button', { name: '3 out of 5 stars' })).toHaveFocus();
+			await userEvent.keyboard('{ArrowLeft}{ArrowLeft}');
+			expect(onChange).toHaveBeenLastCalledWith(1);
+		});
+
+		it('clamps at the ends and supports Home/End', async () => {
+			const onChange = vi.fn();
+			renderRating({ defaultValue: 3, onChange });
+			screen.getByRole('button', { name: '3 out of 5 stars' }).focus();
+			await userEvent.keyboard('{End}');
+			expect(onChange).toHaveBeenLastCalledWith(5);
+			expect(screen.getByRole('button', { name: '5 out of 5 stars' })).toHaveFocus();
+			await userEvent.keyboard('{ArrowRight}'); // already at max
+			expect(onChange).toHaveBeenLastCalledWith(5);
+			await userEvent.keyboard('{Home}');
+			expect(onChange).toHaveBeenLastCalledWith(1);
+		});
+
+		it('reflects the selected value as aria-pressed on the stars', () => {
+			renderRating({ defaultValue: 3 });
+			const stars = screen.getAllByRole('button');
+			expect(stars[0]).toHaveAttribute('aria-pressed', 'true');
+			expect(stars[2]).toHaveAttribute('aria-pressed', 'true');
+			expect(stars[3]).toHaveAttribute('aria-pressed', 'false');
+		});
+	});
 });

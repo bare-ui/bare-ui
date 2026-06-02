@@ -16,6 +16,12 @@ export interface CheckboxItemProps extends Omit<React.HTMLAttributes<HTMLDivElem
 	value: string | number;
 	/** Disable this checkbox item. */
 	disabled?: boolean;
+	/**
+	 * Show the mixed/partial state (e.g. a "select all" that is only partly
+	 * checked). Sets the native input's `indeterminate` property so assistive tech
+	 * announces `aria-checked="mixed"`.
+	 */
+	indeterminate?: boolean;
 	children?: React.ReactNode;
 }
 

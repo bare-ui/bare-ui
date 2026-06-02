@@ -14,6 +14,9 @@ export type {
 export { useFocusTrap } from './use-focus-trap';
 export type { UseFocusTrapOptions } from './use-focus-trap';
 
+export { useMenuNavigation } from './use-menu-navigation';
+export type { UseMenuNavigationOptions } from './use-menu-navigation';
+
 export { useScrollLock } from './use-scroll-lock';
 
 export { useDisclosure } from './use-disclosure';

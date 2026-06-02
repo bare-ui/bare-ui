@@ -61,6 +61,7 @@ const Root = React.forwardRef<HTMLDivElement, EditableRootProps>(
 			onChange: onEditingChange,
 		});
 		const [draft, setDraft] = useState(value);
+		const returnFocusRef = useRef(false);
 
 		const startEdit = useCallback(() => {
 			if (disabled) return;
@@ -92,6 +93,7 @@ const Root = React.forwardRef<HTMLDivElement, EditableRootProps>(
 			startEdit,
 			cancel,
 			submit,
+			returnFocusRef,
 		};
 
 		return (
@@ -118,13 +120,25 @@ Root.displayName = 'Editable.Root';
 const Preview = React.forwardRef<HTMLSpanElement, EditablePreviewProps>(
 	({ className, children, onClick, onKeyDown, ...rest }, ref) => {
 		const ctx = useEditableContext();
+		const { returnFocusRef } = ctx;
+		const previewRef = useRef<HTMLSpanElement | null>(null);
+		const mergedRef = useMergedRefs(previewRef, ref);
+
+		// When the edit field closed via keyboard, return focus here (the trigger).
+		useIsomorphicLayoutEffect(() => {
+			if (!ctx.isEditing && returnFocusRef.current) {
+				returnFocusRef.current = false;
+				previewRef.current?.focus();
+			}
+		}, [ctx.isEditing, returnFocusRef]);
+
 		if (ctx.isEditing) return null;
 
 		const isEmpty = ctx.value.length === 0;
 
 		return (
 			<span
-				ref={ref}
+				ref={mergedRef}
 				role='button'
 				tabIndex={ctx.disabled ? -1 : 0}
 				aria-disabled={ctx.disabled || undefined}
@@ -157,13 +171,16 @@ Preview.displayName = 'Editable.Preview';
 
 function useEditFieldHandlers(multiline: boolean) {
 	const ctx = useEditableContext();
+	const { returnFocusRef } = ctx;
 
 	const onKeyDown = (e: React.KeyboardEvent) => {
 		if (e.key === 'Escape') {
 			e.preventDefault();
+			returnFocusRef.current = true;
 			ctx.cancel();
 		} else if (e.key === 'Enter' && (!multiline || e.metaKey || e.ctrlKey)) {
 			e.preventDefault();
+			returnFocusRef.current = true;
 			ctx.submit();
 		}
 	};
@@ -288,6 +305,7 @@ EditTrigger.displayName = 'Editable.EditTrigger';
 const SubmitTrigger = React.forwardRef<HTMLButtonElement, EditableSubmitTriggerProps>(
 	({ className, children, onClick, ...rest }, ref) => {
 		const ctx = useEditableContext();
+		const { returnFocusRef } = ctx;
 		if (!ctx.isEditing) return null;
 		return (
 			<button
@@ -298,6 +316,7 @@ const SubmitTrigger = React.forwardRef<HTMLButtonElement, EditableSubmitTriggerP
 				// Run before the field's blur-submit so both don't fire twice.
 				onMouseDown={(e) => e.preventDefault()}
 				onClick={(e) => {
+					returnFocusRef.current = true;
 					ctx.submit();
 					onClick?.(e);
 				}}>
@@ -312,6 +331,7 @@ SubmitTrigger.displayName = 'Editable.SubmitTrigger';
 const CancelTrigger = React.forwardRef<HTMLButtonElement, EditableCancelTriggerProps>(
 	({ className, children, onClick, ...rest }, ref) => {
 		const ctx = useEditableContext();
+		const { returnFocusRef } = ctx;
 		if (!ctx.isEditing) return null;
 		return (
 			<button
@@ -321,6 +341,7 @@ const CancelTrigger = React.forwardRef<HTMLButtonElement, EditableCancelTriggerP
 				{...rest}
 				onMouseDown={(e) => e.preventDefault()}
 				onClick={(e) => {
+					returnFocusRef.current = true;
 					ctx.cancel();
 					onClick?.(e);
 				}}>

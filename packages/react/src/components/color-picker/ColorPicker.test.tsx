@@ -75,6 +75,34 @@ describe('ColorPicker', () => {
 		expect(hue).toHaveAttribute('aria-valuenow', '1');
 	});
 
+	it('Home/End jump the hue slider to its min and max', () => {
+		renderPicker();
+		const hue = screen.getByTestId('hue');
+		fireEvent.keyDown(hue, { key: 'End' });
+		expect(hue).toHaveAttribute('aria-valuenow', '360');
+		fireEvent.keyDown(hue, { key: 'Home' });
+		expect(hue).toHaveAttribute('aria-valuenow', '0');
+	});
+
+	it('PageUp/PageDown move the hue slider by a coarse step', () => {
+		renderPicker();
+		const hue = screen.getByTestId('hue');
+		fireEvent.keyDown(hue, { key: 'Home' }); // 0
+		fireEvent.keyDown(hue, { key: 'PageUp' });
+		expect(hue).toHaveAttribute('aria-valuenow', '10');
+		fireEvent.keyDown(hue, { key: 'PageDown' });
+		expect(hue).toHaveAttribute('aria-valuenow', '0');
+	});
+
+	it('Home/End jump the alpha slider to fully transparent and opaque', () => {
+		renderPicker();
+		const alpha = screen.getByTestId('alpha');
+		fireEvent.keyDown(alpha, { key: 'Home' });
+		expect(alpha).toHaveAttribute('aria-valuenow', '0');
+		fireEvent.keyDown(alpha, { key: 'End' });
+		expect(alpha).toHaveAttribute('aria-valuenow', '1');
+	});
+
 	it('adjusts alpha and emits an 8-digit hex', () => {
 		const onChange = vi.fn();
 		renderPicker({ onChange });

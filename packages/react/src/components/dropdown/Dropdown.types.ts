@@ -19,11 +19,10 @@ export interface DropdownTriggerProps extends Omit<React.ButtonHTMLAttributes<HT
 	asChild?: boolean;
 }
 
-export interface DropdownMenuProps {
+export interface DropdownMenuProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
 	/** Horizontal alignment of the menu relative to the trigger. */
 	position?: DropdownPosition;
 	children?: React.ReactNode;
-	className?: string;
 }
 
 export interface DropdownContextValue {

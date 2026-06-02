@@ -191,6 +191,18 @@ const Area = React.forwardRef<HTMLDivElement, ColorPickerAreaProps>(
 					} else if (e.key === 'ArrowDown') {
 						e.preventDefault();
 						ctx.setSaturationValue(s, clamp(v - 1, 0, 100));
+					} else if (e.key === 'PageUp') {
+						e.preventDefault();
+						ctx.setSaturationValue(s, clamp(v + 10, 0, 100));
+					} else if (e.key === 'PageDown') {
+						e.preventDefault();
+						ctx.setSaturationValue(s, clamp(v - 10, 0, 100));
+					} else if (e.key === 'Home') {
+						e.preventDefault();
+						ctx.setSaturationValue(0, v);
+					} else if (e.key === 'End') {
+						e.preventDefault();
+						ctx.setSaturationValue(100, v);
 					}
 				}}>
 				{children}
@@ -259,6 +271,18 @@ const Hue = React.forwardRef<HTMLDivElement, ColorPickerHueProps>(
 					} else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
 						e.preventDefault();
 						ctx.setHue(clamp(ctx.hsva.h + 1, 0, 360));
+					} else if (e.key === 'PageDown') {
+						e.preventDefault();
+						ctx.setHue(clamp(ctx.hsva.h - 10, 0, 360));
+					} else if (e.key === 'PageUp') {
+						e.preventDefault();
+						ctx.setHue(clamp(ctx.hsva.h + 10, 0, 360));
+					} else if (e.key === 'Home') {
+						e.preventDefault();
+						ctx.setHue(0);
+					} else if (e.key === 'End') {
+						e.preventDefault();
+						ctx.setHue(360);
 					}
 				}}>
 				{children}
@@ -330,6 +354,18 @@ const Alpha = React.forwardRef<HTMLDivElement, ColorPickerAlphaProps>(
 					} else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
 						e.preventDefault();
 						ctx.setAlpha(clamp(ctx.hsva.a + 0.01, 0, 1));
+					} else if (e.key === 'PageDown') {
+						e.preventDefault();
+						ctx.setAlpha(clamp(ctx.hsva.a - 0.1, 0, 1));
+					} else if (e.key === 'PageUp') {
+						e.preventDefault();
+						ctx.setAlpha(clamp(ctx.hsva.a + 0.1, 0, 1));
+					} else if (e.key === 'Home') {
+						e.preventDefault();
+						ctx.setAlpha(0);
+					} else if (e.key === 'End') {
+						e.preventDefault();
+						ctx.setAlpha(1);
 					}
 				}}>
 				{children}

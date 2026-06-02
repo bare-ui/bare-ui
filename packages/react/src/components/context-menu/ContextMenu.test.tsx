@@ -62,4 +62,44 @@ describe('ContextMenu', () => {
 		await userEvent.keyboard('{Escape}');
 		expect(screen.queryByRole('menu')).not.toBeInTheDocument();
 	});
+
+	describe('keyboard navigation', () => {
+		it('focuses the first item when opened', () => {
+			renderCM();
+			fireEvent.contextMenu(screen.getByTestId('trigger'));
+			expect(screen.getByRole('menuitem', { name: 'Cut' })).toHaveFocus();
+		});
+
+		it('ArrowDown/ArrowUp move focus and skip disabled items', async () => {
+			renderCM();
+			fireEvent.contextMenu(screen.getByTestId('trigger'));
+			expect(screen.getByRole('menuitem', { name: 'Cut' })).toHaveFocus();
+			await userEvent.keyboard('{ArrowDown}');
+			expect(screen.getByRole('menuitem', { name: 'Copy' })).toHaveFocus();
+			// "Paste" is disabled and excluded; ArrowDown wraps to "Cut".
+			await userEvent.keyboard('{ArrowDown}');
+			expect(screen.getByRole('menuitem', { name: 'Cut' })).toHaveFocus();
+			await userEvent.keyboard('{ArrowUp}');
+			expect(screen.getByRole('menuitem', { name: 'Copy' })).toHaveFocus();
+		});
+
+		it('only one item is tabbable at a time (roving tabindex)', () => {
+			renderCM();
+			fireEvent.contextMenu(screen.getByTestId('trigger'));
+			const tabbable = screen
+				.getAllByRole('menuitem')
+				.filter((i) => i.getAttribute('tabindex') === '0');
+			expect(tabbable).toHaveLength(1);
+			expect(tabbable[0]).toHaveAccessibleName('Cut');
+		});
+
+		it('Enter on a focused item selects it and closes', async () => {
+			const onSelect = vi.fn();
+			renderCM(onSelect);
+			fireEvent.contextMenu(screen.getByTestId('trigger'));
+			await userEvent.keyboard('{Enter}');
+			expect(onSelect).toHaveBeenCalled();
+			expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+		});
+	});
 });

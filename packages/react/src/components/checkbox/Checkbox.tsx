@@ -1,6 +1,8 @@
-import React, { createContext, useCallback, useContext, useId, useMemo } from 'react';
+import React, { createContext, useCallback, useContext, useId, useMemo, useRef } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect';
+import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { Helper } from '@/utils/helper';
 import type {
 	CheckboxContextValue,
@@ -91,17 +93,26 @@ const Root = React.forwardRef<HTMLDivElement, CheckboxRootProps>(
 Root.displayName = 'Checkbox.Root';
 
 const Item = React.forwardRef<HTMLInputElement, CheckboxItemProps>(
-	({ value, disabled = false, children, className, onClick, ...rest }, ref) => {
+	({ value, disabled = false, indeterminate = false, children, className, onClick, ...rest }, ref) => {
 		const ctx = useCheckboxContext();
 		const checked = ctx.isChecked(value);
 		const inputId = useId();
 		const { handlers, dataAttributes } = useInteractiveState({ disabled });
+		const inputRef = useRef<HTMLInputElement | null>(null);
+		const mergedRef = useMergedRefs(inputRef, ref);
+
+		// `indeterminate` is a DOM property, not an attribute — keep it in sync so the
+		// native control announces aria-checked="mixed".
+		useIsomorphicLayoutEffect(() => {
+			if (inputRef.current) inputRef.current.indeterminate = indeterminate;
+		}, [indeterminate, checked]);
 
 		return (
 			<CheckboxItemContext.Provider value={{ value, disabled, checked, inputId }}>
 				<div
 					className={className}
 					data-checked={checked ? '' : undefined}
+					data-indeterminate={indeterminate ? '' : undefined}
 					{...dataAttributes}
 					onMouseEnter={handlers.onMouseEnter}
 					onMouseLeave={handlers.onMouseLeave}
@@ -113,7 +124,7 @@ const Item = React.forwardRef<HTMLInputElement, CheckboxItemProps>(
 					}}
 					{...rest}>
 					<input
-						ref={ref}
+						ref={mergedRef}
 						id={inputId}
 						type='checkbox'
 						name={ctx.name}

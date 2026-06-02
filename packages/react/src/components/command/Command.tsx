@@ -123,14 +123,34 @@ const Root = React.forwardRef<HTMLDivElement, CommandRootProps>(
 
 		const moveActive = useCallback(
 			(delta: number) => {
-				if (visible.length === 0) return;
-				const currentIndex = activeValue ? visible.indexOf(activeValue) : -1;
-				let nextIndex = currentIndex + delta;
-				if (nextIndex < 0) nextIndex = loop ? visible.length - 1 : 0;
-				else if (nextIndex >= visible.length) nextIndex = loop ? 0 : visible.length - 1;
-				setActiveRaw(visible[nextIndex]);
+				const len = visible.length;
+				if (len === 0) return;
+				const startIndex = activeValue ? visible.indexOf(activeValue) : -1;
+				let i = startIndex;
+				// Step in `delta` direction, skipping disabled options, until an enabled
+				// one is found or we run out of candidates.
+				for (let step = 0; step < len; step++) {
+					let nextIndex = i + delta;
+					if (nextIndex < 0) nextIndex = loop ? len - 1 : 0;
+					else if (nextIndex >= len) nextIndex = loop ? 0 : len - 1;
+					if (nextIndex === i) break; // hit a non-looping boundary
+					i = nextIndex;
+					if (!registryRef.current.get(visible[i])?.disabled) {
+						setActiveRaw(visible[i]);
+						return;
+					}
+				}
 			},
 			[visible, activeValue, loop],
+		);
+
+		const setActiveEdge = useCallback(
+			(edge: 'first' | 'last') => {
+				const ordered = edge === 'first' ? visible : [...visible].reverse();
+				const found = ordered.find((value) => !registryRef.current.get(value)?.disabled);
+				if (found) setActiveRaw(found);
+			},
+			[visible],
 		);
 
 		const close = useCallback(() => {
@@ -171,6 +191,7 @@ const Root = React.forwardRef<HTMLDivElement, CommandRootProps>(
 				activeValue,
 				setActiveValue,
 				moveActive,
+				setActiveEdge,
 				registerItem,
 				selectItem,
 				isVisible: (value) => visible.includes(value),
@@ -187,6 +208,7 @@ const Root = React.forwardRef<HTMLDivElement, CommandRootProps>(
 				activeValue,
 				setActiveValue,
 				moveActive,
+				setActiveEdge,
 				registerItem,
 				selectItem,
 				groupHasVisible,
@@ -246,6 +268,12 @@ const Input = React.forwardRef<HTMLInputElement, CommandInputProps>(({ className
 				} else if (e.key === 'ArrowUp') {
 					e.preventDefault();
 					ctx.moveActive(-1);
+				} else if (e.key === 'Home') {
+					e.preventDefault();
+					ctx.setActiveEdge('first');
+				} else if (e.key === 'End') {
+					e.preventDefault();
+					ctx.setActiveEdge('last');
 				} else if (e.key === 'Enter' && ctx.activeValue) {
 					e.preventDefault();
 					ctx.selectItem(ctx.activeValue);

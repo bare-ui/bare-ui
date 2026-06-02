@@ -164,4 +164,53 @@ describe('Command', () => {
 		expect(() => render(<Command.Item value='x'>x</Command.Item>)).toThrow(/Command.Root/);
 		spy.mockRestore();
 	});
+
+	describe('keyboard navigation', () => {
+		it('ArrowDown skips disabled items', async () => {
+			const user = userEvent.setup();
+			renderCommand();
+			const input = screen.getByLabelText('command');
+			input.focus();
+			await user.keyboard('{ArrowDown}{ArrowDown}'); // Calendar -> Calculator -> Profile
+			expect(screen.getByText('Profile')).toHaveAttribute('data-active', '');
+			// Billing is disabled; ArrowDown wraps back to Calendar (loop default).
+			await user.keyboard('{ArrowDown}');
+			expect(screen.getByText('Calendar')).toHaveAttribute('data-active', '');
+			expect(screen.getByText('Billing')).not.toHaveAttribute('data-active', '');
+		});
+
+		it('Home/End jump to the first and last enabled items', async () => {
+			const user = userEvent.setup();
+			renderCommand();
+			const input = screen.getByLabelText('command');
+			input.focus();
+			await user.keyboard('{End}'); // last enabled = Profile (Billing disabled)
+			expect(screen.getByText('Profile')).toHaveAttribute('data-active', '');
+			await user.keyboard('{Home}');
+			expect(screen.getByText('Calendar')).toHaveAttribute('data-active', '');
+		});
+
+		it('Enter on a disabled active item is impossible — Enter selects only enabled', async () => {
+			const onSelect = vi.fn();
+			const user = userEvent.setup();
+			render(
+				<Command.Root onSelect={onSelect}>
+					<Command.Input aria-label='command' />
+					<Command.List>
+						<Command.Item value='Profile'>Profile</Command.Item>
+						<Command.Item value='Billing' disabled>
+							Billing
+						</Command.Item>
+					</Command.List>
+				</Command.Root>,
+			);
+			const input = screen.getByLabelText('command');
+			input.focus();
+			// Active starts on Profile; ArrowDown can't land on the disabled Billing.
+			await user.keyboard('{ArrowDown}');
+			expect(screen.getByText('Profile')).toHaveAttribute('data-active', '');
+			await user.keyboard('{Enter}');
+			expect(onSelect).toHaveBeenCalledWith('Profile');
+		});
+	});
 });

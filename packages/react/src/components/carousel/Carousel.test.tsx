@@ -103,4 +103,14 @@ describe('Carousel', () => {
 		expect(() => render(<Carousel.Slide>x</Carousel.Slide>)).toThrow(/Carousel.Root/);
 		spy.mockRestore();
 	});
+
+	it('announces the active slide via a polite live region', () => {
+		renderCarousel();
+		const live = document.querySelector('[aria-live="polite"]');
+		expect(live).not.toBeNull();
+		expect(live).toHaveTextContent('Slide 1 of 4');
+		const viewport = screen.getByLabelText('Gallery');
+		fireEvent.keyDown(viewport, { key: 'ArrowRight' });
+		expect(live).toHaveTextContent('Slide 2 of 4');
+	});
 });

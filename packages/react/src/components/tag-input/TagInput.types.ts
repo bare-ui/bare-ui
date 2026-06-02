@@ -22,6 +22,19 @@ export interface TagInputRootProps
 
 export type TagInputListProps = React.HTMLAttributes<HTMLDivElement>;
 
+export interface TagInputTagProps extends React.HTMLAttributes<HTMLSpanElement> {
+	/** The tag's text — used for the remove button's accessible name. */
+	label: string;
+	/** Remove this tag (wire to the `remove` argument from `TagInput.Items`). */
+	onRemove: () => void;
+	/** Override the remove button's accessible name. Defaults to `Remove {label}`. */
+	removeLabel?: string;
+	/** Content of the remove button (defaults to "×"). */
+	removeContent?: React.ReactNode;
+	/** Class applied to the built-in remove button. */
+	removeClassName?: string;
+}
+
 export type TagInputFieldProps = Omit<
 	React.InputHTMLAttributes<HTMLInputElement>,
 	'value' | 'defaultValue' | 'onChange'

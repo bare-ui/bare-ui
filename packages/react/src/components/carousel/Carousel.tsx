@@ -149,6 +149,24 @@ const Root = React.forwardRef<HTMLDivElement, CarouselRootProps>(
 					data-orientation={orientation}
 					{...rest}>
 					{children}
+					{/* Polite live region announcing the active slide to screen readers. */}
+					<div
+						aria-live='polite'
+						aria-atomic='true'
+						style={{
+							position: 'absolute',
+							width: 1,
+							height: 1,
+							margin: -1,
+							padding: 0,
+							border: 0,
+							overflow: 'hidden',
+							clip: 'rect(0 0 0 0)',
+							clipPath: 'inset(50%)',
+							whiteSpace: 'nowrap',
+						}}>
+						{count > 0 ? `Slide ${current + 1} of ${count}` : ''}
+					</div>
 				</div>
 			</CarouselContext.Provider>
 		);

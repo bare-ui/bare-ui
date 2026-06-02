@@ -25,9 +25,9 @@ function renderCalendar(props: Partial<React.ComponentProps<typeof Calendar.Root
 }
 
 describe('Calendar — screen reader semantics', () => {
-	it('exposes the calendar as a labelled application region', () => {
+	it('exposes the days as a grid named by the visible month', () => {
 		renderCalendar();
-		expectExposedAs('application', 'Calendar');
+		expectExposedAs('grid', 'January 2024');
 	});
 
 	it('exposes the days as a grid laid out in rows', () => {

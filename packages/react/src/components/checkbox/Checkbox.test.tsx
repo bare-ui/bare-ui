@@ -104,4 +104,17 @@ describe('Checkbox', () => {
 		expect(screen.getByText('Option A').closest('div')).toHaveAttribute('data-checked', '');
 		expect(screen.getByText('Option B').closest('div')).toHaveAttribute('data-checked', '');
 	});
+
+	it('indeterminate sets the native input property and a data hook', () => {
+		render(
+			<Checkbox.Root>
+				<Checkbox.Item value='all' indeterminate>
+					<Checkbox.Label>Select all</Checkbox.Label>
+				</Checkbox.Item>
+			</Checkbox.Root>,
+		);
+		const input = screen.getByRole('checkbox') as HTMLInputElement;
+		expect(input.indeterminate).toBe(true);
+		expect(screen.getByText('Select all').closest('div')).toHaveAttribute('data-indeterminate', '');
+	});
 });

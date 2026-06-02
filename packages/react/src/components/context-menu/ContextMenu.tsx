@@ -4,6 +4,7 @@ import { useControllableState } from '@/hooks/use-controllable-state';
 import { useEventListener } from '@/hooks/use-event-listener';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { useKeyboard } from '@/hooks/use-keyboard';
+import { useMenuNavigation } from '@/hooks/use-menu-navigation';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 
@@ -193,9 +194,13 @@ Trigger.displayName = 'ContextMenu.Trigger';
 // ---------------------------------------------------------------------------
 
 const Content = React.forwardRef<HTMLDivElement, ContextMenuContentProps>(
-	({ children, className, style, ...rest }, ref) => {
+	({ children, className, style, onKeyDown, ...rest }, ref) => {
 		const ctx = useContextMenuContext();
 		const mergedRef = useMergedRefs<HTMLDivElement>(ctx.contentRef, ref);
+		const { onKeyDown: onMenuKeyDown } = useMenuNavigation(ctx.contentRef, {
+			open: ctx.open,
+			onClose: ctx.close,
+		});
 
 		if (!ctx.open) return null;
 		if (typeof document === 'undefined') return null;
@@ -212,6 +217,10 @@ const Content = React.forwardRef<HTMLDivElement, ContextMenuContentProps>(
 					top: ctx.position.y,
 					zIndex: 50,
 					...style,
+				}}
+				onKeyDown={(e) => {
+					onMenuKeyDown(e);
+					onKeyDown?.(e);
 				}}
 				{...rest}>
 				{children}
@@ -246,7 +255,9 @@ const Item = React.forwardRef<HTMLDivElement, ContextMenuItemProps>(
 			<div
 				ref={ref}
 				role='menuitem'
-				tabIndex={disabled ? -1 : 0}
+				// Roving tabindex: useMenuNavigation makes exactly one item tabbable and
+				// moves focus with the arrow keys, so Tab exits the menu.
+				tabIndex={-1}
 				aria-disabled={disabled || undefined}
 				className={className}
 				data-disabled={disabled ? '' : undefined}

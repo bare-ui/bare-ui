@@ -61,6 +61,22 @@ describe('Editable', () => {
 		expect(screen.getByTestId('preview')).toHaveTextContent('Hello');
 	});
 
+	it('returns focus to the preview after committing with Enter', async () => {
+		const user = userEvent.setup();
+		renderEditable();
+		await user.click(screen.getByTestId('preview'));
+		await user.keyboard('{Enter}');
+		expect(screen.getByTestId('preview')).toHaveFocus();
+	});
+
+	it('returns focus to the preview after cancelling with Escape', async () => {
+		const user = userEvent.setup();
+		renderEditable({ submitOnBlur: false });
+		await user.click(screen.getByTestId('preview'));
+		await user.keyboard('{Escape}');
+		expect(screen.getByTestId('preview')).toHaveFocus();
+	});
+
 	it('commits on blur when submitOnBlur is true', async () => {
 		const user = userEvent.setup();
 		const onSubmit = vi.fn();

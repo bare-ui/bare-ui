@@ -17,6 +17,11 @@ export interface EditableContextValue {
 	startEdit: () => void;
 	cancel: () => void;
 	submit: () => void;
+	/**
+	 * Set true by a keyboard submit/cancel so Preview restores focus to itself when
+	 * it remounts. Blur-submit leaves it false (focus already moved on purpose).
+	 */
+	returnFocusRef: React.MutableRefObject<boolean>;
 }
 
 // ---------------------------------------------------------------------------

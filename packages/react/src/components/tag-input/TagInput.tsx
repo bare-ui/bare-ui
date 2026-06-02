@@ -5,6 +5,7 @@ import type {
 	TagInputFieldProps,
 	TagInputListProps,
 	TagInputRootProps,
+	TagInputTagProps,
 } from './TagInput.types';
 
 // ---------------------------------------------------------------------------
@@ -115,6 +116,42 @@ const List = React.forwardRef<HTMLDivElement, TagInputListProps>(({ children, cl
 List.displayName = 'TagInput.List';
 
 // ---------------------------------------------------------------------------
+// Tag — an accessible, keyboard-removable chip (optional convenience over the
+// raw Items render-prop).
+// ---------------------------------------------------------------------------
+
+const Tag = React.forwardRef<HTMLSpanElement, TagInputTagProps>(
+	({ label, onRemove, removeLabel, removeContent = '×', removeClassName, children, className, ...rest }, ref) => (
+		<span
+			ref={ref}
+			data-taginput-tag=''
+			className={className}
+			{...rest}>
+			{children ?? label}
+			<button
+				type='button'
+				data-taginput-remove=''
+				className={removeClassName}
+				aria-label={removeLabel ?? `Remove ${label}`}
+				onClick={(e) => {
+					// Move focus to an adjacent remove button *before* this one unmounts,
+					// so keyboard focus isn't dropped to <body>.
+					const list = e.currentTarget.closest('[data-taginput-tag]')?.parentElement;
+					const buttons = list
+						? Array.from(list.querySelectorAll<HTMLElement>('[data-taginput-remove]'))
+						: [];
+					const idx = buttons.indexOf(e.currentTarget);
+					(buttons[idx + 1] ?? buttons[idx - 1])?.focus();
+					onRemove();
+				}}>
+				{removeContent}
+			</button>
+		</span>
+	),
+);
+Tag.displayName = 'TagInput.Tag';
+
+// ---------------------------------------------------------------------------
 // Field
 // ---------------------------------------------------------------------------
 
@@ -167,7 +204,7 @@ Field.displayName = 'TagInput.Field';
 // Export
 // ---------------------------------------------------------------------------
 
-export const TagInput = { Root, List, Items, Field };
+export const TagInput = { Root, List, Items, Tag, Field };
 
 // Named exports expose the sub-components to Storybook's react-docgen (public API stays `TagInput.*`).
-export { Root, List, Items, Field };
+export { Root, List, Items, Tag, Field };
