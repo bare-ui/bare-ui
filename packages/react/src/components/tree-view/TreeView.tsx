@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
 import type {

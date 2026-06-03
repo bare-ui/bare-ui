@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useCallback, useState } from 'react';
 import { useInterval } from '@/hooks/use-interval';
 import type { TimeagoFormatConfig, TimeagoPlural, TimeagoProps } from './Timeago.types';
@@ -142,6 +144,13 @@ const Timeago = React.forwardRef<HTMLTimeElement, TimeagoProps>(
 				ref={ref}
 				dateTime={machineValue}
 				className={className}
+				// The relative/short display is computed against `new Date()`, so the
+				// server-rendered text and the client's first-hydration text can differ
+				// (clock drift, and timezone-sensitive formatting when the server runs in
+				// UTC). The machine-readable `dateTime` is deterministic; we suppress the
+				// warning only for this element's text, which React reconciles to the
+				// client value after hydration. (React's documented case for timestamps.)
+				suppressHydrationWarning
 				{...rest}>
 				{display}
 			</time>

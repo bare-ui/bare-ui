@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useCallback, useContext, useRef, useState } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect';

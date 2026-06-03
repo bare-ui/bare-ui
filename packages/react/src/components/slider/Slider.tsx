@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
 import type { SliderImplProps, SliderOrientation, SliderProps, SliderValue } from './Slider.types';

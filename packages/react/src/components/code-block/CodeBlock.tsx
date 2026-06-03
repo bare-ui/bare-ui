@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useContext, useMemo } from 'react';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import type {

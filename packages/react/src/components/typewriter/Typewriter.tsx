@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useReduceMotion } from '@/hooks/use-reduce-motion';
 import type {

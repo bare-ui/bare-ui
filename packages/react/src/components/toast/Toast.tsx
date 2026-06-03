@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { useTimeout } from '@/hooks/use-timeout';

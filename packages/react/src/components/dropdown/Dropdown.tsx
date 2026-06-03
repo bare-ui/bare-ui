@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useContext, useRef } from 'react';
 import { useClickOutside } from '@/hooks/use-click-outside';
 import { useControllableState } from '@/hooks/use-controllable-state';

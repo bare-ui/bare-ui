@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useEventListener } from '@/hooks/use-event-listener';
 import { useId } from '@/hooks/use-id';

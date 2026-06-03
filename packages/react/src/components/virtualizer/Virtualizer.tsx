@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useCallback, useMemo, useReducer, useRef, useState } from 'react';
 import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect';
 import { useMergedRefs } from '@/hooks/use-merged-refs';

@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import { mergeProps } from '@/utils/merge-props';
 import { useInteractiveState } from '@/hooks/use-interactive-state';

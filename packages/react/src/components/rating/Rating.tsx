@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import type { RatingProps } from './Rating.types';

@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useCallback, useContext, useMemo, useRef } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { useMergedRefs } from '@/hooks/use-merged-refs';

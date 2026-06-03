@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { clamp, hexToHsva, hsvaToHex, hsvaToRgba, hsvToRgb } from './color-utils';

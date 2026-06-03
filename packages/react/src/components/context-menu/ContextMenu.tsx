@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useControllableState } from '@/hooks/use-controllable-state';

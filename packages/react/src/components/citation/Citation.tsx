@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useCallback, useContext, useMemo } from 'react';
 import { useId } from '@/hooks/use-id';
 import type {

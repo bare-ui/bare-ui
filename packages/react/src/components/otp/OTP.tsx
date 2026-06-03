@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useCallback, useContext, useRef, useState } from 'react';
 import type { OTPContextValue, OTPRootProps, OTPSeparatorProps, OTPSlotProps } from './OTP.types';
 

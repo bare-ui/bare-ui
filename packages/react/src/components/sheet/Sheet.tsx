@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useControllableState } from '@/hooks/use-controllable-state';
@@ -244,6 +246,9 @@ Trigger.displayName = 'Sheet.Trigger';
 const Portal: React.FC<SheetPortalProps> = ({ children, container }) => {
 	const ctx = useSheetContext();
 	if (!ctx.open) return null;
+	// No DOM to portal into during SSR. Portals aren't rendered on the server
+	// anyway; the content hydrates on the client once `document` exists.
+	if (typeof document === 'undefined') return null;
 	return createPortal(children, container || document.body);
 };
 

@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 import type {

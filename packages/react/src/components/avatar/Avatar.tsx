@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useTimeout } from '@/hooks/use-timeout';
 import type { AvatarFallbackProps, AvatarImageProps, AvatarImageStatus, AvatarRootProps } from './Avatar.types';

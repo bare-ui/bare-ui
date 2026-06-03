@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { useId } from '@/hooks/use-id';
