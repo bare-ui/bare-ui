@@ -34,6 +34,14 @@ export default defineConfig([
 			'react-refresh/only-export-components': 'off',
 		},
 	},
+	{
+		// Benchmark files are dev-only and never HMR'd; the scenarios module
+		// intentionally exports both components and scenario registries.
+		files: ['bench/**/*.{ts,tsx}'],
+		rules: {
+			'react-refresh/only-export-components': 'off',
+		},
+	},
 	...storybook.configs['flat/recommended'],
 	eslintConfigPrettier,
 ])
