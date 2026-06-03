@@ -1,0 +1,51 @@
+[
+	{
+		"name": "Button (single import)",
+		"path": "dist/index.js",
+		"import": "{ Button }",
+		"ignore": ["react", "react-dom", "react/jsx-runtime"],
+		"limit": "2 kB"
+	},
+	{
+		"name": "Badge (single import)",
+		"path": "dist/index.js",
+		"import": "{ Badge }",
+		"ignore": ["react", "react-dom", "react/jsx-runtime"],
+		"limit": "1 kB"
+	},
+	{
+		"name": "Divider (single import)",
+		"path": "dist/index.js",
+		"import": "{ Divider }",
+		"ignore": ["react", "react-dom", "react/jsx-runtime"],
+		"limit": "1 kB"
+	},
+	{
+		"name": "Tooltip (single import)",
+		"path": "dist/index.js",
+		"import": "{ Tooltip }",
+		"ignore": ["react", "react-dom", "react/jsx-runtime"],
+		"limit": "2 kB"
+	},
+	{
+		"name": "Accordion (single import)",
+		"path": "dist/index.js",
+		"import": "{ Accordion }",
+		"ignore": ["react", "react-dom", "react/jsx-runtime"],
+		"limit": "2.5 kB"
+	},
+	{
+		"name": "Modal (single import)",
+		"path": "dist/index.js",
+		"import": "{ Modal }",
+		"ignore": ["react", "react-dom", "react/jsx-runtime"],
+		"limit": "3 kB"
+	},
+	{
+		"name": "Whole library (barrel import)",
+		"path": "dist/index.js",
+		"import": "*",
+		"ignore": ["react", "react-dom", "react/jsx-runtime"],
+		"limit": "55 kB"
+	}
+]

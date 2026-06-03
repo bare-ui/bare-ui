@@ -3,14 +3,19 @@
 	"version": "0.4.0",
 	"license": "MIT",
 	"type": "module",
-	"main": "./dist/wire-ui.cjs.js",
-	"module": "./dist/wire-ui.es.js",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
-			"import": "./dist/wire-ui.es.js",
-			"require": "./dist/wire-ui.cjs.js",
-			"types": "./dist/index.d.ts"
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"require": {
+				"types": "./dist/index.d.cts",
+				"default": "./dist/index.cjs"
+			}
 		}
 	},
 	"files": [
@@ -56,6 +61,10 @@
 		"test:sr": "vitest run --project unit --config vitest.config.ts .sr.test",
 		"test:a11y": "vitest run --project storybook --config vitest.config.ts",
 		"test:coverage": "vitest run --project unit --coverage --config vitest.config.ts",
+		"size": "size-limit",
+		"attw": "attw --pack .",
+		"bench": "vitest bench --run --config vitest.bench.config.ts",
+		"compiler:check": "react-compiler-healthcheck --src \"src/**/*.{ts,tsx}\"",
 		"clean": "rm -rf dist"
 	},
 	"peerDependencies": {
@@ -63,8 +72,16 @@
 		"react-dom": ">=19.0.0"
 	},
 	"devDependencies": {
+		"@arethetypeswrong/cli": "^0.18.3",
 		"@chromatic-com/storybook": "^5.1.1",
 		"@eslint/js": "^9.39.4",
+		"@headlessui/react": "^2.2.10",
+		"@radix-ui/react-accordion": "^1.2.12",
+		"@radix-ui/react-dialog": "^1.1.15",
+		"@radix-ui/react-switch": "^1.2.6",
+		"@radix-ui/react-tabs": "^1.1.13",
+		"@radix-ui/react-tooltip": "^1.2.8",
+		"@size-limit/preset-small-lib": "^12.1.0",
 		"@storybook/addon-a11y": "^10.3.3",
 		"@storybook/addon-docs": "^10.3.3",
 		"@storybook/addon-vitest": "^10.3.3",
@@ -89,7 +106,9 @@
 		"playwright": "^1.58.2",
 		"prettier": "^3.8.1",
 		"react": "^19.2.4",
+		"react-compiler-healthcheck": "^1.0.0",
 		"react-dom": "^19.2.4",
+		"size-limit": "^12.1.0",
 		"storybook": "^10.3.3",
 		"tailwindcss": "^4.2.2",
 		"typescript": "~5.9.3",
