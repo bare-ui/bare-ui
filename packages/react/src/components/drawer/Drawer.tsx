@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useContext, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useControllableState } from '@/hooks/use-controllable-state';
@@ -55,6 +57,9 @@ const Portal: React.FC<DrawerPortalProps> = ({ children, container }) => {
 	const { open } = useDrawerContext();
 
 	if (!open) return null;
+	// No DOM to portal into during SSR. Portals aren't rendered on the server
+	// anyway; the content hydrates on the client once `document` exists.
+	if (typeof document === 'undefined') return null;
 
 	return createPortal(children, container || document.body);
 };

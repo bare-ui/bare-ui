@@ -1,7 +1,8 @@
-import React, { createContext, useCallback, useContext, useId, useMemo } from 'react';
+'use client';
+
+import React, { createContext, useCallback, useContext, useId } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
-import { Helper } from '@/utils/helper';
 import type {
 	RadioContextValue,
 	RadioIndicatorProps,
@@ -49,7 +50,10 @@ const Root = React.forwardRef<HTMLDivElement, RadioRootProps>(
 			onChange,
 		});
 
-		const groupName = useMemo(() => name || Helper.generateUUID(), [name]);
+		// SSR-stable group name: useId() matches across server/client so the
+		// rendered name="" on each radio input is identical during hydration.
+		const generatedName = useId();
+		const groupName = name || generatedName;
 
 		const isSelected = useCallback(
 			(itemValue: string | number) => {

@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
@@ -303,7 +305,18 @@ const Grid = React.forwardRef<HTMLDivElement, CalendarGridProps>(
 		const ctx = useCalendarContext();
 		const gridRef = useRef<HTMLDivElement | null>(null);
 		const mergedRef = useMergedRefs<HTMLDivElement>(gridRef, ref);
-		const today = useMemo(() => startOfDay(new Date()), []);
+		// "Today" depends on the wall clock and local timezone, which differ between
+		// the server (often UTC) and the client. Computing it during render would put
+		// the data-today / aria-current marker (and the roving tabIndex) on different
+		// cells on the server vs. the client, causing a hydration mismatch. Resolve it
+		// to null on the first render (matches the server) and fill it in after mount.
+		const [today, setToday] = useState<Date | null>(null);
+		useEffect(() => {
+			// Intentional: resolving "today" must wait until the client mounts so the
+			// first render stays deterministic and matches the server-rendered HTML.
+			// eslint-disable-next-line react-hooks/set-state-in-effect
+			setToday(startOfDay(new Date()));
+		}, []);
 		const weekdays = useMemo(() => getWeekdayNames(ctx.weekStartsOn, ctx.locale), [ctx.weekStartsOn, ctx.locale]);
 		const days = useMemo(() => buildMonthGrid(ctx.month, ctx.weekStartsOn), [ctx.month, ctx.weekStartsOn]);
 
@@ -455,7 +468,7 @@ const Grid = React.forwardRef<HTMLDivElement, CalendarGridProps>(
 						style={rowStyle}>
 						{week.map((d, dayIndex) => {
 							const isOutsideMonth = !isSameMonth(d, ctx.month);
-							const isToday = isSameDay(d, today);
+							const isToday = today ? isSameDay(d, today) : false;
 							const isSelected = ctx.value ? isSameDay(d, ctx.value) : false;
 							const beforeMin = ctx.minDate ? d < startOfDay(ctx.minDate) : false;
 							const afterMax = ctx.maxDate ? d > startOfDay(ctx.maxDate) : false;

@@ -1,9 +1,10 @@
-import React, { createContext, useCallback, useContext, useId, useMemo, useRef } from 'react';
+'use client';
+
+import React, { createContext, useCallback, useContext, useId, useRef } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
-import { Helper } from '@/utils/helper';
 import type {
 	CheckboxContextValue,
 	CheckboxIndicatorProps,
@@ -51,7 +52,10 @@ const Root = React.forwardRef<HTMLDivElement, CheckboxRootProps>(
 			onChange,
 		});
 
-		const groupName = useMemo(() => name || Helper.generateUUID(), [name]);
+		// SSR-stable group name: useId() matches across server/client so the
+		// rendered name="" on each checkbox input is identical during hydration.
+		const generatedName = useId();
+		const groupName = name || generatedName;
 
 		const isChecked = useCallback(
 			(itemValue: string | number) => {

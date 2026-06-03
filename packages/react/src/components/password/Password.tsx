@@ -1,8 +1,9 @@
-import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
+'use client';
+
+import React, { createContext, useCallback, useContext, useId, useRef, useState } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
-import { Helper } from '@/utils/helper';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	PasswordContextValue,
@@ -55,7 +56,10 @@ const Root = React.forwardRef<HTMLDivElement, PasswordRootProps>(
 
 		const [visible, setVisible] = useState(false);
 		const fieldRef = useRef<HTMLInputElement | null>(null);
-		const inputId = useMemo(() => id ?? Helper.generateUUID(), [id]);
+		// SSR-stable: useId() returns identical IDs on server and client, so the
+		// rendered id/htmlFor/aria-describedby match during hydration.
+		const generatedId = useId();
+		const inputId = id ?? generatedId;
 
 		const handleChange = useCallback((val: string) => setValue(val), [setValue]);
 

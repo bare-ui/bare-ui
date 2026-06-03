@@ -1,6 +1,7 @@
-import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
+'use client';
+
+import React, { createContext, useCallback, useContext, useId, useMemo, useState } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
-import { Helper } from '@/utils/helper';
 import type {
 	InputContextValue,
 	InputErrorProps,
@@ -44,7 +45,10 @@ const Root = React.forwardRef<HTMLDivElement, InputRootProps>(
 			onChange,
 		});
 		const [isActive, setIsActive] = useState(false);
-		const inputId = useMemo(() => id || Helper.generateUUID(), [id]);
+		// SSR-stable: useId() returns identical IDs on server and client, so the
+		// rendered id/htmlFor/aria-describedby match during hydration.
+		const generatedId = useId();
+		const inputId = id || generatedId;
 		const errorId = useMemo(() => `${inputId}-error`, [inputId]);
 
 		const handleChange = useCallback((newValue: string) => setValue(newValue), [setValue]);
