@@ -3,6 +3,8 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { useWireUILocale, useWireUIMessages } from '@/context/wire-ui-context';
+import { formatNumber, parseLocaleNumber } from '@/utils/i18n/formatters';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	NumberInputContextValue,
@@ -59,12 +61,15 @@ const Root = React.forwardRef<HTMLDivElement, NumberInputRootProps>(
 			precision: precisionProp,
 			disabled = false,
 			readOnly = false,
+			locale: localeProp,
+			formatOptions,
 			children,
 			className,
 			...rest
 		},
 		ref,
 	) => {
+		const locale = useWireUILocale(localeProp);
 		const [value, setValueState] = useControllableState<number | null>({
 			value: controlledValue,
 			defaultValue,
@@ -93,8 +98,36 @@ const Root = React.forwardRef<HTMLDivElement, NumberInputRootProps>(
 		const decrement = useCallback(() => stepBy(-step), [stepBy, step]);
 
 		const ctx = useMemo<NumberInputContextValue>(
-			() => ({ value, min, max, step, precision, disabled, readOnly, setValue, increment, decrement, stepBy }),
-			[value, min, max, step, precision, disabled, readOnly, setValue, increment, decrement, stepBy],
+			() => ({
+				value,
+				min,
+				max,
+				step,
+				precision,
+				disabled,
+				readOnly,
+				locale,
+				formatOptions,
+				setValue,
+				increment,
+				decrement,
+				stepBy,
+			}),
+			[
+				value,
+				min,
+				max,
+				step,
+				precision,
+				disabled,
+				readOnly,
+				locale,
+				formatOptions,
+				setValue,
+				increment,
+				decrement,
+				stepBy,
+			],
 		);
 
 		return (
@@ -120,7 +153,15 @@ Root.displayName = 'NumberInput.Root';
 const Field = React.forwardRef<HTMLInputElement, NumberInputFieldProps>(
 	({ className, onKeyDown, onBlur, ...rest }, ref) => {
 		const ctx = useNumberInputContext();
-		const [text, setText] = useState<string>(() => (ctx.value === null ? '' : String(ctx.value)));
+
+		// Render the committed value: locale-formatted when `formatOptions` is set,
+		// otherwise the raw numeric string (default, back-compatible behavior).
+		const formatValue = (v: number | null): string => {
+			if (v === null) return '';
+			return ctx.formatOptions ? formatNumber(v, ctx.locale, ctx.formatOptions) : String(v);
+		};
+
+		const [text, setText] = useState<string>(() => formatValue(ctx.value));
 
 		// Sync visible text whenever the committed value changes, adjusting state
 		// during render rather than in an effect. (Typing alone doesn't change
@@ -129,7 +170,7 @@ const Field = React.forwardRef<HTMLInputElement, NumberInputFieldProps>(
 		const [prevValue, setPrevValue] = useState(ctx.value);
 		if (ctx.value !== prevValue) {
 			setPrevValue(ctx.value);
-			setText(ctx.value === null ? '' : String(ctx.value));
+			setText(formatValue(ctx.value));
 		}
 
 		const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -163,13 +204,16 @@ const Field = React.forwardRef<HTMLInputElement, NumberInputFieldProps>(
 				setText('');
 				return;
 			}
-			const parsed = Number(trimmed);
+			const parsed = ctx.formatOptions ? parseLocaleNumber(trimmed, ctx.locale) : Number(trimmed);
 			if (Number.isNaN(parsed)) {
 				// Revert to last good value
-				setText(ctx.value === null ? '' : String(ctx.value));
+				setText(formatValue(ctx.value));
 				return;
 			}
 			ctx.setValue(parsed);
+			// Re-render the formatted value even when the committed number is
+			// unchanged (the value-sync effect above only fires on a change).
+			setText(formatValue(parsed));
 		};
 
 		return (
@@ -206,6 +250,7 @@ function makeStepButton(direction: 1 | -1, displayName: string) {
 	const Component = React.forwardRef<HTMLButtonElement, NumberInputIncrementProps>(
 		({ className, children, onClick, ...rest }, ref) => {
 			const ctx = useNumberInputContext();
+			const messages = useWireUIMessages();
 			const { handlers, dataAttributes } = useInteractiveState({ disabled: ctx.disabled || ctx.readOnly });
 			const merged = mergeProps(rest as Record<string, unknown>, handlers as Record<string, unknown>);
 
@@ -221,7 +266,7 @@ function makeStepButton(direction: 1 | -1, displayName: string) {
 					type='button'
 					tabIndex={-1}
 					disabled={isDisabled}
-					aria-label={direction === 1 ? 'Increment' : 'Decrement'}
+					aria-label={direction === 1 ? messages.numberInput.increment : messages.numberInput.decrement}
 					className={className}
 					{...dataAttributes}
 					{...merged}

@@ -3,6 +3,7 @@
 import React, { createContext, useCallback, useContext, useMemo } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
+import { useWireUIMessages } from '@/context/wire-ui-context';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	PaginationButtonProps,
@@ -94,11 +95,13 @@ const Root = React.forwardRef<HTMLElement, PaginationRootProps>(
 			boundaryCount = 1,
 			children,
 			className,
-			'aria-label': ariaLabel = 'Pagination',
+			'aria-label': ariaLabelProp,
 			...rest
 		},
 		ref,
 	) => {
+		const messages = useWireUIMessages();
+		const ariaLabel = ariaLabelProp ?? messages.pagination.label;
 		const [page, setPage] = useControllableState<number>({
 			value: controlledPage,
 			defaultValue: defaultPage,
@@ -182,6 +185,7 @@ List.displayName = 'Pagination.List';
 const Item = React.forwardRef<HTMLLIElement, PaginationItemProps>(
 	({ page, disabled = false, children, className, onClick, ...rest }, ref) => {
 		const ctx = usePaginationContext();
+		const messages = useWireUIMessages();
 		const { handlers, dataAttributes } = useInteractiveState({ disabled });
 		const merged = mergeProps({ onClick } as Record<string, unknown>, handlers as Record<string, unknown>);
 		const active = ctx.page === page;
@@ -192,7 +196,7 @@ const Item = React.forwardRef<HTMLLIElement, PaginationItemProps>(
 					type='button'
 					disabled={disabled}
 					aria-current={active ? 'page' : undefined}
-					aria-label={`Page ${page}`}
+					aria-label={messages.pagination.page(page)}
 					data-active={active ? '' : undefined}
 					{...dataAttributes}
 					{...(merged as React.ButtonHTMLAttributes<HTMLButtonElement>)}
@@ -222,10 +226,11 @@ const Ellipsis = React.forwardRef<HTMLLIElement, PaginationEllipsisProps>(
 );
 Ellipsis.displayName = 'Pagination.Ellipsis';
 
-function makeNavButton(direction: 'prev' | 'next', label: string, displayName: string) {
+function makeNavButton(direction: 'prev' | 'next', messageKey: 'previous' | 'next', displayName: string) {
 	const Component = React.forwardRef<HTMLButtonElement, PaginationButtonProps>(
 		({ disabled = false, children, className, onClick, ...rest }, ref) => {
 			const ctx = usePaginationContext();
+			const messages = useWireUIMessages();
 			const isDisabled = disabled || (direction === 'prev' ? !ctx.canPrev : !ctx.canNext);
 			const { handlers, dataAttributes } = useInteractiveState({ disabled: isDisabled });
 			const merged = mergeProps(rest as Record<string, unknown>, handlers as Record<string, unknown>);
@@ -235,7 +240,7 @@ function makeNavButton(direction: 'prev' | 'next', label: string, displayName: s
 					ref={ref}
 					type='button'
 					disabled={isDisabled}
-					aria-label={label}
+					aria-label={messages.pagination[messageKey]}
 					className={className}
 					{...dataAttributes}
 					{...merged}
@@ -253,8 +258,8 @@ function makeNavButton(direction: 'prev' | 'next', label: string, displayName: s
 	return Component;
 }
 
-const Previous = makeNavButton('prev', 'Previous page', 'Pagination.Previous');
-const Next = makeNavButton('next', 'Next page', 'Pagination.Next');
+const Previous = makeNavButton('prev', 'previous', 'Pagination.Previous');
+const Next = makeNavButton('next', 'next', 'Pagination.Next');
 
 // ---------------------------------------------------------------------------
 // Export

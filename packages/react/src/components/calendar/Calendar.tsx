@@ -3,6 +3,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
+import { useWireUILocale, useWireUIMessages } from '@/context/wire-ui-context';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	CalendarContextValue,
@@ -139,13 +140,14 @@ const Root = React.forwardRef<HTMLDivElement, CalendarRootProps>(
 			maxDate,
 			isDateDisabled,
 			weekStartsOn = 0,
-			locale = 'en-US',
+			locale: localeProp,
 			children,
 			className,
 			...rest
 		},
 		ref,
 	) => {
+		const locale = useWireUILocale(localeProp);
 		const [uncontrolledValue, setUncontrolledValue] = useState<Date | null>(defaultValue);
 		const isValueControlled = controlledValue !== undefined;
 		const value = isValueControlled ? (controlledValue as Date | null) : uncontrolledValue;
@@ -227,6 +229,7 @@ Nav.displayName = 'Calendar.Nav';
 const PrevButton = React.forwardRef<HTMLButtonElement, CalendarPrevButtonProps>(
 	({ children, className, onClick, ...rest }, ref) => {
 		const ctx = useCalendarContext();
+		const messages = useWireUIMessages();
 		const disabled = !ctx.canGoPrev;
 		const { handlers, dataAttributes } = useInteractiveState({ disabled });
 		const merged = mergeProps(rest as Record<string, unknown>, handlers as Record<string, unknown>);
@@ -236,7 +239,7 @@ const PrevButton = React.forwardRef<HTMLButtonElement, CalendarPrevButtonProps>(
 				ref={ref}
 				type='button'
 				disabled={disabled}
-				aria-label='Previous month'
+				aria-label={messages.calendar.previousMonth}
 				className={className}
 				{...dataAttributes}
 				{...merged}
@@ -254,6 +257,7 @@ PrevButton.displayName = 'Calendar.PrevButton';
 const NextButton = React.forwardRef<HTMLButtonElement, CalendarNextButtonProps>(
 	({ children, className, onClick, ...rest }, ref) => {
 		const ctx = useCalendarContext();
+		const messages = useWireUIMessages();
 		const disabled = !ctx.canGoNext;
 		const { handlers, dataAttributes } = useInteractiveState({ disabled });
 		const merged = mergeProps(rest as Record<string, unknown>, handlers as Record<string, unknown>);
@@ -263,7 +267,7 @@ const NextButton = React.forwardRef<HTMLButtonElement, CalendarNextButtonProps>(
 				ref={ref}
 				type='button'
 				disabled={disabled}
-				aria-label='Next month'
+				aria-label={messages.calendar.nextMonth}
 				className={className}
 				{...dataAttributes}
 				{...merged}

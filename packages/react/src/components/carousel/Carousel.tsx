@@ -3,6 +3,7 @@
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
+import { useWireUIMessages } from '@/context/wire-ui-context';
 import type {
 	CarouselContentProps,
 	CarouselContextValue,
@@ -36,6 +37,7 @@ function domOrder(a: HTMLElement, b: HTMLElement) {
 
 const Root = React.forwardRef<HTMLDivElement, CarouselRootProps>(
 	({ orientation = 'horizontal', loop = false, defaultIndex = 0, onIndexChange, className, children, ...rest }, ref) => {
+		const messages = useWireUIMessages();
 		const vertical = orientation === 'vertical';
 		const viewportRef = useRef<HTMLDivElement | null>(null);
 		const slidesRef = useRef<HTMLElement[]>([]);
@@ -167,7 +169,7 @@ const Root = React.forwardRef<HTMLDivElement, CarouselRootProps>(
 							clipPath: 'inset(50%)',
 							whiteSpace: 'nowrap',
 						}}>
-						{count > 0 ? `Slide ${current + 1} of ${count}` : ''}
+						{count > 0 ? messages.carousel.slide(current + 1, count) : ''}
 					</div>
 				</div>
 			</CarouselContext.Provider>
@@ -287,11 +289,12 @@ Slide.displayName = 'Carousel.Slide';
 const Previous = React.forwardRef<HTMLButtonElement, CarouselPreviousProps>(
 	({ className, children, onClick, disabled, ...rest }, ref) => {
 		const ctx = useCarouselContext();
+		const messages = useWireUIMessages();
 		return (
 			<button
 				ref={ref}
 				type='button'
-				aria-label='Previous slide'
+				aria-label={messages.carousel.previous}
 				disabled={disabled ?? !ctx.canScrollPrev}
 				className={className}
 				{...rest}
@@ -310,11 +313,12 @@ Previous.displayName = 'Carousel.Previous';
 const Next = React.forwardRef<HTMLButtonElement, CarouselNextProps>(
 	({ className, children, onClick, disabled, ...rest }, ref) => {
 		const ctx = useCarouselContext();
+		const messages = useWireUIMessages();
 		return (
 			<button
 				ref={ref}
 				type='button'
-				aria-label='Next slide'
+				aria-label={messages.carousel.next}
 				disabled={disabled ?? !ctx.canScrollNext}
 				className={className}
 				{...rest}

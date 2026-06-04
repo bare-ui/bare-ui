@@ -3,6 +3,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { useTimeout } from '@/hooks/use-timeout';
+import { useWireUIMessages } from '@/context/wire-ui-context';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	ToastCloseProps,
@@ -76,13 +77,14 @@ Provider.displayName = 'Toast.Provider';
 
 const Viewport = React.forwardRef<HTMLDivElement, ToastViewportProps>(({ children, className, ...rest }, ref) => {
 	const ctx = useContext(ToastContext);
+	const messages = useWireUIMessages();
 	if (!ctx) throw new globalThis.Error('Toast.Viewport must be used within Toast.Provider');
 
 	return (
 		<div
 			ref={ref}
 			role='region'
-			aria-label='Notifications'
+			aria-label={messages.toast.region}
 			className={className}
 			{...rest}>
 			{ctx.toasts.map((t) => {
@@ -188,6 +190,7 @@ const Description = React.forwardRef<HTMLDivElement, ToastDescriptionProps>(({ c
 Description.displayName = 'Toast.Description';
 
 const Close = React.forwardRef<HTMLButtonElement, ToastCloseProps>(({ children, className, onClick, ...rest }, ref) => {
+	const messages = useWireUIMessages();
 	const { handlers, dataAttributes } = useInteractiveState();
 	const merged = mergeProps(rest as Record<string, unknown>, handlers as Record<string, unknown>);
 
@@ -195,7 +198,7 @@ const Close = React.forwardRef<HTMLButtonElement, ToastCloseProps>(({ children, 
 		<button
 			ref={ref}
 			type='button'
-			aria-label='Close notification'
+			aria-label={messages.toast.close}
 			className={className}
 			{...dataAttributes}
 			{...merged}

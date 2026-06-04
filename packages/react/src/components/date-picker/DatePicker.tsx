@@ -9,6 +9,7 @@ import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect';
 import { useKeyboard } from '@/hooks/use-keyboard';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
+import { useWireUILocale } from '@/context/wire-ui-context';
 import { mergeProps } from '@/utils/merge-props';
 import { Calendar } from '../calendar/Calendar';
 import type { CalendarRootProps } from '../calendar/Calendar.types';
@@ -49,7 +50,7 @@ const Root = React.forwardRef<HTMLDivElement, DatePickerRootProps>(
 			onOpenChange,
 			disabled = false,
 			closeOnSelect = true,
-			locale = 'en-US',
+			locale: localeProp,
 			formatOptions = DEFAULT_FORMAT,
 			children,
 			className,
@@ -57,6 +58,7 @@ const Root = React.forwardRef<HTMLDivElement, DatePickerRootProps>(
 		},
 		ref,
 	) => {
+		const locale = useWireUILocale(localeProp);
 		const [value, setValueState] = useControllableState<Date | null>({
 			value: controlledValue,
 			defaultValue,
@@ -242,6 +244,7 @@ const CalendarBridge: React.FC<DatePickerCalendarProps> = ({ children, ...rest }
 	const ctx = useDatePickerContext();
 	return (
 		<Calendar.Root
+			locale={ctx.locale}
 			{...rest}
 			value={ctx.value}
 			onChange={(next) => {

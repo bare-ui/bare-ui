@@ -6,6 +6,7 @@ import { useControllableState } from '@/hooks/use-controllable-state';
 import { useId } from '@/hooks/use-id';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
+import { useWireUIMessages } from '@/context/wire-ui-context';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	ComboboxContentProps,
@@ -298,6 +299,7 @@ Input.displayName = 'Combobox.Input';
 const Trigger = React.forwardRef<HTMLButtonElement, ComboboxTriggerProps>(
 	({ children, className, onClick, ...rest }, ref) => {
 		const ctx = useComboboxContext();
+		const messages = useWireUIMessages();
 		const { handlers, dataAttributes } = useInteractiveState({ disabled: ctx.disabled });
 		const merged = mergeProps(rest as Record<string, unknown>, handlers as Record<string, unknown>);
 
@@ -307,7 +309,7 @@ const Trigger = React.forwardRef<HTMLButtonElement, ComboboxTriggerProps>(
 				type='button'
 				tabIndex={-1}
 				disabled={ctx.disabled}
-				aria-label='Toggle options'
+				aria-label={messages.combobox.toggle}
 				className={className}
 				data-state={ctx.open ? 'open' : 'closed'}
 				{...dataAttributes}

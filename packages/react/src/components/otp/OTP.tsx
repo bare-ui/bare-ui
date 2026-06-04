@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useCallback, useContext, useRef, useState } from 'react';
+import { useWireUIMessages } from '@/context/wire-ui-context';
 import type { OTPContextValue, OTPRootProps, OTPSeparatorProps, OTPSlotProps } from './OTP.types';
 
 // ---------------------------------------------------------------------------
@@ -172,6 +173,7 @@ Root.displayName = 'OTP.Root';
 
 const Slot = React.forwardRef<HTMLInputElement, OTPSlotProps>(({ index, className, ...rest }, externalRef) => {
 	const { chars, disabled, isComplete, registerRef, handleChange, handleKeyDown, handlePaste } = useOTPContext();
+	const messages = useWireUIMessages();
 	const char = chars[index] ?? '';
 	const [isFocused, setIsFocused] = useState(false);
 
@@ -193,7 +195,7 @@ const Slot = React.forwardRef<HTMLInputElement, OTPSlotProps>(({ index, classNam
 			data-filled={char ? '' : undefined}
 			data-complete={isComplete ? '' : undefined}
 			data-disabled={disabled ? '' : undefined}
-			aria-label={`Digit ${index + 1}`}
+			aria-label={messages.otp.digit(index + 1)}
 			onChange={(e) => handleChange(index, e.target.value)}
 			onKeyDown={(e) => handleKeyDown(index, e)}
 			onFocus={(e) => {

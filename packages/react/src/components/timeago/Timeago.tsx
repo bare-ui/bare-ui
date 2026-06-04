@@ -2,36 +2,14 @@
 
 import React, { useCallback, useState } from 'react';
 import { useInterval } from '@/hooks/use-interval';
-import type { TimeagoFormatConfig, TimeagoPlural, TimeagoProps } from './Timeago.types';
+import { useWireUILocale, useWireUIMessages } from '@/context/wire-ui-context';
+import { formatRelativeTime, getDayNames, getMonthNames } from '@/utils/i18n/formatters';
+import type { TimeagoPlural, TimeagoProps } from './Timeago.types';
 
 const MS_PER_MINUTE = 1000 * 60;
 const MS_PER_HOUR = MS_PER_MINUTE * 60;
 const MS_PER_DAY = MS_PER_HOUR * 24;
 const REFRESH_MS = 60000;
-
-const defaultFormat: TimeagoFormatConfig = {
-	just: 'Just Now',
-	past: '#time ago',
-	today: 'Today, #time',
-	second: { one: '#num second', other: '#num seconds' },
-	minute: { one: '#num minute', other: '#num minutes' },
-	hour: { one: '#num hour', other: '#num hours' },
-	days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-	months: [
-		'January',
-		'February',
-		'March',
-		'April',
-		'May',
-		'June',
-		'July',
-		'August',
-		'September',
-		'October',
-		'November',
-		'December',
-	],
-};
 
 const defaultPluralize = (n: number): TimeagoPlural => (n === 1 ? 'one' : 'other');
 
@@ -51,13 +29,17 @@ const Timeago = React.forwardRef<HTMLTimeElement, TimeagoProps>(
 			isLive = false,
 			isDuration = false,
 			timeOnly = false,
-			format = defaultFormat,
+			locale: localeProp,
+			format,
 			pluralize = defaultPluralize,
 			className,
 			...rest
 		},
 		ref,
 	) => {
+		const locale = useWireUILocale(localeProp);
+		const messages = useWireUIMessages();
+
 		const getTimeOnly = useCallback((): string => {
 			const parsetime = toDate(datetime);
 			const hours = parsetime.getHours();
@@ -68,25 +50,29 @@ const Timeago = React.forwardRef<HTMLTimeElement, TimeagoProps>(
 		const getDuration = useCallback((): string => {
 			const parsetime = toDate(datetime);
 			const mSeconds = difference(parsetime);
-			const pastTime = format.past;
 
-			if (mSeconds < MS_PER_MINUTE) {
-				return format.just;
+			// Legacy path: an explicit `format` override drives the #time/#num
+			// templates and the caller-supplied pluralization.
+			if (format) {
+				if (mSeconds < MS_PER_MINUTE) return format.just;
+				let timeValue: string;
+				if (mSeconds < MS_PER_HOUR) {
+					const time = Math.round(mSeconds / MS_PER_MINUTE);
+					timeValue = format.minute[pluralize(time)].replace('#num', time.toString());
+				} else {
+					const time = Math.round(mSeconds / MS_PER_HOUR);
+					timeValue = format.hour[pluralize(time)].replace('#num', time.toString());
+				}
+				return format.past.replace('#time', timeValue);
 			}
 
-			let timeValue: string;
+			// Default path: delegate to Intl.RelativeTimeFormat for the active locale.
+			if (mSeconds < MS_PER_MINUTE) return messages.timeago.justNow;
 			if (mSeconds < MS_PER_HOUR) {
-				const time = Math.round(mSeconds / MS_PER_MINUTE);
-				const pluralType = pluralize(time);
-				timeValue = format.minute[pluralType].replace('#num', time.toString());
-			} else {
-				const time = Math.round(mSeconds / MS_PER_HOUR);
-				const pluralType = pluralize(time);
-				timeValue = format.hour[pluralType].replace('#num', time.toString());
+				return formatRelativeTime(-Math.round(mSeconds / MS_PER_MINUTE), 'minute', locale);
 			}
-
-			return pastTime.replace('#time', timeValue);
-		}, [datetime, format, pluralize]);
+			return formatRelativeTime(-Math.round(mSeconds / MS_PER_HOUR), 'hour', locale);
+		}, [datetime, format, pluralize, locale, messages]);
 
 		const getDateTime = useCallback((): string => {
 			const inputDate = toDate(datetime);
@@ -99,18 +85,23 @@ const Timeago = React.forwardRef<HTMLTimeElement, TimeagoProps>(
 			todayCopy.setHours(0, 0, 0, 0);
 
 			if (inputDateCopy.getTime() === todayCopy.getTime()) {
-				return format.today.replace('#time', time);
+				return format ? format.today.replace('#time', time) : messages.timeago.today(time);
 			}
 
+			// Day/month names come from the `format` override when present, else
+			// from Intl for the active locale.
+			const dayNames = format ? format.days : getDayNames(locale);
+			const monthNames = format ? format.months : getMonthNames(locale);
+
 			const diffDays = Math.floor((today.getTime() - inputDate.getTime()) / MS_PER_DAY);
-			const day = format.days[inputDate.getDay()];
+			const day = dayNames[inputDate.getDay()];
 
 			if (diffDays < 7) {
 				return `${day}, ${time}`;
 			}
 
 			const date = inputDate.getDate();
-			const month = format.months[inputDate.getMonth()];
+			const month = monthNames[inputDate.getMonth()];
 			const year = inputDate.getFullYear();
 
 			if (year === today.getFullYear()) {
@@ -118,7 +109,7 @@ const Timeago = React.forwardRef<HTMLTimeElement, TimeagoProps>(
 			}
 
 			return `${month} ${date} ${year}, ${time}`;
-		}, [datetime, format, getTimeOnly]);
+		}, [datetime, format, getTimeOnly, locale, messages]);
 
 		const computeDisplay = useCallback((): string => {
 			if (isDuration) return getDuration();

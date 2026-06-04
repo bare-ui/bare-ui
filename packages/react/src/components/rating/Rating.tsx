@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
+import { useWireUIMessages } from '@/context/wire-ui-context';
 import type { RatingProps } from './Rating.types';
 
 // ---------------------------------------------------------------------------
@@ -54,6 +55,7 @@ const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
 		},
 		ref,
 	) => {
+		const messages = useWireUIMessages();
 		const [selectedValue, setSelectedValue] = useControllableState<number>({
 			value: controlledValue,
 			defaultValue,
@@ -106,7 +108,7 @@ const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
 				ref={ref}
 				className={className}
 				role={readOnly ? 'img' : 'group'}
-				aria-label={readOnly ? `Rating: ${selectedValue} out of ${max}` : 'Rating'}
+				aria-label={readOnly ? messages.rating.valueText(selectedValue, max) : messages.rating.label}
 				data-disabled={disabled ? '' : undefined}
 				data-readonly={readOnly ? '' : undefined}
 				{...rest}>
@@ -122,7 +124,7 @@ const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
 						data-filled={star <= selectedValue ? '' : undefined}
 						data-highlighted={star <= displayValue ? '' : undefined}
 						data-disabled={disabled ? '' : undefined}
-						aria-label={`${star} out of ${max} stars`}
+						aria-label={messages.rating.starText(star, max)}
 						onClick={() => handleSelect(star)}
 						onKeyDown={(e) => handleKeyDown(e, star)}
 						onMouseEnter={() => {

@@ -154,6 +154,29 @@ export type {
 	UseUndoRedoResult,
 } from './hooks';
 
+// Internationalization — provider, locale/messages hooks, and Intl formatters
+export {
+	WireUIProvider,
+	useWireUILocale,
+	useWireUIMessages,
+	useWireUI,
+	DEFAULT_LOCALE,
+} from './context';
+export type { WireUIProviderProps } from './context';
+export {
+	formatDate,
+	formatNumber,
+	formatRelativeTime,
+	parseLocaleNumber,
+	getDayNames,
+	getMonthNames,
+	getDateTimeFormat,
+	getNumberFormat,
+	getRelativeTimeFormat,
+} from './utils/i18n/formatters';
+export { defaultMessages, mergeMessages } from './utils/i18n/messages';
+export type { WireUIMessages, PartialMessages } from './utils/i18n/messages';
+
 // Types
 export type {
 	Size,

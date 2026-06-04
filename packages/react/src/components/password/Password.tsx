@@ -4,6 +4,7 @@ import React, { createContext, useCallback, useContext, useId, useRef, useState 
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
+import { useWireUIMessages } from '@/context/wire-ui-context';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	PasswordContextValue,
@@ -132,6 +133,7 @@ Field.displayName = 'Password.Field';
 const Toggle = React.forwardRef<HTMLButtonElement, PasswordToggleProps>(
 	({ className, children, onClick, ...rest }, ref) => {
 		const ctx = usePasswordContext();
+		const messages = useWireUIMessages();
 		const { handlers, dataAttributes } = useInteractiveState();
 		const merged = mergeProps(rest as Record<string, unknown>, handlers as Record<string, unknown>);
 
@@ -139,7 +141,7 @@ const Toggle = React.forwardRef<HTMLButtonElement, PasswordToggleProps>(
 			<button
 				ref={ref}
 				type='button'
-				aria-label={ctx.visible ? 'Hide password' : 'Show password'}
+				aria-label={ctx.visible ? messages.password.hide : messages.password.show}
 				className={className}
 				data-visible={ctx.visible ? '' : undefined}
 				{...dataAttributes}
