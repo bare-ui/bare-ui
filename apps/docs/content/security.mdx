@@ -1,11 +1,11 @@
 ---
 title: Security
-description: Wire UI security policies and reporting procedures.
+description: Wire UI security practices, XSS model, CSP compatibility, and how to report vulnerabilities.
 ---
 
 # Security
 
-Wire UI takes security seriously. This page outlines our security practices and how to report vulnerabilities.
+Wire UI takes security seriously. This page outlines our security practices and how to report vulnerabilities. The canonical disclosure policy also lives in [`SECURITY.md`](https://github.com/wire-ui/wire-ui/blob/main/SECURITY.md) at the repository root.
 
 ## Reporting Vulnerabilities
 
@@ -23,31 +23,98 @@ We aim to acknowledge reports within 48 hours and provide a fix timeline within 
 
 ### No runtime dependencies
 
-`@wire-ui/react`, `@wire-ui/vue`, and `@wire-ui/solid` all ship with **zero runtime dependencies**. The only peer dependency is the host framework itself (React, Vue, or SolidJS). This minimizes the attack surface — there are no transitive dependencies that could introduce supply chain vulnerabilities.
+`@wire-ui/react`, `@wire-ui/vue`, and `@wire-ui/solid` all ship with **zero runtime dependencies**. The only peer dependency is the host framework itself (React, Vue, or SolidJS). This minimizes the attack surface — there are no transitive dependencies that could introduce supply-chain vulnerabilities.
 
-### No CSS or external resources
+### No external resources
 
-Wire UI ships no CSS, no fonts, no images, and makes no network requests. Components are pure JavaScript/TypeScript. This eliminates entire classes of vulnerabilities related to external resource loading, CSS injection, and CORS issues.
-
-### No raw HTML injection
-
-Wire UI components never use React's `dangerouslySetInnerHTML`, Vue's `v-html`, or any equivalent escape hatch in SolidJS. All rendering uses each framework's standard template/JSX, which automatically escapes content and prevents XSS attacks.
+Wire UI makes no network requests, bundles no fonts, and loads no external assets. Components are pure JavaScript/TypeScript. This eliminates entire classes of vulnerabilities related to external resource loading and CORS.
 
 ### No `eval` or dynamic code execution
 
-The library never uses `eval()`, `Function()`, or any form of dynamic code execution. All code paths are statically analyzable.
+The library never uses `eval()`, `Function()`, or any form of dynamic code execution. All code paths are statically analyzable and tree-shakeable.
 
-### Content Security Policy (CSP) compatible
+## XSS model: safe by default, with one opt-in raw path
 
-Wire UI is fully compatible with strict Content Security Policy headers. Since there are no inline styles, inline scripts, or external resources, you can use the strictest CSP without any Wire UI-specific exceptions:
+Wire UI is a headless rendering library, so it is explicit about where untrusted content can flow. There are two categories.
+
+### Safe by default
+
+All component output goes through the framework's normal JSX/template rendering, which escapes text content automatically. In particular:
+
+- **`Markdown`** is a "bring your own parser" renderer. It walks a normalized node tree and emits elements through React/Vue/Solid — it never injects raw HTML. Text is escaped by the framework.
+- **`CodeBlock`** renders code as escaped text children only (it does not tokenize to HTML), so a code sample containing `<script>` is displayed verbatim, never executed.
+
+#### URL sanitization
+
+The default `Markdown` link/image renderers and the `Citation` footnote link run every URL through a built-in sanitizer before it reaches an `href`/`src`. URLs with executable schemes — `javascript:`, `vbscript:`, `data:` (except safe raster `data:image/*` on an `<img>`), and `file:` — are dropped, including obfuscated variants (leading whitespace, embedded control characters, mixed casing). Relative URLs, fragments, query strings, and `http(s)`/`mailto`/`tel` are preserved.
+
+If you **override** the `link` or `image` renderers via the `components` map, you own sanitization for your own markup. The same helper Wire UI uses internally is exported so you can reuse it:
+
+```tsx
+import { Markdown, sanitizeUrl } from '@wire-ui/react'
+
+const components = {
+  link: ({ node, children }) => (
+    <a href={sanitizeUrl(node.url)} className="text-blue-600 underline">
+      {children}
+    </a>
+  ),
+}
+```
+
+### Opt-in raw HTML: `Icon`
+
+`Icon` is the **single** component that injects raw HTML (via React's `dangerouslySetInnerHTML` / the framework equivalent). It renders the inner markup of whichever SVG string you pass in its `icons` map:
+
+```tsx
+import { Icon } from '@wire-ui/react'
+import { icons } from './my-icon-set' // author-controlled SVG strings
+
+<Icon type="search" icons={icons} />
+```
+
+This is intentional — icon sets are static, author-controlled assets (e.g. Lucide, Heroicons). **The `icons` map must never be built from user input.** If you must render user-supplied SVG, sanitize it with a dedicated library such as [DOMPurify](https://github.com/cure53/DOMPurify) (configured for SVG) before passing it in.
+
+### Data attributes are safe
+
+Wire UI exposes interactive state via `data-*` attributes (e.g. `data-hover`, `data-state`). These are standard HTML attributes — they cannot execute code. Their values are always empty strings or predefined constants (`"open"`, `"closed"`, `"checked"`, etc.), never user input.
+
+## Content Security Policy (CSP)
+
+Wire UI works under a strict CSP. Concretely:
+
+- **No inline scripts.** The library ships no `<script>` tags and no inline event-handler attributes, so it needs **no** `script-src 'unsafe-inline'`.
+- **No `eval` / dynamic code.** It never requires `script-src 'unsafe-eval'`.
+- **No external origins.** No fonts, images, or network requests, so `default-src 'self'` is sufficient for Wire UI itself.
+
+A `script-src` policy with neither `unsafe-inline` nor `unsafe-eval` is fully supported:
 
 ```
 Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'
 ```
 
-### Data attributes are safe
+### Note on inline styles
 
-Wire UI exposes interactive state via `data-*` attributes (e.g., `data-hover`, `data-state`). These are standard HTML attributes — they cannot execute code and are safe by design. Their values are always empty strings or predefined constants (`"open"`, `"closed"`, `"checked"`, etc.), never user input.
+A few components apply small inline `style` props for layout that cannot be expressed with data attributes alone (e.g. `CodeBlock` line stacking, positioned overlays in `Tooltip`/`Popover`/`Sheet`, computed track fills in `Slider`/`ProgressBar`). In a purely client-rendered app these are applied through the CSSOM and are **not** affected by `style-src`. If you **server-render** Wire UI under a strict CSP, those styles serialize to `style="…"` attributes, which are governed by `style-src-attr` (falling back to `style-src`). To keep `style-src 'self'` without `'unsafe-inline'` in an SSR app, allow inline style attributes specifically:
+
+```
+Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-inline'
+```
+
+Inline **style attributes** cannot execute script, so this does not weaken your script policy.
+
+## Dependency license audit
+
+Wire UI's published packages are MIT-licensed and carry **no runtime dependencies**, so nothing beyond the host framework is distributed to your users.
+
+| Surface | Packages | Licenses |
+|---|---|---|
+| Shipped runtime (`@wire-ui/react`) | `react`, `react-dom` (peer) | MIT |
+| Build/dev toolchain (full installed tree) | ~1,250 transitive | 100% permissive — MIT, ISC, Apache-2.0, BSD-2/3-Clause, BlueOak-1.0.0, 0BSD, Unlicense, CC0 |
+
+A scan of the entire installed tree finds no copyleft license in any **distributed** code. The only non-permissive entry is `@img/sharp-libvips` (LGPL-3.0), a prebuilt native binary used solely for image optimization in the docs/Storybook build — it is a build-time tool and is never bundled into a published package. A handful of packages omit the SPDX `license` field in their metadata; their `LICENSE` files confirm they are MIT.
+
+Because each published package declares `"dependencies": {}` and lists only the framework as a peer, the license surface your application inherits from Wire UI is just MIT.
 
 ## Third-Party Dependencies
 
