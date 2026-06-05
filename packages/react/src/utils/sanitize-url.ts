@@ -19,6 +19,7 @@
 // naive prefix check, so we remove them before testing the scheme: C0/C1
 // control characters, ASCII space, and the zero-width/BOM code points browsers
 // tolerate inside the scheme portion.
+// eslint-disable-next-line no-control-regex -- matching control chars is the point: they must be stripped before the scheme check
 const STRIPPED_CHARS = /[\u0000-\u0020\u007F-\u009F\u200B-\u200D\u2028\u2029\uFEFF]/g;
 
 // Schemes that can execute script or smuggle active content.
