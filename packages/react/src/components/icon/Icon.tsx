@@ -1,6 +1,12 @@
 import React from 'react';
 import type { IconProps } from './Icon.types';
 
+// SECURITY: Icon is the library's single opt-in raw-HTML path. The inner markup
+// of each entry in the `icons` map is injected verbatim via
+// `dangerouslySetInnerHTML`, so the SVG strings MUST be author-controlled and
+// trusted (e.g. bundled icon sets like Lucide or Heroicons) — never built from
+// user input. This is intentional and documented; see SECURITY.md.
+
 function parseSvg(raw: string): { viewBox: string; content: string } {
 	const viewBoxMatch = raw.match(/viewBox="([^"]+)"/i);
 	const viewBox = viewBoxMatch?.[1] ?? '0 0 24 24';

@@ -155,4 +155,52 @@ describe('Markdown', () => {
 		const { container } = render(<Markdown content='just text' />);
 		expect(container.querySelector('p')).toHaveTextContent('just text');
 	});
+
+	describe('URL sanitization (XSS-safe by default)', () => {
+		it('drops a javascript: href on a link', () => {
+			const { container } = render(
+				<Markdown
+					nodes={[
+						{
+							type: 'paragraph',
+							children: [{ type: 'link', url: 'javascript:alert(1)', children: [{ type: 'text', value: 'click' }] }],
+						},
+					]}
+				/>,
+			);
+			const a = container.querySelector('a');
+			expect(a).toHaveTextContent('click');
+			expect(a).not.toHaveAttribute('href');
+		});
+
+		it('keeps safe link URLs', () => {
+			const { container } = render(
+				<Markdown
+					nodes={[
+						{
+							type: 'paragraph',
+							children: [
+								{ type: 'link', url: 'https://example.com', children: [{ type: 'text', value: 'ok' }] },
+							],
+						},
+					]}
+				/>,
+			);
+			expect(container.querySelector('a')).toHaveAttribute('href', 'https://example.com');
+		});
+
+		it('drops a javascript: image src but allows data: images', () => {
+			const { container } = render(
+				<Markdown
+					nodes={[
+						{ type: 'image', url: 'javascript:alert(1)', alt: 'bad' },
+						{ type: 'image', url: 'data:image/png;base64,iVBORw0KGgo=', alt: 'ok' },
+					]}
+				/>,
+			);
+			const [bad, ok] = Array.from(container.querySelectorAll('img'));
+			expect(bad).not.toHaveAttribute('src');
+			expect(ok).toHaveAttribute('src', 'data:image/png;base64,iVBORw0KGgo=');
+		});
+	});
 });

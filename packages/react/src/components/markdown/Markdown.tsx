@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
+import { sanitizeUrl } from '@/utils/sanitize-url';
 import type {
 	MarkdownComponent,
 	MarkdownComponents,
@@ -35,15 +36,17 @@ const defaultComponents: MarkdownComponents = {
 		</pre>
 	),
 	link: ({ node, children }) => (
+		// Drop the href entirely for unsafe schemes (e.g. `javascript:`) so the
+		// default renderer is XSS-safe even when nodes come from untrusted input.
 		<a
-			href={node.url}
+			href={sanitizeUrl(node.url)}
 			title={node.title ?? undefined}>
 			{children}
 		</a>
 	),
 	image: ({ node }) => (
 		<img
-			src={node.url}
+			src={sanitizeUrl(node.url, { allowDataImages: true })}
 			alt={node.alt ?? ''}
 			title={node.title ?? undefined}
 		/>

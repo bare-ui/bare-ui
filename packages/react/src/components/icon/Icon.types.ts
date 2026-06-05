@@ -60,6 +60,14 @@ export interface IconProps extends React.SVGAttributes<SVGSVGElement> {
 	size?: IconSize;
 	/** Accessible label for the icon. */
 	label?: string;
-	/** Map of icon names to raw SVG strings. Must be provided by the consumer. */
+	/**
+	 * Map of icon names to raw SVG strings, provided by the consumer.
+	 *
+	 * @remarks
+	 * **Security:** the inner SVG markup is rendered with
+	 * `dangerouslySetInnerHTML`, so these strings must be trusted,
+	 * author-controlled assets (e.g. a bundled icon set) — never values derived
+	 * from user input.
+	 */
 	icons?: Partial<Record<IconName, string>>;
 }
