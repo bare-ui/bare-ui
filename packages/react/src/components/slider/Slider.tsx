@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
+import { getDirection, useDirection } from '@/hooks/use-direction';
 import type { SliderImplProps, SliderOrientation, SliderProps, SliderValue } from './Slider.types';
 
 // ---------------------------------------------------------------------------
@@ -107,6 +108,7 @@ const SliderImpl = React.forwardRef<HTMLDivElement, SliderImplProps>((props, ref
 	// --- Track / thumb interaction ------------------------------------------
 	const trackRef = useRef<HTMLDivElement | null>(null);
 	const draggingRef = useRef<{ thumbIndex: number } | null>(null);
+	const rtl = useDirection(trackRef) === 'rtl';
 
 	const setMergedRef = useMergedRefs<HTMLDivElement>(trackRef, ref);
 
@@ -121,7 +123,12 @@ const SliderImpl = React.forwardRef<HTMLDivElement, SliderImplProps>((props, ref
 			const point = isHorizontal ? clientX : clientY;
 			let pct = (point - start) / length;
 			if (!isHorizontal) pct = inverted ? pct : 1 - pct; // vertical default = bottom→top
-			else if (inverted) pct = 1 - pct;
+			else {
+				// In RTL the horizontal axis is mirrored: the track's start (min) sits on
+				// the right, so the fraction measured from the physical left must flip.
+				const rtl = getDirection(el) === 'rtl';
+				if (inverted !== rtl) pct = 1 - pct;
+			}
 			pct = clamp(pct, 0, 1);
 			return min + pct * (max - min);
 		},
@@ -175,8 +182,10 @@ const SliderImpl = React.forwardRef<HTMLDivElement, SliderImplProps>((props, ref
 	const handleThumbKeyDown = (thumbIndex: number) => (e: React.KeyboardEvent<HTMLSpanElement>) => {
 		if (disabled) return;
 		const horizontal = orientation === 'horizontal';
-		const incKey = horizontal ? (inverted ? 'ArrowLeft' : 'ArrowRight') : (inverted ? 'ArrowDown' : 'ArrowUp');
-		const decKey = horizontal ? (inverted ? 'ArrowRight' : 'ArrowLeft') : (inverted ? 'ArrowUp' : 'ArrowDown');
+		// RTL mirrors the horizontal axis, so the arrow that increases the value flips.
+		const flipH = horizontal && inverted !== (getDirection(e.currentTarget) === 'rtl');
+		const incKey = horizontal ? (flipH ? 'ArrowLeft' : 'ArrowRight') : (inverted ? 'ArrowDown' : 'ArrowUp');
+		const decKey = horizontal ? (flipH ? 'ArrowRight' : 'ArrowLeft') : (inverted ? 'ArrowUp' : 'ArrowDown');
 		const big = step * 10;
 
 		let delta = 0;
@@ -204,8 +213,13 @@ const SliderImpl = React.forwardRef<HTMLDivElement, SliderImplProps>((props, ref
 	const fillEnd = range ? Math.max(pct[0], pct[1]) : pct[0];
 
 	const isHorizontal = orientation === 'horizontal';
+	// In RTL the horizontal axis is mirrored. Folding that into `inverted` keeps the
+	// LTR render path byte-for-byte unchanged.
+	const placeInverted = isHorizontal ? inverted !== rtl : inverted;
 	const fillStyle: React.CSSProperties = isHorizontal
-		? { left: `${fillStart}%`, width: `${fillEnd - fillStart}%`, top: 0, bottom: 0 }
+		? placeInverted
+			? { right: `${fillStart}%`, width: `${fillEnd - fillStart}%`, top: 0, bottom: 0 }
+			: { left: `${fillStart}%`, width: `${fillEnd - fillStart}%`, top: 0, bottom: 0 }
 		: inverted
 			? { top: `${fillStart}%`, height: `${fillEnd - fillStart}%`, left: 0, right: 0 }
 			: { bottom: `${fillStart}%`, height: `${fillEnd - fillStart}%`, left: 0, right: 0 };
@@ -213,7 +227,7 @@ const SliderImpl = React.forwardRef<HTMLDivElement, SliderImplProps>((props, ref
 	const thumbStyle = (i: number): React.CSSProperties => {
 		const p = pct[i];
 		if (isHorizontal) {
-			return inverted
+			return placeInverted
 				? { right: `${p}%`, top: '50%', transform: 'translate(50%, -50%)' }
 				: { left: `${p}%`, top: '50%', transform: 'translate(-50%, -50%)' };
 		}

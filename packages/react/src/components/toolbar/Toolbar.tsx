@@ -2,6 +2,7 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
+import { getDirection } from '@/hooks/use-direction';
 import { useId } from '@/hooks/use-id';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
 import type {
@@ -71,8 +72,10 @@ const Root = React.forwardRef<HTMLDivElement, ToolbarRootProps>(
 
 		const onItemKeyDown = useCallback(
 			(e: React.KeyboardEvent) => {
-				const nextKey = orientation === 'horizontal' ? 'ArrowRight' : 'ArrowDown';
-				const prevKey = orientation === 'horizontal' ? 'ArrowLeft' : 'ArrowUp';
+				const horizontal = orientation === 'horizontal';
+				const rtl = horizontal && getDirection(e.currentTarget) === 'rtl';
+				const nextKey = horizontal ? (rtl ? 'ArrowLeft' : 'ArrowRight') : 'ArrowDown';
+				const prevKey = horizontal ? (rtl ? 'ArrowRight' : 'ArrowLeft') : 'ArrowUp';
 				if (!['Home', 'End', nextKey, prevKey].includes(e.key)) return;
 
 				const items = orderedEnabled();

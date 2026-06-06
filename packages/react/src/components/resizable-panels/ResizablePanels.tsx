@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { getDirection } from '@/hooks/use-direction';
 import { useEventListener } from '@/hooks/use-event-listener';
 import { useId } from '@/hooks/use-id';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
@@ -216,6 +217,7 @@ const Group = React.forwardRef<HTMLDivElement, PanelGroupProps>(
 			startSizes: number[];
 			startPos: number;
 			containerLength: number;
+			rtl: boolean;
 		} | null>(null);
 
 		const startDrag = useCallback(
@@ -230,6 +232,9 @@ const Group = React.forwardRef<HTMLDivElement, PanelGroupProps>(
 					startSizes: sizes.slice(),
 					startPos: horizontal ? pointer.x : pointer.y,
 					containerLength: horizontal ? rect.width : rect.height,
+					// In an RTL row the first panel sits on the right, so a rightward drag
+					// must shrink it — the horizontal delta is inverted.
+					rtl: horizontal && getDirection(containerRef.current) === 'rtl',
 				};
 			},
 			[orientation, sizes],
@@ -241,7 +246,7 @@ const Group = React.forwardRef<HTMLDivElement, PanelGroupProps>(
 			const horizontal = orientation === 'horizontal';
 			const currentPos = horizontal ? e.clientX : e.clientY;
 			const deltaPx = currentPos - drag.startPos;
-			const deltaPct = (deltaPx / drag.containerLength) * 100;
+			const deltaPct = ((drag.rtl ? -deltaPx : deltaPx) / drag.containerLength) * 100;
 
 			// Handle index k sits between panel k and panel k+1.
 			const aIdx = drag.handleIndex;

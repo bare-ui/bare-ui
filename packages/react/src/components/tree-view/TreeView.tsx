@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
+import { getDirection } from '@/hooks/use-direction';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
 import type {
 	TreeItemState,
@@ -218,19 +219,25 @@ const TreeItem: React.FC<TreeItemProps> = ({ node, level, renderItem }) => {
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
 		if (disabled) return;
+		// RTL mirrors the tree: ArrowLeft expands/enters, ArrowRight collapses/exits.
+		const rtl = getDirection(e.currentTarget) === 'rtl';
+		const expandKey = rtl ? 'ArrowLeft' : 'ArrowRight';
+		const collapseKey = rtl ? 'ArrowRight' : 'ArrowLeft';
+		if (e.key === expandKey) {
+			e.preventDefault();
+			// Collapsed parent: expand. Expanded parent: move into the first child.
+			if (hasChildren && !isExpanded) toggleExpanded(node.id);
+			else if (hasChildren && isExpanded) focusByOffset(node.id, 1);
+			return;
+		}
+		if (e.key === collapseKey) {
+			e.preventDefault();
+			// Expanded parent: collapse. Otherwise move to the parent node.
+			if (hasChildren && isExpanded) toggleExpanded(node.id);
+			else focusParent(node.id);
+			return;
+		}
 		switch (e.key) {
-			case 'ArrowRight':
-				e.preventDefault();
-				// Collapsed parent: expand. Expanded parent: move into the first child.
-				if (hasChildren && !isExpanded) toggleExpanded(node.id);
-				else if (hasChildren && isExpanded) focusByOffset(node.id, 1);
-				break;
-			case 'ArrowLeft':
-				e.preventDefault();
-				// Expanded parent: collapse. Otherwise move to the parent node.
-				if (hasChildren && isExpanded) toggleExpanded(node.id);
-				else focusParent(node.id);
-				break;
 			case 'ArrowDown':
 				e.preventDefault();
 				focusByOffset(node.id, 1);

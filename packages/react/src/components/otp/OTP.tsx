@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useCallback, useContext, useRef, useState } from 'react';
+import { getDirection } from '@/hooks/use-direction';
 import { useWireUIMessages } from '@/context/wire-ui-context';
 import type { OTPContextValue, OTPRootProps, OTPSeparatorProps, OTPSlotProps } from './OTP.types';
 
@@ -106,12 +107,13 @@ const Root = React.forwardRef<HTMLDivElement, OTPRootProps>(
 						commit(next);
 						inputRefs.current[index - 1]?.focus();
 					}
-				} else if (e.key === 'ArrowLeft') {
+				} else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
 					e.preventDefault();
-					if (index > 0) inputRefs.current[index - 1]?.focus();
-				} else if (e.key === 'ArrowRight') {
-					e.preventDefault();
-					if (index < length - 1) inputRefs.current[index + 1]?.focus();
+					// In RTL the slots read right-to-left, so ArrowLeft advances and ArrowRight retreats.
+					const rtl = getDirection(e.currentTarget) === 'rtl';
+					const forward = e.key === (rtl ? 'ArrowLeft' : 'ArrowRight');
+					const target = forward ? index + 1 : index - 1;
+					if (target >= 0 && target < length) inputRefs.current[target]?.focus();
 				}
 			},
 			[chars, commit, length],

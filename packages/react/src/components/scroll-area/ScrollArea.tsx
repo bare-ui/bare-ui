@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
+import { useDirection } from '@/hooks/use-direction';
 import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
 import type {
@@ -194,13 +195,19 @@ const Thumb = React.forwardRef<HTMLDivElement, ScrollAreaThumbProps>(
 		const sb = useScrollbarContext();
 		const vertical = sb.orientation === 'vertical';
 		const m = ctx.metrics;
+		const rtl = useDirection(sb.trackRef) === 'rtl';
+		// In RTL the horizontal start sits on the right and `scrollLeft` runs negative
+		// (modern browsers), so measure distance-from-start by magnitude and anchor the
+		// thumb to the right edge.
+		const rtlHorizontal = rtl && !vertical;
 
 		const clientLen = vertical ? m.clientHeight : m.clientWidth;
 		const scrollLen = vertical ? m.scrollHeight : m.scrollWidth;
 		const scrollOffset = vertical ? m.scrollTop : m.scrollLeft;
 		const maxScroll = Math.max(scrollLen - clientLen, 0);
 		const sizePct = scrollLen > 0 ? Math.min(100, (clientLen / scrollLen) * 100) : 100;
-		const offsetPct = maxScroll > 0 ? (scrollOffset / maxScroll) * (100 - sizePct) : 0;
+		const distanceFromStart = rtlHorizontal ? Math.abs(scrollOffset) : scrollOffset;
+		const offsetPct = maxScroll > 0 ? (distanceFromStart / maxScroll) * (100 - sizePct) : 0;
 
 		const dragRef = useRef<{ start: number; startScroll: number } | null>(null);
 
@@ -229,6 +236,8 @@ const Thumb = React.forwardRef<HTMLDivElement, ScrollAreaThumbProps>(
 		const sizeStyle: React.CSSProperties =
 			vertical ?
 				{ right: 0, left: 0, height: `${sizePct}%`, top: `${offsetPct}%` }
+			: rtlHorizontal ?
+				{ top: 0, bottom: 0, width: `${sizePct}%`, right: `${offsetPct}%` }
 			:	{ top: 0, bottom: 0, width: `${sizePct}%`, left: `${offsetPct}%` };
 
 		return (

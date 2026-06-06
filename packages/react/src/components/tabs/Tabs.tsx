@@ -2,6 +2,7 @@
 
 import React, { createContext, useCallback, useContext, useMemo, useRef } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
+import { getDirection } from '@/hooks/use-direction';
 import { useId } from '@/hooks/use-id';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { mergeProps } from '@/utils/merge-props';
@@ -167,8 +168,10 @@ const Trigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
 			if (e.defaultPrevented) return;
 
 			const horizontal = ctx.orientation === 'horizontal';
-			const nextKey = horizontal ? 'ArrowRight' : 'ArrowDown';
-			const prevKey = horizontal ? 'ArrowLeft' : 'ArrowUp';
+			// RTL mirrors the horizontal axis: ArrowLeft advances, ArrowRight retreats.
+			const rtl = horizontal && getDirection(e.currentTarget) === 'rtl';
+			const nextKey = horizontal ? (rtl ? 'ArrowLeft' : 'ArrowRight') : 'ArrowDown';
+			const prevKey = horizontal ? (rtl ? 'ArrowRight' : 'ArrowLeft') : 'ArrowUp';
 
 			if (e.key === nextKey) {
 				e.preventDefault();

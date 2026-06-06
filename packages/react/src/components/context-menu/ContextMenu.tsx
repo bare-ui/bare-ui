@@ -3,6 +3,7 @@
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useControllableState } from '@/hooks/use-controllable-state';
+import { getDirection } from '@/hooks/use-direction';
 import { useEventListener } from '@/hooks/use-event-listener';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { useKeyboard } from '@/hooks/use-keyboard';
@@ -207,6 +208,12 @@ const Content = React.forwardRef<HTMLDivElement, ContextMenuContentProps>(
 		if (!ctx.open) return null;
 		if (typeof document === 'undefined') return null;
 
+		// In RTL the menu grows leftward, so anchor its right edge at the cursor.
+		const rtl = getDirection(document.documentElement) === 'rtl';
+		const anchor: React.CSSProperties = rtl
+			? { right: Math.max(0, window.innerWidth - ctx.position.x) }
+			: { left: ctx.position.x };
+
 		const node = (
 			<div
 				ref={mergedRef}
@@ -215,7 +222,7 @@ const Content = React.forwardRef<HTMLDivElement, ContextMenuContentProps>(
 				data-state='open'
 				style={{
 					position: 'fixed',
-					left: ctx.position.x,
+					...anchor,
 					top: ctx.position.y,
 					zIndex: 50,
 					...style,

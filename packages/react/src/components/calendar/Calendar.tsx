@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { getDirection } from '@/hooks/use-direction';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { useWireUILocale, useWireUIMessages } from '@/context/wire-ui-context';
@@ -380,13 +381,15 @@ const Grid = React.forwardRef<HTMLDivElement, CalendarGridProps>(
 		const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
 			const targetIso = (e.target as HTMLElement).getAttribute?.('data-date');
 			const base = targetIso ? parseISODate(targetIso) : tabbableDate;
+			// RTL mirrors the day grid: ArrowLeft moves to the next day, ArrowRight to the previous.
+			const dayStep = getDirection(e.currentTarget) === 'rtl' ? -1 : 1;
 			let next: Date | null = null;
 			switch (e.key) {
 				case 'ArrowLeft':
-					next = addDays(base, -1);
+					next = addDays(base, -dayStep);
 					break;
 				case 'ArrowRight':
-					next = addDays(base, 1);
+					next = addDays(base, dayStep);
 					break;
 				case 'ArrowUp':
 					next = addDays(base, -7);

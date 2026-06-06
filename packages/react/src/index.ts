@@ -84,6 +84,9 @@ export {
 	useDisclosure,
 	useControllableState,
 	useMergedRefs,
+	useDirection,
+	getDirection,
+	isRtl,
 	useId,
 	useMediaQuery,
 	useReduceMotion,
@@ -152,6 +155,7 @@ export type {
 	UseStateMachineResult,
 	UseUndoRedoOptions,
 	UseUndoRedoResult,
+	Direction,
 } from './hooks';
 
 // Internationalization — provider, locale/messages hooks, and Intl formatters

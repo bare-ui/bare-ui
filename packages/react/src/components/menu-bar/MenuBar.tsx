@@ -3,6 +3,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { useClickOutside } from '@/hooks/use-click-outside';
 import { useControllableState } from '@/hooks/use-controllable-state';
+import { getDirection } from '@/hooks/use-direction';
 import { useInteractiveState } from '@/hooks/use-interactive-state';
 import { useKeyboard } from '@/hooks/use-keyboard';
 import { useMenuNavigation } from '@/hooks/use-menu-navigation';
@@ -191,14 +192,16 @@ const Trigger = React.forwardRef<HTMLButtonElement, MenuBarTriggerProps>(
 					onPointerEnter?.(e);
 				}}
 				onKeyDown={(e) => {
+					// RTL mirrors the bar: ArrowLeft moves to the next menu, ArrowRight to the previous.
+					const fwd = getDirection(e.currentTarget) === 'rtl' ? -1 : 1;
 					switch (e.key) {
 						case 'ArrowRight':
 							e.preventDefault();
-							focusSibling(e.currentTarget, 1);
+							focusSibling(e.currentTarget, fwd);
 							break;
 						case 'ArrowLeft':
 							e.preventDefault();
-							focusSibling(e.currentTarget, -1);
+							focusSibling(e.currentTarget, -fwd);
 							break;
 						case 'ArrowDown':
 						case 'ArrowUp':

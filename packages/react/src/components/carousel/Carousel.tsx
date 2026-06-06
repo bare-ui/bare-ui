@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
+import { getDirection } from '@/hooks/use-direction';
 import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect';
 import { useMergedRefs } from '@/hooks/use-merged-refs';
 import { useWireUIMessages } from '@/context/wire-ui-context';
@@ -212,8 +213,9 @@ const Viewport = React.forwardRef<HTMLDivElement, CarouselViewportProps>(
 				onKeyDown={(e) => {
 					onKeyDown?.(e);
 					if (e.defaultPrevented) return;
-					const nextKey = vertical ? 'ArrowDown' : 'ArrowRight';
-					const prevKey = vertical ? 'ArrowUp' : 'ArrowLeft';
+					const rtl = !vertical && getDirection(e.currentTarget) === 'rtl';
+					const nextKey = vertical ? 'ArrowDown' : rtl ? 'ArrowLeft' : 'ArrowRight';
+					const prevKey = vertical ? 'ArrowUp' : rtl ? 'ArrowRight' : 'ArrowLeft';
 					if (e.key === nextKey) {
 						e.preventDefault();
 						ctx.scrollNext();

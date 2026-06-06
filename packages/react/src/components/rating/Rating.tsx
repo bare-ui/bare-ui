@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useControllableState } from '@/hooks/use-controllable-state';
+import { getDirection } from '@/hooks/use-direction';
 import { useWireUIMessages } from '@/context/wire-ui-context';
 import type { RatingProps } from './Rating.types';
 
@@ -78,23 +79,15 @@ const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
 
 		const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, star: number) => {
 			if (!interactive) return;
+			// RTL mirrors the horizontal arrows; vertical arrows are unaffected.
+			const rtl = getDirection(e.currentTarget) === 'rtl';
+			const incKey = rtl ? 'ArrowLeft' : 'ArrowRight';
+			const decKey = rtl ? 'ArrowRight' : 'ArrowLeft';
 			let next: number | null = null;
-			switch (e.key) {
-				case 'ArrowRight':
-				case 'ArrowUp':
-					next = Math.min(max, star + 1);
-					break;
-				case 'ArrowLeft':
-				case 'ArrowDown':
-					next = Math.max(1, star - 1);
-					break;
-				case 'Home':
-					next = 1;
-					break;
-				case 'End':
-					next = max;
-					break;
-			}
+			if (e.key === incKey || e.key === 'ArrowUp') next = Math.min(max, star + 1);
+			else if (e.key === decKey || e.key === 'ArrowDown') next = Math.max(1, star - 1);
+			else if (e.key === 'Home') next = 1;
+			else if (e.key === 'End') next = max;
 			if (next === null) return;
 			e.preventDefault();
 			setSelectedValue(next);
