@@ -27,6 +27,9 @@ export type { UseControllableStateOptions } from './use-controllable-state';
 
 export { useMergedRefs } from './use-merged-refs';
 
+export { useDirection, getDirection, isRtl } from './use-direction';
+export type { Direction } from './use-direction';
+
 export { useId } from './use-id';
 
 export { useMediaQuery } from './use-media-query';
