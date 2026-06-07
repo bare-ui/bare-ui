@@ -57,6 +57,9 @@ function Root(props: InfiniteScrollRootProps) {
 	return (
 		<InfiniteScrollContext.Provider value={ctxValue}>
 			<div
+				// Root owns the scroll viewport (consumers apply `overflow`), so it must be
+				// keyboard-focusable for users who scroll without a pointer (scrollable-region-focusable).
+				tabindex={0}
 				class={local.class}
 				data-loading={local.loading ? '' : undefined}
 				data-has-more={local.hasMore ? '' : undefined}

@@ -134,8 +134,17 @@ function Timeago(props: TimeagoProps) {
 	const { start, stop } = createInterval(() => setTick((t) => t + 1), REFRESH_MS, { autoStart: false });
 	createEffect(() => (local.isLive ? start() : stop()));
 
+	// Expose the machine-readable ISO value so screen readers (and crawlers) get an
+	// unambiguous full timestamp, not just the relative/short display text. Guard
+	// against invalid dates (toISOString throws on NaN).
+	const machineValue = (): string | undefined => {
+		const parsed = toDate(local.datetime);
+		return Number.isNaN(parsed.getTime()) ? undefined : parsed.toISOString();
+	};
+
 	return (
 		<time
+			datetime={machineValue()}
 			class={local.class}
 			{...rest}>
 			{display()}

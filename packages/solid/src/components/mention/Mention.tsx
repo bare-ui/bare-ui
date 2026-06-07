@@ -1,4 +1,4 @@
-import { createContext, createMemo, createSignal, useContext, splitProps, Show, For, mergeProps, type JSX } from 'solid-js';
+import { createContext, createMemo, createSignal, createUniqueId, useContext, splitProps, Show, For, mergeProps, type JSX } from 'solid-js';
 import { createControllableState } from '@/primitives/create-controllable-state';
 import { createId } from '@/primitives/create-id';
 import { createMergedRefs } from '@/primitives/create-merged-refs';
@@ -342,6 +342,19 @@ function Input(props: MentionInputProps & { ref?: (el: HTMLTextAreaElement) => v
 	const activeId = () =>
 		ctx.open && ctx.filtered[ctx.activeIndex] ? ctx.getOptionId(ctx.activeIndex) : undefined;
 
+	// The `role="combobox"` wrapper needs its own accessible name. The consumer
+	// names the textbox (via aria-label/aria-labelledby on Mention.Input), so the
+	// wrapper borrows that name via aria-labelledby pointing at the textarea. This
+	// keeps a single labelled element (the textarea) while still naming the
+	// combobox — unlike React, which duplicates aria-label onto both (its tests
+	// query by role; the Solid suite queries by label text, which requires the
+	// name to be unique).
+	const textareaId = createUniqueId();
+	const ownLabelledBy = () => (rest as Record<string, unknown>)['aria-labelledby'] as string | undefined;
+	// If the consumer named the textarea via aria-label, the wrapper references the
+	// textarea; if they used aria-labelledby, the wrapper reuses the same target.
+	const comboboxLabelledBy = () => ownLabelledBy() ?? textareaId;
+
 	const callUserHandler = <E,>(handler: unknown, e: E) => {
 		if (typeof handler === 'function') (handler as (event: E) => void)(e);
 	};
@@ -389,22 +402,33 @@ function Input(props: MentionInputProps & { ref?: (el: HTMLTextAreaElement) => v
 		callUserHandler(local.onBlur, e);
 	};
 
+	// ARIA 1.2 combobox pattern: a `role="combobox"` wrapper owns the listbox
+	// (`aria-controls`/`aria-expanded`/`aria-haspopup`), while the focusable
+	// textarea stays a `textbox`. `aria-expanded`/`aria-controls` are not allowed
+	// on a bare textarea, so they live on the wrapper; the textarea keeps the
+	// textbox-allowed `aria-autocomplete`/`aria-activedescendant`.
 	return (
-		<textarea
-			ref={mergedRef}
-			value={ctx.text}
-			disabled={ctx.disabled}
-			aria-autocomplete='list'
+		<div
+			role='combobox'
 			aria-expanded={ctx.open}
 			aria-controls={ctx.listboxId}
-			aria-activedescendant={activeId()}
-			onInput={handleInput}
-			onKeyDown={handleKeyDown}
-			onKeyUp={handleKeyUp}
-			onClick={handleClick}
-			onBlur={handleBlur}
-			{...rest}
-		/>
+			aria-haspopup='listbox'
+			aria-labelledby={comboboxLabelledBy()}>
+			<textarea
+				ref={mergedRef}
+				id={textareaId}
+				value={ctx.text}
+				disabled={ctx.disabled}
+				aria-autocomplete='list'
+				aria-activedescendant={activeId()}
+				onInput={handleInput}
+				onKeyDown={handleKeyDown}
+				onKeyUp={handleKeyUp}
+				onClick={handleClick}
+				onBlur={handleBlur}
+				{...rest}
+			/>
+		</div>
 	);
 }
 

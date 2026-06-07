@@ -1,4 +1,4 @@
-import { createContext, createSignal, onCleanup, onMount, Show, splitProps, untrack, useContext, type JSX } from 'solid-js';
+import { createContext, createSignal, onCleanup, Show, splitProps, untrack, useContext, type JSX } from 'solid-js';
 import { createClickOutside } from '@/primitives/create-click-outside';
 import { createControllableState } from '@/primitives/create-controllable-state';
 import { createDebouncedCallback } from '@/primitives/create-debounce';
@@ -90,13 +90,21 @@ function Root(props: SearchRootProps) {
 		handleOpenChange(false);
 	};
 
+	// Assign a unique index from a plain counter (not the reactive itemCount
+	// signal). Reading itemCount() during a batched mount returned the same value
+	// for every item, so they all shared an index and the highlighted option's
+	// aria-selected leaked onto every option for a screen reader.
+	let nextItemIndex = 0;
+
 	const registerItem = () => {
-		const index = itemCount();
+		const index = nextItemIndex;
+		nextItemIndex += 1;
 		setItemCount((prev) => prev + 1);
 		return index;
 	};
 
 	const unregisterItem = () => {
+		nextItemIndex = Math.max(0, nextItemIndex - 1);
 		setItemCount((prev) => Math.max(0, prev - 1));
 	};
 
@@ -209,11 +217,12 @@ function Item(props: SearchItemProps) {
 	const ctx = useSearchContext();
 	const state = createInteractiveState();
 
-	let myIndex = -1;
-	onMount(() => {
-		myIndex = ctx.registerItem();
-		onCleanup(() => ctx.unregisterItem());
-	});
+	// Register synchronously during setup so this item owns a real, distinct
+	// index (0, 1, 2…) from the first render. Registering in onMount left myIndex
+	// at -1 during the initial pass, which matched the initial highlightedIndex of
+	// -1 and made every option report aria-selected before any arrow navigation.
+	const myIndex = ctx.registerItem();
+	onCleanup(() => ctx.unregisterItem());
 
 	const isHighlighted = () => ctx.highlightedIndex === myIndex;
 

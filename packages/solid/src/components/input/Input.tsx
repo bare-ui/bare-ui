@@ -47,6 +47,7 @@ function Root(props: InputRootProps) {
 	const [isActive, setIsActive] = createSignal(false);
 
 	const inputId = createMemo(() => local.id || createId('input'));
+	const errorId = createMemo(() => `${inputId()}-error`);
 
 	const handleChange = (newValue: string) => {
 		setValue(newValue);
@@ -68,6 +69,9 @@ function Root(props: InputRootProps) {
 		},
 		get inputId() {
 			return inputId();
+		},
+		get errorId() {
+			return errorId();
 		},
 		get isActive() {
 			return isActive();
@@ -112,6 +116,7 @@ function Field(props: InputFieldProps) {
 			class={local.class}
 			aria-required={ctx.isRequired || undefined}
 			aria-invalid={ctx.invalidType ? true : undefined}
+			aria-describedby={ctx.invalidType ? ctx.errorId : undefined}
 			data-invalid={ctx.invalidType ? '' : undefined}
 			data-active={ctx.isActive ? '' : undefined}
 			data-success={ctx.isSuccess ? '' : undefined}
@@ -147,6 +152,7 @@ function ErrorMessage(props: InputErrorProps) {
 	return (
 		<Show when={ctx.invalidType}>
 			<small
+				id={ctx.errorId}
 				role='alert'
 				class={local.class}
 				{...(rest as object)}>

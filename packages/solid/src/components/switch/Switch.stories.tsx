@@ -33,10 +33,15 @@ export const Default: Story = {
 
 		return (
 			<div class='flex items-center gap-3'>
-				<label class='text-sm font-medium text-black'>Enable notifications</label>
+				<label
+						id='switch-default-label'
+						class='text-sm font-medium text-black'>
+						Enable notifications
+					</label>
 				<Switch.Root
 					checked={enabled()}
 					onChange={() => setEnabled(!enabled())}
+					aria-labelledby='switch-default-label'
 					class={trackCls}>
 					<Switch.Thumb class={thumbCls} />
 				</Switch.Root>
@@ -60,12 +65,17 @@ export const Composed: Story = {
 		return (
 			<div class='w-80 divide-y divide-[#2a2a2a] rounded-[8px] border border-black bg-white'>
 				<For each={items()}>
-					{(item) => (
+					{(item, i) => (
 						<div class='flex items-center justify-between px-4 py-3'>
-							<p class='text-sm font-medium text-black'>{item.label}</p>
+							<p
+								id={`switch-composed-${i()}`}
+								class='text-sm font-medium text-black'>
+								{item.label}
+							</p>
 							<Switch.Root
 								checked={item.value}
 								onChange={item.onChange}
+								aria-labelledby={`switch-composed-${i()}`}
 								class={trackCls}>
 								<Switch.Thumb class={thumbCls} />
 							</Switch.Root>
@@ -107,15 +117,25 @@ export const Complex: Story = {
 		return (
 			<div class='w-80 divide-y divide-[#2a2a2a] rounded-[20px] border border-black bg-white'>
 				<For each={items()}>
-					{(item) => (
+					{(item, i) => (
 						<div class='flex items-center justify-between px-4 py-3'>
 							<div>
-								<p class='text-sm font-medium text-black'>{item.label}</p>
-								<p class='text-xs text-[#6b7280]'>{item.desc}</p>
+								<p
+									id={`switch-complex-${i()}`}
+									class='text-sm font-medium text-black'>
+									{item.label}
+								</p>
+								<p
+									id={`switch-complex-${i()}-desc`}
+									class='text-xs text-[#6b7280]'>
+									{item.desc}
+								</p>
 							</div>
 							<Switch.Root
 								checked={item.value}
 								onChange={item.onChange}
+								aria-labelledby={`switch-complex-${i()}`}
+								aria-describedby={`switch-complex-${i()}-desc`}
 								class={trackCls}>
 								<Switch.Thumb class={thumbCls} />
 							</Switch.Root>

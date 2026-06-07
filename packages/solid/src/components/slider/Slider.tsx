@@ -63,6 +63,7 @@ function SliderImpl(props: SliderImplProps & { ref?: (el: HTMLDivElement) => voi
 			'children',
 			'ref',
 			'aria-label',
+			'aria-labelledby',
 			'onPointerDown',
 			'onPointerMove',
 			'onPointerUp',
@@ -226,6 +227,18 @@ function SliderImpl(props: SliderImplProps & { ref?: (el: HTMLDivElement) => voi
 
 	const isHorizontal = () => orientation() === 'horizontal';
 
+	// Each thumb is an ARIA input field and needs its own accessible name. In
+	// single mode it inherits the consumer's label directly. In range mode the
+	// group carries the overall label, so each thumb gets a distinguishing name.
+	// `aria-labelledby` (single mode) takes precedence over `aria-label`.
+	const thumbLabelledBy = (): string | undefined => (!range() ? local['aria-labelledby'] : undefined);
+	const thumbLabel = (i: number): string | undefined => {
+		if (thumbLabelledBy()) return undefined;
+		const ariaLabel = local['aria-label'];
+		if (range()) return [i === 0 ? 'Minimum' : 'Maximum', ariaLabel].filter(Boolean).join(' ') || undefined;
+		return ariaLabel || undefined;
+	};
+
 	const fillStyle = (): JSX.CSSProperties =>
 		isHorizontal()
 			? { left: `${fillStart()}%`, width: `${fillEnd() - fillStart()}%`, top: 0, bottom: 0 }
@@ -261,6 +274,7 @@ function SliderImpl(props: SliderImplProps & { ref?: (el: HTMLDivElement) => voi
 			ref={mergedRef}
 			role={range() ? 'group' : undefined}
 			aria-label={range() ? local['aria-label'] : undefined}
+				aria-labelledby={range() ? local['aria-labelledby'] : undefined}
 			class={local.class}
 			data-orientation={orientation()}
 			data-disabled={disabled() ? '' : undefined}
@@ -283,6 +297,8 @@ function SliderImpl(props: SliderImplProps & { ref?: (el: HTMLDivElement) => voi
 					<span
 						role='slider'
 						tabindex={disabled() ? -1 : 0}
+						aria-label={thumbLabel(i)}
+						aria-labelledby={thumbLabelledBy()}
 						aria-valuemin={min()}
 						aria-valuemax={max()}
 						aria-valuenow={roundFixed(v(), decimals())}

@@ -36,7 +36,16 @@ export interface CalendarGridProps extends Omit<JSX.HTMLAttributes<HTMLDivElemen
 	/** Render-prop for each day cell. Receives the date and its render-state. */
 	renderDay?: (day: CalendarDay) => JSX.Element;
 	/** Render-prop for the weekday header row. */
-	renderWeekday?: (weekday: { name: string; short: string }) => JSX.Element;
+	renderWeekday?: (weekday: CalendarWeekday) => JSX.Element;
+}
+
+export interface CalendarWeekday {
+	/** Full weekday name, e.g. "Monday". */
+	name: string;
+	/** Short weekday name, e.g. "Mon". */
+	short: string;
+	/** Spread these onto your header cell. Includes role="columnheader" + accessible name. */
+	props: JSX.HTMLAttributes<HTMLDivElement> & { role: 'columnheader' };
 }
 
 export interface CalendarDay {

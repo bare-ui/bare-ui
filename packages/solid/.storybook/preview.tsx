@@ -25,8 +25,21 @@ const preview: Preview = {
 			},
 		},
 
+		// Fail the Vitest browser run (and CI) on any axe-core violation.
 		a11y: {
-			test: 'todo',
+			test: 'error',
+			config: {
+				rules: [
+					// Wire UI ships zero CSS — components impose no colors, so
+					// contrast is entirely the consumer's responsibility. The
+					// colors in our stories are illustrative demo styling, not a
+					// component guarantee. We assert semantics/ARIA/focus/keyboard
+					// here and document contrast as consumer-owned in the WCAG
+					// statement. (Consumers should run axe against their own themed
+					// app to catch contrast in their color choices.)
+					{ id: 'color-contrast', enabled: false },
+				],
+			},
 		},
 	},
 };

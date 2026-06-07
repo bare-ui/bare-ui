@@ -50,6 +50,7 @@ interface InternalGroupContext {
 	registerHandle: (id: string) => void;
 	unregisterHandle: (id: string) => void;
 	getHandleIndex: (id: string) => number;
+	getHandleValues: (id: string) => { now: number; min: number; max: number } | null;
 	startDrag: (handleId: string, pointer: { x: number; y: number }) => void;
 }
 
@@ -180,6 +181,22 @@ function Group(props: PanelGroupProps) {
 		return allSizes[idx] ?? panels[idx].config.defaultSize ?? 0;
 	};
 
+	// A handle at index k controls the boundary between panel k and panel k+1.
+	// Per the ARIA window-splitter pattern, expose the *primary* (preceding) panel's
+	// current/min/max size as aria-valuenow/min/max so AT can announce the split.
+	// Read `sizes()` first so consumers (the Handle) subscribe and re-run on drag.
+	const getHandleValues = (id: string) => {
+		const allSizes = sizes();
+		const handleIndex = handles.indexOf(id);
+		if (handleIndex < 0) return null;
+		const panel = panels[handleIndex];
+		if (!panel) return null;
+		const now = allSizes[handleIndex] ?? panel.config.defaultSize ?? 0;
+		const min = panel.config.minSize ?? 0;
+		const max = panel.config.maxSize ?? 100;
+		return { now: Math.round(now), min: Math.round(min), max: Math.round(max) };
+	};
+
 	// --- Drag handling ----------------------------------------------------
 	let dragState: {
 		handleIndex: number;
@@ -261,6 +278,7 @@ function Group(props: PanelGroupProps) {
 		registerHandle,
 		unregisterHandle,
 		getHandleIndex,
+		getHandleValues,
 		startDrag,
 	};
 
@@ -385,6 +403,9 @@ function Handle(props: PanelHandleProps & { 'aria-label'?: string }) {
 
 	const cursor = () => (ctx.orientation === 'horizontal' ? 'col-resize' : 'row-resize');
 
+	// A focusable role="separator" is a window splitter and REQUIRES aria-valuenow.
+	const values = () => ctx.getHandleValues(id);
+
 	const mergedStyle = (): JSX.CSSProperties | string | undefined => {
 		const ours: JSX.CSSProperties = {
 			cursor: local.disabled ? 'default' : cursor(),
@@ -401,6 +422,9 @@ function Handle(props: PanelHandleProps & { 'aria-label'?: string }) {
 			role='separator'
 			aria-orientation={ctx.orientation === 'horizontal' ? 'vertical' : 'horizontal'}
 			aria-label={local['aria-label'] ?? 'Resize handle'}
+			aria-valuenow={values()?.now}
+			aria-valuemin={values()?.min}
+			aria-valuemax={values()?.max}
 			tabIndex={local.disabled ? -1 : 0}
 			data-handle=''
 			data-orientation={ctx.orientation}

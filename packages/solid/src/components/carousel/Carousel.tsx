@@ -176,7 +176,15 @@ function Root(props: CarouselRootProps & { ref?: (el: HTMLDivElement) => void })
 // ---------------------------------------------------------------------------
 
 function Viewport(props: CarouselViewportProps & { ref?: (el: HTMLDivElement) => void }) {
-	const [local, rest] = splitProps(props, ['class', 'children', 'style', 'onScroll', 'onKeyDown', 'ref']);
+	const [local, rest] = splitProps(props, [
+		'class',
+		'children',
+		'style',
+		'tabindex',
+		'onScroll',
+		'onKeyDown',
+		'ref',
+	]);
 	const ctx = useCarouselContext();
 	const mergedRef = createMergedRefs<HTMLDivElement>(ctx.viewportRef, (el) => local.ref?.(el));
 	const vertical = () => ctx.orientation === 'vertical';
@@ -222,6 +230,9 @@ function Viewport(props: CarouselViewportProps & { ref?: (el: HTMLDivElement) =>
 		<div
 			ref={mergedRef}
 			data-carousel-viewport=''
+			// The viewport is a scrollable region; make it keyboard-focusable so
+			// arrow-key navigation works and axe `scrollable-region-focusable` passes.
+			tabindex={local.tabindex ?? 0}
 			class={local.class}
 			style={viewportStyle()}
 			{...rest}

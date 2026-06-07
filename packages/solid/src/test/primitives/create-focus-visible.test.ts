@@ -28,7 +28,7 @@ describe('createFocusVisible', () => {
 	it('handles matches() throwing without crashing', () => {
 		const { isFocusVisible, focusProps } = createFocusVisible();
 		const el = document.createElement('button');
-		(el as HTMLElement & { matches: () => boolean }).matches = () => {
+		(el as unknown as HTMLElement & { matches: () => boolean }).matches = () => {
 			throw new Error('boom');
 		};
 		focusProps.onFocus({ currentTarget: el } as unknown as FocusEvent as never);

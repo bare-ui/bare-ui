@@ -43,6 +43,7 @@ export interface TextareaErrorProps {
 export interface TextareaContextValue {
 	readonly value: string;
 	readonly textareaId: string;
+	readonly errorId: string;
 	readonly isActive: boolean;
 	readonly invalidType: string;
 	readonly isSuccess: boolean;

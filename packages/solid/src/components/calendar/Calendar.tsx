@@ -10,6 +10,7 @@ import type {
 	CalendarPrevButtonProps,
 	CalendarRootProps,
 	CalendarTitleProps,
+	CalendarWeekday,
 	WeekStart,
 } from './Calendar.types';
 
@@ -280,16 +281,32 @@ function Title(props: CalendarTitleProps) {
 // ---------------------------------------------------------------------------
 
 function Grid(props: CalendarGridProps) {
-	const [local, rest] = splitProps(props, ['renderDay', 'renderWeekday', 'class']);
+	const [local, rest] = splitProps(props, ['renderDay', 'renderWeekday', 'class', 'aria-label']);
 	const ctx = useCalendarContext();
 	const today = startOfDay(new Date());
 	const weekdays = createMemo(() => getWeekdayNames(ctx.weekStartsOn, ctx.locale));
 	const days = createMemo(() => buildMonthGrid(ctx.month, ctx.weekStartsOn));
 
-	const gridStyle: JSX.CSSProperties = {
+	// The grid's accessible name is the visible month/year, so a screen reader
+	// announces "January 2024, grid" when focus enters the day grid.
+	const gridLabel = createMemo(() =>
+		new Intl.DateTimeFormat(ctx.locale, { month: 'long', year: 'numeric' }).format(ctx.month),
+	);
+
+	// Each ARIA grid row lays out its seven cells; the outer grid stacks the rows.
+	const rowStyle: JSX.CSSProperties = {
 		display: 'grid',
 		'grid-template-columns': 'repeat(7, minmax(0, 1fr))',
 	};
+
+	// Split the flat 42-day list into 6 weeks of 7 days so each week can be
+	// wrapped in a role="row" (required by the ARIA grid pattern).
+	const weeks = createMemo(() => {
+		const flat = days();
+		const chunks: Date[][] = [];
+		for (let i = 0; i < flat.length; i += 7) chunks.push(flat.slice(i, i + 7));
+		return chunks;
+	});
 
 	// `buildDay` is called once per cell (inside `<For>`) and the returned
 	// object lives for the cell's lifetime. Render state (selected, disabled,
@@ -360,45 +377,64 @@ function Grid(props: CalendarGridProps) {
 	return (
 		<div
 			role='grid'
+			aria-label={local['aria-label'] ?? gridLabel()}
 			class={local.class}
-			style={gridStyle}
 			{...rest}>
-			<For each={weekdays()}>
-				{(wd) =>
-					local.renderWeekday ? (
-						local.renderWeekday(wd)
-					) : (
-						<div
-							role='columnheader'
-							aria-label={wd.name}
-							style={{ 'text-align': 'center', padding: '4px 0' }}>
-							{wd.short}
-						</div>
-					)
-				}
-			</For>
-			<For each={days()}>
-				{(d) => {
-					// `days()` returns a fresh array on every month/weekStart change, so
-					// For replaces all 42 cells — same shape as React reconciliation.
-					const day = buildDay(d);
-					return local.renderDay ? (
-						local.renderDay(day)
-					) : (
-						<button
-							{...day.props}
-							style={{
-								padding: '6px',
-								background: 'transparent',
-								border: 'none',
-								color: day.isOutsideMonth ? '#a3a3a3' : 'inherit',
-								cursor: day.isDisabled ? 'not-allowed' : 'pointer',
-								opacity: day.isDisabled ? 0.4 : 1,
-							}}>
-							{day.dayOfMonth}
-						</button>
-					);
-				}}
+			<div
+				role='row'
+				style={rowStyle}>
+				<For each={weekdays()}>
+					{(wd) => {
+						const weekday: CalendarWeekday = {
+							name: wd.name,
+							short: wd.short,
+							props: {
+								role: 'columnheader',
+								'aria-label': wd.name,
+							},
+						};
+						return local.renderWeekday ? (
+							local.renderWeekday(weekday)
+						) : (
+							<div
+								{...weekday.props}
+								style={{ 'text-align': 'center', padding: '4px 0' }}>
+								{wd.short}
+							</div>
+						);
+					}}
+				</For>
+			</div>
+			<For each={weeks()}>
+				{(week) => (
+					<div
+						role='row'
+						style={rowStyle}>
+						<For each={week}>
+							{(d) => {
+								// `weeks()` returns fresh arrays on every month/weekStart change,
+								// so For replaces all cells — same shape as React reconciliation.
+								const day = buildDay(d);
+								return local.renderDay ? (
+									local.renderDay(day)
+								) : (
+									<button
+										{...day.props}
+										style={{
+											padding: '6px',
+											background: 'transparent',
+											border: 'none',
+											color: day.isOutsideMonth ? '#a3a3a3' : 'inherit',
+											cursor: day.isDisabled ? 'not-allowed' : 'pointer',
+											opacity: day.isDisabled ? 0.4 : 1,
+										}}>
+										{day.dayOfMonth}
+									</button>
+								);
+							}}
+						</For>
+					</div>
+				)}
 			</For>
 		</div>
 	);

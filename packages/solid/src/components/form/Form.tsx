@@ -163,19 +163,30 @@ function Control(props: FormControlProps) {
 	const ctx = useFieldContext();
 	const resolved = resolveChildren(() => props.children);
 
+	// Capture the child's own aria-describedby ONCE, before any effect mutates it.
+	// Re-reading the live attribute inside the effect would re-append our own ids
+	// (description/error) on every reactive run, duplicating the description.
+	let ownDescribedBy: string | null = null;
+	let capturedOwn = false;
+
 	createEffect(() => {
 		const el = resolved() as HTMLElement | null;
 		if (!(el instanceof HTMLElement)) return;
 
+		if (!capturedOwn) {
+			ownDescribedBy = el.getAttribute('aria-describedby');
+			capturedOwn = true;
+		}
+
 		el.setAttribute('id', ctx.id);
 		if (ctx.name && !el.hasAttribute('name')) el.setAttribute('name', ctx.name);
 
-		// Merge aria-describedby with whatever the child already has.
-		const existingDescribedBy = el.getAttribute('aria-describedby') ?? '';
+		// Compute aria-describedby from current state + the child's original value,
+		// never from the (already-mutated) live attribute.
 		const parts = [
 			ctx.hasDescription ? ctx.descriptionId : null,
 			ctx.hasError ? ctx.errorId : null,
-			existingDescribedBy || null,
+			ownDescribedBy || null,
 		].filter(Boolean);
 		if (parts.length > 0) {
 			el.setAttribute('aria-describedby', parts.join(' '));

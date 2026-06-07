@@ -102,6 +102,7 @@ function Root(props: MenuBarRootProps) {
 			<div
 				ref={mergedRef}
 				role='menubar'
+				aria-orientation='horizontal'
 				class={local.class}
 				{...rest}>
 				{local.children}
@@ -143,6 +144,7 @@ function Menu(props: MenuBarMenuProps) {
 	return (
 		<MenuContext.Provider value={menuCtx}>
 			<div
+				role='none'
 				class={local.class}
 				data-state={open() ? 'open' : 'closed'}
 				{...rest}>
@@ -187,9 +189,11 @@ function Trigger(props: MenuBarTriggerProps) {
 	return (
 		<button
 			type='button'
+			role='menuitem'
 			disabled={local.disabled}
 			aria-haspopup='menu'
 			aria-expanded={menu.open}
+			data-menu-value={menu.value}
 			class={local.class}
 			data-state={menu.open ? 'open' : 'closed'}
 			{...state.dataAttributes}

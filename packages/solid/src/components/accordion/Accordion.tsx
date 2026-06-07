@@ -1,4 +1,4 @@
-import { createContext, createSignal, useContext, splitProps, Show, type JSX } from 'solid-js';
+import { createContext, createSignal, createUniqueId, useContext, splitProps, Show, type JSX } from 'solid-js';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
 import { mergeProps } from '@/utils/merge-props';
 import type {
@@ -120,6 +120,10 @@ function Item(props: AccordionItemProps) {
 	const isItemDisabled = () => !!local.disabled || ctx.disabled;
 	const isItemOpen = () => ctx.isOpen(local.value);
 
+	const baseId = createUniqueId();
+	const triggerId = `${baseId}-trigger`;
+	const contentId = `${baseId}-content`;
+
 	const itemCtxValue: AccordionItemContextValue = {
 		get value() {
 			return local.value;
@@ -130,6 +134,8 @@ function Item(props: AccordionItemProps) {
 		get disabled() {
 			return isItemDisabled();
 		},
+		triggerId,
+		contentId,
 	};
 
 	return (
@@ -175,8 +181,10 @@ function Trigger(props: AccordionTriggerProps) {
 	return (
 		<button
 			type='button'
+			id={itemCtx.triggerId}
 			disabled={itemCtx.disabled}
 			aria-expanded={itemCtx.isOpen}
+			aria-controls={itemCtx.contentId}
 			data-state={itemCtx.isOpen ? 'open' : 'closed'}
 			data-disabled={itemCtx.disabled ? '' : undefined}
 			class={local.class}
@@ -200,6 +208,8 @@ function Content(props: AccordionContentProps) {
 		<Show when={itemCtx.isOpen || local.forceMount}>
 			<div
 				role='region'
+				id={itemCtx.contentId}
+				aria-labelledby={itemCtx.triggerId}
 				hidden={local.forceMount && !itemCtx.isOpen ? true : undefined}
 				class={local.class}
 				data-state={itemCtx.isOpen ? 'open' : 'closed'}

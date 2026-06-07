@@ -28,20 +28,20 @@ describe('MenuBar', () => {
 	it('renders a menubar landmark', () => {
 		renderBar();
 		expect(screen.getByRole('menubar')).toBeInTheDocument();
-		expect(screen.getAllByRole('button')).toHaveLength(2);
+		expect(screen.getAllByRole('menuitem')).toHaveLength(2);
 	});
 
 	it('clicking a trigger opens its menu', async () => {
 		renderBar();
-		await userEvent.click(screen.getByRole('button', { name: 'File' }));
+		await userEvent.click(screen.getByRole('menuitem', { name: 'File' }));
 		expect(screen.getByRole('menu')).toBeInTheDocument();
 		expect(screen.getByText('New')).toBeInTheDocument();
 	});
 
 	it('hovering another trigger while one is open switches the open menu', async () => {
 		renderBar();
-		await userEvent.click(screen.getByRole('button', { name: 'File' }));
-		await userEvent.hover(screen.getByRole('button', { name: 'Edit' }));
+		await userEvent.click(screen.getByRole('menuitem', { name: 'File' }));
+		await userEvent.hover(screen.getByRole('menuitem', { name: 'Edit' }));
 		expect(screen.getByText('Cut')).toBeInTheDocument();
 		expect(screen.queryByText('New')).not.toBeInTheDocument();
 	});
@@ -58,7 +58,7 @@ describe('MenuBar', () => {
 				</MenuBar.Menu>
 			</MenuBar.Root>
 		));
-		await userEvent.click(screen.getByRole('button', { name: 'File' }));
+		await userEvent.click(screen.getByRole('menuitem', { name: 'File' }));
 		await userEvent.click(screen.getByText('New'));
 		expect(onSelect).toHaveBeenCalled();
 		expect(screen.queryByRole('menu')).not.toBeInTheDocument();
@@ -66,7 +66,7 @@ describe('MenuBar', () => {
 
 	it('Escape closes the open menu', async () => {
 		renderBar();
-		await userEvent.click(screen.getByRole('button', { name: 'File' }));
+		await userEvent.click(screen.getByRole('menuitem', { name: 'File' }));
 		await userEvent.keyboard('{Escape}');
 		expect(screen.queryByRole('menu')).not.toBeInTheDocument();
 	});

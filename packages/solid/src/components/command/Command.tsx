@@ -381,10 +381,13 @@ function Separator(props: CommandSeparatorProps) {
 	const [local, rest] = splitProps(props, ['class']);
 	const ctx = useCommandContext();
 	// Separators are noise while filtering.
+	// `role="separator"` is not an allowed child of `role="listbox"` (per the ARIA
+	// listbox spec, which permits only `option` and `group`). The divider is purely
+	// a visual cue between groups, so it is presentational and carries no semantics.
 	return (
 		<Show when={!ctx.searching}>
 			<div
-				role='separator'
+				role='none'
 				class={local.class}
 				{...rest}
 			/>

@@ -29,6 +29,8 @@ export interface RadioIndicatorProps {
 export interface RadioLabelProps {
 	children?: JSX.Element;
 	class?: string;
+	/** Override the input id this label is associated with. Defaults to the item's input id. */
+	for?: string;
 }
 
 export interface RadioContextValue {
@@ -42,4 +44,5 @@ export interface RadioItemContextValue {
 	readonly value: string | number;
 	readonly disabled: boolean;
 	readonly checked: boolean;
+	readonly inputId: string;
 }

@@ -120,7 +120,6 @@ function List(props: StepperListProps) {
 	return (
 		<div
 			role='list'
-			aria-orientation={ctx.orientation}
 			data-orientation={ctx.orientation}
 			class={local.class}
 			{...rest}>

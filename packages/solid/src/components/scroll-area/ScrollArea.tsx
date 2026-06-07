@@ -165,6 +165,8 @@ function Viewport(props: ScrollAreaViewportProps & { ref?: (el: HTMLDivElement) 
 		<div
 			ref={mergedRef}
 			data-scroll-area-viewport=''
+			// Scrollable region must be keyboard-operable so keyboard-only users can scroll it.
+			tabindex={0}
 			class={local.class}
 			style={viewportStyle()}
 			{...rest}

@@ -247,7 +247,7 @@ function Root(props: ToggleGroupRootProps) {
 	return (
 		<ToggleGroupContext.Provider value={ctx}>
 			<div
-				role='group'
+				role='toolbar'
 				aria-orientation={orientation()}
 				class={local.class}
 				data-orientation={orientation()}

@@ -1,4 +1,4 @@
-import { createContext, splitProps, useContext, type JSX } from 'solid-js';
+import { createContext, createUniqueId, splitProps, useContext, type JSX } from 'solid-js';
 import { createControllableState } from '@/primitives/create-controllable-state';
 import { createTimeout } from '@/primitives/create-timeout';
 import type {
@@ -15,6 +15,7 @@ import type {
 const TooltipContext = createContext<TooltipContextValue>({
 	open: false,
 	setOpen: () => {},
+	contentId: '',
 });
 
 // ---------------------------------------------------------------------------
@@ -36,6 +37,8 @@ function Root(props: TooltipRootProps) {
 		autoStart: false,
 	});
 
+	const contentId = `tooltip-${createUniqueId()}`;
+
 	const setOpen = (value: boolean) => {
 		if (value) {
 			start();
@@ -50,6 +53,7 @@ function Root(props: TooltipRootProps) {
 			return !!open();
 		},
 		setOpen,
+		contentId,
 	};
 
 	return (
@@ -90,6 +94,7 @@ function Trigger(props: TooltipTriggerProps) {
 
 	return (
 		<span
+			aria-describedby={ctx.contentId}
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}
 			onFocus={handleFocus}
@@ -105,7 +110,7 @@ function Trigger(props: TooltipTriggerProps) {
 // ---------------------------------------------------------------------------
 
 function Content(props: TooltipContentProps) {
-	const [local, rest] = splitProps(props, ['side', 'class', 'children', 'style']);
+	const [local, rest] = splitProps(props, ['side', 'class', 'children', 'style', 'id']);
 	const ctx = useContext(TooltipContext);
 	const side = () => local.side ?? 'top';
 
@@ -136,6 +141,7 @@ function Content(props: TooltipContentProps) {
 
 	return (
 		<span
+			id={local.id ?? ctx.contentId}
 			role='tooltip'
 			data-state={ctx.open ? 'open' : 'closed'}
 			data-side={side()}

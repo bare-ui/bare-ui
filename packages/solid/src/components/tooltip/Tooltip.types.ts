@@ -3,6 +3,8 @@ import type { JSX } from 'solid-js';
 export interface TooltipContextValue {
 	readonly open: boolean;
 	setOpen: (open: boolean) => void;
+	/** Stable id for the Content tooltip — Trigger references it via aria-describedby */
+	contentId: string;
 }
 
 export interface TooltipRootProps {

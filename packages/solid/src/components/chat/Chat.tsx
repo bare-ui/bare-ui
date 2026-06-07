@@ -262,6 +262,7 @@ function List(props: ChatListProps & { ref?: (el: HTMLDivElement) => void }) {
 			role='log'
 			aria-live='polite'
 			aria-relevant='additions'
+			tabindex={0}
 			class={local.class}
 			style={rootStyle()}
 			{...rest}

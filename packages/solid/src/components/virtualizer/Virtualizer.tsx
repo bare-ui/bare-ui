@@ -167,6 +167,8 @@ function Root(props: VirtualizerRootProps & { ref?: (el: HTMLDivElement) => void
 			ref={mergedRef}
 			class={local.class}
 			data-orientation={orientation()}
+			// Scrollable region must be keyboard-operable so keyboard-only users can scroll it.
+			tabindex={0}
 			style={rootStyle()}
 			{...rest}
 			onScroll={handleScroll}>

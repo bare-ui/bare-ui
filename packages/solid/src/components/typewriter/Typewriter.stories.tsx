@@ -1,4 +1,4 @@
-import { createSignal, onCleanup, onMount } from 'solid-js';
+import { createSignal, onCleanup, onMount, type ComponentProps } from 'solid-js';
 import type { Meta, StoryObj } from 'storybook-solidjs-vite';
 import { Typewriter } from './Typewriter';
 
@@ -28,7 +28,7 @@ const blinkCss =
 	'@keyframes wire-blink { 0%, 49% { opacity: 1 } 50%, 100% { opacity: 0 } } .wire-cursor { animation: wire-blink 1s step-end infinite }';
 
 export const Default: Story = {
-	render: (args) => (
+	render: (args: ComponentProps<typeof Typewriter.Root>) => (
 		<p class='max-w-md font-mono text-sm leading-relaxed text-black'>
 			<Typewriter.Root {...args} />
 		</p>

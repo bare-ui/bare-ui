@@ -17,8 +17,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Vue and Solid join the matrix once their a11y harness lands.
-        package: [react]
+        # Vue joins the matrix once its a11y harness lands.
+        package: [react, solid]
     steps:
       - uses: actions/checkout@v4
 

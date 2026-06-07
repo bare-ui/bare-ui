@@ -89,6 +89,7 @@ function Trigger(props: DropdownTriggerProps) {
 		<button
 			type='button'
 			class={local.class}
+			aria-haspopup='menu'
 			aria-expanded={ctx.open}
 			data-state={ctx.open ? 'open' : 'closed'}
 			{...state.dataAttributes}

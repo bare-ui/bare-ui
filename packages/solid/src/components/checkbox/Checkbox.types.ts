@@ -42,4 +42,5 @@ export interface CheckboxItemContextValue {
 	readonly value: string | number;
 	readonly disabled: boolean;
 	readonly checked: boolean;
+	readonly inputId: string;
 }

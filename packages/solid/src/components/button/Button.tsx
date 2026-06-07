@@ -42,6 +42,33 @@ function Button(props: ButtonProps) {
 			setOrRemove('data-active', state.isActive());
 		});
 
+		// Forward ALL remaining props (aria-*, attrs, etc.) onto the child so the
+		// child carries the same contract as a real <button> — mirrors React's
+		// asChild which merges every prop (including aria-pressed). Event handlers
+		// (on*) are excluded here; interactive-state listeners are attached below,
+		// and consumer handlers in `rest` keep their own wiring via the element.
+		createEffect(() => {
+			const el = resolved() as HTMLElement | null;
+			if (!(el instanceof HTMLElement)) return;
+
+			for (const key in rest) {
+				if (key.startsWith('on')) continue;
+				// Read reactively so updates (e.g. aria-pressed toggling) propagate.
+				const value = (rest as Record<string, unknown>)[key];
+				// aria-* (and aria-like) attrs are tri-state strings: `false` must
+				// render as "false", not be dropped (mirrors React's aria handling).
+				const isAria = key.startsWith('aria-');
+				if (value === undefined || value === null || (value === false && !isAria)) {
+					el.removeAttribute(key);
+				} else if (typeof value === 'boolean') {
+					// HTML boolean attrs use empty-string; aria-* are tri-state strings.
+					el.setAttribute(key, isAria ? String(value) : '');
+				} else if (typeof value !== 'function') {
+					el.setAttribute(key, String(value));
+				}
+			}
+		});
+
 		// Attach event listeners once on mount, clean up on unmount.
 		createEffect(() => {
 			const el = resolved() as HTMLElement | null;

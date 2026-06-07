@@ -89,6 +89,7 @@ function Item(props: CheckboxItemProps) {
 
 	const checked = () => ctx.isChecked(local.value);
 	const disabled = () => !!local.disabled;
+	const inputId = createId('checkbox');
 
 	const state = createInteractiveState({
 		get disabled() {
@@ -106,6 +107,7 @@ function Item(props: CheckboxItemProps) {
 		get checked() {
 			return checked();
 		},
+		inputId,
 	};
 
 	const handleClick: JSX.EventHandler<HTMLDivElement, MouseEvent> = (e) => {
@@ -129,6 +131,7 @@ function Item(props: CheckboxItemProps) {
 				onClick={handleClick}
 				{...(rest as object)}>
 				<input
+					id={inputId}
 					type='checkbox'
 					name={ctx.name}
 					value={String(local.value)}
@@ -175,6 +178,7 @@ function Label(props: CheckboxLabelProps) {
 
 	return (
 		<label
+			for={ctx.inputId}
 			class={local.class}
 			data-disabled={ctx.disabled ? '' : undefined}
 			{...(rest as object)}>

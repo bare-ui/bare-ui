@@ -125,8 +125,6 @@ function List(props: CitationListProps) {
 				{(source, i) => (
 					<li
 						id={ctx.getFootnoteId(source.id)}
-						// `doc-endnote` is a valid ARIA DPUB role outside Solid's typed union.
-						role={'doc-endnote' as JSX.HTMLAttributes<HTMLLIElement>['role']}
 						data-citation-source=''
 						data-index={i() + 1}>
 						{local.children ? local.children({ source, index: i() + 1 }) : defaultFootnote(source)}

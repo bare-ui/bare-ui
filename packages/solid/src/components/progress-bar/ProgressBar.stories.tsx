@@ -26,6 +26,7 @@ export const Default: Story = {
 		<div class='w-80'>
 			<ProgressBar
 				percentage={60}
+				aria-label='Loading progress'
 				class={['h-2', trackCls].join(' ')}
 			/>
 		</div>
@@ -41,6 +42,7 @@ export const Composed: Story = {
 						<div class='w-8 text-right text-xs text-[#6b7280]'>{p}%</div>
 						<ProgressBar
 							percentage={p}
+							aria-label={`Progress ${p}%`}
 							class={['flex-1 h-2', trackCls].join(' ')}
 						/>
 					</div>
@@ -54,11 +56,16 @@ export const Complex: Story = {
 	render: () => (
 		<div class='w-80'>
 			<div class='mb-1 flex justify-between text-sm'>
-				<span class='font-medium text-black'>Storage used</span>
+				<span
+					id='storage-used-label'
+					class='font-medium text-black'>
+					Storage used
+				</span>
 				<span class='text-[#6b7280]'>68%</span>
 			</div>
 			<ProgressBar
 				percentage={68}
+				aria-labelledby='storage-used-label'
 				class={['h-2', trackCls].join(' ')}
 			/>
 			<p class='mt-1 text-xs text-[#6b7280]'>6.8 GB of 10 GB used</p>

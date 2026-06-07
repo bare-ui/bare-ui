@@ -5,7 +5,7 @@ import { For } from 'solid-js';
 import { Carousel } from './Carousel';
 import type { CarouselRootProps } from './Carousel.types';
 
-function renderCarousel(props: Partial<CarouselRootProps> = {}, slideCount = 4) {
+function renderCarousel(props: Partial<Omit<CarouselRootProps, 'ref'>> = {}, slideCount = 4) {
 	render(() => (
 		<Carousel.Root {...props}>
 			<Carousel.Viewport aria-label='Gallery'>

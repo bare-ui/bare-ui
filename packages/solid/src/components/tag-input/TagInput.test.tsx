@@ -9,7 +9,7 @@ function renderTagInput(props: Partial<ComponentProps<typeof TagInput.Root>> = {
 		<TagInput.Root {...props}>
 			<TagInput.List>
 				<TagInput.Items>
-					{(tag, i, remove) => (
+					{(tag, _i, remove) => (
 						<span data-testid={`tag-${tag}`}>
 							{tag}
 							<button

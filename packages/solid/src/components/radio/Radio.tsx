@@ -79,11 +79,13 @@ function Root(props: RadioRootProps) {
 }
 
 function Item(props: RadioItemProps) {
-	const [local, rest] = splitProps(props, ['value', 'disabled', 'children', 'class', 'onClick']);
+	const [local, rest] = splitProps(props, ['value', 'disabled', 'children', 'class', 'onClick', 'id']);
 	const ctx = useRadioContext();
 
 	const checked = () => ctx.isSelected(local.value);
 	const disabled = () => !!local.disabled;
+	const generatedId = createId('radio');
+	const inputId = () => local.id || generatedId;
 
 	const state = createInteractiveState({
 		get disabled() {
@@ -100,6 +102,9 @@ function Item(props: RadioItemProps) {
 		},
 		get checked() {
 			return checked();
+		},
+		get inputId() {
+			return inputId();
 		},
 	};
 
@@ -124,6 +129,7 @@ function Item(props: RadioItemProps) {
 				onClick={handleClick}
 				{...(rest as object)}>
 				<input
+					id={inputId()}
 					type='radio'
 					name={ctx.name}
 					value={String(local.value)}
@@ -165,11 +171,12 @@ function Indicator(props: RadioIndicatorProps) {
 }
 
 function Label(props: RadioLabelProps) {
-	const [local, rest] = splitProps(props, ['children', 'class']);
+	const [local, rest] = splitProps(props, ['children', 'class', 'for']);
 	const ctx = useRadioItemContext();
 
 	return (
 		<label
+			for={local.for ?? ctx.inputId}
 			class={local.class}
 			data-disabled={ctx.disabled ? '' : undefined}
 			{...(rest as object)}>
