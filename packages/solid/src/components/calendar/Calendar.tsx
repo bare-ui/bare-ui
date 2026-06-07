@@ -1,4 +1,13 @@
-import { createContext, createMemo, createSignal, For, splitProps, useContext, type JSX } from 'solid-js';
+import {
+	createContext,
+	createEffect,
+	createMemo,
+	createSignal,
+	For,
+	splitProps,
+	useContext,
+	type JSX,
+} from 'solid-js';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
 import { mergeProps } from '@/utils/merge-props';
 import type {
@@ -33,8 +42,40 @@ function startOfMonth(d: Date) {
 
 function addMonths(d: Date, n: number) {
 	const x = new Date(d);
+	const targetDay = x.getDate();
+	x.setDate(1);
 	x.setMonth(x.getMonth() + n);
+	// Clamp the day so e.g. Jan 31 + 1 month lands on the last day of February,
+	// not an overflowed March date.
+	const lastDay = new Date(x.getFullYear(), x.getMonth() + 1, 0).getDate();
+	x.setDate(Math.min(targetDay, lastDay));
 	return x;
+}
+
+function addDays(d: Date, n: number) {
+	const x = new Date(d);
+	x.setDate(x.getDate() + n);
+	return x;
+}
+
+function startOfWeek(d: Date, weekStartsOn: WeekStart) {
+	const x = startOfDay(d);
+	const offset = (x.getDay() - weekStartsOn + 7) % 7;
+	x.setDate(x.getDate() - offset);
+	return x;
+}
+
+/** Local (not UTC) `YYYY-MM-DD` key used to address a day cell in the grid. */
+function toISODate(d: Date) {
+	const y = d.getFullYear();
+	const m = String(d.getMonth() + 1).padStart(2, '0');
+	const day = String(d.getDate()).padStart(2, '0');
+	return `${y}-${m}-${day}`;
+}
+
+function parseISODate(s: string) {
+	const [y, m, d] = s.split('-').map(Number);
+	return new Date(y, m - 1, d);
 }
 
 function isSameDay(a: Date, b: Date) {
@@ -281,11 +322,100 @@ function Title(props: CalendarTitleProps) {
 // ---------------------------------------------------------------------------
 
 function Grid(props: CalendarGridProps) {
-	const [local, rest] = splitProps(props, ['renderDay', 'renderWeekday', 'class', 'aria-label']);
+	const [local, rest] = splitProps(props, ['renderDay', 'renderWeekday', 'class', 'aria-label', 'onKeyDown']);
 	const ctx = useCalendarContext();
+	let gridRef: HTMLDivElement | undefined;
 	const today = startOfDay(new Date());
 	const weekdays = createMemo(() => getWeekdayNames(ctx.weekStartsOn, ctx.locale));
 	const days = createMemo(() => buildMonthGrid(ctx.month, ctx.weekStartsOn));
+
+	// The day a keyboard navigation last targeted. Stays null until the user
+	// presses an arrow key, so the grid never steals focus on mount.
+	const [focusedDate, setFocusedDate] = createSignal<Date | null>(null);
+
+	const isDisabledDate = (d: Date) => {
+		const beforeMin = ctx.minDate ? d < startOfDay(ctx.minDate) : false;
+		const afterMax = ctx.maxDate ? d > startOfDay(ctx.maxDate) : false;
+		return beforeMin || afterMax || (ctx.isDateDisabled?.(d) ?? false);
+	};
+
+	// Exactly one day cell is tabbable (roving tabindex). Prefer the keyboard
+	// target, then the selected date, then today, then the first selectable day
+	// of the month — always an enabled, in-month date so Tab can reach the grid.
+	const tabbableDate = createMemo(() => {
+		const inMonth = (d: Date | null | undefined) => (d && isSameMonth(d, ctx.month) ? startOfDay(d) : null);
+		for (const candidate of [inMonth(focusedDate()), inMonth(ctx.value), inMonth(today)]) {
+			if (candidate && !isDisabledDate(candidate)) return candidate;
+		}
+		const first = startOfMonth(ctx.month);
+		for (let i = 0; i < 31; i++) {
+			const d = addDays(first, i);
+			if (!isSameMonth(d, ctx.month)) break;
+			if (!isDisabledDate(d)) return d;
+		}
+		return first;
+	});
+
+	// Move the keyboard target, switching month when it crosses a boundary.
+	// Disabled (non-focusable) days are no-ops so focus is never lost.
+	const moveTo = (target: Date) => {
+		const t = startOfDay(target);
+		if (isDisabledDate(t)) return;
+		const monthDiff = (t.getFullYear() - ctx.month.getFullYear()) * 12 + (t.getMonth() - ctx.month.getMonth());
+		if (monthDiff !== 0) ctx.goToMonth(monthDiff);
+		setFocusedDate(t);
+	};
+
+	// After a navigation re-renders the grid (possibly a new month), move DOM
+	// focus to the targeted cell.
+	createEffect(() => {
+		const target = focusedDate();
+		// Track ctx.month so focus re-applies after a month re-render.
+		void ctx.month;
+		if (!target) return;
+		const cell = gridRef?.querySelector<HTMLElement>(`[data-date="${toISODate(target)}"]`);
+		cell?.focus();
+	});
+
+	const handleKeyDown = (e: KeyboardEvent & { currentTarget: HTMLDivElement; target: Element }) => {
+		const targetIso = (e.target as HTMLElement).getAttribute?.('data-date');
+		const base = targetIso ? parseISODate(targetIso) : tabbableDate();
+		let next: Date | null = null;
+		switch (e.key) {
+			case 'ArrowLeft':
+				next = addDays(base, -1);
+				break;
+			case 'ArrowRight':
+				next = addDays(base, 1);
+				break;
+			case 'ArrowUp':
+				next = addDays(base, -7);
+				break;
+			case 'ArrowDown':
+				next = addDays(base, 7);
+				break;
+			case 'Home':
+				next = startOfWeek(base, ctx.weekStartsOn);
+				break;
+			case 'End':
+				next = addDays(startOfWeek(base, ctx.weekStartsOn), 6);
+				break;
+			case 'PageUp':
+				next = addMonths(base, e.shiftKey ? -12 : -1);
+				break;
+			case 'PageDown':
+				next = addMonths(base, e.shiftKey ? 12 : 1);
+				break;
+		}
+		if (next) {
+			e.preventDefault();
+			moveTo(next);
+		}
+		const userOnKeyDown = local.onKeyDown;
+		if (typeof userOnKeyDown === 'function') {
+			(userOnKeyDown as (event: typeof e) => void)(e);
+		}
+	};
 
 	// The grid's accessible name is the visible month/year, so a screen reader
 	// announces "January 2024, grid" when focus enters the day grid.
@@ -346,11 +476,12 @@ function Grid(props: CalendarGridProps) {
 					role: 'gridcell' as const,
 					type: 'button' as const,
 					get tabIndex() {
-						return isSelected() ? 0 : -1;
+						return isSameDay(d, tabbableDate()) ? 0 : -1;
 					},
 					get disabled() {
 						return isDisabled();
 					},
+					'data-date': toISODate(d),
 					get 'aria-selected'() {
 						return isSelected();
 					},
@@ -376,9 +507,11 @@ function Grid(props: CalendarGridProps) {
 
 	return (
 		<div
+			ref={gridRef}
 			role='grid'
 			aria-label={local['aria-label'] ?? gridLabel()}
 			class={local.class}
+			onKeyDown={handleKeyDown}
 			{...rest}>
 			<div
 				role='row'

@@ -3,6 +3,7 @@ import { Portal } from 'solid-js/web';
 import { createControllableState } from '@/primitives/create-controllable-state';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
 import { createKeyboard } from '@/primitives/create-keyboard';
+import { createMenuNavigation } from '@/primitives/create-menu-navigation';
 import { createMergedRefs } from '@/primitives/create-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type {
@@ -203,13 +204,28 @@ function Trigger(props: ContextMenuTriggerProps) {
 // ---------------------------------------------------------------------------
 
 function Content(props: ContextMenuContentProps) {
-	const [local, rest] = splitProps(props, ['children', 'class', 'style', 'ref']);
+	const [local, rest] = splitProps(props, ['children', 'class', 'style', 'ref', 'onKeyDown']);
 	const ctx = useContextMenuContext();
 
 	const mergedRef = createMergedRefs<HTMLDivElement>(
 		(el) => ctx.setContentEl(el),
 		(el) => (local.ref as ((el: HTMLDivElement) => void) | undefined)?.(el),
 	);
+
+	const { onKeyDown: onMenuKeyDown } = createMenuNavigation(() => ctx.getContentEl(), {
+		get open() {
+			return ctx.open;
+		},
+		onClose: () => ctx.close(),
+	});
+
+	const handleKeyDown: JSX.EventHandler<HTMLDivElement, KeyboardEvent> = (e) => {
+		onMenuKeyDown(e);
+		const userOnKeyDown = local.onKeyDown;
+		if (typeof userOnKeyDown === 'function') {
+			(userOnKeyDown as (event: typeof e) => void)(e);
+		}
+	};
 
 	const mergedStyle = (): JSX.CSSProperties | string | undefined => {
 		const ours: JSX.CSSProperties = {
@@ -232,6 +248,7 @@ function Content(props: ContextMenuContentProps) {
 					class={local.class}
 					data-state='open'
 					style={mergedStyle()}
+					onKeyDown={handleKeyDown}
 					{...rest}>
 					{local.children}
 				</div>
@@ -282,7 +299,9 @@ function Item(props: ContextMenuItemProps) {
 	return (
 		<div
 			role='menuitem'
-			tabIndex={local.disabled ? -1 : 0}
+			// Roving tabindex: createMenuNavigation makes exactly one item tabbable and
+			// moves focus with the arrow keys, so Tab exits the menu.
+			tabIndex={-1}
 			aria-disabled={local.disabled || undefined}
 			class={local.class}
 			data-disabled={local.disabled ? '' : undefined}

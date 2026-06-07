@@ -93,4 +93,85 @@ describe('Dropdown', () => {
 		expect(screen.getByText('Option A')).toBeInTheDocument();
 		expect(screen.getByText('Option B')).toBeInTheDocument();
 	});
+
+	describe('keyboard navigation', () => {
+		it('ArrowDown on the trigger opens the menu', async () => {
+			renderDropdown();
+			const trigger = screen.getByRole('button');
+			trigger.focus();
+			await userEvent.keyboard('{ArrowDown}');
+			expect(screen.getByRole('menu')).toBeInTheDocument();
+		});
+
+		it('ArrowUp on the trigger opens the menu', async () => {
+			renderDropdown();
+			const trigger = screen.getByRole('button');
+			trigger.focus();
+			await userEvent.keyboard('{ArrowUp}');
+			expect(screen.getByRole('menu')).toBeInTheDocument();
+		});
+
+		it('focuses the first item when opened', async () => {
+			renderDropdown({ defaultOpen: true });
+			const items = screen.getAllByRole('menuitem');
+			expect(document.activeElement).toBe(items[0]);
+			expect(items[0]).toHaveAttribute('tabindex', '0');
+			expect(items[1]).toHaveAttribute('tabindex', '-1');
+		});
+
+		it('ArrowDown/ArrowUp move focus between items with roving tabindex', async () => {
+			renderDropdown({ defaultOpen: true });
+			const items = screen.getAllByRole('menuitem');
+			await userEvent.keyboard('{ArrowDown}');
+			expect(document.activeElement).toBe(items[1]);
+			expect(items[1]).toHaveAttribute('tabindex', '0');
+			expect(items[0]).toHaveAttribute('tabindex', '-1');
+			await userEvent.keyboard('{ArrowUp}');
+			expect(document.activeElement).toBe(items[0]);
+			expect(items[0]).toHaveAttribute('tabindex', '0');
+		});
+
+		it('Home/End jump to first/last item', async () => {
+			renderDropdown({ defaultOpen: true });
+			const items = screen.getAllByRole('menuitem');
+			await userEvent.keyboard('{End}');
+			expect(document.activeElement).toBe(items[items.length - 1]);
+			await userEvent.keyboard('{Home}');
+			expect(document.activeElement).toBe(items[0]);
+		});
+
+		it('typeahead focuses a matching item', async () => {
+			render(() => (
+				<Dropdown.Root defaultOpen>
+					<Dropdown.Trigger>Open Menu</Dropdown.Trigger>
+					<Dropdown.Menu>
+						<div role='menuitem'>Apple</div>
+						<div role='menuitem'>Banana</div>
+						<div role='menuitem'>Cherry</div>
+					</Dropdown.Menu>
+				</Dropdown.Root>
+			));
+			const items = screen.getAllByRole('menuitem');
+			// from the first item ("Apple"), typing "c" jumps to "Cherry".
+			await userEvent.keyboard('c');
+			expect(document.activeElement).toBe(items[2]);
+		});
+
+		it('Escape closes the menu and restores focus to the trigger', async () => {
+			renderDropdown();
+			const trigger = screen.getByRole('button');
+			await userEvent.click(trigger);
+			expect(screen.getByRole('menu')).toBeInTheDocument();
+			await userEvent.keyboard('{Escape}');
+			expect(screen.queryByRole('menu')).toBeNull();
+			expect(document.activeElement).toBe(trigger);
+		});
+
+		it('Tab closes the menu', async () => {
+			renderDropdown({ defaultOpen: true });
+			expect(screen.getByRole('menu')).toBeInTheDocument();
+			await userEvent.keyboard('{Tab}');
+			expect(screen.queryByRole('menu')).toBeNull();
+		});
+	});
 });

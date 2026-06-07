@@ -57,6 +57,9 @@ export type { CreateLongPressOptions, LongPressHandlers } from './create-long-pr
 
 export { createMediaQuery } from './create-media-query';
 
+export { createMenuNavigation } from './create-menu-navigation';
+export type { CreateMenuNavigationOptions } from './create-menu-navigation';
+
 export { createMergedRefs } from './create-merged-refs';
 
 export { createMutationObserver } from './create-mutation-observer';

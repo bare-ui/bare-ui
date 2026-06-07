@@ -3,6 +3,7 @@ import { createClickOutside } from '@/primitives/create-click-outside';
 import { createControllableState } from '@/primitives/create-controllable-state';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
 import { createKeyboard } from '@/primitives/create-keyboard';
+import { createMenuNavigation } from '@/primitives/create-menu-navigation';
 import { createMergedRefs } from '@/primitives/create-merged-refs';
 import { mergeProps } from '@/utils/merge-props';
 import type { DropdownContextValue, DropdownMenuProps, DropdownRootProps, DropdownTriggerProps } from './Dropdown.types';
@@ -72,7 +73,7 @@ function Root(props: DropdownRootProps) {
 }
 
 function Trigger(props: DropdownTriggerProps) {
-	const [local, rest] = splitProps(props, ['children', 'class', 'onClick']);
+	const [local, rest] = splitProps(props, ['children', 'class', 'onClick', 'onKeyDown']);
 	const ctx = useDropdownContext();
 	const state = createInteractiveState();
 	const merged = mergeProps(rest, state.handlers);
@@ -85,6 +86,18 @@ function Trigger(props: DropdownTriggerProps) {
 		}
 	};
 
+	const handleKeyDown: JSX.EventHandler<HTMLButtonElement, KeyboardEvent> = (e) => {
+		// ArrowDown/ArrowUp open the menu; focus then moves to the first item.
+		if (!ctx.open && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+			e.preventDefault();
+			ctx.onOpenChange(true);
+		}
+		const userOnKeyDown = local.onKeyDown;
+		if (typeof userOnKeyDown === 'function') {
+			(userOnKeyDown as (event: typeof e) => void)(e);
+		}
+	};
+
 	return (
 		<button
 			type='button'
@@ -94,23 +107,47 @@ function Trigger(props: DropdownTriggerProps) {
 			data-state={ctx.open ? 'open' : 'closed'}
 			{...state.dataAttributes}
 			{...merged}
-			onClick={handleClick}>
+			onClick={handleClick}
+			onKeyDown={handleKeyDown}>
 			{local.children}
 		</button>
 	);
 }
 
 function Menu(props: DropdownMenuProps) {
-	const [local, rest] = splitProps(props, ['position', 'children', 'class']);
+	const [local, rest] = splitProps(props, ['position', 'children', 'class', 'ref', 'onKeyDown']);
 	const ctx = useDropdownContext();
+
+	let menuEl: HTMLDivElement | undefined;
+	const mergedRef = createMergedRefs<HTMLDivElement>(
+		(el) => (menuEl = el),
+		(el) => (local.ref as ((el: HTMLDivElement) => void) | undefined)?.(el),
+	);
+
+	const { onKeyDown: onMenuKeyDown } = createMenuNavigation(() => menuEl, {
+		get open() {
+			return ctx.open;
+		},
+		onClose: () => ctx.onOpenChange(false),
+	});
+
+	const handleKeyDown: JSX.EventHandler<HTMLDivElement, KeyboardEvent> = (e) => {
+		onMenuKeyDown(e);
+		const userOnKeyDown = local.onKeyDown;
+		if (typeof userOnKeyDown === 'function') {
+			(userOnKeyDown as (event: typeof e) => void)(e);
+		}
+	};
 
 	return (
 		<Show when={ctx.open}>
 			<div
+				ref={mergedRef}
 				role='menu'
 				class={local.class}
 				data-state={ctx.open ? 'open' : 'closed'}
 				data-position={local.position}
+				onKeyDown={handleKeyDown}
 				{...rest}>
 				{local.children}
 			</div>

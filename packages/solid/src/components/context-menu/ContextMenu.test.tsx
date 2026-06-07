@@ -66,4 +66,65 @@ describe('ContextMenu', () => {
 		await userEvent.keyboard('{Escape}');
 		expect(screen.queryByRole('menu')).not.toBeInTheDocument();
 	});
+
+	describe('keyboard navigation', () => {
+		function renderNav() {
+			return render(() => (
+				<ContextMenu.Root>
+					<ContextMenu.Trigger data-testid='trigger'>Right-click here</ContextMenu.Trigger>
+					<ContextMenu.Content>
+						<ContextMenu.Item>Apple</ContextMenu.Item>
+						<ContextMenu.Item>Banana</ContextMenu.Item>
+						<ContextMenu.Item>Cherry</ContextMenu.Item>
+					</ContextMenu.Content>
+				</ContextMenu.Root>
+			));
+		}
+
+		it('focuses the first item on open with roving tabindex', () => {
+			renderNav();
+			fireEvent.contextMenu(screen.getByTestId('trigger'));
+			const items = screen.getAllByRole('menuitem');
+			expect(document.activeElement).toBe(items[0]);
+			expect(items[0]).toHaveAttribute('tabindex', '0');
+			expect(items[1]).toHaveAttribute('tabindex', '-1');
+		});
+
+		it('ArrowDown/ArrowUp move focus between items', async () => {
+			renderNav();
+			fireEvent.contextMenu(screen.getByTestId('trigger'));
+			const items = screen.getAllByRole('menuitem');
+			await userEvent.keyboard('{ArrowDown}');
+			expect(document.activeElement).toBe(items[1]);
+			expect(items[1]).toHaveAttribute('tabindex', '0');
+			await userEvent.keyboard('{ArrowUp}');
+			expect(document.activeElement).toBe(items[0]);
+		});
+
+		it('Home/End jump to first/last item', async () => {
+			renderNav();
+			fireEvent.contextMenu(screen.getByTestId('trigger'));
+			const items = screen.getAllByRole('menuitem');
+			await userEvent.keyboard('{End}');
+			expect(document.activeElement).toBe(items[2]);
+			await userEvent.keyboard('{Home}');
+			expect(document.activeElement).toBe(items[0]);
+		});
+
+		it('typeahead focuses a matching item', async () => {
+			renderNav();
+			fireEvent.contextMenu(screen.getByTestId('trigger'));
+			const items = screen.getAllByRole('menuitem');
+			await userEvent.keyboard('c');
+			expect(document.activeElement).toBe(items[2]);
+		});
+
+		it('Tab closes the menu', async () => {
+			renderNav();
+			fireEvent.contextMenu(screen.getByTestId('trigger'));
+			expect(screen.getByRole('menu')).toBeInTheDocument();
+			await userEvent.keyboard('{Tab}');
+			expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+		});
+	});
 });
