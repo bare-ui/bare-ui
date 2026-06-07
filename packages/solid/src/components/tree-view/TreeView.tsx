@@ -13,6 +13,24 @@ function useTreeContext() {
 	return ctx;
 }
 
+/** Flattened, display-order list of the rows a user can currently see/navigate. */
+interface VisibleEntry {
+	id: string;
+	parentId: string | null;
+	disabled: boolean;
+}
+
+function flattenVisible(nodes: TreeNode[], expanded: Set<string>, parentId: string | null = null): VisibleEntry[] {
+	const out: VisibleEntry[] = [];
+	for (const node of nodes) {
+		out.push({ id: node.id, parentId, disabled: !!node.disabled });
+		if (node.children && node.children.length > 0 && expanded.has(node.id)) {
+			out.push(...flattenVisible(node.children, expanded, node.id));
+		}
+	}
+	return out;
+}
+
 // ---------------------------------------------------------------------------
 // Root
 // ---------------------------------------------------------------------------
@@ -69,6 +87,57 @@ function Root(props: TreeViewRootProps) {
 		local.onSelectionChange?.(next);
 	};
 
+	let rootRef: HTMLDivElement | undefined;
+
+	// Flattened display order of currently-visible rows — the basis for arrow,
+	// Home/End, and parent navigation, and for the roving tabindex.
+	const visible = createMemo(() => flattenVisible(local.nodes, expanded()));
+	const enabledVisible = createMemo(() => visible().filter((v) => !v.disabled));
+
+	const [activeId, setActiveId] = createSignal<string | null>(null);
+
+	// Exactly one node is tabbable: the focused node if it's still visible/enabled,
+	// otherwise the first enabled row, so Tab always reaches (and exits) the tree.
+	const tabbableId = createMemo(() => {
+		const id = activeId();
+		const enabled = enabledVisible();
+		if (id && enabled.some((v) => v.id === id)) return id;
+		return enabled[0]?.id ?? null;
+	});
+
+	const focusId = (id: string) => {
+		const el = rootRef?.querySelector<HTMLElement>(`[role="treeitem"][data-id="${CSS.escape(id)}"]`);
+		el?.focus();
+	};
+
+	const focusByOffset = (fromId: string, delta: number) => {
+		const enabled = enabledVisible();
+		const idx = enabled.findIndex((v) => v.id === fromId);
+		if (idx < 0) return;
+		const target = enabled[idx + delta];
+		if (target) {
+			setActiveId(target.id);
+			focusId(target.id);
+		}
+	};
+
+	const focusEdge = (edge: 'first' | 'last') => {
+		const enabled = enabledVisible();
+		const target = edge === 'first' ? enabled[0] : enabled[enabled.length - 1];
+		if (target) {
+			setActiveId(target.id);
+			focusId(target.id);
+		}
+	};
+
+	const focusParent = (fromId: string) => {
+		const entry = visible().find((v) => v.id === fromId);
+		if (entry?.parentId) {
+			setActiveId(entry.parentId);
+			focusId(entry.parentId);
+		}
+	};
+
 	const ctxValue: TreeViewContextValue = {
 		get expanded() {
 			return expanded();
@@ -81,11 +150,19 @@ function Root(props: TreeViewRootProps) {
 		},
 		toggleExpanded,
 		selectNode,
+		get tabbableId() {
+			return tabbableId();
+		},
+		setActiveId,
+		focusByOffset,
+		focusEdge,
+		focusParent,
 	};
 
 	return (
 		<TreeContext.Provider value={ctxValue}>
 			<div
+				ref={rootRef}
 				role='tree'
 				aria-multiselectable={selectionMode() === 'multiple' ? true : undefined}
 				class={local.class}
@@ -123,35 +200,36 @@ function TreeItem(props: TreeItemProps) {
 
 	let itemRef: HTMLDivElement | undefined;
 
-	const focusSibling = (offset: 1 | -1) => {
-		const root = itemRef?.closest('[role="tree"]');
-		if (!root) return;
-		const all = Array.from(root.querySelectorAll<HTMLElement>('[role="treeitem"]'));
-		const idx = all.indexOf(itemRef as HTMLElement);
-		const target = all[idx + offset];
-		if (target) target.focus();
-	};
-
 	const handleKeyDown: JSX.EventHandler<HTMLDivElement, KeyboardEvent> = (e) => {
 		if (disabled()) return;
 		switch (e.key) {
 			case 'ArrowRight':
 				e.preventDefault();
+				// Collapsed parent: expand. Expanded parent: move into the first child.
 				if (hasChildren() && !isExpanded()) ctx.toggleExpanded(props.node.id);
-				else if (hasChildren() && isExpanded()) focusSibling(1);
+				else if (hasChildren() && isExpanded()) ctx.focusByOffset(props.node.id, 1);
 				break;
 			case 'ArrowLeft':
 				e.preventDefault();
+				// Expanded parent: collapse. Otherwise move to the parent node.
 				if (hasChildren() && isExpanded()) ctx.toggleExpanded(props.node.id);
-				else focusSibling(-1);
+				else ctx.focusParent(props.node.id);
 				break;
 			case 'ArrowDown':
 				e.preventDefault();
-				focusSibling(1);
+				ctx.focusByOffset(props.node.id, 1);
 				break;
 			case 'ArrowUp':
 				e.preventDefault();
-				focusSibling(-1);
+				ctx.focusByOffset(props.node.id, -1);
+				break;
+			case 'Home':
+				e.preventDefault();
+				ctx.focusEdge('first');
+				break;
+			case 'End':
+				e.preventDefault();
+				ctx.focusEdge('last');
 				break;
 			case 'Enter':
 			case ' ':
@@ -184,7 +262,9 @@ function TreeItem(props: TreeItemProps) {
 			<div
 				ref={itemRef}
 				role='treeitem'
-				tabIndex={disabled() ? -1 : 0}
+				data-id={props.node.id}
+				// Roving tabindex: only the active node is tabbable so Tab exits the tree.
+				tabIndex={!disabled() && ctx.tabbableId === props.node.id ? 0 : -1}
 				aria-expanded={hasChildren() ? isExpanded() : undefined}
 				aria-selected={isSelected() || undefined}
 				aria-level={props.level}
@@ -195,6 +275,10 @@ function TreeItem(props: TreeItemProps) {
 				data-level={props.level}
 				data-has-children={hasChildren() ? '' : undefined}
 				onKeyDown={handleKeyDown}
+				onFocus={(e) => {
+					// Roving tabindex follows focus.
+					if (e.target === e.currentTarget) ctx.setActiveId(props.node.id);
+				}}
 				onClick={handleClick}>
 				{props.renderItem(props.node, state())}
 			</div>

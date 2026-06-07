@@ -49,4 +49,14 @@ export interface TreeViewContextValue {
 	readonly selectionMode: TreeSelectionMode;
 	toggleExpanded: (id: string) => void;
 	selectNode: (id: string) => void;
+	/** Id of the single treeitem in the tab sequence (roving tabindex). */
+	readonly tabbableId: string | null;
+	/** Record the focused node so the roving tabindex follows keyboard focus. */
+	setActiveId: (id: string) => void;
+	/** Move focus to the previous/next visible, enabled node. */
+	focusByOffset: (fromId: string, delta: number) => void;
+	/** Move focus to the first/last visible, enabled node. */
+	focusEdge: (edge: 'first' | 'last') => void;
+	/** Move focus to the parent of the given node, if any. */
+	focusParent: (fromId: string) => void;
 }

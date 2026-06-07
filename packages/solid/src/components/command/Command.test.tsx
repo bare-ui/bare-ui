@@ -72,6 +72,47 @@ describe('Command', () => {
 		expect(onSelect).toHaveBeenCalledWith('Calculator');
 	});
 
+	it('ArrowDown/ArrowUp move aria-activedescendant and data-active to next/prev option', async () => {
+		const user = userEvent.setup();
+		renderCommand();
+		const input = screen.getByLabelText('command');
+		input.focus();
+		const optId = (name: string) => screen.getByText(name).id;
+		// Default active is the first option.
+		expect(input).toHaveAttribute('aria-activedescendant', optId('Calendar'));
+		await user.keyboard('{ArrowDown}'); // -> Calculator
+		expect(input).toHaveAttribute('aria-activedescendant', optId('Calculator'));
+		expect(screen.getByText('Calculator')).toHaveAttribute('data-active', '');
+		await user.keyboard('{ArrowUp}'); // -> Calendar
+		expect(input).toHaveAttribute('aria-activedescendant', optId('Calendar'));
+		expect(screen.getByText('Calendar')).toHaveAttribute('data-active', '');
+	});
+
+	it('Home/End jump to first/last enabled option', async () => {
+		const user = userEvent.setup();
+		renderCommand();
+		const input = screen.getByLabelText('command');
+		input.focus();
+		await user.keyboard('{End}'); // last enabled is Profile (Billing is disabled)
+		expect(input).toHaveAttribute('aria-activedescendant', screen.getByText('Profile').id);
+		expect(screen.getByText('Profile')).toHaveAttribute('data-active', '');
+		await user.keyboard('{Home}');
+		expect(input).toHaveAttribute('aria-activedescendant', screen.getByText('Calendar').id);
+		expect(screen.getByText('Calendar')).toHaveAttribute('data-active', '');
+	});
+
+	it('ArrowDown skips disabled options', async () => {
+		const user = userEvent.setup();
+		renderCommand();
+		const input = screen.getByLabelText('command');
+		input.focus();
+		await user.keyboard('{End}'); // Profile (last enabled)
+		expect(input).toHaveAttribute('aria-activedescendant', screen.getByText('Profile').id);
+		// ArrowDown from last wraps to first (Calendar), never lands on disabled Billing.
+		await user.keyboard('{ArrowDown}');
+		expect(input).toHaveAttribute('aria-activedescendant', screen.getByText('Calendar').id);
+	});
+
 	it('selects an item on click', async () => {
 		const user = userEvent.setup();
 		const onSelect = vi.fn();

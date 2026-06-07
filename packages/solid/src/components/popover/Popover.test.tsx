@@ -59,6 +59,39 @@ describe('Popover', () => {
 		expect(onOpenChange).toHaveBeenCalledWith(false);
 	});
 
+	it('moves focus into the content on open and restores it to the trigger on close', async () => {
+		renderPopover();
+		const trigger = screen.getByRole('button', { name: 'Open' });
+		await userEvent.click(trigger);
+		const dialog = screen.getByRole('dialog');
+		// Non-modal trap: focus lands inside the content (container fallback in jsdom).
+		expect(dialog.contains(document.activeElement)).toBe(true);
+		await userEvent.keyboard('{Escape}');
+		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+		expect(document.activeElement).toBe(trigger);
+	});
+
+	it('does not trap Tab (focus can leave the content)', async () => {
+		render(() => (
+			<>
+				<Popover.Root defaultOpen>
+					<Popover.Trigger>Open</Popover.Trigger>
+					<Popover.Content>
+						<button type='button'>Inside</button>
+					</Popover.Content>
+				</Popover.Root>
+				<button type='button'>Outside</button>
+			</>
+		));
+		const inside = screen.getByRole('button', { name: 'Inside' });
+		inside.focus();
+		expect(document.activeElement).toBe(inside);
+		// With trap: false, Tab is not cycled — pressing Tab from the last focusable
+		// must NOT bounce back to the first focusable inside the content.
+		await userEvent.tab();
+		expect(document.activeElement).not.toBe(inside);
+	});
+
 	it('Content gets data-side and data-align', () => {
 		render(() => (
 			<Popover.Root defaultOpen>

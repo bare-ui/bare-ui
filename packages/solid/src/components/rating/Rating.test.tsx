@@ -116,4 +116,101 @@ describe('Rating', () => {
 		renderRating();
 		expect(screen.getByRole('group')).toBeInTheDocument();
 	});
+
+	// -------------------------------------------------------------------------
+	// Roving tabindex + keyboard
+	// -------------------------------------------------------------------------
+
+	it('roving tabindex: exactly one star is tabbable (first when nothing selected)', () => {
+		renderRating();
+		const stars = screen.getAllByRole('button');
+		const tabbable = stars.filter((s) => s.tabIndex === 0);
+		expect(tabbable).toHaveLength(1);
+		expect(stars[0].tabIndex).toBe(0);
+	});
+
+	it('roving tabindex: the selected star is the tabbable one', () => {
+		renderRating({ defaultValue: 3 });
+		const stars = screen.getAllByRole('button');
+		expect(stars.filter((s) => s.tabIndex === 0)).toHaveLength(1);
+		expect(stars[2].tabIndex).toBe(0); // star 3
+	});
+
+	it('ArrowRight increases the rating by 1 and moves focus', async () => {
+		renderRating({ defaultValue: 2 });
+		const stars = screen.getAllByRole('button');
+		stars[1].focus();
+		await userEvent.keyboard('{ArrowRight}');
+		const after = screen.getAllByRole('button');
+		expect(after[2]).toHaveAttribute('data-filled', ''); // star 3 now filled
+		expect(document.activeElement).toBe(after[2]);
+		expect(after[2].tabIndex).toBe(0);
+	});
+
+	it('ArrowUp increases, ArrowDown/ArrowLeft decrease', async () => {
+		renderRating({ defaultValue: 3 });
+		const stars = screen.getAllByRole('button');
+		stars[2].focus();
+		await userEvent.keyboard('{ArrowUp}');
+		expect(screen.getAllByRole('button')[3]).toHaveAttribute('data-filled', ''); // star 4
+		screen.getAllByRole('button')[3].focus();
+		await userEvent.keyboard('{ArrowDown}');
+		expect(screen.getAllByRole('button')[2]).toHaveAttribute('data-filled', ''); // back to 3
+		expect(screen.getAllByRole('button')[3]).not.toHaveAttribute('data-filled');
+		screen.getAllByRole('button')[2].focus();
+		await userEvent.keyboard('{ArrowLeft}');
+		expect(screen.getAllByRole('button')[1]).toHaveAttribute('data-filled', ''); // star 2
+		expect(screen.getAllByRole('button')[2]).not.toHaveAttribute('data-filled');
+	});
+
+	it('arrows clamp at the min (1) and max', async () => {
+		renderRating({ defaultValue: 1 });
+		screen.getAllByRole('button')[0].focus();
+		await userEvent.keyboard('{ArrowLeft}');
+		// Stays at 1 (cannot go below 1).
+		expect(screen.getAllByRole('button')[0]).toHaveAttribute('data-filled', '');
+		// Home → 1, End → max.
+		await userEvent.keyboard('{End}');
+		const stars = screen.getAllByRole('button');
+		stars.forEach((s) => expect(s).toHaveAttribute('data-filled', ''));
+	});
+
+	it('Home jumps to 1, End jumps to max', async () => {
+		renderRating({ defaultValue: 3, max: 5 });
+		screen.getAllByRole('button')[2].focus();
+		await userEvent.keyboard('{End}');
+		expect(screen.getAllByRole('button')[4]).toHaveAttribute('data-filled', '');
+		expect(document.activeElement).toBe(screen.getAllByRole('button')[4]);
+		await userEvent.keyboard('{Home}');
+		const stars = screen.getAllByRole('button');
+		expect(stars[0]).toHaveAttribute('data-filled', '');
+		expect(stars[1]).not.toHaveAttribute('data-filled');
+		expect(document.activeElement).toBe(stars[0]);
+	});
+
+	it('aria-pressed reflects whether each star is at or below the value', () => {
+		renderRating({ defaultValue: 3, max: 5 });
+		const stars = screen.getAllByRole('button');
+		expect(stars[0]).toHaveAttribute('aria-pressed', 'true');
+		expect(stars[2]).toHaveAttribute('aria-pressed', 'true');
+		expect(stars[3]).toHaveAttribute('aria-pressed', 'false');
+	});
+
+	it('readOnly: stars are not pressed-toggles and not in tab order', () => {
+		renderRating({ readOnly: true, value: 3, max: 5 });
+		const stars = screen.getAllByRole('button');
+		stars.forEach((s) => {
+			expect(s).not.toHaveAttribute('aria-pressed');
+			expect(s.tabIndex).toBe(-1);
+		});
+	});
+
+	it('keyboard does nothing when disabled', async () => {
+		const onChange = vi.fn();
+		renderRating({ disabled: true, defaultValue: 2, onChange });
+		const stars = screen.getAllByRole('button');
+		stars[1].focus();
+		await userEvent.keyboard('{ArrowRight}');
+		expect(onChange).not.toHaveBeenCalled();
+	});
 });

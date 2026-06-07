@@ -53,4 +53,15 @@ describe('DatePicker', () => {
 		await userEvent.keyboard('{Escape}');
 		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 	});
+
+	it('moves focus into the content on open and restores it to the trigger on close', async () => {
+		renderDP();
+		const trigger = screen.getByRole('button');
+		await userEvent.click(trigger);
+		const dialog = screen.getByRole('dialog');
+		expect(dialog.contains(document.activeElement)).toBe(true);
+		await userEvent.keyboard('{Escape}');
+		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+		expect(document.activeElement).toBe(trigger);
+	});
 });

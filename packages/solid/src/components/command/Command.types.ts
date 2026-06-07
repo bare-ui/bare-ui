@@ -21,6 +21,8 @@ export interface CommandContextValue {
 	activeValue: string | null;
 	setActiveValue: (value: string) => void;
 	moveActive: (delta: number) => void;
+	/** Move the active item to the first/last visible, enabled option. */
+	setActiveEdge: (edge: 'first' | 'last') => void;
 	registerItem: (value: string, item: RegisteredItem) => () => void;
 	selectItem: (value: string) => void;
 	isVisible: (value: string) => boolean;

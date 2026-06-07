@@ -68,7 +68,14 @@ function Root(props: TooltipRootProps) {
 // ---------------------------------------------------------------------------
 
 function Trigger(props: TooltipTriggerProps) {
-	const [local, rest] = splitProps(props, ['children', 'onMouseEnter', 'onMouseLeave', 'onFocus', 'onBlur']);
+	const [local, rest] = splitProps(props, [
+		'children',
+		'onMouseEnter',
+		'onMouseLeave',
+		'onFocus',
+		'onBlur',
+		'onKeyDown',
+	]);
 	const ctx = useContext(TooltipContext);
 
 	const callUserHandler = <E,>(handler: unknown, e: E) => {
@@ -91,6 +98,11 @@ function Trigger(props: TooltipTriggerProps) {
 		ctx.setOpen(false);
 		callUserHandler(local.onBlur, e);
 	};
+	const handleKeyDown: JSX.EventHandler<HTMLSpanElement, KeyboardEvent> = (e) => {
+		// APG: Escape dismisses the tooltip while the trigger is focused.
+		if (e.key === 'Escape' && ctx.open) ctx.setOpen(false);
+		callUserHandler(local.onKeyDown, e);
+	};
 
 	return (
 		<span
@@ -99,6 +111,7 @@ function Trigger(props: TooltipTriggerProps) {
 			onMouseLeave={handleMouseLeave}
 			onFocus={handleFocus}
 			onBlur={handleBlur}
+			onKeyDown={handleKeyDown}
 			{...rest}>
 			{local.children}
 		</span>

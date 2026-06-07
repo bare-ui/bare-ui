@@ -89,4 +89,13 @@ describe('Tooltip', () => {
 		await userEvent.unhover(screen.getByText('Hover me'));
 		expect(handleOpenChange).toHaveBeenLastCalledWith(false);
 	});
+
+	it('Escape on the focused trigger dismisses the tooltip', async () => {
+		renderTooltip({ defaultOpen: true });
+		const content = screen.getByTestId('tooltip-content');
+		expect(content).toHaveAttribute('data-state', 'open');
+		screen.getByText('Hover me').focus();
+		await userEvent.keyboard('{Escape}');
+		expect(content).toHaveAttribute('data-state', 'closed');
+	});
 });

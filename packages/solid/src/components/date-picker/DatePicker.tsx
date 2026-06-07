@@ -1,6 +1,7 @@
 import { createContext, createMemo, Show, splitProps, useContext, type JSX } from 'solid-js';
 import { createClickOutside } from '@/primitives/create-click-outside';
 import { createControllableState } from '@/primitives/create-controllable-state';
+import { createFocusTrap } from '@/primitives/create-focus-trap';
 import { createId } from '@/primitives/create-id';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
 import { createKeyboard } from '@/primitives/create-keyboard';
@@ -218,12 +219,31 @@ function Content(props: DatePickerContentProps) {
 	const [local, rest] = splitProps(props, ['children', 'class']);
 	const ctx = useDatePickerContext();
 
+	let contentEl: HTMLDivElement | undefined;
+
+	// Trap focus inside the popover while open and restore it to the trigger on
+	// close (Escape, outside click, or selection). Prefer landing focus on the
+	// calendar's active day (the roving-tabindex cell) rather than the first nav
+	// button, per the date-picker dialog pattern.
+	createFocusTrap(() => contentEl, {
+		get active() {
+			return ctx.open;
+		},
+		// Fall back to the content container if the roving gridcell isn't present
+		// yet, so focus always moves into the dialog (mirrors React landing focus
+		// inside the popover).
+		initialFocus: () =>
+			contentEl?.querySelector<HTMLElement>('[role="gridcell"][tabindex="0"]') ?? contentEl,
+	});
+
 	return (
 		<Show when={ctx.open}>
 			<div
+				ref={contentEl}
 				id={ctx.contentId}
 				role='dialog'
 				aria-labelledby={ctx.triggerId}
+				tabIndex={-1}
 				class={local.class}
 				data-state='open'
 				{...rest}>

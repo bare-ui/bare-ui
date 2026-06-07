@@ -146,13 +146,30 @@ function Root(props: CommandRootProps) {
 
 	const moveActive = (delta: number) => {
 		const list = visible();
-		if (list.length === 0) return;
+		const len = list.length;
+		if (len === 0) return;
 		const active = activeValue();
-		const currentIndex = active ? list.indexOf(active) : -1;
-		let nextIndex = currentIndex + delta;
-		if (nextIndex < 0) nextIndex = loop() ? list.length - 1 : 0;
-		else if (nextIndex >= list.length) nextIndex = loop() ? 0 : list.length - 1;
-		setActiveRaw(list[nextIndex]);
+		let i = active ? list.indexOf(active) : -1;
+		// Step in `delta` direction, skipping disabled options, until an enabled
+		// one is found or we run out of candidates.
+		for (let step = 0; step < len; step++) {
+			let nextIndex = i + delta;
+			if (nextIndex < 0) nextIndex = loop() ? len - 1 : 0;
+			else if (nextIndex >= len) nextIndex = loop() ? 0 : len - 1;
+			if (nextIndex === i) break; // hit a non-looping boundary
+			i = nextIndex;
+			if (!registry.get(list[i])?.disabled) {
+				setActiveRaw(list[i]);
+				return;
+			}
+		}
+	};
+
+	const setActiveEdge = (edge: 'first' | 'last') => {
+		const list = visible();
+		const ordered = edge === 'first' ? list : [...list].reverse();
+		const found = ordered.find((value) => !registry.get(value)?.disabled);
+		if (found) setActiveRaw(found);
 	};
 
 	const close = () => {
@@ -190,6 +207,7 @@ function Root(props: CommandRootProps) {
 		},
 		setActiveValue,
 		moveActive,
+		setActiveEdge,
 		registerItem,
 		selectItem,
 		isVisible: (value) => visible().includes(value),
@@ -235,6 +253,12 @@ function Input(props: CommandInputProps) {
 		} else if (e.key === 'ArrowUp') {
 			e.preventDefault();
 			ctx.moveActive(-1);
+		} else if (e.key === 'Home') {
+			e.preventDefault();
+			ctx.setActiveEdge('first');
+		} else if (e.key === 'End') {
+			e.preventDefault();
+			ctx.setActiveEdge('last');
 		} else if (e.key === 'Enter' && ctx.activeValue) {
 			e.preventDefault();
 			ctx.selectItem(ctx.activeValue);

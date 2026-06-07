@@ -7,6 +7,13 @@ export interface CreateFocusTrapOptions {
 	returnFocus?: boolean;
 	/** Element to focus initially. Defaults to the first focusable child. */
 	initialFocus?: Accessor<HTMLElement | null | undefined> | HTMLElement | null | undefined;
+	/**
+	 * Cycle Tab/Shift+Tab within the container. Set `false` for non-modal surfaces
+	 * (e.g. a popover) that should still move focus in on open and restore it on
+	 * close, but let Tab leave naturally.
+	 * @default true
+	 */
+	trap?: boolean;
 }
 
 const FOCUSABLE_SELECTOR = [
@@ -47,7 +54,7 @@ export function createFocusTrap(
 	containerRef: Accessor<HTMLElement | null | undefined>,
 	options: CreateFocusTrapOptions = {},
 ) {
-	const merged = mergeProps({ active: true, returnFocus: true }, options);
+	const merged = mergeProps({ active: true, returnFocus: true, trap: true }, options);
 
 	createEffect(() => {
 		if (!merged.active) return;
@@ -85,10 +92,10 @@ export function createFocusTrap(
 			}
 		}
 
-		document.addEventListener('keydown', handleKeyDown);
+		if (merged.trap) document.addEventListener('keydown', handleKeyDown);
 
 		onCleanup(() => {
-			document.removeEventListener('keydown', handleKeyDown);
+			if (merged.trap) document.removeEventListener('keydown', handleKeyDown);
 			if (merged.returnFocus && previouslyFocused && typeof previouslyFocused.focus === 'function') {
 				previouslyFocused.focus();
 			}

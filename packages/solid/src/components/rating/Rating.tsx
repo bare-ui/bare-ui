@@ -64,10 +64,31 @@ function Rating(props: RatingProps) {
 	const max = () => local.max ?? 5;
 	const disabled = () => !!local.disabled;
 	const readOnly = () => !!local.readOnly;
+	const interactive = () => !disabled() && !readOnly();
+
+	// Roving tabindex: the group is a single tab stop. The selected star (or the
+	// first when nothing is selected) is the one tabbable star; arrow keys then
+	// move focus and selection between stars.
+	const tabbableStar = () => (selectedValue() >= 1 ? selectedValue() : 1);
 
 	const handleSelect = (star: number) => {
-		if (disabled() || readOnly()) return;
+		if (!interactive()) return;
 		setSelectedValue(star);
+	};
+
+	const handleKeyDown = (e: KeyboardEvent & { currentTarget: HTMLButtonElement }, star: number) => {
+		if (!interactive()) return;
+		let next: number | null = null;
+		if (e.key === 'ArrowRight' || e.key === 'ArrowUp') next = Math.min(max(), star + 1);
+		else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') next = Math.max(1, star - 1);
+		else if (e.key === 'Home') next = 1;
+		else if (e.key === 'End') next = max();
+		if (next === null) return;
+		e.preventDefault();
+		setSelectedValue(next);
+		// Move focus to the star the arrow keys landed on (roving tabindex).
+		const buttons = e.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('button');
+		buttons?.[next - 1]?.focus();
 	};
 
 	const stars = () => Array.from({ length: max() }, (_, i) => i + 1);
@@ -85,15 +106,18 @@ function Rating(props: RatingProps) {
 					<button
 						type='button'
 						disabled={disabled() || readOnly()}
-						tabIndex={readOnly() ? -1 : undefined}
+						// Roving tabindex: only one star is tabbable; arrows move between them.
+						tabIndex={readOnly() ? -1 : star === tabbableStar() ? 0 : -1}
 						class={local.starClass}
+						aria-pressed={readOnly() ? undefined : star <= selectedValue()}
 						data-filled={star <= selectedValue() ? '' : undefined}
 						data-highlighted={star <= displayValue() ? '' : undefined}
 						data-disabled={disabled() ? '' : undefined}
 						aria-label={`${star} out of ${max()} stars`}
 						onClick={() => handleSelect(star)}
+						onKeyDown={(e) => handleKeyDown(e, star)}
 						onMouseEnter={() => {
-							if (!disabled() && !readOnly()) setHoverValue(star);
+							if (interactive()) setHoverValue(star);
 						}}
 						onMouseLeave={() => setHoverValue(0)}>
 						<StarIcon />

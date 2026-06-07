@@ -1,6 +1,7 @@
 import { createContext, splitProps, useContext, Show, type JSX } from 'solid-js';
 import { createClickOutside } from '@/primitives/create-click-outside';
 import { createControllableState } from '@/primitives/create-controllable-state';
+import { createFocusTrap } from '@/primitives/create-focus-trap';
 import { createId } from '@/primitives/create-id';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
 import { createKeyboard } from '@/primitives/create-keyboard';
@@ -160,12 +161,25 @@ function Content(props: PopoverContentProps) {
 	const align = () => local.align ?? 'center';
 	const forceMount = () => local.forceMount ?? false;
 
+	let contentEl: HTMLDivElement | undefined;
+
+	// Non-modal dialog: move focus into the popover on open and restore it to
+	// the trigger on close, but let Tab leave naturally (trap: false).
+	createFocusTrap(() => contentEl, {
+		get active() {
+			return ctx.open;
+		},
+		trap: false,
+	});
+
 	return (
 		<Show when={ctx.open || forceMount()}>
 			<div
+				ref={contentEl}
 				id={ctx.contentId}
 				role='dialog'
 				aria-labelledby={ctx.triggerId}
+				tabIndex={-1}
 				class={local.class}
 				hidden={!ctx.open && forceMount() ? true : undefined}
 				data-state={ctx.open ? 'open' : 'closed'}

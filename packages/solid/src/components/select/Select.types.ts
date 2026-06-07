@@ -5,9 +5,18 @@ export interface SelectContextValue {
 	readonly selectedValue: string;
 	readonly selectedLabel: string;
 	readonly disabled: boolean;
+	/** Value of the option the keyboard cursor currently rests on (aria-activedescendant). */
+	readonly activeValue: string | null;
+	readonly listboxId: string;
+	getOptionId: (value: string) => string;
 	setOpen: (open: boolean) => void;
 	select: (value: string, label: string) => void;
-	registerItem: (value: string, label: string) => void;
+	setActiveValue: (value: string | null) => void;
+	moveActive: (delta: number) => void;
+	setActiveEdge: (edge: 'first' | 'last') => void;
+	selectActive: () => void;
+	typeahead: (char: string) => void;
+	registerItem: (value: string, label: string, disabled: boolean) => void;
 	unregisterItem: (value: string) => void;
 }
 

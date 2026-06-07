@@ -96,6 +96,113 @@ describe('TreeView', () => {
 		expect(last.sort()).toEqual(['README.md', 'src/index.ts'].sort());
 	});
 
+	// -------------------------------------------------------------------------
+	// Roving tabindex + keyboard navigation
+	// -------------------------------------------------------------------------
+
+	function treeItem(label: string): HTMLElement {
+		return screen.getByText(label).closest('[role=treeitem]') as HTMLElement;
+	}
+
+	it('roving tabindex: exactly one visible node is tabbable', () => {
+		renderTree({ defaultExpanded: ['src'] });
+		const items = screen.getAllByRole('treeitem');
+		const tabbable = items.filter((i) => i.tabIndex === 0);
+		expect(tabbable).toHaveLength(1);
+		// First visible node is the default tabbable one.
+		expect(treeItem('src').tabIndex).toBe(0);
+	});
+
+	it('ArrowDown moves to the next visible node, ArrowUp to the previous', async () => {
+		renderTree({ defaultExpanded: ['src'] });
+		treeItem('src').focus();
+		await userEvent.keyboard('{ArrowDown}');
+		expect(document.activeElement).toBe(treeItem('index.ts'));
+		await userEvent.keyboard('{ArrowDown}');
+		expect(document.activeElement).toBe(treeItem('components'));
+		await userEvent.keyboard('{ArrowUp}');
+		expect(document.activeElement).toBe(treeItem('index.ts'));
+	});
+
+	it('ArrowDown descends into expanded children (visible order, not siblings)', async () => {
+		renderTree({ defaultExpanded: ['src'] });
+		// Visible order: src, index.ts, components, README.md
+		treeItem('src').focus();
+		await userEvent.keyboard('{ArrowDown}');
+		expect(document.activeElement).toBe(treeItem('index.ts'));
+	});
+
+	it('ArrowRight on an expanded node moves into its first child', async () => {
+		renderTree({ defaultExpanded: ['src'] });
+		treeItem('src').focus();
+		await userEvent.keyboard('{ArrowRight}');
+		expect(document.activeElement).toBe(treeItem('index.ts'));
+	});
+
+	it('ArrowLeft on an expanded node collapses it (does not move focus)', async () => {
+		renderTree({ defaultExpanded: ['src'] });
+		treeItem('src').focus();
+		await userEvent.keyboard('{ArrowLeft}');
+		expect(screen.queryByText('index.ts')).not.toBeInTheDocument();
+		expect(document.activeElement).toBe(treeItem('src'));
+	});
+
+	it('ArrowLeft on a collapsed/leaf node moves focus to its PARENT', async () => {
+		renderTree({ defaultExpanded: ['src', 'src/components'] });
+		// components is expanded; collapse it first so it becomes a collapsed parent.
+		const components = treeItem('components');
+		components.focus();
+		await userEvent.keyboard('{ArrowLeft}'); // collapses components
+		expect(screen.queryByText('Button.tsx')).not.toBeInTheDocument();
+		// Now ArrowLeft on the collapsed node moves to the parent (src).
+		await userEvent.keyboard('{ArrowLeft}');
+		expect(document.activeElement).toBe(treeItem('src'));
+	});
+
+	it('ArrowLeft on a leaf moves to its parent', async () => {
+		renderTree({ defaultExpanded: ['src'] });
+		const leaf = treeItem('index.ts');
+		leaf.focus();
+		await userEvent.keyboard('{ArrowLeft}');
+		expect(document.activeElement).toBe(treeItem('src'));
+	});
+
+	it('Home jumps to the first visible node, End to the last', async () => {
+		renderTree({ defaultExpanded: ['src'] });
+		treeItem('index.ts').focus();
+		await userEvent.keyboard('{End}');
+		// Last visible node is README.md.
+		expect(document.activeElement).toBe(treeItem('README.md'));
+		await userEvent.keyboard('{Home}');
+		expect(document.activeElement).toBe(treeItem('src'));
+	});
+
+	it('roving tabindex follows focus', async () => {
+		renderTree({ defaultExpanded: ['src'] });
+		treeItem('src').focus();
+		await userEvent.keyboard('{ArrowDown}');
+		expect(treeItem('index.ts').tabIndex).toBe(0);
+		expect(treeItem('src').tabIndex).toBe(-1);
+	});
+
+	it('skips disabled nodes during arrow navigation', async () => {
+		const dnodes: TreeNode[] = [
+			{ id: 'a', label: 'a' },
+			{ id: 'b', label: 'b', disabled: true },
+			{ id: 'c', label: 'c' },
+		];
+		render(() => (
+			<TreeView.Root
+				nodes={dnodes}
+				renderItem={(node) => <span>{node.label as string}</span>}
+			/>
+		));
+		treeItem('a').focus();
+		await userEvent.keyboard('{ArrowDown}');
+		// b is disabled and skipped.
+		expect(document.activeElement).toBe(treeItem('c'));
+	});
+
 	it('aria-level reflects depth', () => {
 		renderTree({ defaultExpanded: ['src', 'src/components'] });
 		const root = screen.getByText('src').closest('[role=treeitem]') as HTMLElement;
