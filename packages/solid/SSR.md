@@ -89,14 +89,33 @@ its server build. Frameworks handle this for you:
   generate a hydration script (`generateHydrationScript` from `solid-js/web`); see
   `vitest.ssr.config.ts` in this package for a minimal SSR compile setup.
 
+> **Remix / TanStack Start** are React frameworks and do not apply to the Solid
+> package; their Solid-ecosystem counterparts are SolidStart and Astro above.
+
 The `"solid"` export condition in `package.json` lets Solid-aware bundlers pick
 the source-shaped entry for their own SSR/DOM compilation.
 
 ## Verifying
 
-`npm run test:ssr` renders representative components with `renderToString` in a
-no-DOM Node process and asserts the markup is **identical across two renders**
-(after normalizing Solid's monotonic `createUniqueId` counter, which legitimately
-advances per render) — i.e. no `Math.random()` or wall-clock value leaks into the
-server output. It also confirms generated ids are unique within a single render
-and that portal-backed overlays render without reading `document` on the server.
+Two scripts, run as a two-phase pipeline because the server render and the client
+hydrate need different Solid compile targets (`generate: 'ssr'` vs
+`generate: 'dom', hydratable: true`):
+
+- **`npm run test:ssr`** (phase 1, node, no DOM) renders representative
+  components with `renderToString` and asserts the markup is **identical across
+  two renders** (after normalizing Solid's monotonic `createUniqueId` counter,
+  which legitimately advances per render) — i.e. no `Math.random()` or wall-clock
+  value leaks into the server output. It also confirms generated ids are unique
+  within a render and that portal-backed overlays render without reading
+  `document` on the server. It writes each scenario's markup to a fixture file.
+- **`npm run test:hydrate`** (phase 1, then phase 2 in jsdom) replays each server
+  fixture through a real `hydrate()` against the client-compiled component and
+  **fails on any `console.error` / `console.warn`** — Solid's channel for
+  hydration mismatches and reactive errors. This is the hydration-mismatch audit;
+  it covers presentational, id-bearing form, open-context, and closed-overlay
+  components.
+
+> SSR safety relies on `solid-js`'s **server** build, where `onMount` /
+> `createEffect` are no-ops — that is why DOM listeners registered in `onMount`
+> (e.g. click-outside in Popover/Tooltip/Select) never run on the server. The
+> test configs pin solid-js to its server build to reproduce that faithfully.
