@@ -60,24 +60,25 @@ jobs:
       - name: Accessibility (axe-core via Storybook)
         run: npm run test:a11y --workspace @wire-ui/${{ matrix.package }}
 
-      # --- Performance & packaging gates (react only; scripts are react-specific) ---
+      # --- Performance & packaging gates (react + solid) ---
 
-      # Verify every component compiles under the React 19 compiler.
-      - name: React Compiler healthcheck
-        if: matrix.package == 'react'
+      # Verify every component compiles under the framework compiler:
+      # React 19 compiler (react) / Solid 1.x JSX compiler in dom+ssr (solid).
+      - name: Compiler compatibility
+        if: matrix.package == 'react' || matrix.package == 'solid'
         run: npm run compiler:check --workspace @wire-ui/${{ matrix.package }}
 
       # size-limit and attw run against the built dist, so build first.
       - name: Build
-        if: matrix.package == 'react'
+        if: matrix.package == 'react' || matrix.package == 'solid'
         run: npm run build --workspace @wire-ui/${{ matrix.package }}
 
       # Per-component import budgets — fails if tree-shaking regresses.
       - name: Tree-shaking size budgets
-        if: matrix.package == 'react'
+        if: matrix.package == 'react' || matrix.package == 'solid'
         run: npm run size --workspace @wire-ui/${{ matrix.package }}
 
       # Validate published type resolution across module systems.
       - name: Type resolution (are-the-types-wrong)
-        if: matrix.package == 'react'
+        if: matrix.package == 'react' || matrix.package == 'solid'
         run: npm run attw --workspace @wire-ui/${{ matrix.package }}
