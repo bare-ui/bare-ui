@@ -3,15 +3,20 @@
 	"version": "0.4.0",
 	"license": "MIT",
 	"type": "module",
-	"main": "./dist/wire-ui-solid.cjs.js",
-	"module": "./dist/wire-ui-solid.es.js",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
-			"solid": "./dist/wire-ui-solid.es.js",
-			"import": "./dist/wire-ui-solid.es.js",
-			"require": "./dist/wire-ui-solid.cjs.js",
-			"types": "./dist/index.d.ts"
+			"solid": "./dist/index.js",
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"require": {
+				"types": "./dist/index.d.cts",
+				"default": "./dist/index.cjs"
+			}
 		}
 	},
 	"files": [
@@ -58,14 +63,25 @@
 		"test:sr": "vitest run --project unit --config vitest.config.ts .sr.test",
 		"test:a11y": "vitest run --project storybook --config vitest.config.ts",
 		"test:coverage": "vitest run --project unit --coverage --config vitest.config.ts",
+		"size": "size-limit",
+		"attw": "attw --pack .",
+		"bench": "npm run bench:mount && npm run bench:ssr",
+		"bench:mount": "vitest bench --run --config vitest.bench.config.ts",
+		"bench:ssr": "vitest bench --run --config vitest.bench.ssr.config.ts",
+		"compiler:check": "node scripts/compiler-check.mjs",
 		"clean": "rm -rf dist"
 	},
 	"peerDependencies": {
 		"solid-js": "^1.9.0"
 	},
 	"devDependencies": {
+		"@arethetypeswrong/cli": "^0.18.3",
+		"@babel/core": "^7.29.0",
+		"@babel/preset-typescript": "^7.29.0",
 		"@chromatic-com/storybook": "^5.1.1",
 		"@eslint/js": "^9.39.4",
+		"@kobalte/core": "^0.13.10",
+		"@size-limit/preset-small-lib": "^12.1.0",
 		"@solidjs/testing-library": "^0.8.10",
 		"@storybook/addon-a11y": "^10.3.3",
 		"@storybook/addon-docs": "^10.3.3",
@@ -76,6 +92,8 @@
 		"@types/node": "^24.12.0",
 		"@vitest/browser-playwright": "^4.1.2",
 		"@vitest/coverage-v8": "^4.1.2",
+		"babel-preset-solid": "^1.9.0",
+		"corvu": "^0.7.1",
 		"eslint": "^9.39.4",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-solid": "^0.14.5",
@@ -84,6 +102,7 @@
 		"jsdom": "^29.0.1",
 		"playwright": "^1.58.2",
 		"prettier": "^3.8.1",
+		"size-limit": "^12.1.0",
 		"solid-js": "^1.9.0",
 		"storybook": "^10.3.3",
 		"storybook-solidjs-vite": "^10.0.9",
