@@ -157,6 +157,30 @@ export type {
 	ElementSize,
 } from './primitives';
 
+// Internationalization — provider, locale/messages hooks, and Intl formatters
+export {
+	WireUIProvider,
+	useWireUILocale,
+	useWireUIMessages,
+	useWireUI,
+	DEFAULT_LOCALE,
+	WireUIContext,
+} from './context';
+export type { WireUIProviderProps, WireUIContextValue } from './context';
+export {
+	formatDate,
+	formatNumber,
+	formatRelativeTime,
+	getDayNames,
+	getMonthNames,
+	parseLocaleNumber,
+	getDateTimeFormat,
+	getNumberFormat,
+	getRelativeTimeFormat,
+} from './utils/i18n/formatters';
+export { defaultMessages, mergeMessages } from './utils/i18n/messages';
+export type { WireUIMessages, PartialMessages } from './utils/i18n/messages';
+
 // Types
 export type { Size, Status, HorizontalPosition, BaseFormFieldProps, BaseOption } from './types';
 

@@ -32,8 +32,17 @@ export interface TimeagoProps extends JSX.HTMLAttributes<HTMLTimeElement> {
 	isDuration?: boolean;
 	/** Display only the time portion (HH:MM format) without date information. */
 	timeOnly?: boolean;
-	/** Custom format configuration. */
+	/**
+	 * BCP 47 locale for relative-time and date-name formatting (via `Intl`).
+	 * Falls back to the nearest `WireUIProvider`, then `en-US`. Ignored when an
+	 * explicit `format` override is supplied.
+	 */
+	locale?: string;
+	/**
+	 * Custom format configuration. When supplied, it fully overrides the
+	 * locale-aware `Intl` formatting (legacy template behavior).
+	 */
 	format?: TimeagoFormatConfig;
-	/** Function to determine pluralization form. */
+	/** Function to determine pluralization form (only used with `format`). */
 	pluralize?: (n: number) => TimeagoPlural;
 }

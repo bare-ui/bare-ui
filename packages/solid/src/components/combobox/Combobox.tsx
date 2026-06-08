@@ -17,6 +17,7 @@ import { createControllableState } from '@/primitives/create-controllable-state'
 import { createId } from '@/primitives/create-id';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
 import { createMergedRefs } from '@/primitives/create-merged-refs';
+import { useWireUI } from '@/context/wire-ui-context';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	ComboboxContentProps,
@@ -329,6 +330,7 @@ function Input(props: ComboboxInputProps) {
 function Trigger(props: ComboboxTriggerProps) {
 	const [local, rest] = splitProps(props, ['children', 'class', 'onClick']);
 	const ctx = useComboboxContext();
+	const wire = useWireUI();
 	const state = createInteractiveState({
 		get disabled() {
 			return ctx.disabled;
@@ -349,7 +351,7 @@ function Trigger(props: ComboboxTriggerProps) {
 			type='button'
 			tabIndex={-1}
 			disabled={ctx.disabled}
-			aria-label='Toggle options'
+			aria-label={wire.messages.combobox.toggle}
 			class={local.class}
 			data-state={ctx.open ? 'open' : 'closed'}
 			{...state.dataAttributes}

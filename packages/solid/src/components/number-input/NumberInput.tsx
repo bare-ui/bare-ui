@@ -3,6 +3,8 @@
 import { createContext, createEffect, createSignal, splitProps, useContext, type JSX } from 'solid-js';
 import { createControllableState } from '@/primitives/create-controllable-state';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
+import { useWireUI } from '@/context/wire-ui-context';
+import { formatNumber, parseLocaleNumber } from '@/utils/i18n/formatters';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	NumberInputContextValue,
@@ -58,9 +60,13 @@ function Root(props: NumberInputRootProps) {
 		'precision',
 		'disabled',
 		'readOnly',
+		'locale',
+		'formatOptions',
 		'children',
 		'class',
 	]);
+
+	const wire = useWireUI();
 
 	const [value, setValueState] = createControllableState<number | null>({
 		get value() {
@@ -113,6 +119,12 @@ function Root(props: NumberInputRootProps) {
 		get readOnly() {
 			return !!local.readOnly;
 		},
+		get locale() {
+			return local.locale ?? wire.locale;
+		},
+		get formatOptions() {
+			return local.formatOptions;
+		},
 		setValue,
 		increment,
 		decrement,
@@ -139,11 +151,19 @@ function Root(props: NumberInputRootProps) {
 function Field(props: NumberInputFieldProps) {
 	const [local, rest] = splitProps(props, ['class', 'onKeyDown', 'onBlur']);
 	const ctx = useNumberInputContext();
-	const [text, setText] = createSignal<string>(ctx.value === null ? '' : String(ctx.value));
 
-	// Sync visible text whenever the committed value changes externally.
+	// Render the committed value: locale-formatted when `formatOptions` is set,
+	// otherwise the raw numeric string (default, back-compatible behavior).
+	const formatValue = (v: number | null): string => {
+		if (v === null) return '';
+		return ctx.formatOptions ? formatNumber(v, ctx.locale, ctx.formatOptions) : String(v);
+	};
+
+	const [text, setText] = createSignal<string>(formatValue(ctx.value));
+
+	// Sync visible text whenever the committed value (or locale/format) changes.
 	createEffect(() => {
-		setText(ctx.value === null ? '' : String(ctx.value));
+		setText(formatValue(ctx.value));
 	});
 
 	const handleKeyDown: JSX.EventHandler<HTMLInputElement, KeyboardEvent> = (e) => {
@@ -180,13 +200,17 @@ function Field(props: NumberInputFieldProps) {
 			setText('');
 			return;
 		}
-		const parsed = Number(trimmed);
+		const parsed = ctx.formatOptions ? parseLocaleNumber(trimmed, ctx.locale) : Number(trimmed);
 		if (Number.isNaN(parsed)) {
 			// Revert to last good value
-			setText(ctx.value === null ? '' : String(ctx.value));
+			setText(formatValue(ctx.value));
 			return;
 		}
 		ctx.setValue(parsed);
+		// Re-render from the committed value (clamped synchronously by setValue),
+		// even when the number is unchanged — the value-sync effect only fires on
+		// a change, so this also covers re-formatting an already-equal value.
+		setText(formatValue(ctx.value));
 	};
 
 	const handleBlur: JSX.EventHandler<HTMLInputElement, FocusEvent> = (e) => {
@@ -225,6 +249,7 @@ function makeStepButton(direction: 1 | -1) {
 	return function StepButton(props: NumberInputIncrementProps | NumberInputDecrementProps) {
 		const [local, rest] = splitProps(props, ['class', 'children', 'onClick']);
 		const ctx = useNumberInputContext();
+		const wire = useWireUI();
 		const state = createInteractiveState({
 			get disabled() {
 				return ctx.disabled || ctx.readOnly;
@@ -252,7 +277,7 @@ function makeStepButton(direction: 1 | -1) {
 				type='button'
 				tabIndex={-1}
 				disabled={isDisabled()}
-				aria-label={direction === 1 ? 'Increment' : 'Decrement'}
+				aria-label={direction === 1 ? wire.messages.numberInput.increment : wire.messages.numberInput.decrement}
 				class={local.class}
 				{...state.dataAttributes}
 				{...merged}

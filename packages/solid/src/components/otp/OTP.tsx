@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, createSignal, splitProps, useContext } from 'solid-js';
+import { useWireUI } from '@/context/wire-ui-context';
 import type { OTPContextValue, OTPRootProps, OTPSeparatorProps, OTPSlotProps } from './OTP.types';
 
 // ---------------------------------------------------------------------------
@@ -176,6 +177,7 @@ function Root(props: OTPRootProps) {
 function Slot(props: OTPSlotProps) {
 	const [local, rest] = splitProps(props, ['index', 'class']);
 	const ctx = useOTPContext();
+	const wire = useWireUI();
 	const [isFocused, setIsFocused] = createSignal(false);
 
 	const char = () => ctx.chars[local.index] ?? '';
@@ -194,7 +196,7 @@ function Slot(props: OTPSlotProps) {
 			data-filled={char() ? '' : undefined}
 			data-complete={ctx.isComplete ? '' : undefined}
 			data-disabled={ctx.disabled ? '' : undefined}
-			aria-label={`Digit ${local.index + 1}`}
+			aria-label={wire.messages.otp.digit(local.index + 1)}
 			onInput={(e) => ctx.handleChange(local.index, e.currentTarget.value)}
 			onKeyDown={(e) => ctx.handleKeyDown(local.index, e)}
 			onFocus={(e) => {

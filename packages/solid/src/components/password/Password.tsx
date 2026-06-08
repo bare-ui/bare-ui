@@ -4,6 +4,7 @@ import { createContext, createMemo, createSignal, Show, splitProps, useContext, 
 import { createControllableState } from '@/primitives/create-controllable-state';
 import { createId } from '@/primitives/create-id';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
+import { useWireUI } from '@/context/wire-ui-context';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	PasswordContextValue,
@@ -135,6 +136,7 @@ function Field(props: PasswordFieldProps) {
 function Toggle(props: PasswordToggleProps) {
 	const [local, rest] = splitProps(props, ['class', 'children', 'onClick']);
 	const ctx = usePasswordContext();
+	const wire = useWireUI();
 	const state = createInteractiveState();
 	const merged = mergeProps(rest, state.handlers);
 
@@ -149,7 +151,7 @@ function Toggle(props: PasswordToggleProps) {
 	return (
 		<button
 			type='button'
-			aria-label={ctx.visible ? 'Hide password' : 'Show password'}
+			aria-label={ctx.visible ? wire.messages.password.hide : wire.messages.password.show}
 			class={local.class}
 			data-visible={ctx.visible ? '' : undefined}
 			{...state.dataAttributes}

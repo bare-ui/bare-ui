@@ -10,6 +10,7 @@ import {
 	type JSX,
 } from 'solid-js';
 import { createMergedRefs } from '@/primitives/create-merged-refs';
+import { useWireUI } from '@/context/wire-ui-context';
 import type {
 	CarouselContentProps,
 	CarouselContextValue,
@@ -323,6 +324,7 @@ function Slide(props: CarouselSlideProps & { ref?: (el: HTMLDivElement) => void 
 function Previous(props: CarouselPreviousProps) {
 	const [local, rest] = splitProps(props, ['class', 'children', 'onClick', 'disabled']);
 	const ctx = useCarouselContext();
+	const wire = useWireUI();
 
 	const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (e) => {
 		ctx.scrollPrev();
@@ -335,7 +337,7 @@ function Previous(props: CarouselPreviousProps) {
 	return (
 		<button
 			type='button'
-			aria-label='Previous slide'
+			aria-label={wire.messages.carousel.previous}
 			disabled={local.disabled ?? !ctx.canScrollPrev}
 			class={local.class}
 			{...rest}
@@ -348,6 +350,7 @@ function Previous(props: CarouselPreviousProps) {
 function Next(props: CarouselNextProps) {
 	const [local, rest] = splitProps(props, ['class', 'children', 'onClick', 'disabled']);
 	const ctx = useCarouselContext();
+	const wire = useWireUI();
 
 	const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (e) => {
 		ctx.scrollNext();
@@ -360,7 +363,7 @@ function Next(props: CarouselNextProps) {
 	return (
 		<button
 			type='button'
-			aria-label='Next slide'
+			aria-label={wire.messages.carousel.next}
 			disabled={local.disabled ?? !ctx.canScrollNext}
 			class={local.class}
 			{...rest}

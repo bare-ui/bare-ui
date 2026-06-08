@@ -3,6 +3,7 @@
 import { createContext, createMemo, For, splitProps, useContext, type JSX } from 'solid-js';
 import { createControllableState } from '@/primitives/create-controllable-state';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
+import { useWireUI } from '@/context/wire-ui-context';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	PaginationButtonProps,
@@ -105,8 +106,9 @@ function Root(props: PaginationRootProps) {
 			return local.onChange;
 		},
 	});
+	const wire = useWireUI();
 	const totalPages = () => local.totalPages;
-	const ariaLabel = () => local['aria-label'] ?? 'Pagination';
+	const ariaLabel = () => local['aria-label'] ?? wire.messages.pagination.label;
 
 	const goTo = (next: number) => {
 		const clamped = Math.min(Math.max(next, 1), Math.max(totalPages(), 1));
@@ -192,6 +194,7 @@ function List(props: PaginationListProps) {
 function Item(props: PaginationItemProps) {
 	const [local, rest] = splitProps(props, ['page', 'disabled', 'children', 'class', 'onClick']);
 	const ctx = usePaginationContext();
+	const wire = useWireUI();
 	const state = createInteractiveState({
 		get disabled() {
 			return !!local.disabled;
@@ -217,7 +220,7 @@ function Item(props: PaginationItemProps) {
 				type='button'
 				disabled={local.disabled}
 				aria-current={active() ? 'page' : undefined}
-				aria-label={`Page ${local.page}`}
+				aria-label={wire.messages.pagination.page(local.page)}
 				data-active={active() ? '' : undefined}
 				{...state.dataAttributes}
 				onMouseEnter={state.handlers.onMouseEnter}
@@ -248,10 +251,12 @@ function Ellipsis(props: PaginationEllipsisProps) {
 	);
 }
 
-function makeNavButton(direction: 'prev' | 'next', label: string) {
+function makeNavButton(direction: 'prev' | 'next') {
+	const messageKey = direction === 'prev' ? 'previous' : 'next';
 	return function NavButton(props: PaginationButtonProps) {
 		const [local, rest] = splitProps(props, ['disabled', 'children', 'class', 'onClick']);
 		const ctx = usePaginationContext();
+		const wire = useWireUI();
 		const isDisabled = () =>
 			!!local.disabled || (direction === 'prev' ? !ctx.canPrev : !ctx.canNext);
 		const state = createInteractiveState({
@@ -274,7 +279,7 @@ function makeNavButton(direction: 'prev' | 'next', label: string) {
 			<button
 				type='button'
 				disabled={isDisabled()}
-				aria-label={label}
+				aria-label={wire.messages.pagination[messageKey]}
 				class={local.class}
 				{...state.dataAttributes}
 				{...merged}
@@ -285,8 +290,8 @@ function makeNavButton(direction: 'prev' | 'next', label: string) {
 	};
 }
 
-const Previous = makeNavButton('prev', 'Previous page');
-const Next = makeNavButton('next', 'Next page');
+const Previous = makeNavButton('prev');
+const Next = makeNavButton('next');
 
 // ---------------------------------------------------------------------------
 // Export

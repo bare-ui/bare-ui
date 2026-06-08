@@ -11,6 +11,7 @@ import {
 	type JSX,
 } from 'solid-js';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
+import { useWireUI } from '@/context/wire-ui-context';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	CalendarContextValue,
@@ -156,8 +157,9 @@ function Root(props: CalendarRootProps) {
 	const isMonthControlled = () => local.month !== undefined;
 	const month = () => (isMonthControlled() ? startOfMonth(local.month as Date) : uncontrolledMonth());
 
+	const wire = useWireUI();
 	const weekStartsOn = () => local.weekStartsOn ?? 0;
-	const locale = () => local.locale ?? 'en-US';
+	const locale = () => local.locale ?? wire.locale;
 
 	const setMonth = (next: Date) => {
 		const normalized = startOfMonth(next);
@@ -240,6 +242,7 @@ function Nav(props: CalendarNavProps) {
 function PrevButton(props: CalendarPrevButtonProps) {
 	const [local, rest] = splitProps(props, ['children', 'class', 'onClick']);
 	const ctx = useCalendarContext();
+	const wire = useWireUI();
 	const disabled = () => !ctx.canGoPrev;
 	const state = createInteractiveState({
 		get disabled() {
@@ -260,7 +263,7 @@ function PrevButton(props: CalendarPrevButtonProps) {
 		<button
 			type='button'
 			disabled={disabled()}
-			aria-label='Previous month'
+			aria-label={wire.messages.calendar.previousMonth}
 			class={local.class}
 			{...state.dataAttributes}
 			{...merged}
@@ -273,6 +276,7 @@ function PrevButton(props: CalendarPrevButtonProps) {
 function NextButton(props: CalendarNextButtonProps) {
 	const [local, rest] = splitProps(props, ['children', 'class', 'onClick']);
 	const ctx = useCalendarContext();
+	const wire = useWireUI();
 	const disabled = () => !ctx.canGoNext;
 	const state = createInteractiveState({
 		get disabled() {
@@ -293,7 +297,7 @@ function NextButton(props: CalendarNextButtonProps) {
 		<button
 			type='button'
 			disabled={disabled()}
-			aria-label='Next month'
+			aria-label={wire.messages.calendar.nextMonth}
 			class={local.class}
 			{...state.dataAttributes}
 			{...merged}

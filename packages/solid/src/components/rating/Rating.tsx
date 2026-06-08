@@ -2,6 +2,7 @@
 
 import { createSignal, For, splitProps } from 'solid-js';
 import { createControllableState } from '@/primitives/create-controllable-state';
+import { useWireUI } from '@/context/wire-ui-context';
 import type { RatingProps } from './Rating.types';
 
 // ---------------------------------------------------------------------------
@@ -61,6 +62,7 @@ function Rating(props: RatingProps) {
 		},
 	});
 	const [hoverValue, setHoverValue] = createSignal(0);
+	const wire = useWireUI();
 
 	const displayValue = () => hoverValue() || selectedValue();
 	const max = () => local.max ?? 5;
@@ -99,7 +101,9 @@ function Rating(props: RatingProps) {
 		<div
 			class={local.class}
 			role={readOnly() ? 'img' : 'group'}
-			aria-label={readOnly() ? `Rating: ${selectedValue()} out of ${max()}` : 'Rating'}
+			aria-label={
+					readOnly() ? wire.messages.rating.valueText(selectedValue(), max()) : wire.messages.rating.label
+				}
 			data-disabled={disabled() ? '' : undefined}
 			data-readonly={readOnly() ? '' : undefined}
 			{...rest}>
@@ -115,7 +119,7 @@ function Rating(props: RatingProps) {
 						data-filled={star <= selectedValue() ? '' : undefined}
 						data-highlighted={star <= displayValue() ? '' : undefined}
 						data-disabled={disabled() ? '' : undefined}
-						aria-label={`${star} out of ${max()} stars`}
+						aria-label={wire.messages.rating.starText(star, max())}
 						onClick={() => handleSelect(star)}
 						onKeyDown={(e) => handleKeyDown(e, star)}
 						onMouseEnter={() => {

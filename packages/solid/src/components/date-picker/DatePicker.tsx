@@ -8,6 +8,7 @@ import { createId } from '@/primitives/create-id';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
 import { createKeyboard } from '@/primitives/create-keyboard';
 import { createMergedRefs } from '@/primitives/create-merged-refs';
+import { useWireUI } from '@/context/wire-ui-context';
 import { mergeProps } from '@/utils/merge-props';
 import { Calendar } from '../calendar/Calendar';
 import type { CalendarRootProps } from '../calendar/Calendar.types';
@@ -99,6 +100,7 @@ function Root(props: DatePickerRootProps) {
 		{ event: 'keyup' },
 	);
 
+	const wire = useWireUI();
 	const triggerId = createId('datepicker-trigger');
 	const contentId = createId('datepicker-content');
 
@@ -116,7 +118,7 @@ function Root(props: DatePickerRootProps) {
 			return local.closeOnSelect ?? true;
 		},
 		get locale() {
-			return local.locale ?? 'en-US';
+			return local.locale ?? wire.locale;
 		},
 		get formatOptions() {
 			return local.formatOptions ?? DEFAULT_FORMAT;
@@ -267,6 +269,7 @@ function CalendarBridge(props: DatePickerCalendarProps) {
 	const ctx = useDatePickerContext();
 	return (
 		<Calendar.Root
+			locale={ctx.locale}
 			{...props}
 			value={ctx.value}
 			onChange={(next) => {

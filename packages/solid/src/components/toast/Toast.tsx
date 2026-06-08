@@ -2,6 +2,7 @@
 
 import { createContext, createEffect, createSignal, For, onCleanup, splitProps, useContext, type JSX } from 'solid-js';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
+import { useWireUI } from '@/context/wire-ui-context';
 import { mergeProps } from '@/utils/merge-props';
 import type {
 	ToastCloseProps,
@@ -78,11 +79,12 @@ function Viewport(props: ToastViewportProps) {
 	const [local, rest] = splitProps(props, ['children', 'class']);
 	const ctx = useContext(ToastContext);
 	if (!ctx) throw new Error('Toast.Viewport must be used within Toast.Provider');
+	const wire = useWireUI();
 
 	return (
 		<div
 			role='region'
-			aria-label='Notifications'
+			aria-label={wire.messages.toast.region}
 			class={local.class}
 			{...rest}>
 			<For each={ctx.toasts}>
@@ -212,6 +214,7 @@ function Description(props: ToastDescriptionProps) {
 
 function Close(props: ToastCloseProps) {
 	const [local, rest] = splitProps(props, ['children', 'class', 'onClick']);
+	const wire = useWireUI();
 	const state = createInteractiveState();
 	const merged = mergeProps(rest, state.handlers);
 
@@ -225,7 +228,7 @@ function Close(props: ToastCloseProps) {
 	return (
 		<button
 			type='button'
-			aria-label='Close notification'
+			aria-label={wire.messages.toast.close}
 			class={local.class}
 			{...state.dataAttributes}
 			{...merged}
