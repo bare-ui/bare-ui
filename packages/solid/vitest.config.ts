@@ -33,6 +33,10 @@ export default defineConfig({
 					globals: true,
 					setupFiles: ['./src/test/setup.ts'],
 					include: ['src/**/*.test.{ts,tsx}'],
+					// The SSR + hydration audits need the server build and run under
+					// their own configs (test:ssr / test:hydrate); under jsdom here
+					// `renderToString` is unavailable, so keep them out of the unit run.
+					exclude: ['src/test/ssr.test.tsx', 'src/test/hydrate.test.tsx'],
 				},
 			},
 			{
