@@ -1,3 +1,5 @@
+'use client';
+
 import { createMemo, splitProps, For, Show, type JSX } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import type {

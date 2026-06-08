@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, useContext, splitProps, mergeProps as solidMergeProps, For, type JSX } from 'solid-js';
 import { createCopyToClipboard } from '@/primitives/create-copy-to-clipboard';
 import type {

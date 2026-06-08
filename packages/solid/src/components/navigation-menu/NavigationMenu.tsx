@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, onCleanup, Show, splitProps, useContext, type JSX } from 'solid-js';
 import { createClickOutside } from '@/primitives/create-click-outside';
 import { createControllableState } from '@/primitives/create-controllable-state';

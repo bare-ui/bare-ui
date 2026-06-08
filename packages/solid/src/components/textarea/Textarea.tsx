@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, createMemo, createSignal, Show, splitProps, useContext } from 'solid-js';
 import { createControllableState } from '@/primitives/create-controllable-state';
 import { createId } from '@/primitives/create-id';

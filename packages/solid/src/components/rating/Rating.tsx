@@ -1,3 +1,5 @@
+'use client';
+
 import { createSignal, For, splitProps } from 'solid-js';
 import { createControllableState } from '@/primitives/create-controllable-state';
 import type { RatingProps } from './Rating.types';

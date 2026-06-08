@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, createEffect, mergeProps, splitProps, useContext, Show } from 'solid-js';
 import { createIntersectionObserver } from '@/primitives/create-intersection-observer';
 import type {

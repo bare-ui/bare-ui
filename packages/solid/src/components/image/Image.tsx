@@ -1,3 +1,5 @@
+'use client';
+
 import { createSignal, Show, splitProps } from 'solid-js';
 import type { ImageProps } from './Image.types';
 

@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, createMemo, useContext, splitProps, For } from 'solid-js';
 import type {
 	DiffContextValue,

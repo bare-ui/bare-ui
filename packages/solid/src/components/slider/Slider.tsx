@@ -1,3 +1,5 @@
+'use client';
+
 import { createMemo, createSignal, onCleanup, splitProps, Index, type JSX } from 'solid-js';
 import { createMergedRefs } from '@/primitives/create-merged-refs';
 import type { SliderImplProps, SliderOrientation, SliderValue } from './Slider.types';

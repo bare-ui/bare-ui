@@ -1,3 +1,5 @@
+'use client';
+
 import { createEffect, createMemo, createSignal, onCleanup, For, splitProps, type JSX } from 'solid-js';
 import { createMergedRefs } from '@/primitives/create-merged-refs';
 import type { VirtualItem, VirtualizerRootProps } from './Virtualizer.types';

@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, createSignal, For, splitProps, useContext, type JSX } from 'solid-js';
 import { createControllableState } from '@/primitives/create-controllable-state';
 import type {

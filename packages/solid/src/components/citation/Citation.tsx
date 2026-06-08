@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, createMemo, useContext, splitProps, Show, For, type JSX } from 'solid-js';
 import { createId } from '@/primitives/create-id';
 import type {

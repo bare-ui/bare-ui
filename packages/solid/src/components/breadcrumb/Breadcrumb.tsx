@@ -1,3 +1,5 @@
+'use client';
+
 import { children, createEffect, splitProps, type JSX } from 'solid-js';
 import type {
 	BreadcrumbItemProps,

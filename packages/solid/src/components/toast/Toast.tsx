@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, createEffect, createSignal, For, onCleanup, splitProps, useContext, type JSX } from 'solid-js';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
 import { mergeProps } from '@/utils/merge-props';

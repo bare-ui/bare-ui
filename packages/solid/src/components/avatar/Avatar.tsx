@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, createEffect, createSignal, Show, splitProps, useContext, type JSX } from 'solid-js';
 import { createTimeout } from '@/primitives/create-timeout';
 import type { AvatarFallbackProps, AvatarImageProps, AvatarImageStatus, AvatarRootProps } from './Avatar.types';

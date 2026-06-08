@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, createMemo, createSignal, For, Show, splitProps, useContext, type JSX } from 'solid-js';
 import type { TreeItemState, TreeNode, TreeViewContextValue, TreeViewRootProps } from './TreeView.types';
 

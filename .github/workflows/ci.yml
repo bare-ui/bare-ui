@@ -52,6 +52,14 @@ jobs:
       - name: Screen reader semantics
         run: npm run test:sr --workspace @wire-ui/${{ matrix.package }}
 
+      # SSR safety: Solid needs a separate server compile target (generate:'ssr'
+      # + the solid-js/web server build), so its SSR smoke test runs as its own
+      # step rather than inside the jsdom unit project. (React's equivalent runs
+      # inside test:unit, since react-dom/server works in jsdom.)
+      - name: SSR smoke test
+        if: matrix.package == 'solid'
+        run: npm run test:ssr --workspace @wire-ui/${{ matrix.package }}
+
       # axe-core runs against every story in a real browser, so we need the
       # Playwright Chromium binary the Vitest browser project drives.
       - name: Install Playwright Chromium

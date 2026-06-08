@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, createEffect, createSignal, onCleanup, Show, splitProps, useContext, type JSX } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { createControllableState } from '@/primitives/create-controllable-state';

@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, splitProps, useContext, Show, type JSX } from 'solid-js';
 import { createControllableState } from '@/primitives/create-controllable-state';
 import { createTimeout } from '@/primitives/create-timeout';

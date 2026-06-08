@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, createSignal, splitProps, useContext } from 'solid-js';
 import type { OTPContextValue, OTPRootProps, OTPSeparatorProps, OTPSlotProps } from './OTP.types';
 

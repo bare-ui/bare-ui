@@ -1,3 +1,5 @@
+'use client';
+
 import { createEffect, createMemo, createSignal, splitProps } from 'solid-js';
 import { createInterval } from '@/primitives/create-interval';
 import type { TimeagoFormatConfig, TimeagoPlural, TimeagoProps } from './Timeago.types';

@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, createSignal, createEffect, useContext, splitProps, type JSX } from 'solid-js';
 import { createMergedRefs } from '@/primitives/create-merged-refs';
 import { clamp, hexToHsva, hsvaToHex, hsvaToRgba, hsvToRgb } from './color-utils';

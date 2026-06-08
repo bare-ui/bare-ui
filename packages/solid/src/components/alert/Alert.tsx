@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, createEffect, createSignal, Show, splitProps, useContext, type JSX } from 'solid-js';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
 import { createTimeout } from '@/primitives/create-timeout';
