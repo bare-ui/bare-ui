@@ -109,10 +109,15 @@ Wire UI's published packages are MIT-licensed and carry **no runtime dependencie
 
 | Surface | Packages | Licenses |
 |---|---|---|
-| Shipped runtime (`@wire-ui/react`) | `react`, `react-dom` (peer) | MIT |
-| Build/dev toolchain (full installed tree) | ~1,250 transitive | 100% permissive — MIT, ISC, Apache-2.0, BSD-2/3-Clause, BlueOak-1.0.0, 0BSD, Unlicense, CC0 |
+| Shipped runtime (`@wire-ui/react`, `@wire-ui/vue`, `@wire-ui/solid`) | `react` + `react-dom`, `vue`, or `solid-js` (all peer) | MIT |
+| Build/dev toolchain (full installed tree) | ~1,250 transitive | Permissive — MIT, ISC, Apache-2.0, BSD-2/3-Clause, BlueOak-1.0.0, 0BSD, Unlicense, CC0 — plus a few build-only weak-copyleft tools (see below) that are never bundled |
 
-A scan of the entire installed tree finds no copyleft license in any **distributed** code. The only non-permissive entry is `@img/sharp-libvips` (LGPL-3.0), a prebuilt native binary used solely for image optimization in the docs/Storybook build — it is a build-time tool and is never bundled into a published package. A handful of packages omit the SPDX `license` field in their metadata; their `LICENSE` files confirm they are MIT.
+A scan of the entire installed tree finds **no copyleft license in any distributed code** — every published `@wire-ui/*` package declares `"dependencies": {}`, so the only license your application inherits from Wire UI is MIT. The non-permissive licenses present anywhere in the tree all belong to **build- and test-time tooling that is never bundled into a published package**:
+
+- `@img/sharp-libvips` (LGPL-3.0) — prebuilt native binary for image optimization in the docs/Storybook build.
+- `lightningcss`, `axe-core` (MPL-2.0) and `dompurify` (dual MPL-2.0 OR Apache-2.0) — CSS transform, accessibility test runner, and SVG sanitizer used by the toolchain/tests.
+
+MPL-2.0 and LGPL are *file-level* copyleft that only attaches to their own source; because none of these packages ship in a Wire UI artifact, they impose no obligation on your application. A handful of packages omit the SPDX `license` field in their metadata; their `LICENSE` files confirm they are MIT.
 
 Because each published package declares `"dependencies": {}` and lists only the framework as a peer, the license surface your application inherits from Wire UI is just MIT.
 
