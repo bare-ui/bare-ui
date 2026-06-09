@@ -2,6 +2,7 @@
 
 import { createContext, createMemo, useContext, splitProps, Show, For, type JSX } from 'solid-js';
 import { createId } from '@/primitives/create-id';
+import { sanitizeUrl } from '@/utils/sanitize-url';
 import type {
 	CitationContextValue,
 	CitationListProps,
@@ -105,9 +106,12 @@ function Ref(props: CitationRefProps) {
 
 const defaultFootnote = (source: CitationSource) => {
 	const text = source.title ?? source.url ?? source.id;
-	return source.url ?
+	// Sanitize the destination so a malicious `source.url` can't smuggle a
+	// `javascript:` payload into the footnote link; fall back to plain text.
+	const href = sanitizeUrl(source.url);
+	return href ?
 			<a
-				href={source.url}
+				href={href}
 				target='_blank'
 				rel='noreferrer'>
 				{text}

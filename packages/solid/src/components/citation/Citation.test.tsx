@@ -90,4 +90,15 @@ describe('Citation', () => {
 		expect(() => render(() => <Citation.Ref for='a' />)).toThrow(/Citation.Root/);
 		spy.mockRestore();
 	});
+
+	it('renders an unsafe source URL as plain text instead of a link', () => {
+		render(() => (
+			<Citation.Root sources={[{ id: 'x', title: 'Evil', url: 'javascript:alert(1)' }]}>
+				<Citation.List />
+			</Citation.Root>
+		));
+		// No anchor is rendered for the malicious URL; the title shows as text.
+		expect(screen.queryByRole('link')).not.toBeInTheDocument();
+		expect(screen.getByText('Evil')).toBeInTheDocument();
+	});
 });

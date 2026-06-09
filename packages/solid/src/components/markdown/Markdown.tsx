@@ -2,6 +2,7 @@
 
 import { createMemo, splitProps, For, Show, type JSX } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
+import { sanitizeUrl } from '@/utils/sanitize-url';
 import type {
 	MarkdownComponent,
 	MarkdownComponents,
@@ -35,15 +36,17 @@ const defaultComponents: MarkdownComponents = {
 		</pre>
 	),
 	link: (props) => (
+		// Drop the href entirely for unsafe schemes (e.g. `javascript:`) so the
+		// default renderer is XSS-safe even when nodes come from untrusted input.
 		<a
-			href={props.node.url}
+			href={sanitizeUrl(props.node.url)}
 			title={props.node.title ?? undefined}>
 			{props.children}
 		</a>
 	),
 	image: (props) => (
 		<img
-			src={props.node.url}
+			src={sanitizeUrl(props.node.url, { allowDataImages: true })}
 			alt={props.node.alt ?? ''}
 			title={props.node.title ?? undefined}
 		/>
