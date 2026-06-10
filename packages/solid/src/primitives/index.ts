@@ -8,6 +8,9 @@ export type { CreateCopyToClipboardOptions, CreateCopyToClipboardResult } from '
 
 export { createDebounce, createDebouncedCallback } from './create-debounce';
 
+export { createDirection, getDirection, isRtl } from './create-direction';
+export type { Direction } from './create-direction';
+
 export { createDisclosure } from './create-disclosure';
 export type { CreateDisclosureOptions, CreateDisclosureResult } from './create-disclosure';
 
