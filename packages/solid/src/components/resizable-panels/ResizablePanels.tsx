@@ -11,6 +11,7 @@ import {
 	useContext,
 	type JSX,
 } from 'solid-js';
+import { getDirection } from '@/primitives/create-direction';
 import { createId } from '@/primitives/create-id';
 import { createMergedRefs } from '@/primitives/create-merged-refs';
 import type { PanelConfig, PanelGroupProps, PanelHandleProps, PanelOrientation, PanelProps } from './ResizablePanels.types';
@@ -205,6 +206,7 @@ function Group(props: PanelGroupProps) {
 		startSizes: number[];
 		startPos: number;
 		containerLength: number;
+		rtl: boolean;
 	} | null = null;
 
 	const startDrag = (handleId: string, pointer: { x: number; y: number }) => {
@@ -218,6 +220,9 @@ function Group(props: PanelGroupProps) {
 			startSizes: sizes().slice(),
 			startPos: horizontal ? pointer.x : pointer.y,
 			containerLength: horizontal ? rect.width : rect.height,
+			// In an RTL row the first panel sits on the right, so a rightward drag
+			// must shrink it — the horizontal delta is inverted.
+			rtl: horizontal && getDirection(containerEl) === 'rtl',
 		};
 	};
 
@@ -228,7 +233,7 @@ function Group(props: PanelGroupProps) {
 			const horizontal = orientation() === 'horizontal';
 			const currentPos = horizontal ? e.clientX : e.clientY;
 			const deltaPx = currentPos - drag.startPos;
-			const deltaPct = (deltaPx / drag.containerLength) * 100;
+			const deltaPct = ((drag.rtl ? -deltaPx : deltaPx) / drag.containerLength) * 100;
 
 			const aIdx = drag.handleIndex;
 			const bIdx = drag.handleIndex + 1;

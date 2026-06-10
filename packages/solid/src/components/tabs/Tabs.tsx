@@ -2,6 +2,7 @@
 
 import { createContext, splitProps, useContext, Show, type JSX } from 'solid-js';
 import { createControllableState } from '@/primitives/create-controllable-state';
+import { getDirection } from '@/primitives/create-direction';
 import { createId } from '@/primitives/create-id';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
 import { createMergedRefs } from '@/primitives/create-merged-refs';
@@ -201,8 +202,10 @@ function Trigger(props: TabsTriggerProps) {
 		if (e.defaultPrevented) return;
 
 		const horizontal = ctx.orientation === 'horizontal';
-		const nextKey = horizontal ? 'ArrowRight' : 'ArrowDown';
-		const prevKey = horizontal ? 'ArrowLeft' : 'ArrowUp';
+		// RTL mirrors the horizontal axis: ArrowLeft advances, ArrowRight retreats.
+		const rtl = horizontal && getDirection(e.currentTarget) === 'rtl';
+		const nextKey = horizontal ? (rtl ? 'ArrowLeft' : 'ArrowRight') : 'ArrowDown';
+		const prevKey = horizontal ? (rtl ? 'ArrowRight' : 'ArrowLeft') : 'ArrowUp';
 
 		if (e.key === nextKey) {
 			e.preventDefault();

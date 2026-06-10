@@ -10,6 +10,7 @@ import {
 	Show,
 	type JSX,
 } from 'solid-js';
+import { createDirection } from '@/primitives/create-direction';
 import { createMergedRefs } from '@/primitives/create-merged-refs';
 import type {
 	ScrollAreaContextValue,
@@ -262,13 +263,19 @@ function Thumb(props: ScrollAreaThumbProps & { ref?: (el: HTMLDivElement) => voi
 	const sb = useScrollbarContext();
 
 	const vertical = () => sb.orientation === 'vertical';
+	const rtl = createDirection(() => sb.track);
 
 	const clientLen = () => (vertical() ? ctx.metrics.clientHeight : ctx.metrics.clientWidth);
 	const scrollLen = () => (vertical() ? ctx.metrics.scrollHeight : ctx.metrics.scrollWidth);
 	const scrollOffset = () => (vertical() ? ctx.metrics.scrollTop : ctx.metrics.scrollLeft);
 	const maxScroll = () => Math.max(scrollLen() - clientLen(), 0);
 	const sizePct = () => (scrollLen() > 0 ? Math.min(100, (clientLen() / scrollLen()) * 100) : 100);
-	const offsetPct = () => (maxScroll() > 0 ? (scrollOffset() / maxScroll()) * (100 - sizePct()) : 0);
+	// In RTL the horizontal start sits on the right and `scrollLeft` runs negative
+	// (modern browsers), so measure distance-from-start by magnitude and anchor the
+	// thumb to the right edge.
+	const rtlHorizontal = () => rtl() === 'rtl' && !vertical();
+	const distanceFromStart = () => (rtlHorizontal() ? Math.abs(scrollOffset()) : scrollOffset());
+	const offsetPct = () => (maxScroll() > 0 ? (distanceFromStart() / maxScroll()) * (100 - sizePct()) : 0);
 
 	let drag: { start: number; startScroll: number } | null = null;
 
@@ -314,7 +321,9 @@ function Thumb(props: ScrollAreaThumbProps & { ref?: (el: HTMLDivElement) => voi
 	const thumbStyle = (): JSX.CSSProperties => {
 		const sizeStyle: JSX.CSSProperties = vertical()
 			? { right: 0, left: 0, height: `${sizePct()}%`, top: `${offsetPct()}%` }
-			: { top: 0, bottom: 0, width: `${sizePct()}%`, left: `${offsetPct()}%` };
+			: rtlHorizontal()
+				? { top: 0, bottom: 0, width: `${sizePct()}%`, right: `${offsetPct()}%` }
+				: { top: 0, bottom: 0, width: `${sizePct()}%`, left: `${offsetPct()}%` };
 		const ours: JSX.CSSProperties = { position: 'absolute', ...sizeStyle };
 		const user = local.style;
 		if (typeof user === 'string' || !user) return ours;

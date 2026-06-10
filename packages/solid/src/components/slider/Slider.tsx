@@ -1,6 +1,7 @@
 'use client';
 
 import { createMemo, createSignal, onCleanup, splitProps, Index, type JSX } from 'solid-js';
+import { createDirection, getDirection } from '@/primitives/create-direction';
 import { createMergedRefs } from '@/primitives/create-merged-refs';
 import type { SliderImplProps, SliderOrientation, SliderValue } from './Slider.types';
 
@@ -124,6 +125,7 @@ function SliderImpl(props: SliderImplProps & { ref?: (el: HTMLDivElement) => voi
 		(el) => (trackEl = el),
 		(el) => local.ref?.(el),
 	);
+	const rtl = createDirection(() => trackEl);
 
 	const valueFromPoint = (clientX: number, clientY: number): number => {
 		const el = trackEl;
@@ -135,7 +137,12 @@ function SliderImpl(props: SliderImplProps & { ref?: (el: HTMLDivElement) => voi
 		const point = isHorizontal ? clientX : clientY;
 		let pct = (point - start) / length;
 		if (!isHorizontal) pct = inverted() ? pct : 1 - pct; // vertical default = bottom→top
-		else if (inverted()) pct = 1 - pct;
+		else {
+			// In RTL the horizontal axis is mirrored: the track's start (min) sits on
+			// the right, so the fraction measured from the physical left must flip.
+			const rtlDir = getDirection(el) === 'rtl';
+			if (inverted() !== rtlDir) pct = 1 - pct;
+		}
 		pct = clamp(pct, 0, 1);
 		return min() + pct * (max() - min());
 	};
@@ -199,8 +206,10 @@ function SliderImpl(props: SliderImplProps & { ref?: (el: HTMLDivElement) => voi
 		(e) => {
 			if (disabled()) return;
 			const horizontal = orientation() === 'horizontal';
-			const incKey = horizontal ? (inverted() ? 'ArrowLeft' : 'ArrowRight') : inverted() ? 'ArrowDown' : 'ArrowUp';
-			const decKey = horizontal ? (inverted() ? 'ArrowRight' : 'ArrowLeft') : inverted() ? 'ArrowUp' : 'ArrowDown';
+			// RTL mirrors the horizontal axis, so the arrow that increases the value flips.
+			const flipH = horizontal && inverted() !== (getDirection(e.currentTarget) === 'rtl');
+			const incKey = horizontal ? (flipH ? 'ArrowLeft' : 'ArrowRight') : inverted() ? 'ArrowDown' : 'ArrowUp';
+			const decKey = horizontal ? (flipH ? 'ArrowRight' : 'ArrowLeft') : inverted() ? 'ArrowUp' : 'ArrowDown';
 			const big = step() * 10;
 
 			let delta = 0;
@@ -228,6 +237,9 @@ function SliderImpl(props: SliderImplProps & { ref?: (el: HTMLDivElement) => voi
 	const fillEnd = () => (range() ? Math.max(pct()[0], pct()[1]) : pct()[0]);
 
 	const isHorizontal = () => orientation() === 'horizontal';
+	// In RTL the horizontal axis is mirrored. Folding that into `inverted` keeps the
+	// LTR render path byte-for-byte unchanged.
+	const placeInverted = () => (isHorizontal() ? inverted() !== (rtl() === 'rtl') : inverted());
 
 	// Each thumb is an ARIA input field and needs its own accessible name. In
 	// single mode it inherits the consumer's label directly. In range mode the
@@ -243,7 +255,9 @@ function SliderImpl(props: SliderImplProps & { ref?: (el: HTMLDivElement) => voi
 
 	const fillStyle = (): JSX.CSSProperties =>
 		isHorizontal()
-			? { left: `${fillStart()}%`, width: `${fillEnd() - fillStart()}%`, top: 0, bottom: 0 }
+			? placeInverted()
+				? { right: `${fillStart()}%`, width: `${fillEnd() - fillStart()}%`, top: 0, bottom: 0 }
+				: { left: `${fillStart()}%`, width: `${fillEnd() - fillStart()}%`, top: 0, bottom: 0 }
 			: inverted()
 				? { top: `${fillStart()}%`, height: `${fillEnd() - fillStart()}%`, left: 0, right: 0 }
 				: { bottom: `${fillStart()}%`, height: `${fillEnd() - fillStart()}%`, left: 0, right: 0 };
@@ -251,7 +265,7 @@ function SliderImpl(props: SliderImplProps & { ref?: (el: HTMLDivElement) => voi
 	const thumbStyle = (i: number): JSX.CSSProperties => {
 		const p = pct()[i];
 		if (isHorizontal()) {
-			return inverted()
+			return placeInverted()
 				? { right: `${p}%`, top: '50%', transform: 'translate(50%, -50%)' }
 				: { left: `${p}%`, top: '50%', transform: 'translate(-50%, -50%)' };
 		}

@@ -10,6 +10,7 @@ import {
 	type JSX,
 } from 'solid-js';
 import { createControllableState } from '@/primitives/create-controllable-state';
+import { getDirection } from '@/primitives/create-direction';
 import { createId } from '@/primitives/create-id';
 import { createMergedRefs } from '@/primitives/create-merged-refs';
 import type {
@@ -75,8 +76,10 @@ function Root(props: ToolbarRootProps) {
 
 	const onItemKeyDown = (e: KeyboardEvent) => {
 		const axis = orientation();
-		const nextKey = axis === 'horizontal' ? 'ArrowRight' : 'ArrowDown';
-		const prevKey = axis === 'horizontal' ? 'ArrowLeft' : 'ArrowUp';
+		// RTL mirrors the horizontal axis: ArrowLeft advances, ArrowRight retreats.
+		const rtl = axis === 'horizontal' && getDirection(document.activeElement) === 'rtl';
+		const nextKey = axis === 'horizontal' ? (rtl ? 'ArrowLeft' : 'ArrowRight') : 'ArrowDown';
+		const prevKey = axis === 'horizontal' ? (rtl ? 'ArrowRight' : 'ArrowLeft') : 'ArrowUp';
 		if (!['Home', 'End', nextKey, prevKey].includes(e.key)) return;
 
 		const ordered = orderedEnabled();

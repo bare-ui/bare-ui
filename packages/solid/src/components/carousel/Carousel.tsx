@@ -9,6 +9,7 @@ import {
 	For,
 	type JSX,
 } from 'solid-js';
+import { getDirection } from '@/primitives/create-direction';
 import { createMergedRefs } from '@/primitives/create-merged-refs';
 import { useWireUI } from '@/context/wire-ui-context';
 import type {
@@ -218,8 +219,10 @@ function Viewport(props: CarouselViewportProps & { ref?: (el: HTMLDivElement) =>
 			(userOnKeyDown as (event: typeof e) => void)(e);
 		}
 		if (e.defaultPrevented) return;
-		const nextKey = vertical() ? 'ArrowDown' : 'ArrowRight';
-		const prevKey = vertical() ? 'ArrowUp' : 'ArrowLeft';
+		// RTL mirrors the horizontal axis: ArrowLeft advances, ArrowRight retreats.
+		const rtl = !vertical() && getDirection(e.currentTarget) === 'rtl';
+		const nextKey = vertical() ? 'ArrowDown' : rtl ? 'ArrowLeft' : 'ArrowRight';
+		const prevKey = vertical() ? 'ArrowUp' : rtl ? 'ArrowRight' : 'ArrowLeft';
 		if (e.key === nextKey) {
 			e.preventDefault();
 			ctx.scrollNext();

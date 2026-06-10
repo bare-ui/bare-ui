@@ -3,6 +3,7 @@
 import { createContext, onCleanup, onMount, Show, splitProps, useContext, type JSX } from 'solid-js';
 import { createClickOutside } from '@/primitives/create-click-outside';
 import { createControllableState } from '@/primitives/create-controllable-state';
+import { getDirection } from '@/primitives/create-direction';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
 import { createKeyboard } from '@/primitives/create-keyboard';
 import { createMenuNavigation } from '@/primitives/create-menu-navigation';
@@ -18,17 +19,6 @@ import type {
 	MenuBarSeparatorProps,
 	MenuBarTriggerProps,
 } from './MenuBar.types';
-
-// Reads the resolved text direction at the moment of interaction. A `dir`
-// attribute is authoritative (and works in jsdom); otherwise fall back to the
-// computed style for direction set purely through CSS.
-function getDirection(el: Element | null | undefined): 'ltr' | 'rtl' {
-	if (!el || typeof window === 'undefined') return 'ltr';
-	const dirAttr = el.closest('[dir]')?.getAttribute('dir');
-	if (dirAttr === 'rtl' || dirAttr === 'ltr') return dirAttr;
-	const computed = typeof getComputedStyle === 'function' ? getComputedStyle(el).direction : '';
-	return computed === 'rtl' ? 'rtl' : 'ltr';
-}
 
 // ---------------------------------------------------------------------------
 // Contexts

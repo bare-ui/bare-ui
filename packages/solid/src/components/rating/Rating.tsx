@@ -2,6 +2,7 @@
 
 import { createSignal, For, splitProps } from 'solid-js';
 import { createControllableState } from '@/primitives/create-controllable-state';
+import { getDirection } from '@/primitives/create-direction';
 import { useWireUI } from '@/context/wire-ui-context';
 import type { RatingProps } from './Rating.types';
 
@@ -82,9 +83,13 @@ function Rating(props: RatingProps) {
 
 	const handleKeyDown = (e: KeyboardEvent & { currentTarget: HTMLButtonElement }, star: number) => {
 		if (!interactive()) return;
+		// RTL mirrors the horizontal arrows; vertical arrows are unaffected.
+		const rtl = getDirection(e.currentTarget) === 'rtl';
+		const incKey = rtl ? 'ArrowLeft' : 'ArrowRight';
+		const decKey = rtl ? 'ArrowRight' : 'ArrowLeft';
 		let next: number | null = null;
-		if (e.key === 'ArrowRight' || e.key === 'ArrowUp') next = Math.min(max(), star + 1);
-		else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') next = Math.max(1, star - 1);
+		if (e.key === incKey || e.key === 'ArrowUp') next = Math.min(max(), star + 1);
+		else if (e.key === decKey || e.key === 'ArrowDown') next = Math.max(1, star - 1);
 		else if (e.key === 'Home') next = 1;
 		else if (e.key === 'End') next = max();
 		if (next === null) return;

@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, createSignal, splitProps, useContext } from 'solid-js';
+import { getDirection } from '@/primitives/create-direction';
 import { useWireUI } from '@/context/wire-ui-context';
 import type { OTPContextValue, OTPRootProps, OTPSeparatorProps, OTPSlotProps } from './OTP.types';
 
@@ -109,12 +110,13 @@ function Root(props: OTPRootProps) {
 				commit(next);
 				inputRefs[index - 1]?.focus();
 			}
-		} else if (e.key === 'ArrowLeft') {
+		} else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
 			e.preventDefault();
-			if (index > 0) inputRefs[index - 1]?.focus();
-		} else if (e.key === 'ArrowRight') {
-			e.preventDefault();
-			if (index < length() - 1) inputRefs[index + 1]?.focus();
+			// In RTL the slots read right-to-left, so ArrowLeft advances and ArrowRight retreats.
+			const rtl = getDirection(inputRefs[index]) === 'rtl';
+			const forward = e.key === (rtl ? 'ArrowLeft' : 'ArrowRight');
+			const target = forward ? index + 1 : index - 1;
+			if (target >= 0 && target < length()) inputRefs[target]?.focus();
 		}
 	};
 

@@ -10,6 +10,7 @@ import {
 	useContext,
 	type JSX,
 } from 'solid-js';
+import { getDirection } from '@/primitives/create-direction';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
 import { useWireUI } from '@/context/wire-ui-context';
 import { mergeProps } from '@/utils/merge-props';
@@ -387,12 +388,14 @@ function Grid(props: CalendarGridProps) {
 		const targetIso = (e.target as HTMLElement).getAttribute?.('data-date');
 		const base = targetIso ? parseISODate(targetIso) : tabbableDate();
 		let next: Date | null = null;
+		// RTL mirrors the day grid: ArrowLeft moves to the next day, ArrowRight to the previous.
+		const dayStep = getDirection(e.currentTarget) === 'rtl' ? -1 : 1;
 		switch (e.key) {
 			case 'ArrowLeft':
-				next = addDays(base, -1);
+				next = addDays(base, -dayStep);
 				break;
 			case 'ArrowRight':
-				next = addDays(base, 1);
+				next = addDays(base, dayStep);
 				break;
 			case 'ArrowUp':
 				next = addDays(base, -7);

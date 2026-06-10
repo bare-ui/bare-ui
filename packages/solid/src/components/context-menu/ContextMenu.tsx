@@ -3,6 +3,7 @@
 import { createContext, createEffect, createSignal, onCleanup, Show, splitProps, useContext, type JSX } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { createControllableState } from '@/primitives/create-controllable-state';
+import { getDirection } from '@/primitives/create-direction';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
 import { createKeyboard } from '@/primitives/create-keyboard';
 import { createMenuNavigation } from '@/primitives/create-menu-navigation';
@@ -230,9 +231,15 @@ function Content(props: ContextMenuContentProps) {
 	};
 
 	const mergedStyle = (): JSX.CSSProperties | string | undefined => {
+		// In RTL the menu grows leftward, so anchor its right edge at the cursor.
+		const rtl = typeof document !== 'undefined' && getDirection(document.documentElement) === 'rtl';
+		const anchor: JSX.CSSProperties =
+			rtl && typeof window !== 'undefined'
+				? { right: `${Math.max(0, window.innerWidth - ctx.position.x)}px` }
+				: { left: `${ctx.position.x}px` };
 		const ours: JSX.CSSProperties = {
 			position: 'fixed',
-			left: `${ctx.position.x}px`,
+			...anchor,
 			top: `${ctx.position.y}px`,
 			'z-index': 50,
 		};

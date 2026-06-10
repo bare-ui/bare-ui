@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, createMemo, createSignal, For, Show, splitProps, useContext, type JSX } from 'solid-js';
+import { getDirection } from '@/primitives/create-direction';
 import type { TreeItemState, TreeNode, TreeViewContextValue, TreeViewRootProps } from './TreeView.types';
 
 // ---------------------------------------------------------------------------
@@ -204,19 +205,25 @@ function TreeItem(props: TreeItemProps) {
 
 	const handleKeyDown: JSX.EventHandler<HTMLDivElement, KeyboardEvent> = (e) => {
 		if (disabled()) return;
+		// RTL mirrors the tree: ArrowLeft expands/enters, ArrowRight collapses/exits.
+		const rtl = getDirection(e.currentTarget) === 'rtl';
+		const expandKey = rtl ? 'ArrowLeft' : 'ArrowRight';
+		const collapseKey = rtl ? 'ArrowRight' : 'ArrowLeft';
+		if (e.key === expandKey) {
+			e.preventDefault();
+			// Collapsed parent: expand. Expanded parent: move into the first child.
+			if (hasChildren() && !isExpanded()) ctx.toggleExpanded(props.node.id);
+			else if (hasChildren() && isExpanded()) ctx.focusByOffset(props.node.id, 1);
+			return;
+		}
+		if (e.key === collapseKey) {
+			e.preventDefault();
+			// Expanded parent: collapse. Otherwise move to the parent node.
+			if (hasChildren() && isExpanded()) ctx.toggleExpanded(props.node.id);
+			else ctx.focusParent(props.node.id);
+			return;
+		}
 		switch (e.key) {
-			case 'ArrowRight':
-				e.preventDefault();
-				// Collapsed parent: expand. Expanded parent: move into the first child.
-				if (hasChildren() && !isExpanded()) ctx.toggleExpanded(props.node.id);
-				else if (hasChildren() && isExpanded()) ctx.focusByOffset(props.node.id, 1);
-				break;
-			case 'ArrowLeft':
-				e.preventDefault();
-				// Expanded parent: collapse. Otherwise move to the parent node.
-				if (hasChildren() && isExpanded()) ctx.toggleExpanded(props.node.id);
-				else ctx.focusParent(props.node.id);
-				break;
 			case 'ArrowDown':
 				e.preventDefault();
 				ctx.focusByOffset(props.node.id, 1);
