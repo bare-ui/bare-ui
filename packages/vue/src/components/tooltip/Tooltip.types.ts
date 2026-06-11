@@ -1,6 +1,7 @@
 export interface TooltipContextValue {
 	open: boolean;
 	setOpen: (value: boolean) => void;
+	contentId: string;
 }
 
 export interface TooltipRootProps {

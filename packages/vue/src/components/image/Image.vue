@@ -29,6 +29,7 @@ function handleError() {
 		<img
 			:src="src"
 			:alt="alt"
+			:role="alt === '' ? 'presentation' : undefined"
 			data-part="image"
 			:data-loaded="loaded || undefined"
 			:style="!loaded ? { display: 'none' } : undefined"

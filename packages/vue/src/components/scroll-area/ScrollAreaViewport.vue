@@ -49,6 +49,7 @@ function handleScroll(e: Event) {
 	<div
 		:ref="(el) => { ctx.viewportRef.value = el as HTMLDivElement | null }"
 		data-scroll-area-viewport=""
+		tabindex="0"
 		style="overflow: auto; scrollbar-width: none"
 		v-bind="attrs"
 		@scroll="handleScroll"

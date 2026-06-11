@@ -22,6 +22,8 @@ const props = withDefaults(
 	},
 )
 
+const ariaLabel = computed(() => (props as Record<string, unknown>)['aria-label'] as string | undefined ?? 'Pagination')
+
 const uncontrolled = ref<number>(props.defaultPage)
 const isControlled = computed(() => props.page !== undefined)
 const page = computed<number>(() => (isControlled.value ? (props.page as number) : uncontrolled.value))
@@ -62,7 +64,7 @@ provide(PaginationKey, {
 </script>
 
 <template>
-	<nav :aria-label="$props['aria-label']">
+	<nav :aria-label="ariaLabel">
 		<slot />
 	</nav>
 </template>

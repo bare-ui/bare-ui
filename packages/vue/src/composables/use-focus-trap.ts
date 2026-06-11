@@ -1,4 +1,4 @@
-import { watch, onUnmounted, type MaybeRefOrGetter, type Ref, toValue } from 'vue';
+import { watch, onMounted, onUnmounted, type MaybeRefOrGetter, type Ref, toValue } from 'vue';
 
 export interface UseFocusTrapOptions {
 	/** Whether the trap is active */
@@ -97,13 +97,20 @@ export function useFocusTrap(containerRef: Ref<HTMLElement | null>, options: Use
 		previouslyFocused = null;
 	}
 
+	// Activate when mounted if already active (immediate:true with flush:post fires before
+	// template refs are set, so we use onMounted for the initial activation instead).
+	onMounted(() => {
+		if (toValue(options.active) ?? true) activate();
+	});
+
+	// Handle transitions after mount.
 	watch(
 		() => toValue(options.active) ?? true,
 		(isActive) => {
 			if (isActive) activate();
 			else deactivate();
 		},
-		{ immediate: true, flush: 'post' },
+		{ flush: 'post' },
 	);
 
 	onUnmounted(deactivate);

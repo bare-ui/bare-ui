@@ -33,7 +33,14 @@ const preview: Preview = {
 		},
 
 		a11y: {
-			test: 'todo',
+			// Fail CI on any axe-core violation. Color contrast is disabled because
+			// Wire UI ships zero CSS — consumers own their color choices.
+			test: 'error',
+			config: {
+				rules: [
+					{ id: 'color-contrast', enabled: false },
+				],
+			},
 		},
 	},
 };

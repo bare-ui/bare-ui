@@ -15,6 +15,7 @@ function handleClick() {
 <template>
   <button
     type="button"
+    aria-haspopup="menu"
     :aria-expanded="ctx.open"
     :data-state="ctx.open ? 'open' : 'closed'"
     v-bind="dataAttributes"

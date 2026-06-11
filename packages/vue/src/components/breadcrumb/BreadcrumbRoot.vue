@@ -1,18 +1,18 @@
 <script setup lang="ts">
 defineOptions({ name: 'BreadcrumbRoot' })
 
-withDefaults(
+const props = withDefaults(
 	defineProps<{
-		'aria-label'?: string
+		ariaLabel?: string
 	}>(),
 	{
-		'aria-label': 'Breadcrumb',
+		ariaLabel: 'Breadcrumb',
 	},
 )
 </script>
 
 <template>
-	<nav :aria-label="$props['aria-label']">
+	<nav :aria-label="props.ariaLabel">
 		<slot />
 	</nav>
 </template>

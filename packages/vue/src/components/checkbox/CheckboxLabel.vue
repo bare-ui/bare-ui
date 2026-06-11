@@ -7,7 +7,7 @@ const itemCtx = useCheckboxItemContext()
 </script>
 
 <template>
-  <label :data-disabled="itemCtx.disabled ? '' : undefined">
+  <label :for="itemCtx.inputId" :data-disabled="itemCtx.disabled ? '' : undefined">
     <slot />
   </label>
 </template>

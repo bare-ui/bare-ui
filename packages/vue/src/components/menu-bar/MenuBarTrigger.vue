@@ -29,6 +29,7 @@ function onPointerEnter() {
 <template>
 	<button
 		type="button"
+		role="menuitem"
 		:disabled="props.disabled"
 		aria-haspopup="menu"
 		:aria-expanded="menu.open.value"

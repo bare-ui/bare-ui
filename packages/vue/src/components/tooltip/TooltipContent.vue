@@ -45,6 +45,7 @@ const positionStyle = computed(() => {
 
 <template>
   <span
+    :id="ctx.contentId"
     role="tooltip"
     :data-state="ctx.open ? 'open' : 'closed'"
     :data-side="side"

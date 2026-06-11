@@ -3,22 +3,13 @@ import { useInteractiveState } from '@/composables/use-interactive-state'
 
 defineOptions({ name: 'TagRemove', inheritAttrs: false })
 
-withDefaults(
-	defineProps<{
-		'aria-label'?: string
-	}>(),
-	{
-		'aria-label': 'Remove',
-	},
-)
-
 const { handlers, dataAttributes } = useInteractiveState()
 </script>
 
 <template>
 	<button
 		type="button"
-		:aria-label="$props['aria-label']"
+		aria-label="Remove"
 		v-bind="{ ...$attrs, ...dataAttributes }"
 		@mouseenter="handlers.onMouseenter"
 		@mouseleave="handlers.onMouseleave"

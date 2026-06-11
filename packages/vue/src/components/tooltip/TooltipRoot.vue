@@ -2,6 +2,7 @@
 import { provide, reactive } from 'vue'
 import { useControllableState } from '@/composables/use-controllable-state'
 import { useTimeout } from '@/composables/use-timeout'
+import { useId } from '@/composables/use-id'
 import { TooltipKey } from './keys'
 
 defineOptions({ name: 'TooltipRoot' })
@@ -19,6 +20,8 @@ const isOpen = useControllableState<boolean>({
   onChange: (next) => props.onOpenChange?.(next),
 })
 
+const contentId = useId('tooltip-content')
+
 const { start, stop } = useTimeout(
   () => { isOpen.value = true },
   () => props.delayDuration,
@@ -34,6 +37,7 @@ function setOpen(value: boolean) {
 provide(TooltipKey, reactive({
   open: isOpen,
   setOpen,
+  contentId,
 }))
 </script>
 

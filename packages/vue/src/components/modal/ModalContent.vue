@@ -12,7 +12,7 @@ useFocusTrap(contentRef, { active: computed(() => ctx.open) })
 </script>
 
 <template>
-  <div ref="contentRef" role="dialog" aria-modal="true" :data-state="ctx.open ? 'open' : 'closed'" @click.stop>
+  <div ref="contentRef" role="dialog" aria-modal="true" tabindex="-1" :data-state="ctx.open ? 'open' : 'closed'" @click.stop>
     <slot />
   </div>
 </template>

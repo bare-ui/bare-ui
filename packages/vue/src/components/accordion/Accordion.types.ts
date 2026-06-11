@@ -12,6 +12,8 @@ export interface AccordionItemContextValue {
 	value: string;
 	isOpen: boolean;
 	disabled: boolean;
+	triggerId: string;
+	contentId: string;
 }
 
 // ---------------------------------------------------------------------------

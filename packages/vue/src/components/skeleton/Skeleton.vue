@@ -1,14 +1,14 @@
 <script setup lang="ts">
 defineOptions({ name: 'Skeleton' })
 
-withDefaults(
+const props = withDefaults(
 	defineProps<{
 		loading?: boolean
-		'aria-label'?: string
+		ariaLabel?: string
 	}>(),
 	{
 		loading: true,
-		'aria-label': 'Loading',
+		ariaLabel: 'Loading',
 	},
 )
 </script>
@@ -20,6 +20,6 @@ withDefaults(
 		role="status"
 		aria-busy="true"
 		aria-live="polite"
-		:aria-label="$props['aria-label']"
+		:aria-label="props.ariaLabel"
 		data-loading="" />
 </template>

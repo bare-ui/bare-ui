@@ -23,9 +23,11 @@ function handleClick(e: MouseEvent) {
 
 <template>
 	<button
+		:id="itemCtx.triggerId"
 		type="button"
 		:disabled="isDisabled"
 		:aria-expanded="isOpen"
+		:aria-controls="itemCtx.contentId"
 		:data-state="isOpen ? 'open' : 'closed'"
 		v-bind="dataAttributes"
 		@mouseenter="handlers.onMouseenter"

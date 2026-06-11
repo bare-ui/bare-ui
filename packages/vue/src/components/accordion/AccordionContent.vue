@@ -19,7 +19,9 @@ const shouldRender = computed(() => props.forceMount || isOpen.value);
 <template>
 	<div
 		v-if="shouldRender"
+		:id="itemCtx.contentId"
 		role="region"
+		:aria-labelledby="itemCtx.triggerId"
 		:hidden="props.forceMount && !isOpen ? true : undefined"
 		:data-state="isOpen ? 'open' : 'closed'"
 	>

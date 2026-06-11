@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { provide, reactive, computed, toRef } from 'vue'
 import { useInteractiveState } from '@/composables/use-interactive-state'
+import { useId } from '@/composables/use-id'
 import { CheckboxItemKey, useCheckboxContext } from './keys'
 
 defineOptions({ name: 'CheckboxItem' })
@@ -16,11 +17,13 @@ const ctx = useCheckboxContext()
 const { handlers, dataAttributes } = useInteractiveState({ disabled: () => props.disabled })
 
 const checked = computed(() => ctx.isChecked(props.value))
+const inputId = useId('checkbox-item')
 
 provide(CheckboxItemKey, reactive({
   value: toRef(props, 'value'),
   disabled: toRef(props, 'disabled'),
   checked,
+  inputId,
 }))
 
 function handleClick() {
@@ -41,6 +44,7 @@ const hiddenStyle = { position: 'absolute' as const, opacity: 0, pointerEvents: 
     @click="handleClick"
   >
     <input
+      :id="inputId"
       type="checkbox"
       :name="ctx.name"
       :value="String(props.value)"
