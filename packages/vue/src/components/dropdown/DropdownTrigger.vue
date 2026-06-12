@@ -10,6 +10,14 @@ const { handlers, dataAttributes } = useInteractiveState()
 function handleClick() {
   ctx.onOpenChange(!ctx.open)
 }
+
+function onKeyDown(e: KeyboardEvent) {
+  handlers.onKeydown(e)
+  if (!ctx.open && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+    e.preventDefault()
+    ctx.onOpenChange(true)
+  }
+}
 </script>
 
 <template>
@@ -25,7 +33,7 @@ function handleClick() {
     @blur="handlers.onBlur"
     @pointerdown="handlers.onPointerdown"
     @pointerup="handlers.onPointerup"
-    @keydown="handlers.onKeydown"
+    @keydown="onKeyDown"
     @keyup="handlers.onKeyup"
     @click="handleClick"
   >

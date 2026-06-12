@@ -7,6 +7,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen, within } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
+import { nextTick } from 'vue';
 import { expectExposedAs } from '@/test/sr';
 import { MenuBar } from '.';
 
@@ -80,6 +81,24 @@ describe('MenuBar — screen reader semantics', () => {
 		await userEvent.hover(screen.getByRole('menuitem', { name: 'Edit' }));
 		expect(screen.getByRole('menuitem', { name: 'File' })).toHaveAttribute('aria-expanded', 'false');
 		expect(screen.getByRole('menuitem', { name: 'Edit' })).toHaveAttribute('aria-expanded', 'true');
+	});
+
+	it('focuses the first item when a submenu opens', async () => {
+		renderBar();
+		await userEvent.click(screen.getByRole('menuitem', { name: 'File' }));
+		await nextTick();
+		expect(screen.getByRole('menuitem', { name: 'New' })).toHaveFocus();
+	});
+
+	it('ArrowDown/ArrowUp navigate items inside the open submenu', async () => {
+		renderBar();
+		await userEvent.click(screen.getByRole('menuitem', { name: 'File' }));
+		await nextTick();
+		expect(screen.getByRole('menuitem', { name: 'New' })).toHaveFocus();
+		await userEvent.keyboard('{ArrowDown}');
+		expect(screen.getByRole('menuitem', { name: 'Open' })).toHaveFocus();
+		await userEvent.keyboard('{ArrowUp}');
+		expect(screen.getByRole('menuitem', { name: 'New' })).toHaveFocus();
 	});
 
 	it('exposes a disabled submenu item as a disabled menuitem', async () => {

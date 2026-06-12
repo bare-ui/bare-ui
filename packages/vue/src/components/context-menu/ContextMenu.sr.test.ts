@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen, within, fireEvent } from '@testing-library/vue';
+import userEvent from '@testing-library/user-event';
 import { nextTick } from 'vue';
 import { expectExposedAs } from '@/test/sr';
 import { ContextMenu } from '.';
@@ -72,5 +73,36 @@ describe('ContextMenu — screen reader semantics', () => {
 		renderCM();
 		await openMenu();
 		expect(within(screen.getByRole('menu')).getByRole('separator')).toBeInTheDocument();
+	});
+});
+
+describe('ContextMenu — focus management', () => {
+	it('focuses the first enabled item when the menu opens', async () => {
+		renderCM();
+		await openMenu();
+		expect(screen.getByRole('menuitem', { name: 'Cut' })).toHaveFocus();
+	});
+
+	it('sets roving tabindex: only the focused item has tabindex=0', async () => {
+		renderCM();
+		await openMenu();
+		const tabbable = screen
+			.getAllByRole('menuitem')
+			.filter((i) => i.getAttribute('tabindex') === '0');
+		expect(tabbable).toHaveLength(1);
+		expect(tabbable[0]).toHaveAccessibleName('Cut');
+	});
+
+	it('ArrowDown/ArrowUp move focus and skip disabled items', async () => {
+		renderCM();
+		await openMenu();
+		expect(screen.getByRole('menuitem', { name: 'Cut' })).toHaveFocus();
+		await userEvent.keyboard('{ArrowDown}');
+		expect(screen.getByRole('menuitem', { name: 'Copy' })).toHaveFocus();
+		// "Paste" is disabled and excluded; ArrowDown wraps back to "Cut".
+		await userEvent.keyboard('{ArrowDown}');
+		expect(screen.getByRole('menuitem', { name: 'Cut' })).toHaveFocus();
+		await userEvent.keyboard('{ArrowUp}');
+		expect(screen.getByRole('menuitem', { name: 'Copy' })).toHaveFocus();
 	});
 });

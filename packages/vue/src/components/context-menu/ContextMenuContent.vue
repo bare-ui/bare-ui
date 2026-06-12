@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useContextMenuContext } from './keys'
+import { useMenuNavigation } from '@/composables/use-menu-navigation'
 
 defineOptions({ name: 'ContextMenuContent', inheritAttrs: false })
 
 const ctx = useContextMenuContext()
+const menuRef = ref<HTMLElement | null>(null)
+const { onKeyDown } = useMenuNavigation(menuRef, {
+	open: ctx.open,
+	onClose: ctx.close,
+})
 
 const contentStyle = computed(() => ({
 	position: 'fixed' as const,
@@ -18,11 +24,13 @@ const contentStyle = computed(() => ({
 	<Teleport to="body">
 		<div
 			v-if="ctx.open.value"
+			ref="menuRef"
 			role="menu"
 			data-state="open"
 			data-context-menu-content
 			v-bind="$attrs"
-			:style="contentStyle">
+			:style="contentStyle"
+			@keydown="onKeyDown">
 			<slot />
 		</div>
 	</Teleport>
