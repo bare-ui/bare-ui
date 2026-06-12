@@ -14,13 +14,13 @@ const props = withDefaults(
 		onValueChange?: (value: string | null) => void
 		delayDuration?: number
 		skipDelayDuration?: number
-		'aria-label'?: string
+		ariaLabel?: string
 	}>(),
 	{
 		defaultValue: null,
 		delayDuration: 100,
 		skipDelayDuration: 300,
-		'aria-label': 'Main',
+		ariaLabel: 'Main',
 	},
 )
 
@@ -82,7 +82,7 @@ provide(NavigationMenuKey, {
 <template>
 	<nav
 		ref="rootRef"
-		:aria-label="$props['aria-label']">
+		:aria-label="props.ariaLabel">
 		<slot />
 	</nav>
 </template>
