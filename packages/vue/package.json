@@ -3,14 +3,19 @@
 	"version": "0.4.0",
 	"license": "MIT",
 	"type": "module",
-	"main": "./dist/wire-ui-vue.cjs.js",
-	"module": "./dist/wire-ui-vue.es.js",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
-			"import": "./dist/wire-ui-vue.es.js",
-			"require": "./dist/wire-ui-vue.cjs.js",
-			"types": "./dist/index.d.ts"
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"require": {
+				"types": "./dist/index.d.cts",
+				"default": "./dist/index.cjs"
+			}
 		}
 	},
 	"files": [
@@ -56,6 +61,7 @@
 		"test:sr": "vitest run --project unit --config vitest.config.ts .sr.test",
 		"test:a11y": "vitest run --project storybook --config vitest.config.ts",
 		"test:coverage": "vitest run --project unit --coverage --config vitest.config.ts",
+		"size": "size-limit",
 		"clean": "rm -rf dist"
 	},
 	"peerDependencies": {
@@ -63,6 +69,7 @@
 	},
 	"devDependencies": {
 		"@chromatic-com/storybook": "^5.1.1",
+		"@size-limit/preset-small-lib": "^12.1.0",
 		"@eslint/js": "^9.39.4",
 		"@storybook/addon-a11y": "^10.3.3",
 		"@storybook/addon-docs": "^10.3.3",
@@ -83,6 +90,7 @@
 		"globals": "^17.4.0",
 		"jsdom": "^29.0.1",
 		"prettier": "^3.8.1",
+		"size-limit": "^12.1.0",
 		"storybook": "^10.3.3",
 		"tailwindcss": "^4.2.2",
 		"typescript": "~5.9.3",

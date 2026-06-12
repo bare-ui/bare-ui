@@ -1,0 +1,51 @@
+[
+	{
+		"name": "Button (single import)",
+		"path": "dist/index.js",
+		"import": "{ Button }",
+		"ignore": ["vue"],
+		"limit": "2 kB"
+	},
+	{
+		"name": "Badge (single import)",
+		"path": "dist/index.js",
+		"import": "{ Badge }",
+		"ignore": ["vue"],
+		"limit": "1 kB"
+	},
+	{
+		"name": "Divider (single import)",
+		"path": "dist/index.js",
+		"import": "{ Divider }",
+		"ignore": ["vue"],
+		"limit": "1 kB"
+	},
+	{
+		"name": "Tooltip (single import)",
+		"path": "dist/index.js",
+		"import": "{ Tooltip }",
+		"ignore": ["vue"],
+		"limit": "2 kB"
+	},
+	{
+		"name": "Accordion (single import)",
+		"path": "dist/index.js",
+		"import": "{ Accordion }",
+		"ignore": ["vue"],
+		"limit": "2.5 kB"
+	},
+	{
+		"name": "Modal (single import)",
+		"path": "dist/index.js",
+		"import": "{ Modal }",
+		"ignore": ["vue"],
+		"limit": "3 kB"
+	},
+	{
+		"name": "Whole library (barrel import)",
+		"path": "dist/index.js",
+		"import": "*",
+		"ignore": ["vue"],
+		"limit": "58 kB"
+	}
+]
