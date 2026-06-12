@@ -82,7 +82,7 @@ provide(NavigationMenuKey, {
 <template>
 	<nav
 		ref="rootRef"
-		:aria-label="$props.ariaLabel">
+		:aria-label="$props['aria-label']">
 		<slot />
 	</nav>
 </template>
