@@ -13,6 +13,7 @@ const ctx = useTooltipContext()
     @mouseleave="ctx.setOpen(false)"
     @focus="ctx.setOpen(true)"
     @blur="ctx.setOpen(false)"
+    @keydown="(e: KeyboardEvent) => { if (e.key === 'Escape' && ctx.open) ctx.setOpen(false) }"
   >
     <slot />
   </span>

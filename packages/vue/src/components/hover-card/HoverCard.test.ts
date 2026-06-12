@@ -98,6 +98,15 @@ describe('HoverCard', () => {
 		expect(content).toHaveAttribute('data-state', 'closed');
 	});
 
+	it('Escape closes the hover card while the trigger is focused', async () => {
+		vi.useRealTimers();
+		const trigger = renderCard({ defaultOpen: true });
+		expect(screen.getByText('Profile card')).toBeInTheDocument();
+		trigger.focus();
+		await fireEvent.keyDown(trigger, { key: 'Escape' });
+		expect(screen.queryByText('Profile card')).toBeNull();
+	});
+
 	it('throws when Trigger is used outside Root', () => {
 		const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 		const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});

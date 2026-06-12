@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, useAttrs, watch } from 'vue';
 import { useInteractiveState } from '@/composables/use-interactive-state';
+import { getDirection } from '@/composables/use-direction';
 import { useTabsContext } from './keys';
 
 defineOptions({ name: 'TabsTrigger', inheritAttrs: false })
@@ -76,8 +77,10 @@ function handleKeyDown(e: KeyboardEvent) {
 	if (e.defaultPrevented) return
 
 	const horizontal = ctx.orientation === 'horizontal'
-	const nextKey = horizontal ? 'ArrowRight' : 'ArrowDown'
-	const prevKey = horizontal ? 'ArrowLeft' : 'ArrowUp'
+	// RTL mirrors the horizontal axis: ArrowLeft advances, ArrowRight retreats.
+	const rtl = horizontal && getDirection(e.currentTarget as Element) === 'rtl'
+	const nextKey = horizontal ? (rtl ? 'ArrowLeft' : 'ArrowRight') : 'ArrowDown'
+	const prevKey = horizontal ? (rtl ? 'ArrowRight' : 'ArrowLeft') : 'ArrowUp'
 
 	if (e.key === nextKey) {
 		e.preventDefault()

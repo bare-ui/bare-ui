@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { getDirection } from '@/composables/use-direction'
 
 defineOptions({ name: 'Rating' })
 
@@ -27,13 +28,39 @@ const hoverValue = ref(0)
 const isControlled = computed(() => props.value !== undefined)
 const selectedValue = computed(() => (isControlled.value ? props.value! : uncontrolledValue.value))
 const displayValue = computed(() => hoverValue.value || selectedValue.value)
+const interactive = computed(() => !props.disabled && !props.readOnly)
 
 const stars = computed(() => Array.from({ length: props.max }, (_, i) => i + 1))
 
+// Roving tabindex: the group is a single tab stop. The selected star (or the
+// first when nothing is selected) is the one tabbable star; arrow keys then
+// move focus and selection between stars.
+const tabbableStar = computed(() => (selectedValue.value >= 1 ? selectedValue.value : 1))
+
 function handleSelect(star: number) {
-	if (props.disabled || props.readOnly) return
+	if (!interactive.value) return
 	if (!isControlled.value) uncontrolledValue.value = star
 	props.onChange?.(star)
+}
+
+function handleKeyDown(e: KeyboardEvent, star: number) {
+	if (!interactive.value) return
+	// RTL mirrors the horizontal arrows; vertical arrows are unaffected.
+	const rtl = getDirection(e.currentTarget as Element) === 'rtl'
+	const incKey = rtl ? 'ArrowLeft' : 'ArrowRight'
+	const decKey = rtl ? 'ArrowRight' : 'ArrowLeft'
+	let next: number | null = null
+	if (e.key === incKey || e.key === 'ArrowUp') next = Math.min(props.max, star + 1)
+	else if (e.key === decKey || e.key === 'ArrowDown') next = Math.max(1, star - 1)
+	else if (e.key === 'Home') next = 1
+	else if (e.key === 'End') next = props.max
+	if (next === null) return
+	e.preventDefault()
+	if (!isControlled.value) uncontrolledValue.value = next
+	props.onChange?.(next)
+	// Move focus to the star the arrow keys landed on (roving tabindex).
+	const buttons = (e.currentTarget as HTMLElement).parentElement?.querySelectorAll<HTMLButtonElement>('button')
+	buttons?.[next - 1]?.focus()
 }
 </script>
 
@@ -49,14 +76,16 @@ function handleSelect(star: number) {
 			:key="star"
 			type="button"
 			:disabled="disabled || readOnly"
-			:tabindex="readOnly ? -1 : undefined"
+			:tabindex="readOnly ? -1 : star === tabbableStar ? 0 : -1"
 			:class="starClassName"
+			:aria-pressed="readOnly ? undefined : star <= selectedValue"
 			:data-filled="star <= selectedValue ? '' : undefined"
 			:data-highlighted="star <= displayValue ? '' : undefined"
 			:data-disabled="disabled ? '' : undefined"
 			:aria-label="`${star} out of ${max} stars`"
 			@click="handleSelect(star)"
-			@mouseenter="!disabled && !readOnly && (hoverValue = star)"
+			@keydown="(e: KeyboardEvent) => handleKeyDown(e, star)"
+			@mouseenter="interactive && (hoverValue = star)"
 			@mouseleave="hoverValue = 0"
 		>
 			<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="size-full">

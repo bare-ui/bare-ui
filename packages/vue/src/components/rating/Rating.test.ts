@@ -119,4 +119,81 @@ describe('Rating', () => {
 		renderRating();
 		expect(screen.getByRole('group')).toBeInTheDocument();
 	});
+
+	describe('keyboard navigation', () => {
+		it('roving tabindex: only the selected star (or first when unset) has tabindex=0', () => {
+			renderRating();
+			const stars = screen.getAllByRole('button');
+			// No value set: first star is tabbable.
+			expect(stars[0]).toHaveAttribute('tabindex', '0');
+			stars.slice(1).forEach((s) => expect(s).toHaveAttribute('tabindex', '-1'));
+		});
+
+		it('roving tabindex: selected star has tabindex=0', () => {
+			renderRating({ value: 3, onChange: vi.fn() });
+			const stars = screen.getAllByRole('button');
+			expect(stars[2]).toHaveAttribute('tabindex', '0');
+			expect(stars[0]).toHaveAttribute('tabindex', '-1');
+		});
+
+		it('ArrowRight increments the selected value', async () => {
+			renderRating({ defaultValue: 2 });
+			const star2 = screen.getByRole('button', { name: '2 out of 5 stars' });
+			star2.focus();
+			await userEvent.keyboard('{ArrowRight}');
+			expect(screen.getByRole('button', { name: '3 out of 5 stars' })).toHaveAttribute('data-filled', '');
+			expect(screen.queryByRole('button', { name: '4 out of 5 stars' })!).not.toHaveAttribute('data-filled');
+		});
+
+		it('ArrowLeft decrements the selected value', async () => {
+			renderRating({ defaultValue: 3 });
+			const star3 = screen.getByRole('button', { name: '3 out of 5 stars' });
+			star3.focus();
+			await userEvent.keyboard('{ArrowLeft}');
+			expect(screen.getByRole('button', { name: '2 out of 5 stars' })).toHaveAttribute('data-filled', '');
+			expect(screen.queryByRole('button', { name: '3 out of 5 stars' })!).not.toHaveAttribute('data-filled');
+		});
+
+		it('Home jumps to the first star', async () => {
+			renderRating({ defaultValue: 4 });
+			const star4 = screen.getByRole('button', { name: '4 out of 5 stars' });
+			star4.focus();
+			await userEvent.keyboard('{Home}');
+			expect(screen.getByRole('button', { name: '1 out of 5 stars' })).toHaveAttribute('data-filled', '');
+			expect(screen.getByRole('button', { name: '2 out of 5 stars' })).not.toHaveAttribute('data-filled');
+		});
+
+		it('End jumps to the last star', async () => {
+			renderRating({ defaultValue: 2 });
+			const star2 = screen.getByRole('button', { name: '2 out of 5 stars' });
+			star2.focus();
+			await userEvent.keyboard('{End}');
+			screen.getAllByRole('button').forEach((s) => expect(s).toHaveAttribute('data-filled', ''));
+		});
+
+		it('ArrowRight does not exceed max', async () => {
+			renderRating({ defaultValue: 5 });
+			const star5 = screen.getByRole('button', { name: '5 out of 5 stars' });
+			star5.focus();
+			await userEvent.keyboard('{ArrowRight}');
+			screen.getAllByRole('button').forEach((s) => expect(s).toHaveAttribute('data-filled', ''));
+		});
+
+		it('ArrowLeft does not go below 1', async () => {
+			renderRating({ defaultValue: 1 });
+			const star1 = screen.getByRole('button', { name: '1 out of 5 stars' });
+			star1.focus();
+			await userEvent.keyboard('{ArrowLeft}');
+			expect(screen.getByRole('button', { name: '1 out of 5 stars' })).toHaveAttribute('data-filled', '');
+		});
+
+		it('arrow keys do not work when disabled', async () => {
+			const onChange = vi.fn();
+			renderRating({ defaultValue: 2, disabled: true, onChange });
+			const star2 = screen.getByRole('button', { name: '2 out of 5 stars' });
+			star2.focus();
+			await userEvent.keyboard('{ArrowRight}');
+			expect(onChange).not.toHaveBeenCalled();
+		});
+	});
 });

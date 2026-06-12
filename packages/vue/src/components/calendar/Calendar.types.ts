@@ -27,6 +27,7 @@ export interface CalendarDayProps {
 	type: 'button'
 	tabindex: 0 | -1
 	disabled: boolean
+	'data-date': string
 	'aria-selected': boolean
 	'aria-current'?: 'date'
 	'data-today': '' | undefined

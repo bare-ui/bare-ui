@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onUnmounted, ref, type CSSProperties } from 'vue';
+import { getDirection } from '@/composables/use-direction';
 import type { SliderOrientation, SliderValue } from './Slider.types';
 
 defineOptions({ name: 'Slider' })
@@ -159,8 +160,10 @@ onUnmounted(() => { dragging = null })
 function onThumbKeyDown(e: KeyboardEvent, thumbIndex: number) {
 	if (props.disabled) return
 	const horizontal = props.orientation === 'horizontal'
-	const incKey = horizontal ? (props.inverted ? 'ArrowLeft' : 'ArrowRight') : (props.inverted ? 'ArrowDown' : 'ArrowUp')
-	const decKey = horizontal ? (props.inverted ? 'ArrowRight' : 'ArrowLeft') : (props.inverted ? 'ArrowUp' : 'ArrowDown')
+	// RTL mirrors the horizontal axis, so the arrow that increases the value flips.
+	const flipH = horizontal && props.inverted !== (getDirection(e.currentTarget as Element) === 'rtl')
+	const incKey = horizontal ? (flipH ? 'ArrowLeft' : 'ArrowRight') : (props.inverted ? 'ArrowDown' : 'ArrowUp')
+	const decKey = horizontal ? (flipH ? 'ArrowRight' : 'ArrowLeft') : (props.inverted ? 'ArrowUp' : 'ArrowDown')
 	const big = props.step * 10
 
 	let delta = 0

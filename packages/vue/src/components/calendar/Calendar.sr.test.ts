@@ -119,4 +119,101 @@ describe('Calendar — screen reader semantics', () => {
 		const feb = screen.getByText('February 2024');
 		expect(feb.closest('[aria-live="polite"]') ?? feb).toHaveAttribute('aria-live', 'polite');
 	});
+
+	it('wraps day cells in role="row" containers for ARIA grid compliance', () => {
+		renderCalendar();
+		const grid = screen.getByRole('grid');
+		// At least the weekday header row and one week row must be present.
+		const rows = within(grid).getAllByRole('row');
+		expect(rows.length).toBeGreaterThanOrEqual(2);
+	});
+});
+
+describe('Calendar — keyboard navigation', () => {
+	it('ArrowRight moves focus one day forward', async () => {
+		renderCalendar({ value: new Date(2024, 0, 15) });
+		const day15 = screen.getByRole('gridcell', { name: '15', selected: true });
+		day15.focus();
+		await userEvent.keyboard('{ArrowRight}');
+		await nextTick();
+		await nextTick();
+		expect(screen.getByRole('gridcell', { name: '16' })).toHaveFocus();
+	});
+
+	it('ArrowLeft moves focus one day backward', async () => {
+		renderCalendar({ value: new Date(2024, 0, 15) });
+		const day15 = screen.getByRole('gridcell', { name: '15', selected: true });
+		day15.focus();
+		await userEvent.keyboard('{ArrowLeft}');
+		await nextTick();
+		await nextTick();
+		expect(screen.getByRole('gridcell', { name: '14' })).toHaveFocus();
+	});
+
+	it('ArrowDown moves focus one week forward', async () => {
+		renderCalendar({ value: new Date(2024, 0, 15) });
+		const day15 = screen.getByRole('gridcell', { name: '15', selected: true });
+		day15.focus();
+		await userEvent.keyboard('{ArrowDown}');
+		await nextTick();
+		await nextTick();
+		expect(screen.getByRole('gridcell', { name: '22' })).toHaveFocus();
+	});
+
+	it('ArrowUp moves focus one week backward', async () => {
+		renderCalendar({ value: new Date(2024, 0, 15) });
+		const day15 = screen.getByRole('gridcell', { name: '15', selected: true });
+		day15.focus();
+		await userEvent.keyboard('{ArrowUp}');
+		await nextTick();
+		await nextTick();
+		// Use data-date to avoid ambiguity — Feb 8 is also in the January grid.
+		expect(document.activeElement).toHaveAttribute('data-date', '2024-01-08');
+	});
+
+	it('PageDown moves focus to the same day in the next month', async () => {
+		renderCalendar({ value: new Date(2024, 0, 15) });
+		const day15 = screen.getByRole('gridcell', { name: '15', selected: true });
+		day15.focus();
+		await userEvent.keyboard('{PageDown}');
+		await nextTick();
+		await nextTick();
+		// Should now show February 2024 with Feb 15 focused.
+		expect(screen.getByText('February 2024')).toBeInTheDocument();
+		expect(screen.getByRole('gridcell', { name: '15', selected: false })).toHaveFocus();
+	});
+
+	it('PageUp moves focus to the same day in the previous month', async () => {
+		renderCalendar({ value: new Date(2024, 0, 15) });
+		const day15 = screen.getByRole('gridcell', { name: '15', selected: true });
+		day15.focus();
+		await userEvent.keyboard('{PageUp}');
+		await nextTick();
+		await nextTick();
+		// Should now show December 2023 with Dec 15 focused.
+		expect(screen.getByText('December 2023')).toBeInTheDocument();
+		expect(screen.getByRole('gridcell', { name: '15', selected: false })).toHaveFocus();
+	});
+
+	it('Home moves focus to the start of the week', async () => {
+		// Jan 15 2024 is a Monday; Home should go to Sunday Jan 14 (week starts Sunday by default).
+		renderCalendar({ value: new Date(2024, 0, 15) });
+		const day15 = screen.getByRole('gridcell', { name: '15', selected: true });
+		day15.focus();
+		await userEvent.keyboard('{Home}');
+		await nextTick();
+		await nextTick();
+		expect(screen.getByRole('gridcell', { name: '14' })).toHaveFocus();
+	});
+
+	it('End moves focus to the end of the week', async () => {
+		// Jan 15 2024 is a Monday; End should go to Saturday Jan 20 (week starts Sunday by default).
+		renderCalendar({ value: new Date(2024, 0, 15) });
+		const day15 = screen.getByRole('gridcell', { name: '15', selected: true });
+		day15.focus();
+		await userEvent.keyboard('{End}');
+		await nextTick();
+		await nextTick();
+		expect(screen.getByRole('gridcell', { name: '20' })).toHaveFocus();
+	});
 });

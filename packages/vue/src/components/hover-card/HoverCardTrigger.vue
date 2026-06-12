@@ -26,6 +26,12 @@ function handleBlur(e: FocusEvent) {
 	ctx.closeNow();
 	(attrs.onBlur as ((e: FocusEvent) => void) | undefined)?.(e);
 }
+
+function handleKeyDown(e: KeyboardEvent) {
+	// APG: Escape dismisses the hover card while the trigger is focused.
+	if (e.key === 'Escape' && ctx.open) ctx.closeNow();
+	(attrs.onKeydown as ((e: KeyboardEvent) => void) | undefined)?.(e);
+}
 </script>
 
 <template>
@@ -36,6 +42,7 @@ function handleBlur(e: FocusEvent) {
 		@mouseleave="handleMouseLeave"
 		@focus="handleFocus"
 		@blur="handleBlur"
+		@keydown="handleKeyDown"
 	>
 		<slot />
 	</span>
