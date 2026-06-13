@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, useAttrs } from 'vue'
 import { useOTPContext } from './keys'
+import { useWireUIMessages } from '@/context/wire-ui-context'
 
 defineOptions({ name: 'OTPSlot', inheritAttrs: false })
+
+const messages = useWireUIMessages()
 
 const props = defineProps<{
   index: number
@@ -63,7 +66,7 @@ function onPaste(e: ClipboardEvent) {
     :data-filled="ctx.chars[props.index] ? '' : undefined"
     :data-complete="ctx.isComplete ? '' : undefined"
     :data-disabled="ctx.disabled ? '' : undefined"
-    :aria-label="`Digit ${props.index + 1}`"
+    :aria-label="messages.otp.digit(props.index + 1)"
     v-bind="attrs"
     @input="onInput"
     @keydown="onKeydown"

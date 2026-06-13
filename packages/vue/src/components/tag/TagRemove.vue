@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { useInteractiveState } from '@/composables/use-interactive-state'
+import { useWireUIMessages } from '@/context/wire-ui-context'
 
 defineOptions({ name: 'TagRemove', inheritAttrs: false })
 
 const { handlers, dataAttributes } = useInteractiveState()
+const messages = useWireUIMessages()
 </script>
 
 <template>
 	<button
 		type="button"
-		aria-label="Remove"
+		:aria-label="messages.tag.remove"
 		v-bind="{ ...$attrs, ...dataAttributes }"
 		@mouseenter="handlers.onMouseenter"
 		@mouseleave="handlers.onMouseleave"

@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref, computed, useAttrs } from 'vue';
 import { useColorPickerContext } from './keys';
+import { useWireUIMessages } from '@/context/wire-ui-context';
 import { clamp } from './color-utils';
 
 defineOptions({ name: 'ColorPickerAlpha', inheritAttrs: false })
 
 const ctx = useColorPickerContext();
+const messages = useWireUIMessages();
 const attrs = useAttrs();
 
 const el = ref<HTMLElement | null>(null);
@@ -65,7 +67,7 @@ const alphaStyle = computed(() => {
 		ref="el"
 		role="slider"
 		:tabindex="0"
-		aria-label="Alpha"
+		:aria-label="messages.colorPicker.alpha"
 		:aria-valuemin="0"
 		:aria-valuemax="1"
 		:aria-valuenow="Math.round(ctx.hsva.a * 100) / 100"

@@ -4,6 +4,11 @@ import { WireUIProvider } from '.';
 import { Calendar } from '../components/calendar';
 import { NumberInput } from '../components/number-input';
 import { Timeago } from '../components/timeago';
+import { Pagination } from '../components/pagination';
+import { Password } from '../components/password';
+import { Carousel } from '../components/carousel';
+import { Rating } from '../components/rating';
+import { Alert } from '../components/alert';
 
 const calendarComponents = {
 	WireUIProvider,
@@ -159,5 +164,122 @@ describe('WireUIProvider', () => {
 		// Parent + child message overrides both apply.
 		expect(screen.getByLabelText('A')).toBeInTheDocument();
 		expect(screen.getByLabelText('B')).toBeInTheDocument();
+	});
+});
+
+describe('WireUIProvider — full string audit', () => {
+	it('localizes Pagination nav, page, previous and next labels', () => {
+		render({
+			components: {
+				WireUIProvider,
+				PaginationRoot: Pagination.Root,
+				PaginationItems: Pagination.Items,
+				PaginationPrevious: Pagination.Previous,
+				PaginationNext: Pagination.Next,
+			},
+			setup: () => ({
+				messages: {
+					pagination: {
+						label: 'Seitennummerierung',
+						page: (p: number) => `Seite ${p}`,
+						previous: 'Vorige Seite',
+						next: 'Nächste Seite',
+					},
+				},
+			}),
+			template: `
+				<WireUIProvider :messages="messages">
+					<PaginationRoot :totalPages="3">
+						<PaginationPrevious />
+						<PaginationItems v-slot="{ item }">
+							<span>{{ item }}</span>
+						</PaginationItems>
+						<PaginationNext />
+					</PaginationRoot>
+				</WireUIProvider>
+			`,
+		});
+		expect(screen.getByRole('navigation', { name: 'Seitennummerierung' })).toBeInTheDocument();
+		expect(screen.getByLabelText('Vorige Seite')).toBeInTheDocument();
+		expect(screen.getByLabelText('Nächste Seite')).toBeInTheDocument();
+	});
+
+	it('an explicit aria-label prop still wins over the Pagination message', () => {
+		render({
+			components: { WireUIProvider, PaginationRoot: Pagination.Root },
+			setup: () => ({ messages: { pagination: { label: 'Seitennummerierung' } } }),
+			template: `
+				<WireUIProvider :messages="messages">
+					<PaginationRoot :totalPages="3" aria-label="Custom" />
+				</WireUIProvider>
+			`,
+		});
+		expect(screen.getByRole('navigation', { name: 'Custom' })).toBeInTheDocument();
+	});
+
+	it('localizes Password toggle show/hide labels', () => {
+		render({
+			components: { WireUIProvider, PasswordRoot: Password.Root, PasswordToggle: Password.Toggle },
+			setup: () => ({ messages: { password: { show: 'Anzeigen', hide: 'Verbergen' } } }),
+			template: `
+				<WireUIProvider :messages="messages">
+					<PasswordRoot>
+						<PasswordToggle />
+					</PasswordRoot>
+				</WireUIProvider>
+			`,
+		});
+		// Hidden by default → the toggle offers to "show".
+		expect(screen.getByLabelText('Anzeigen')).toBeInTheDocument();
+	});
+
+	it('localizes Carousel previous/next labels', () => {
+		render({
+			components: {
+				WireUIProvider,
+				CarouselRoot: Carousel.Root,
+				CarouselPrevious: Carousel.Previous,
+				CarouselNext: Carousel.Next,
+			},
+			setup: () => ({ messages: { carousel: { previous: 'Zurück', next: 'Weiter' } } }),
+			template: `
+				<WireUIProvider :messages="messages">
+					<CarouselRoot>
+						<CarouselPrevious />
+						<CarouselNext />
+					</CarouselRoot>
+				</WireUIProvider>
+			`,
+		});
+		expect(screen.getByLabelText('Zurück')).toBeInTheDocument();
+		expect(screen.getByLabelText('Weiter')).toBeInTheDocument();
+	});
+
+	it('localizes the Rating group label', () => {
+		render({
+			components: { WireUIProvider, Rating },
+			setup: () => ({ messages: { rating: { label: 'Bewertung' } } }),
+			template: `
+				<WireUIProvider :messages="messages">
+					<Rating :defaultValue="0" />
+				</WireUIProvider>
+			`,
+		});
+		expect(screen.getByLabelText('Bewertung')).toBeInTheDocument();
+	});
+
+	it('localizes the Alert dismiss label', () => {
+		render({
+			components: { WireUIProvider, AlertRoot: Alert.Root, AlertDismiss: Alert.Dismiss },
+			setup: () => ({ messages: { alert: { dismiss: 'Schließen' } } }),
+			template: `
+				<WireUIProvider :messages="messages">
+					<AlertRoot>
+						<AlertDismiss />
+					</AlertRoot>
+				</WireUIProvider>
+			`,
+		});
+		expect(screen.getByLabelText('Schließen')).toBeInTheDocument();
 	});
 });

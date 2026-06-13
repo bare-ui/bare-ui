@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useAttrs } from 'vue';
 import { useInteractiveState } from '@/composables/use-interactive-state';
+import { useWireUIMessages } from '@/context/wire-ui-context';
 import { useAlertContext } from './keys';
 
 defineOptions({ name: 'AlertDismiss' })
 
 const ctx = useAlertContext();
+const messages = useWireUIMessages();
 const { handlers, dataAttributes } = useInteractiveState();
 
 const attrs = useAttrs();
@@ -19,7 +21,7 @@ function handleClick(e: MouseEvent) {
 <template>
 	<button
 		type="button"
-		aria-label="Dismiss"
+		:aria-label="messages.alert.dismiss"
 		v-bind="dataAttributes"
 		@mouseenter="handlers.onMouseenter"
 		@mouseleave="handlers.onMouseleave"

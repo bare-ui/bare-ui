@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { useSheetContext } from './keys';
+import { useWireUIMessages } from '@/context/wire-ui-context';
 
 defineOptions({ name: 'SheetHandle' })
 
 const ctx = useSheetContext()
+const messages = useWireUIMessages()
 
 function onPointerDown(e: PointerEvent) {
 	;(e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId)
@@ -27,7 +29,7 @@ function onPointerCancel() {
 <template>
 	<div
 		role="button"
-		aria-label="Drag to resize"
+		:aria-label="messages.sheet.dragToResize"
 		data-sheet-handle=""
 		:style="{ touchAction: 'none' }"
 		@pointerdown="onPointerDown"

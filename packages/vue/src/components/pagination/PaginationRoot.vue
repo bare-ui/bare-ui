@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, provide, ref } from 'vue'
+import { computed, provide, ref, useAttrs } from 'vue'
 import { PaginationKey, getPaginationItems } from './keys'
+import { useWireUIMessages } from '@/context/wire-ui-context'
 
 defineOptions({ name: 'PaginationRoot' })
 
@@ -12,17 +13,22 @@ const props = withDefaults(
 		onChange?: (page: number) => void
 		siblingCount?: number
 		boundaryCount?: number
-		'aria-label'?: string
 	}>(),
 	{
 		defaultPage: 1,
 		siblingCount: 1,
 		boundaryCount: 1,
-		'aria-label': 'Pagination',
 	},
 )
 
-const ariaLabel = computed(() => (props as Record<string, unknown>)['aria-label'] as string | undefined ?? 'Pagination')
+// `aria-label` arrives as a fall-through attribute (kebab attribute names don't
+// bind to a declared prop). An explicit value wins; otherwise the localized
+// default. It still falls through to the <nav>, where our binding matches it.
+const attrs = useAttrs()
+const messages = useWireUIMessages()
+const ariaLabel = computed(
+	() => (attrs['aria-label'] as string | undefined) ?? messages.value.pagination.label,
+)
 
 const uncontrolled = ref<number>(props.defaultPage)
 const isControlled = computed(() => props.page !== undefined)

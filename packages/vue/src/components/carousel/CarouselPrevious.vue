@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { computed, useAttrs } from 'vue';
 import { useCarouselContext } from './keys';
+import { useWireUIMessages } from '@/context/wire-ui-context';
 
 defineOptions({ name: 'CarouselPrevious', inheritAttrs: false })
+
+const messages = useWireUIMessages();
 
 const props = withDefaults(defineProps<{
 	disabled?: boolean;
@@ -24,7 +27,7 @@ function handleClick(e: MouseEvent) {
 <template>
 	<button
 		type="button"
-		aria-label="Previous slide"
+		:aria-label="messages.carousel.previous"
 		:disabled="isDisabled"
 		v-bind="attrs"
 		@click="handleClick"

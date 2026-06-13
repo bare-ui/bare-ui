@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { getDirection } from '@/composables/use-direction'
+import { useWireUIMessages } from '@/context/wire-ui-context'
 
 defineOptions({ name: 'Rating' })
+
+const messages = useWireUIMessages()
 
 const props = withDefaults(
 	defineProps<{
@@ -67,7 +70,7 @@ function handleKeyDown(e: KeyboardEvent, star: number) {
 <template>
 	<div
 		:role="readOnly ? 'img' : 'group'"
-		:aria-label="readOnly ? `Rating: ${selectedValue} out of ${max}` : 'Rating'"
+		:aria-label="readOnly ? messages.rating.valueText(selectedValue, max) : messages.rating.label"
 		:data-disabled="disabled ? '' : undefined"
 		:data-readonly="readOnly ? '' : undefined"
 	>
@@ -82,7 +85,7 @@ function handleKeyDown(e: KeyboardEvent, star: number) {
 			:data-filled="star <= selectedValue ? '' : undefined"
 			:data-highlighted="star <= displayValue ? '' : undefined"
 			:data-disabled="disabled ? '' : undefined"
-			:aria-label="`${star} out of ${max} stars`"
+			:aria-label="messages.rating.starText(star, max)"
 			@click="handleSelect(star)"
 			@keydown="(e: KeyboardEvent) => handleKeyDown(e, star)"
 			@mouseenter="interactive && (hoverValue = star)"

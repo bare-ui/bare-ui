@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { useInteractiveState } from '@/composables/use-interactive-state'
+import { useWireUIMessages } from '@/context/wire-ui-context'
 
 defineOptions({ name: 'ToastClose', inheritAttrs: false })
 
 const { handlers, dataAttributes } = useInteractiveState()
+const messages = useWireUIMessages()
 </script>
 
 <template>
 	<button
 		type="button"
-		aria-label="Close notification"
+		:aria-label="messages.toast.close"
 		v-bind="{ ...$attrs, ...dataAttributes }"
 		@mouseenter="handlers.onMouseenter"
 		@mouseleave="handlers.onMouseleave"

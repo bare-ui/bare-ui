@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref, watch, useAttrs } from 'vue';
 import { useColorPickerContext } from './keys';
+import { useWireUIMessages } from '@/context/wire-ui-context';
 import { hexToHsva } from './color-utils';
 
 defineOptions({ name: 'ColorPickerInput', inheritAttrs: false })
 
 const ctx = useColorPickerContext();
+const messages = useWireUIMessages();
 const attrs = useAttrs();
 
 const draft = ref(ctx.hex);
@@ -47,7 +49,7 @@ function onBlur(e: FocusEvent) {
 		type="text"
 		:spellcheck="false"
 		:value="draft"
-		aria-label="Hex color"
+		:aria-label="messages.colorPicker.hexColor"
 		v-bind="attrs"
 		@focus="onFocus"
 		@change="onChange"

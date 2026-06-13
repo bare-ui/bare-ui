@@ -2,8 +2,11 @@
 import { computed } from 'vue'
 import { usePaginationContext } from './keys'
 import { useInteractiveState } from '@/composables/use-interactive-state'
+import { useWireUIMessages } from '@/context/wire-ui-context'
 
 defineOptions({ name: 'PaginationItem', inheritAttrs: false })
+
+const messages = useWireUIMessages()
 
 const props = withDefaults(
 	defineProps<{
@@ -32,7 +35,7 @@ function onClick() {
 			type="button"
 			:disabled="props.disabled"
 			:aria-current="active ? 'page' : undefined"
-			:aria-label="`Page ${props.page}`"
+			:aria-label="messages.pagination.page(props.page)"
 			v-bind="dataAttributes"
 			:data-active="active ? '' : undefined"
 			@click="onClick"

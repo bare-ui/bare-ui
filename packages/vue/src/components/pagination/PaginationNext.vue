@@ -2,8 +2,11 @@
 import { computed } from 'vue'
 import { usePaginationContext } from './keys'
 import { useInteractiveState } from '@/composables/use-interactive-state'
+import { useWireUIMessages } from '@/context/wire-ui-context'
 
 defineOptions({ name: 'PaginationNext', inheritAttrs: false })
+
+const messages = useWireUIMessages()
 
 const props = withDefaults(
 	defineProps<{
@@ -27,7 +30,7 @@ function onClick() {
 	<button
 		type="button"
 		:disabled="isDisabled"
-		aria-label="Next page"
+		:aria-label="messages.pagination.next"
 		v-bind="{ ...$attrs, ...dataAttributes }"
 		@click="onClick"
 		@mouseenter="handlers.onMouseenter"

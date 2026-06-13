@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref, useAttrs } from 'vue';
 import { useColorPickerContext } from './keys';
+import { useWireUIMessages } from '@/context/wire-ui-context';
 import { clamp } from './color-utils';
 
 defineOptions({ name: 'ColorPickerArea', inheritAttrs: false })
 
 const ctx = useColorPickerContext();
+const messages = useWireUIMessages();
 const attrs = useAttrs();
 
 const el = ref<HTMLElement | null>(null);
@@ -63,7 +65,7 @@ function onKeyDown(e: KeyboardEvent) {
 		ref="el"
 		role="slider"
 		:tabindex="0"
-		aria-label="Saturation and brightness"
+		:aria-label="messages.colorPicker.saturationAndBrightness"
 		:aria-valuetext="`Saturation ${Math.round(ctx.hsva.s)}%, brightness ${Math.round(ctx.hsva.v)}%`"
 		data-color-picker-area=""
 		v-bind="attrs"

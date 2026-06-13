@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, provide, ref } from 'vue'
 import { CalendarKey, addMonths, isSameMonth, startOfDay, startOfMonth } from './keys'
-import { useWireUILocale } from '@/context/wire-ui-context'
+import { useWireUILocale, useWireUIMessages } from '@/context/wire-ui-context'
 import type { WeekStart } from './Calendar.types'
 
 defineOptions({ name: 'CalendarRoot' })
@@ -46,6 +46,7 @@ const month = computed<Date>(() =>
 const weekStartsOn = computed(() => props.weekStartsOn)
 // Resolve against the nearest WireUIProvider; an explicit prop always wins.
 const locale = useWireUILocale(() => props.locale)
+const messages = useWireUIMessages()
 const minDate = computed(() => props.minDate)
 const maxDate = computed(() => props.maxDate)
 const isDateDisabled = computed(() => props.isDateDisabled)
@@ -92,7 +93,7 @@ provide(CalendarKey, {
 <template>
 	<div
 		role="application"
-		aria-label="Calendar">
+		:aria-label="messages.calendar.label">
 		<slot />
 	</div>
 </template>

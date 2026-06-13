@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted } from 'vue'
 import { useId } from '@/composables/use-id'
+import { useWireUIMessages } from '@/context/wire-ui-context'
 import { usePanelGroupContext } from './keys'
 
 defineOptions({ name: 'PanelHandle', inheritAttrs: false })
+
+const messages = useWireUIMessages()
 
 const props = withDefaults(
 	defineProps<{
@@ -43,7 +46,7 @@ const handleStyle = computed(() => ({
 	<div
 		role="separator"
 		:aria-orientation="ctx.orientation.value === 'horizontal' ? 'vertical' : 'horizontal'"
-		:aria-label="$props['aria-label'] ?? 'Resize handle'"
+		:aria-label="$props['aria-label'] ?? messages.resizablePanels.handle"
 		:tabindex="props.disabled ? -1 : 0"
 		data-handle=""
 		:data-orientation="ctx.orientation.value"

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, useAttrs } from 'vue';
 import { useColorPickerContext } from './keys';
+import { useWireUIMessages } from '@/context/wire-ui-context';
 import { clamp } from './color-utils';
 
 defineOptions({ name: 'ColorPickerHue', inheritAttrs: false })
@@ -9,6 +10,7 @@ const HUE_GRADIENT =
 	'linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%)';
 
 const ctx = useColorPickerContext();
+const messages = useWireUIMessages();
 const attrs = useAttrs();
 
 const el = ref<HTMLElement | null>(null);
@@ -65,7 +67,7 @@ const hueStyle = computed(() => ({
 		ref="el"
 		role="slider"
 		:tabindex="0"
-		aria-label="Hue"
+		:aria-label="messages.colorPicker.hue"
 		:aria-valuemin="0"
 		:aria-valuemax="360"
 		:aria-valuenow="Math.round(ctx.hsva.h)"
