@@ -1,11 +1,13 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import { h } from 'vue';
+import { h, nextTick } from 'vue';
 import { Drawer } from '.';
 
-function renderDrawer(rootProps: Record<string, unknown> = {}) {
-	return render({
+// The portal teleports on the client only (hydration-safe), one tick after mount,
+// so the helper awaits `nextTick()` before tests query the teleported content.
+async function renderDrawer(rootProps: Record<string, unknown> = {}) {
+	const result = render({
 		setup() {
 			return () =>
 				h(Drawer.Root, { ...rootProps }, () => [
@@ -21,78 +23,80 @@ function renderDrawer(rootProps: Record<string, unknown> = {}) {
 				]);
 		},
 	});
+	await nextTick();
+	return result;
 }
 
 describe('Drawer', () => {
-	it('does not render content when closed by default', () => {
-		renderDrawer();
+	it('does not render content when closed by default', async () => {
+		await renderDrawer();
 		expect(screen.queryByRole('dialog')).toBeNull();
 	});
 
-	it('renders content when defaultOpen=true', () => {
-		renderDrawer({ defaultOpen: true });
+	it('renders content when defaultOpen=true', async () => {
+		await renderDrawer({ defaultOpen: true });
 		expect(screen.getByRole('dialog')).toBeInTheDocument();
 	});
 
-	it('dialog has aria-modal=true', () => {
-		renderDrawer({ defaultOpen: true });
+	it('dialog has aria-modal=true', async () => {
+		await renderDrawer({ defaultOpen: true });
 		expect(screen.getByRole('dialog')).toHaveAttribute('aria-modal', 'true');
 	});
 
-	it('content shows text when open', () => {
-		renderDrawer({ defaultOpen: true });
+	it('content shows text when open', async () => {
+		await renderDrawer({ defaultOpen: true });
 		expect(screen.getByText('Drawer content')).toBeInTheDocument();
 	});
 
 	it('Close button closes the drawer', async () => {
-		renderDrawer({ defaultOpen: true });
+		await renderDrawer({ defaultOpen: true });
 		await userEvent.click(screen.getByRole('button', { name: 'Close' }));
 		expect(screen.queryByRole('dialog')).toBeNull();
 	});
 
 	it('clicking overlay closes the drawer', async () => {
-		renderDrawer({ defaultOpen: true });
+		await renderDrawer({ defaultOpen: true });
 		await userEvent.click(screen.getByTestId('overlay'));
 		expect(screen.queryByRole('dialog')).toBeNull();
 	});
 
 	it('Escape key closes the drawer', async () => {
-		renderDrawer({ defaultOpen: true });
+		await renderDrawer({ defaultOpen: true });
 		expect(screen.getByRole('dialog')).toBeInTheDocument();
 		await userEvent.keyboard('{Escape}');
 		expect(screen.queryByRole('dialog')).toBeNull();
 	});
 
-	it('controlled open=true shows drawer', () => {
-		renderDrawer({ open: true });
+	it('controlled open=true shows drawer', async () => {
+		await renderDrawer({ open: true });
 		expect(screen.getByRole('dialog')).toBeInTheDocument();
 	});
 
-	it('controlled open=false hides drawer', () => {
-		renderDrawer({ open: false });
+	it('controlled open=false hides drawer', async () => {
+		await renderDrawer({ open: false });
 		expect(screen.queryByRole('dialog')).toBeNull();
 	});
 
 	it('onOpenChange fires with false when closed', async () => {
 		const handleOpenChange = vi.fn();
-		renderDrawer({ defaultOpen: true, onOpenChange: handleOpenChange });
+		await renderDrawer({ defaultOpen: true, onOpenChange: handleOpenChange });
 		await userEvent.keyboard('{Escape}');
 		expect(handleOpenChange).toHaveBeenCalledWith(false);
 	});
 
-	it('content data-state="open" when open', () => {
-		renderDrawer({ defaultOpen: true });
+	it('content data-state="open" when open', async () => {
+		await renderDrawer({ defaultOpen: true });
 		expect(screen.getByTestId('content')).toHaveAttribute('data-state', 'open');
 	});
 
 	it('clicking inside content does not close drawer', async () => {
-		renderDrawer({ defaultOpen: true });
+		await renderDrawer({ defaultOpen: true });
 		await userEvent.click(screen.getByText('Drawer content'));
 		expect(screen.getByRole('dialog')).toBeInTheDocument();
 	});
 
-	it('renders header content', () => {
-		renderDrawer({ defaultOpen: true });
+	it('renders header content', async () => {
+		await renderDrawer({ defaultOpen: true });
 		expect(screen.getByText('Drawer title')).toBeInTheDocument();
 	});
 });

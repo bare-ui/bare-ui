@@ -30,6 +30,8 @@ export type { UseControllableStateOptions } from './use-controllable-state';
 
 export { useId } from './use-id';
 
+export { useIsMounted } from './use-is-mounted';
+
 export { useMediaQuery } from './use-media-query';
 
 export { useReduceMotion } from './use-reduce-motion';

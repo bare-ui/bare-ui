@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import { useSheetContext } from './keys';
+import { useIsMounted } from '@/composables/use-is-mounted'
 
 defineOptions({ name: 'SheetPortal' })
 
 defineProps<{ container?: string | HTMLElement }>()
 
 const ctx = useSheetContext()
+// Teleport has no server-side target, so only mount it on the client. The server
+// and first client render then agree (both render nothing) and hydration stays clean.
+const mounted = useIsMounted()
 </script>
 
 <template>
-	<Teleport v-if="ctx.open" :to="container || 'body'">
+	<Teleport v-if="mounted && ctx.open" :to="container || 'body'">
 		<slot />
 	</Teleport>
 </template>

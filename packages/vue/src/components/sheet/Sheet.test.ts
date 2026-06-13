@@ -2,11 +2,13 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import { fireEvent } from '@testing-library/vue';
-import { h } from 'vue';
+import { h, nextTick } from 'vue';
 import { Sheet } from '.';
 
-function renderSheet(rootProps: Record<string, unknown> = {}) {
-	return render({
+// The portal teleports on the client only (hydration-safe), one tick after mount,
+// so the helper awaits `nextTick()` before tests query the teleported content.
+async function renderSheet(rootProps: Record<string, unknown> = {}) {
+	const result = render({
 		setup() {
 			return () =>
 				h(
@@ -26,6 +28,8 @@ function renderSheet(rootProps: Record<string, unknown> = {}) {
 				);
 		},
 	});
+	await nextTick();
+	return result;
 }
 
 describe('Sheet', () => {
@@ -47,8 +51,8 @@ describe('Sheet', () => {
 		expect(screen.getByTestId('content')).toBeInTheDocument();
 	});
 
-	it('renders an accessible dialog with side + state', () => {
-		renderSheet();
+	it('renders an accessible dialog with side + state', async () => {
+		await renderSheet();
 		const content = screen.getByTestId('content');
 		expect(content).toHaveAttribute('role', 'dialog');
 		expect(content).toHaveAttribute('aria-modal', 'true');
@@ -58,21 +62,21 @@ describe('Sheet', () => {
 		expect(content).toHaveAttribute('aria-describedby', screen.getByText('Adjust your preferences').id);
 	});
 
-	it('positions the content at the active snap offset', () => {
+	it('positions the content at the active snap offset', async () => {
 		// viewport 768: sizes [230.4, 691.2], maxSize 691.2, offset for snap 0 = 460.8
-		renderSheet({ defaultActiveSnapPoint: 0 });
+		await renderSheet({ defaultActiveSnapPoint: 0 });
 		expect(screen.getByTestId('content').style.transform).toBe('translateY(460.8px)');
 	});
 
-	it('is fully open (offset 0) at the largest snap', () => {
-		renderSheet({ defaultActiveSnapPoint: 1 });
+	it('is fully open (offset 0) at the largest snap', async () => {
+		await renderSheet({ defaultActiveSnapPoint: 1 });
 		expect(screen.getByTestId('content').style.transform).toBe('translateY(0px)');
 	});
 
 	it('closes via the Close button', async () => {
 		const user = userEvent.setup();
 		const onOpenChange = vi.fn();
-		renderSheet({ onOpenChange });
+		await renderSheet({ onOpenChange });
 		await user.click(screen.getByText('Done'));
 		expect(onOpenChange).toHaveBeenCalledWith(false);
 	});
@@ -80,7 +84,7 @@ describe('Sheet', () => {
 	it('closes when the overlay is clicked', async () => {
 		const user = userEvent.setup();
 		const onOpenChange = vi.fn();
-		renderSheet({ onOpenChange });
+		await renderSheet({ onOpenChange });
 		await user.click(screen.getByTestId('overlay'));
 		expect(onOpenChange).toHaveBeenCalledWith(false);
 	});
@@ -88,14 +92,14 @@ describe('Sheet', () => {
 	it('does not close on overlay click when not dismissible', async () => {
 		const user = userEvent.setup();
 		const onOpenChange = vi.fn();
-		renderSheet({ onOpenChange, dismissible: false });
+		await renderSheet({ onOpenChange, dismissible: false });
 		await user.click(screen.getByTestId('overlay'));
 		expect(onOpenChange).not.toHaveBeenCalled();
 	});
 
-	it('snaps to the nearest point after a drag', () => {
+	it('snaps to the nearest point after a drag', async () => {
 		const onActiveSnapPointChange = vi.fn();
-		renderSheet({ defaultActiveSnapPoint: 1, onActiveSnapPointChange });
+		await renderSheet({ defaultActiveSnapPoint: 1, onActiveSnapPointChange });
 		const handle = screen.getByTestId('handle');
 		fireEvent.pointerDown(handle, { clientX: 0, clientY: 0 });
 		fireEvent.pointerMove(handle, { clientX: 0, clientY: 300 });
@@ -104,9 +108,9 @@ describe('Sheet', () => {
 		expect(onActiveSnapPointChange).toHaveBeenCalledWith(0);
 	});
 
-	it('closes when dragged past the smallest snap', () => {
+	it('closes when dragged past the smallest snap', async () => {
 		const onOpenChange = vi.fn();
-		renderSheet({ defaultActiveSnapPoint: 1, onOpenChange });
+		await renderSheet({ defaultActiveSnapPoint: 1, onOpenChange });
 		const handle = screen.getByTestId('handle');
 		fireEvent.pointerDown(handle, { clientX: 0, clientY: 0 });
 		fireEvent.pointerMove(handle, { clientX: 0, clientY: 650 });
@@ -114,7 +118,7 @@ describe('Sheet', () => {
 		expect(onOpenChange).toHaveBeenCalledWith(false);
 	});
 
-	it('supports a top sheet', () => {
+	it('supports a top sheet', async () => {
 		render({
 			setup() {
 				return () =>
@@ -129,6 +133,7 @@ describe('Sheet', () => {
 					);
 			},
 		});
+		await nextTick();
 		const content = screen.getByTestId('content');
 		expect(content).toHaveAttribute('data-side', 'top');
 		// fully open at its single snap -> offset 0

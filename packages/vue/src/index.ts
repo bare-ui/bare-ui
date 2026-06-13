@@ -107,6 +107,7 @@ export {
 	useDisclosure,
 	useControllableState,
 	useId,
+	useIsMounted,
 	useMediaQuery,
 	useReduceMotion,
 	useKeyboard,

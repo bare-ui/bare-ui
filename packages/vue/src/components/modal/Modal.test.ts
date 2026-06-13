@@ -1,11 +1,13 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import { h } from 'vue';
+import { h, nextTick } from 'vue';
 import { Modal } from '.';
 
-function renderModal(rootProps: Record<string, unknown> = {}) {
-	return render({
+// The portal teleports on the client only (hydration-safe), one tick after mount,
+// so the helper awaits `nextTick()` before tests query the teleported content.
+async function renderModal(rootProps: Record<string, unknown> = {}) {
+	const result = render({
 		setup() {
 			return () =>
 				h(Modal.Root, { ...rootProps }, () => [
@@ -20,72 +22,74 @@ function renderModal(rootProps: Record<string, unknown> = {}) {
 				]);
 		},
 	});
+	await nextTick();
+	return result;
 }
 
 describe('Modal', () => {
-	it('does not render content when closed by default', () => {
-		renderModal();
+	it('does not render content when closed by default', async () => {
+		await renderModal();
 		expect(screen.queryByRole('dialog')).toBeNull();
 	});
 
-	it('renders content when defaultOpen=true', () => {
-		renderModal({ defaultOpen: true });
+	it('renders content when defaultOpen=true', async () => {
+		await renderModal({ defaultOpen: true });
 		expect(screen.getByRole('dialog')).toBeInTheDocument();
 	});
 
-	it('dialog has aria-modal=true', () => {
-		renderModal({ defaultOpen: true });
+	it('dialog has aria-modal=true', async () => {
+		await renderModal({ defaultOpen: true });
 		expect(screen.getByRole('dialog')).toHaveAttribute('aria-modal', 'true');
 	});
 
-	it('content shows text when open', () => {
-		renderModal({ defaultOpen: true });
+	it('content shows text when open', async () => {
+		await renderModal({ defaultOpen: true });
 		expect(screen.getByText('Modal content')).toBeInTheDocument();
 	});
 
 	it('Close button closes the modal', async () => {
-		renderModal({ defaultOpen: true });
+		await renderModal({ defaultOpen: true });
 		await userEvent.click(screen.getByRole('button', { name: 'Close' }));
 		expect(screen.queryByRole('dialog')).toBeNull();
 	});
 
 	it('clicking overlay closes the modal', async () => {
-		renderModal({ defaultOpen: true });
+		await renderModal({ defaultOpen: true });
 		await userEvent.click(screen.getByTestId('overlay'));
 		expect(screen.queryByRole('dialog')).toBeNull();
 	});
 
 	it('Escape key closes the modal', async () => {
-		renderModal({ defaultOpen: true });
+		await renderModal({ defaultOpen: true });
 		expect(screen.getByRole('dialog')).toBeInTheDocument();
 		await userEvent.keyboard('{Escape}');
 		expect(screen.queryByRole('dialog')).toBeNull();
 	});
 
-	it('controlled open=true shows modal', () => {
-		renderModal({ open: true });
+	it('controlled open=true shows modal', async () => {
+		await renderModal({ open: true });
 		expect(screen.getByRole('dialog')).toBeInTheDocument();
 	});
 
-	it('controlled open=false hides modal', () => {
-		renderModal({ open: false });
+	it('controlled open=false hides modal', async () => {
+		await renderModal({ open: false });
 		expect(screen.queryByRole('dialog')).toBeNull();
 	});
 
 	it('onOpenChange fires with false when closed', async () => {
 		const handleOpenChange = vi.fn();
-		renderModal({ defaultOpen: true, onOpenChange: handleOpenChange });
+		await renderModal({ defaultOpen: true, onOpenChange: handleOpenChange });
 		await userEvent.keyboard('{Escape}');
 		expect(handleOpenChange).toHaveBeenCalledWith(false);
 	});
 
-	it('content data-state="open" when open', () => {
-		renderModal({ defaultOpen: true });
+	it('content data-state="open" when open', async () => {
+		await renderModal({ defaultOpen: true });
 		expect(screen.getByTestId('content')).toHaveAttribute('data-state', 'open');
 	});
 
 	it('clicking inside content does not close modal', async () => {
-		renderModal({ defaultOpen: true });
+		await renderModal({ defaultOpen: true });
 		await userEvent.click(screen.getByText('Modal content'));
 		expect(screen.getByRole('dialog')).toBeInTheDocument();
 	});
