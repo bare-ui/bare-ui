@@ -19,6 +19,19 @@ export interface NumberInputRootProps {
 	disabled?: boolean;
 	/** Read-only field (buttons still disabled). */
 	readOnly?: boolean;
+	/**
+	 * BCP 47 locale for number formatting. Falls back to the nearest
+	 * `WireUIProvider`, then `en-US`. Only affects display/parsing when
+	 * `formatOptions` is also set.
+	 */
+	locale?: string;
+	/**
+	 * `Intl.NumberFormat` options. When provided, the committed value is
+	 * displayed via `Intl.NumberFormat(locale, formatOptions)` and user input is
+	 * parsed using the locale's group/decimal separators. When omitted, the
+	 * field shows the raw numeric string (the default, unchanged behavior).
+	 */
+	formatOptions?: Intl.NumberFormatOptions;
 }
 
 export type NumberInputFieldProps = Record<string, never>;
@@ -33,6 +46,8 @@ export interface NumberInputContextValue {
 	precision: ComputedRef<number>;
 	disabled: ComputedRef<boolean>;
 	readOnly: ComputedRef<boolean>;
+	locale: ComputedRef<string>;
+	formatOptions: ComputedRef<Intl.NumberFormatOptions | undefined>;
 	setValue: (value: number | null) => void;
 	increment: () => void;
 	decrement: () => void;

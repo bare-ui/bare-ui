@@ -2,10 +2,12 @@
 import { computed } from 'vue'
 import { useCalendarContext } from './keys'
 import { useInteractiveState } from '@/composables/use-interactive-state'
+import { useWireUIMessages } from '@/context/wire-ui-context'
 
 defineOptions({ name: 'CalendarPrevButton', inheritAttrs: false })
 
 const ctx = useCalendarContext()
+const messages = useWireUIMessages()
 const disabled = computed(() => !ctx.canGoPrev.value)
 const { handlers, dataAttributes } = useInteractiveState({ disabled })
 
@@ -18,7 +20,7 @@ function onClick() {
 	<button
 		type="button"
 		:disabled="disabled"
-		aria-label="Previous month"
+		:aria-label="messages.calendar.previousMonth"
 		v-bind="{ ...$attrs, ...dataAttributes }"
 		@click="onClick"
 		@mouseenter="handlers.onMouseenter"

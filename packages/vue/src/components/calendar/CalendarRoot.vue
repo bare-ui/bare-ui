@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, provide, ref } from 'vue'
 import { CalendarKey, addMonths, isSameMonth, startOfDay, startOfMonth } from './keys'
+import { useWireUILocale } from '@/context/wire-ui-context'
 import type { WeekStart } from './Calendar.types'
 
 defineOptions({ name: 'CalendarRoot' })
@@ -17,12 +18,15 @@ const props = withDefaults(
 		maxDate?: Date
 		isDateDisabled?: (date: Date) => boolean
 		weekStartsOn?: WeekStart
+		/**
+		 * BCP 47 locale for month/weekday names. Falls back to the nearest
+		 * `WireUIProvider`, then `en-US`.
+		 */
 		locale?: string
 	}>(),
 	{
 		defaultValue: null,
 		weekStartsOn: 0,
-		locale: 'en-US',
 	},
 )
 
@@ -40,7 +44,8 @@ const month = computed<Date>(() =>
 )
 
 const weekStartsOn = computed(() => props.weekStartsOn)
-const locale = computed(() => props.locale)
+// Resolve against the nearest WireUIProvider; an explicit prop always wins.
+const locale = useWireUILocale(() => props.locale)
 const minDate = computed(() => props.minDate)
 const maxDate = computed(() => props.maxDate)
 const isDateDisabled = computed(() => props.isDateDisabled)

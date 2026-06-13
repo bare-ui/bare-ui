@@ -1,16 +1,28 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useNumberInputContext } from './keys'
+import { formatNumber, parseLocaleNumber } from '@/utils/i18n/formatters'
 
 defineOptions({ name: 'NumberInputField', inheritAttrs: false })
 
 const ctx = useNumberInputContext()
-const text = ref<string>(ctx.value.value === null ? '' : String(ctx.value.value))
 
+// Render the committed value: locale-formatted when `formatOptions` is set,
+// otherwise the raw numeric string (default, back-compatible behavior).
+function formatValue(v: number | null): string {
+	if (v === null) return ''
+	return ctx.formatOptions.value ? formatNumber(v, ctx.locale.value, ctx.formatOptions.value) : String(v)
+}
+
+const text = ref<string>(formatValue(ctx.value.value))
+
+// Re-sync the visible text whenever the committed value, locale, or format
+// options change (typing alone doesn't change ctx.value — the field commits on
+// blur — so this won't stomp on in-progress input).
 watch(
-	() => ctx.value.value,
-	(v) => {
-		text.value = v === null ? '' : String(v)
+	[() => ctx.value.value, () => ctx.locale.value, () => ctx.formatOptions.value],
+	() => {
+		text.value = formatValue(ctx.value.value)
 	},
 )
 
@@ -48,12 +60,16 @@ function commitText(raw: string) {
 		text.value = ''
 		return
 	}
-	const parsed = Number(trimmed)
+	const parsed = ctx.formatOptions.value ? parseLocaleNumber(trimmed, ctx.locale.value) : Number(trimmed)
 	if (Number.isNaN(parsed)) {
-		text.value = ctx.value.value === null ? '' : String(ctx.value.value)
+		// Revert to the last good value.
+		text.value = formatValue(ctx.value.value)
 		return
 	}
 	ctx.setValue(parsed)
+	// Re-render the formatted value even when the committed number is unchanged
+	// (the value-sync watcher above only fires on a change).
+	text.value = formatValue(parsed)
 }
 
 function onBlur() {

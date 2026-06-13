@@ -35,7 +35,7 @@ function onChange(next: Date | null) {
 		:max-date="maxDate"
 		:is-date-disabled="isDateDisabled"
 		:week-starts-on="weekStartsOn"
-		:locale="locale">
+		:locale="locale ?? ctx.locale.value">
 		<slot />
 	</Calendar.Root>
 </template>

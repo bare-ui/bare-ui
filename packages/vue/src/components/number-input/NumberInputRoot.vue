@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, provide, ref } from 'vue'
 import { NumberInputKey } from './keys'
+import { useWireUILocale } from '@/context/wire-ui-context'
 
 defineOptions({ name: 'NumberInputRoot' })
 
@@ -15,6 +16,13 @@ const props = withDefaults(
 		precision?: number
 		disabled?: boolean
 		readOnly?: boolean
+		/**
+		 * BCP 47 locale for number formatting. Falls back to the nearest
+		 * `WireUIProvider`, then `en-US`. Only used when `formatOptions` is set.
+		 */
+		locale?: string
+		/** `Intl.NumberFormat` options for displaying/parsing the value. */
+		formatOptions?: Intl.NumberFormatOptions
 	}>(),
 	{
 		defaultValue: null,
@@ -51,6 +59,8 @@ const step = computed(() => props.step)
 const precision = computed(() => props.precision ?? decimalsOf(props.step))
 const disabled = computed(() => props.disabled)
 const readOnly = computed(() => props.readOnly)
+const locale = useWireUILocale(() => props.locale)
+const formatOptions = computed(() => props.formatOptions)
 
 function setValue(next: number | null) {
 	const normalized =
@@ -81,6 +91,8 @@ provide(NumberInputKey, {
 	precision,
 	disabled,
 	readOnly,
+	locale,
+	formatOptions,
 	setValue,
 	increment,
 	decrement,

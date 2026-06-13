@@ -4,6 +4,7 @@ import { useClickOutside } from '@/composables/use-click-outside'
 import { useControllableState } from '@/composables/use-controllable-state'
 import { useId } from '@/composables/use-id'
 import { useKeyboard } from '@/composables/use-keyboard'
+import { useWireUILocale } from '@/context/wire-ui-context'
 import { DatePickerKey, DEFAULT_FORMAT } from './keys'
 
 defineOptions({ name: 'DatePickerRoot' })
@@ -26,7 +27,10 @@ const props = withDefaults(
 		disabled?: boolean
 		/** Close the popover automatically once a date is selected. */
 		closeOnSelect?: boolean
-		/** Locale for the formatted display value. */
+		/**
+		 * Locale for the formatted display value and calendar. Falls back to the
+		 * nearest `WireUIProvider`, then `en-US`.
+		 */
 		locale?: string
 		/** Format options for the displayed date. */
 		formatOptions?: Intl.DateTimeFormatOptions
@@ -38,7 +42,6 @@ const props = withDefaults(
 		defaultOpen: false,
 		disabled: false,
 		closeOnSelect: true,
-		locale: 'en-US',
 	},
 )
 
@@ -56,7 +59,7 @@ const open = useControllableState<boolean>({
 
 const disabled = computed(() => props.disabled)
 const closeOnSelect = computed(() => props.closeOnSelect)
-const locale = computed(() => props.locale)
+const locale = useWireUILocale(() => props.locale)
 const formatOptions = computed(() => props.formatOptions ?? DEFAULT_FORMAT)
 
 function setOpen(next: boolean) {

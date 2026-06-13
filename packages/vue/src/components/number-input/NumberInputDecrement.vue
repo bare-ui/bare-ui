@@ -2,10 +2,12 @@
 import { computed } from 'vue'
 import { useNumberInputContext } from './keys'
 import { useInteractiveState } from '@/composables/use-interactive-state'
+import { useWireUIMessages } from '@/context/wire-ui-context'
 
 defineOptions({ name: 'NumberInputDecrement', inheritAttrs: false })
 
 const ctx = useNumberInputContext()
+const messages = useWireUIMessages()
 
 const atBoundary = computed(
 	() => ctx.value.value !== null && ctx.value.value <= ctx.min.value,
@@ -24,7 +26,7 @@ function onClick() {
 		type="button"
 		tabindex="-1"
 		:disabled="isDisabled"
-		aria-label="Decrement"
+		:aria-label="messages.numberInput.decrement"
 		v-bind="{ ...$attrs, ...dataAttributes }"
 		@click="onClick"
 		@mouseenter="handlers.onMouseenter"
