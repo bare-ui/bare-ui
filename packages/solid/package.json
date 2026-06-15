@@ -107,7 +107,7 @@
 		"size-limit": "^12.1.0",
 		"solid-js": "^1.9.0",
 		"storybook": "^10.3.3",
-		"storybook-solidjs-vite": "^10.0.9",
+		"storybook-solidjs-vite": ">=10.0.9 <10.1.2",
 		"tailwindcss": "^4.2.2",
 		"typescript": "~5.9.3",
 		"typescript-eslint": "^8.57.0",
