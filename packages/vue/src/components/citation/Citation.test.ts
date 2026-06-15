@@ -54,6 +54,22 @@ describe('Citation', () => {
 		);
 	});
 
+	it('sanitizes a dangerous footnote URL, falling back to plain text', () => {
+		const { container } = render({
+			setup() {
+				return () =>
+					h(
+						Citation.Root,
+						{ sources: [{ id: 'evil', title: 'Click me', url: 'javascript:alert(1)' }] },
+						() => [h(Citation.List)],
+					);
+			},
+		});
+		// No anchor is rendered for the unsafe scheme; the title shows as text.
+		expect(container.querySelector('[data-citation-source] a')).toBeNull();
+		expect(screen.getByText('Click me')).toBeInTheDocument();
+	});
+
 	it('honors a label override on the marker', () => {
 		render({
 			setup() {

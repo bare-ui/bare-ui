@@ -97,6 +97,10 @@ export {
 export { defaultMessages, mergeMessages } from './utils/i18n/messages';
 export type { WireUIMessages, PartialMessages } from './utils/i18n/messages';
 
+// Security helpers — reuse the built-in URL sanitizer in custom renderers
+export { sanitizeUrl } from './utils/sanitize-url';
+export type { SanitizeUrlOptions } from './utils/sanitize-url';
+
 // Composables
 export {
 	useClickOutside,

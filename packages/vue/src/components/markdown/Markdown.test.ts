@@ -166,4 +166,65 @@ describe('Markdown', () => {
 		});
 		expect(container.querySelector('p')).toHaveTextContent('just text');
 	});
+
+	describe('URL sanitization (XSS-safe by default)', () => {
+		it('drops a javascript: href on a link', () => {
+			render({
+				setup: () => () =>
+					h(Markdown, {
+						nodes: [
+							{
+								type: 'paragraph',
+								children: [
+									{
+										type: 'link',
+										url: 'javascript:alert(1)',
+										children: [{ type: 'text', value: 'click' }],
+									},
+								],
+							},
+						],
+					}),
+			});
+			const link = screen.getByText('click').closest('a');
+			expect(link).not.toBeNull();
+			expect(link).not.toHaveAttribute('href');
+		});
+
+		it('keeps safe link URLs', () => {
+			render({
+				setup: () => () =>
+					h(Markdown, {
+						nodes: [
+							{
+								type: 'paragraph',
+								children: [
+									{
+										type: 'link',
+										url: 'https://wire-ui.com',
+										children: [{ type: 'text', value: 'safe' }],
+									},
+								],
+							},
+						],
+					}),
+			});
+			expect(screen.getByRole('link', { name: 'safe' })).toHaveAttribute('href', 'https://wire-ui.com');
+		});
+
+		it('drops a javascript: image src but allows data: images', () => {
+			const { container } = render({
+				setup: () => () =>
+					h(Markdown, {
+						nodes: [
+							{ type: 'image', url: 'javascript:alert(1)', alt: 'bad' },
+							{ type: 'image', url: 'data:image/png;base64,iVBORw0KGgo=', alt: 'ok' },
+						],
+					}),
+			});
+			const [bad, ok] = container.querySelectorAll('img');
+			expect(bad).not.toHaveAttribute('src');
+			expect(ok).toHaveAttribute('src', 'data:image/png;base64,iVBORw0KGgo=');
+		});
+	});
 });

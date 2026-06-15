@@ -1,4 +1,5 @@
 import { h, type VNode } from 'vue';
+import { sanitizeUrl } from '@/utils/sanitize-url';
 import type { MarkdownComponents, MarkdownNode } from './Markdown.types';
 
 // ---------------------------------------------------------------------------
@@ -28,14 +29,16 @@ export const defaultComponents: MarkdownComponents = {
 		h(
 			'a',
 			{
-				href: props.node.url,
+				// Drop the href entirely for unsafe schemes (e.g. `javascript:`) so the
+				// default renderer is XSS-safe even when nodes come from untrusted input.
+				href: sanitizeUrl(props.node.url),
 				title: props.node.title ?? undefined,
 			},
 			slots.default?.(),
 		),
 	image: (props) =>
 		h('img', {
-			src: props.node.url,
+			src: sanitizeUrl(props.node.url, { allowDataImages: true }),
 			alt: props.node.alt ?? '',
 			title: props.node.title ?? undefined,
 		}),
