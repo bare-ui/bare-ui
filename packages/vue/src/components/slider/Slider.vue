@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onUnmounted, ref, type CSSProperties } from 'vue';
-import { getDirection } from '@/composables/use-direction';
+import { getDirection, useDirection } from '@/composables/use-direction';
 import type { SliderOrientation, SliderValue } from './Slider.types';
 
 defineOptions({ name: 'Slider' })
@@ -103,6 +103,8 @@ function emit(next: SliderValue) {
 
 // --- Track / thumb interaction ---------------------------------------------
 const trackRef = ref<HTMLDivElement | null>(null)
+const direction = useDirection(trackRef)
+const rtl = computed(() => direction.value === 'rtl')
 let dragging: { thumbIndex: number } | null = null
 
 function valueFromPoint(clientX: number, clientY: number): number {
@@ -114,8 +116,13 @@ function valueFromPoint(clientX: number, clientY: number): number {
 	const length = isHorizontal ? rect.width : rect.height
 	const point = isHorizontal ? clientX : clientY
 	let pct = (point - start) / length
-	if (!isHorizontal) pct = props.inverted ? pct : 1 - pct
-	else if (props.inverted) pct = 1 - pct
+	if (!isHorizontal) pct = props.inverted ? pct : 1 - pct // vertical default = bottom→top
+	else {
+		// In RTL the horizontal axis is mirrored: the track's start (min) sits on
+		// the right, so the fraction measured from the physical left must flip.
+		const isRtl = getDirection(el) === 'rtl'
+		if (props.inverted !== isRtl) pct = 1 - pct
+	}
 	pct = clamp(pct, 0, 1)
 	return props.min + pct * (props.max - props.min)
 }
@@ -193,10 +200,18 @@ const isHorizontal = computed(() => props.orientation === 'horizontal')
 
 const rootStyle: CSSProperties = { position: 'relative', userSelect: 'none', touchAction: 'none' }
 
+// In RTL the horizontal axis is mirrored. Folding that into `inverted` keeps the
+// LTR render path unchanged.
+const placeInverted = computed(() => (isHorizontal.value ? props.inverted !== rtl.value : props.inverted))
+
 const fillStyle = computed<CSSProperties>(() => {
 	const start = fillStart.value
 	const end = fillEnd.value
-	if (isHorizontal.value) return { position: 'absolute', left: `${start}%`, width: `${end - start}%`, top: 0, bottom: 0 }
+	if (isHorizontal.value) {
+		return placeInverted.value
+			? { position: 'absolute', right: `${start}%`, width: `${end - start}%`, top: 0, bottom: 0 }
+			: { position: 'absolute', left: `${start}%`, width: `${end - start}%`, top: 0, bottom: 0 }
+	}
 	return props.inverted
 		? { position: 'absolute', top: `${start}%`, height: `${end - start}%`, left: 0, right: 0 }
 		: { position: 'absolute', bottom: `${start}%`, height: `${end - start}%`, left: 0, right: 0 }
@@ -205,7 +220,7 @@ const fillStyle = computed<CSSProperties>(() => {
 function thumbStyle(i: number): CSSProperties {
 	const p = pct.value[i]
 	if (isHorizontal.value) {
-		return props.inverted
+		return placeInverted.value
 			? { position: 'absolute', right: `${p}%`, top: '50%', transform: 'translate(50%, -50%)' }
 			: { position: 'absolute', left: `${p}%`, top: '50%', transform: 'translate(-50%, -50%)' }
 	}

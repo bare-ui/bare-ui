@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { provide, ref, computed } from 'vue';
 import { ToggleGroupKey } from './keys';
+import { getDirection } from '@/composables/use-direction';
 
 defineOptions({ name: 'ToggleGroupRoot' })
 
@@ -103,8 +104,10 @@ function onItemFocus(id: string) {
 
 function onItemKeyDown(e: KeyboardEvent) {
 	if (!props.rovingFocus) return;
-	const nextKey = props.orientation === 'horizontal' ? 'ArrowRight' : 'ArrowDown';
-	const prevKey = props.orientation === 'horizontal' ? 'ArrowLeft' : 'ArrowUp';
+	const horizontal = props.orientation === 'horizontal';
+	const rtl = horizontal && getDirection(e.currentTarget as Element) === 'rtl';
+	const nextKey = horizontal ? (rtl ? 'ArrowLeft' : 'ArrowRight') : 'ArrowDown';
+	const prevKey = horizontal ? (rtl ? 'ArrowRight' : 'ArrowLeft') : 'ArrowUp';
 	if (!['Home', 'End', nextKey, prevKey].includes(e.key)) return;
 
 	const items = [...itemsRef]

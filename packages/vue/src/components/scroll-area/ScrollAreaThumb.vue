@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, useAttrs } from 'vue';
 import { useScrollAreaContext, useScrollbarContext } from './keys';
+import { useDirection } from '@/composables/use-direction';
 
 defineOptions({ name: 'ScrollAreaThumb', inheritAttrs: false })
 
@@ -10,6 +11,12 @@ const sb = useScrollbarContext();
 
 const vertical = computed(() => sb.orientation === 'vertical');
 
+const direction = useDirection(sb.trackRef);
+// In RTL the horizontal start sits on the right and `scrollLeft` runs negative
+// (modern browsers), so measure distance-from-start by magnitude and anchor the
+// thumb to the right edge.
+const rtlHorizontal = computed(() => direction.value === 'rtl' && !vertical.value);
+
 const clientLen = computed(() => vertical.value ? ctx.metrics.clientHeight : ctx.metrics.clientWidth);
 const scrollLen = computed(() => vertical.value ? ctx.metrics.scrollHeight : ctx.metrics.scrollWidth);
 const scrollOffset = computed(() => vertical.value ? ctx.metrics.scrollTop : ctx.metrics.scrollLeft);
@@ -17,13 +24,17 @@ const maxScroll = computed(() => Math.max(scrollLen.value - clientLen.value, 0))
 const sizePct = computed(() =>
 	scrollLen.value > 0 ? Math.min(100, (clientLen.value / scrollLen.value) * 100) : 100
 );
+const distanceFromStart = computed(() => rtlHorizontal.value ? Math.abs(scrollOffset.value) : scrollOffset.value);
 const offsetPct = computed(() =>
-	maxScroll.value > 0 ? (scrollOffset.value / maxScroll.value) * (100 - sizePct.value) : 0
+	maxScroll.value > 0 ? (distanceFromStart.value / maxScroll.value) * (100 - sizePct.value) : 0
 );
 
 const thumbStyle = computed(() => {
 	if (vertical.value) {
 		return `position: absolute; right: 0; left: 0; height: ${sizePct.value}%; top: ${offsetPct.value}%`;
+	}
+	if (rtlHorizontal.value) {
+		return `position: absolute; top: 0; bottom: 0; width: ${sizePct.value}%; right: ${offsetPct.value}%`;
 	}
 	return `position: absolute; top: 0; bottom: 0; width: ${sizePct.value}%; left: ${offsetPct.value}%`;
 });

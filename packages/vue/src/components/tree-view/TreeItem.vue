@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, useTemplateRef } from 'vue'
 import { useTreeViewContext } from './keys'
+import { getDirection } from '@/composables/use-direction'
 import type { TreeItemState, TreeNode } from './TreeView.types'
 
 defineOptions({ name: 'TreeItem' })
@@ -33,13 +34,17 @@ function focusSibling(offset: 1 | -1) {
 
 function onKeyDown(e: KeyboardEvent) {
 	if (disabled.value) return
+	// RTL mirrors the tree: ArrowLeft expands/enters, ArrowRight collapses/exits.
+	const rtl = getDirection(e.currentTarget as Element) === 'rtl'
+	const expandKey = rtl ? 'ArrowLeft' : 'ArrowRight'
+	const collapseKey = rtl ? 'ArrowRight' : 'ArrowLeft'
 	switch (e.key) {
-		case 'ArrowRight':
+		case expandKey:
 			e.preventDefault()
 			if (hasChildren.value && !isExpanded.value) ctx.toggleExpanded(props.node.id)
 			else if (hasChildren.value && isExpanded.value) focusSibling(1)
 			break
-		case 'ArrowLeft':
+		case collapseKey:
 			e.preventDefault()
 			if (hasChildren.value && isExpanded.value) ctx.toggleExpanded(props.node.id)
 			else focusSibling(-1)

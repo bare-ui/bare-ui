@@ -3,6 +3,7 @@ import { provide } from 'vue';
 import { ToolbarKey } from './keys';
 import type { ToolbarContextValue, ToolbarOrientation } from './Toolbar.types';
 import { ref } from 'vue';
+import { getDirection } from '@/composables/use-direction';
 
 defineOptions({ name: 'ToolbarRoot' });
 
@@ -71,8 +72,10 @@ function orderedEnabled(): ToolbarItem[] {
 }
 
 function onItemKeyDown(e: KeyboardEvent): void {
-	const nextKey = props.orientation === 'horizontal' ? 'ArrowRight' : 'ArrowDown';
-	const prevKey = props.orientation === 'horizontal' ? 'ArrowLeft' : 'ArrowUp';
+	const horizontal = props.orientation === 'horizontal';
+	const rtl = horizontal && getDirection(e.currentTarget as Element) === 'rtl';
+	const nextKey = horizontal ? (rtl ? 'ArrowLeft' : 'ArrowRight') : 'ArrowDown';
+	const prevKey = horizontal ? (rtl ? 'ArrowRight' : 'ArrowLeft') : 'ArrowUp';
 
 	if (!['Home', 'End', nextKey, prevKey].includes(e.key)) return;
 

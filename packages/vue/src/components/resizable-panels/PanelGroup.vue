@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, provide, ref, useTemplateRef } from 'vue'
 import { useEventListener } from '@/composables/use-event-listener'
+import { getDirection } from '@/composables/use-direction'
 import { PanelGroupKey } from './keys'
 import type { PanelConfig, PanelOrientation } from './ResizablePanels.types'
 
@@ -110,6 +111,7 @@ interface DragState {
 	startSizes: number[]
 	startPos: number
 	containerLength: number
+	rtl: boolean
 }
 let dragState: DragState | null = null
 
@@ -124,6 +126,9 @@ function startDrag(handleId: string, pointer: { x: number; y: number }) {
 		startSizes: sizes.value.slice(),
 		startPos: horizontal ? pointer.x : pointer.y,
 		containerLength: horizontal ? rect.width : rect.height,
+		// In an RTL row the first panel sits on the right, so a rightward drag
+		// must shrink it — the horizontal delta is inverted.
+		rtl: horizontal && getDirection(containerRef.value) === 'rtl',
 	}
 }
 
@@ -132,7 +137,7 @@ function onPointerMove(e: PointerEvent) {
 	const horizontal = orientation.value === 'horizontal'
 	const currentPos = horizontal ? e.clientX : e.clientY
 	const deltaPx = currentPos - dragState.startPos
-	const deltaPct = (deltaPx / dragState.containerLength) * 100
+	const deltaPct = ((dragState.rtl ? -deltaPx : deltaPx) / dragState.containerLength) * 100
 
 	const aIdx = dragState.handleIndex
 	const bIdx = dragState.handleIndex + 1

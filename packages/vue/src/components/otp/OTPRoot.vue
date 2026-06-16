@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { provide, reactive, ref, computed, toRef } from 'vue'
 import { OTPKey } from './keys'
+import { getDirection } from '@/composables/use-direction'
 
 defineOptions({ name: 'OTPRoot' })
 
@@ -72,12 +73,13 @@ function handleKeyDown(index: number, e: KeyboardEvent) {
       commit(next)
       inputRefs[index - 1]?.focus()
     }
-  } else if (e.key === 'ArrowLeft') {
+  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
     e.preventDefault()
-    if (index > 0) inputRefs[index - 1]?.focus()
-  } else if (e.key === 'ArrowRight') {
-    e.preventDefault()
-    if (index < props.length - 1) inputRefs[index + 1]?.focus()
+    // In RTL the slots read right-to-left, so ArrowLeft advances and ArrowRight retreats.
+    const rtl = getDirection(e.currentTarget as Element) === 'rtl'
+    const forward = e.key === (rtl ? 'ArrowLeft' : 'ArrowRight')
+    const target = forward ? index + 1 : index - 1
+    if (target >= 0 && target < props.length) inputRefs[target]?.focus()
   }
 }
 

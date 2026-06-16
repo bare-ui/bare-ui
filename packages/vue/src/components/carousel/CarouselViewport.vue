@@ -2,6 +2,7 @@
 import { computed, useAttrs, onMounted, onBeforeUnmount, ref } from 'vue';
 import type { CSSProperties } from 'vue';
 import { useCarouselContext } from './keys';
+import { getDirection } from '@/composables/use-direction';
 
 defineOptions({ name: 'CarouselViewport', inheritAttrs: false })
 
@@ -34,8 +35,9 @@ function onScroll(e: Event) {
 function onKeyDown(e: KeyboardEvent) {
 	(attrs.onKeydown as ((e: KeyboardEvent) => void) | undefined)?.(e);
 	if (e.defaultPrevented) return;
-	const nextKey = vertical.value ? 'ArrowDown' : 'ArrowRight';
-	const prevKey = vertical.value ? 'ArrowUp' : 'ArrowLeft';
+	const rtl = !vertical.value && getDirection(e.currentTarget as Element) === 'rtl';
+	const nextKey = vertical.value ? 'ArrowDown' : rtl ? 'ArrowLeft' : 'ArrowRight';
+	const prevKey = vertical.value ? 'ArrowUp' : rtl ? 'ArrowRight' : 'ArrowLeft';
 	if (e.key === nextKey) {
 		e.preventDefault();
 		ctx.scrollNext();
