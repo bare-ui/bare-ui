@@ -24,6 +24,9 @@ export default defineConfig([
 				'error',
 				{ varsIgnorePattern: '^_', argsIgnorePattern: '^_' },
 			],
+			// Strict mode guarantee: no `any` and no `@ts-ignore`/`@ts-nocheck` escape hatches.
+			'@typescript-eslint/no-explicit-any': 'error',
+			'@typescript-eslint/ban-ts-comment': 'error',
 		},
 	},
 	{
@@ -48,6 +51,9 @@ export default defineConfig([
 				'error',
 				{ varsIgnorePattern: '^_', argsIgnorePattern: '^_' },
 			],
+			// Strict mode guarantee: no `any` and no `@ts-ignore`/`@ts-nocheck` escape hatches.
+			'@typescript-eslint/no-explicit-any': 'error',
+			'@typescript-eslint/ban-ts-comment': 'error',
 			// Public component names are intentionally single-word (Button, Card, Badge, ...).
 			'vue/multi-word-component-names': 'off',
 			'vue/no-reserved-component-names': 'off',
