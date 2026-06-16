@@ -35,6 +35,9 @@ const cursor = computed(() =>
 	props.disabled ? 'default' : ctx.orientation.value === 'horizontal' ? 'col-resize' : 'row-resize',
 )
 
+// A focusable role="separator" is a window splitter and REQUIRES aria-valuenow.
+const values = computed(() => ctx.getHandleValues(id))
+
 const handleStyle = computed(() => ({
 	cursor: cursor.value,
 	touchAction: 'none' as const,
@@ -47,6 +50,9 @@ const handleStyle = computed(() => ({
 		role="separator"
 		:aria-orientation="ctx.orientation.value === 'horizontal' ? 'vertical' : 'horizontal'"
 		:aria-label="$props['aria-label'] ?? messages.resizablePanels.handle"
+		:aria-valuenow="values?.now"
+		:aria-valuemin="values?.min"
+		:aria-valuemax="values?.max"
 		:tabindex="props.disabled ? -1 : 0"
 		data-handle=""
 		:data-orientation="ctx.orientation.value"

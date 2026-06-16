@@ -140,6 +140,7 @@ onUnmounted(() => {
 	<div
 		ref="scrollEl"
 		:data-orientation="orientation"
+		:tabindex="0"
 		:style="{
 			position: 'relative',
 			overflowY: isVertical ? 'auto' : 'hidden',

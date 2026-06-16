@@ -9,7 +9,6 @@ const ctx = useStepperContext();
 <template>
 	<div
 		role="list"
-		:aria-orientation="ctx.orientation"
 		:data-orientation="ctx.orientation"
 	>
 		<slot />

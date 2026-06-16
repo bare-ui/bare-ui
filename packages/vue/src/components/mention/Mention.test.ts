@@ -28,7 +28,9 @@ function renderMention(rootProps: Record<string, unknown> = {}) {
 				]);
 		},
 	});
-	return screen.getByLabelText('message') as HTMLTextAreaElement;
+	// The textarea is the `textbox` nested inside the `role="combobox"` wrapper;
+	// both share the accessible name, so query by role to get the textarea.
+	return screen.getByRole('textbox', { name: 'message' }) as HTMLTextAreaElement;
 }
 
 describe('Mention', () => {

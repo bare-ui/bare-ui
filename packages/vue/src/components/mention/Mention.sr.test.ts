@@ -33,21 +33,23 @@ function renderMention(rootProps: Record<string, unknown> = {}) {
 }
 
 describe('Mention — screen reader semantics', () => {
-	it('exposes the textarea with autocomplete semantics and an accessible name', () => {
+	it('exposes a combobox wrapper that shares the textbox accessible name', () => {
 		renderMention();
-		// The textarea carries aria-autocomplete="list" and aria-controls pointing
-		// at the listbox, giving SRs all the combobox-pattern cues they need.
-		const textarea = expectExposedAs('textbox', 'Message');
-		expect(textarea).toHaveAttribute('aria-autocomplete', 'list');
-		expect(textarea).toHaveAttribute('aria-controls');
+		// The `role="combobox"` wrapper owns the listbox cues (aria-controls/
+		// aria-haspopup); the inner textarea stays a named textbox.
+		const combobox = expectExposedAs('combobox', 'Message');
+		expect(combobox).toHaveAttribute('aria-haspopup', 'listbox');
+		expect(combobox).toHaveAttribute('aria-controls');
+		expectExposedAs('textbox', 'Message');
 	});
 
-	it('exposes the open state on the textarea and transitions it on trigger', async () => {
+	it('exposes the open state on the combobox wrapper and transitions it on trigger', async () => {
 		const user = userEvent.setup();
 		const textarea = renderMention();
-		expect(textarea).toHaveAttribute('aria-expanded', 'false');
+		const combobox = expectExposedAs('combobox', 'Message');
+		expect(combobox).toHaveAttribute('aria-expanded', 'false');
 		await user.type(textarea, 'hey @');
-		expect(expectExposedAs('textbox', 'Message')).toHaveAttribute('aria-expanded', 'true');
+		expect(expectExposedAs('combobox', 'Message')).toHaveAttribute('aria-expanded', 'true');
 	});
 
 	it('points aria-controls at the listbox that appears once triggered', async () => {
@@ -55,7 +57,7 @@ describe('Mention — screen reader semantics', () => {
 		const textarea = renderMention();
 		await user.type(textarea, '@');
 		const listbox = screen.getByRole('listbox');
-		expect(textarea.getAttribute('aria-controls')).toBe(listbox.id);
+		expect(expectExposedAs('combobox', 'Message').getAttribute('aria-controls')).toBe(listbox.id);
 	});
 
 	it('exposes each suggestion as a named option', async () => {
@@ -84,13 +86,13 @@ describe('Mention — screen reader semantics', () => {
 		expect(expectExposedAs('option', 'John')).toHaveAttribute('aria-selected', 'false');
 	});
 
-	it('collapses the listbox and clears aria-expanded after a selection', async () => {
+	it('collapses the combobox and clears the listbox after a selection', async () => {
 		const user = userEvent.setup();
 		const textarea = renderMention();
 		await user.type(textarea, '@b');
 		await user.click(expectExposedAs('option', 'Bob'));
 		expect(textarea.value).toBe('@Bob ');
 		expect(screen.queryByRole('listbox')).toBeNull();
-		expect(expectExposedAs('textbox', 'Message')).toHaveAttribute('aria-expanded', 'false');
+		expect(expectExposedAs('combobox', 'Message')).toHaveAttribute('aria-expanded', 'false');
 	});
 });

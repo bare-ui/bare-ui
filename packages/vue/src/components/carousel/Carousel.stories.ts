@@ -34,11 +34,10 @@ const btnCls =
 export const Default: Story = {
 	render: () => ({
 		setup: () => () =>
-			h(Carousel.Root, { class: 'relative w-full max-w-md' }, () => [
+			h(Carousel.Root, { 'aria-label': 'Featured colors', class: 'relative w-full max-w-md' }, () => [
 				h(
 					Carousel.Viewport,
 					{
-						tabindex: 0,
 						class: 'rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-black',
 					},
 					() =>
@@ -82,7 +81,7 @@ export const Composed: Story = {
 			h('div', { class: 'flex flex-col gap-10' }, [
 				h('div', null, [
 					h('p', { class: 'mb-2 text-sm font-medium text-[#374151]' }, 'Looping, multi-item'),
-					h(Carousel.Root, { loop: true, class: 'relative w-full max-w-2xl' }, () => [
+					h(Carousel.Root, { loop: true, 'aria-label': 'Looping product cards', class: 'relative w-full max-w-2xl' }, () => [
 						h(Carousel.Viewport, { class: 'rounded-2xl' }, () =>
 							h(Carousel.Content, { class: 'gap-4 px-1' }, () =>
 								Array.from({ length: 8 }, (_, i) =>
@@ -105,7 +104,7 @@ export const Composed: Story = {
 
 				h('div', null, [
 					h('p', { class: 'mb-2 text-sm font-medium text-[#374151]' }, 'Vertical'),
-					h(Carousel.Root, { orientation: 'vertical', class: 'relative w-full max-w-xs' }, () => [
+					h(Carousel.Root, { orientation: 'vertical', 'aria-label': 'Vertical color gallery', class: 'relative w-full max-w-xs' }, () => [
 						h(Carousel.Viewport, { class: 'h-56 rounded-2xl' }, () =>
 							h(Carousel.Content, null, () =>
 								slides.map((color, i) =>
@@ -144,7 +143,7 @@ export const Complex: Story = {
 
 			return () =>
 				h('div', { class: 'w-full max-w-sm overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white' }, [
-					h(Carousel.Root, { loop: true, class: 'relative' }, () => [
+					h(Carousel.Root, { loop: true, 'aria-label': 'Featured gear', class: 'relative' }, () => [
 						h(Carousel.Viewport, null, () =>
 							h(Carousel.Content, null, () =>
 								products.map((p) =>

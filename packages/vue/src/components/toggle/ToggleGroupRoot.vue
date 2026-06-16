@@ -154,7 +154,7 @@ provide(ToggleGroupKey, {
 
 <template>
 	<div
-		role="group"
+		role="toolbar"
 		:aria-orientation="orientation"
 		:data-orientation="orientation"
 		:data-disabled="disabled ? '' : undefined"

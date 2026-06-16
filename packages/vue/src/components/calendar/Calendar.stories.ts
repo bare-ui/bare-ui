@@ -50,7 +50,7 @@ function renderCalendarBody(): unknown[] {
 				weekday: ({ weekday }: { weekday: CalendarWeekday }) =>
 					h(
 						'div',
-						{ class: 'text-center text-xs font-medium text-[#6b7280] py-1' },
+						{ ...weekday.props, class: 'text-center text-xs font-medium text-[#6b7280] py-1' },
 						weekday.short,
 					),
 			},

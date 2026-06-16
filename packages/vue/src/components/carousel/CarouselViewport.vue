@@ -12,6 +12,11 @@ const el = ref<HTMLDivElement | null>(null);
 
 const vertical = computed(() => ctx.orientation === 'vertical');
 
+// The viewport is a scrollable region; make it keyboard-focusable so
+// arrow-key navigation works and axe `scrollable-region-focusable` passes.
+// A consumer-provided tabindex still wins via v-bind="attrs".
+const tabindex = computed(() => (attrs.tabindex as number | string | undefined) ?? 0);
+
 const inlineStyle = computed((): CSSProperties => ({
 	overflowX: vertical.value ? 'hidden' : 'auto',
 	overflowY: vertical.value ? 'auto' : 'hidden',
@@ -54,6 +59,7 @@ function onKeyDown(e: KeyboardEvent) {
 		data-carousel-viewport=""
 		:style="inlineStyle"
 		v-bind="attrs"
+		:tabindex="tabindex"
 		@scroll="onScroll"
 		@keydown="onKeyDown"
 	>

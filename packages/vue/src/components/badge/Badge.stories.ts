@@ -64,7 +64,7 @@ export const Default: Story = {
 	render: () => ({
 		setup: () => () =>
 			h('div', { class: 'relative inline-flex' }, [
-				h('button', { class: 'rounded-full p-2 text-black hover:bg-[#f5f5f5]' }, [bellIcon]),
+				h('button', { 'aria-label': 'Notifications', class: 'rounded-full p-2 text-black hover:bg-[#f5f5f5]' }, [bellIcon]),
 				h(Badge, { count: 3, class: badgeCls }),
 			]),
 	}),
@@ -75,15 +75,15 @@ export const Composed: Story = {
 		setup: () => () =>
 			h('div', { class: 'flex items-center gap-8' }, [
 				h('div', { class: 'relative inline-flex' }, [
-					h('button', { class: 'rounded-full p-2 text-black hover:bg-[#f5f5f5]' }, [bellIcon]),
+					h('button', { 'aria-label': 'Notifications', class: 'rounded-full p-2 text-black hover:bg-[#f5f5f5]' }, [bellIcon]),
 					h(Badge, { count: 3, class: badgeCls }),
 				]),
 				h('div', { class: 'relative inline-flex' }, [
-					h('button', { class: 'rounded-full p-2 text-black hover:bg-[#f5f5f5]' }, [chatIcon]),
+					h('button', { 'aria-label': 'Messages', class: 'rounded-full p-2 text-black hover:bg-[#f5f5f5]' }, [chatIcon]),
 					h(Badge, { count: 12, class: badgeCls }),
 				]),
 				h('div', { class: 'relative inline-flex' }, [
-					h('button', { class: 'rounded-full p-2 text-black hover:bg-[#f5f5f5]' }, [mailIcon]),
+					h('button', { 'aria-label': 'Mail', class: 'rounded-full p-2 text-black hover:bg-[#f5f5f5]' }, [mailIcon]),
 					h(Badge, { count: 99, class: badgeCls }),
 				]),
 			]),

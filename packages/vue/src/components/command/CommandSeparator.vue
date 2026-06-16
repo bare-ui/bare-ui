@@ -11,6 +11,6 @@ const searching = computed(() => ctx.searching);
 <template>
 	<div
 		v-if="!searching"
-		role="separator"
+		role="none"
 	/>
 </template>

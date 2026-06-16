@@ -151,6 +151,7 @@ onUnmounted(() => {
 		role="log"
 		aria-live="polite"
 		aria-relevant="additions"
+		:tabindex="0"
 		style="overflow-y: auto; position: relative;"
 		@scroll="handleScroll"
 	>

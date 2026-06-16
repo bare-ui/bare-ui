@@ -106,6 +106,20 @@ function getPanelSize(id: string) {
 	return sizes.value[idx] ?? panels.value[idx].config.defaultSize ?? 0
 }
 
+// A handle at index k controls the boundary between panel k and panel k+1.
+// Per the ARIA window-splitter pattern, expose the *primary* (preceding) panel's
+// current/min/max size as aria-valuenow/min/max so AT can announce the split.
+function getHandleValues(id: string) {
+	const handleIndex = handles.value.indexOf(id)
+	if (handleIndex < 0) return null
+	const panel = panels.value[handleIndex]
+	if (!panel) return null
+	const now = sizes.value[handleIndex] ?? panel.config.defaultSize ?? 0
+	const min = panel.config.minSize ?? 0
+	const max = panel.config.maxSize ?? 100
+	return { now: Math.round(now), min: Math.round(min), max: Math.round(max) }
+}
+
 interface DragState {
 	handleIndex: number
 	startSizes: number[]
@@ -178,6 +192,7 @@ provide(PanelGroupKey, {
 	orientation,
 	getPanelSize,
 	getPanelIndex,
+	getHandleValues,
 	registerPanel,
 	updatePanel,
 	unregisterPanel,

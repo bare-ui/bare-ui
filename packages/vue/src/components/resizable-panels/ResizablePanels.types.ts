@@ -36,6 +36,7 @@ export interface InternalGroupContext {
 	orientation: ComputedRef<PanelOrientation>
 	getPanelSize: (id: string) => number
 	getPanelIndex: (id: string) => number
+	getHandleValues: (id: string) => { now: number; min: number; max: number } | null
 	registerPanel: (id: string, config: PanelConfig) => void
 	updatePanel: (id: string, config: PanelConfig) => void
 	unregisterPanel: (id: string) => void

@@ -38,6 +38,7 @@ export default defineConfig({
 				// (via @storybook/addon-a11y with `a11y.test = 'error'`).
 				extends: true,
 				plugins: [
+					vue(),
 					storybookTest({ configDir: resolve(projectRoot, '.storybook') }),
 				],
 				test: {

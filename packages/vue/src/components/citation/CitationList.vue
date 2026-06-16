@@ -24,7 +24,6 @@ function safeHref(url?: string): string | undefined {
 			v-for="(source, i) in ctx.sources"
 			:id="ctx.getFootnoteId(source.id)"
 			:key="source.id"
-			role="doc-endnote"
 			data-citation-source=""
 			:data-index="i + 1">
 			<slot v-bind="slotProps(i + 1)">

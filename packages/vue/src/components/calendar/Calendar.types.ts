@@ -49,9 +49,15 @@ export interface CalendarDay {
 	props: CalendarDayProps
 }
 
+export interface CalendarWeekdayProps {
+	role: 'columnheader'
+	'aria-label': string
+}
+
 export interface CalendarWeekday {
 	name: string
 	short: string
+	props: CalendarWeekdayProps
 }
 
 export interface CalendarContextValue {

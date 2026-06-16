@@ -17,6 +17,11 @@ const activeId = computed(() =>
 	ctx.open.value && ctx.filtered.value[ctx.activeIndex.value] ? ctx.getOptionId(ctx.activeIndex.value) : undefined,
 )
 
+// The `role="combobox"` wrapper needs its own accessible name; share the one
+// the consumer provides for the textbox so both are named.
+const ariaLabel = computed(() => attrs['aria-label'] as string | undefined)
+const ariaLabelledBy = computed(() => attrs['aria-labelledby'] as string | undefined)
+
 function handleKeyDown(e: KeyboardEvent) {
 	;(attrs.onKeydown as ((e: KeyboardEvent) => void) | undefined)?.(e)
 	if (e.defaultPrevented || !ctx.open.value || ctx.filtered.value.length === 0) return
@@ -64,18 +69,31 @@ function handleBlur(e: FocusEvent) {
 </script>
 
 <template>
-	<textarea
-		:ref="setInputRef"
-		:value="ctx.text.value"
-		:disabled="ctx.disabled.value"
-		aria-autocomplete="list"
+	<!--
+		ARIA 1.2 combobox pattern: a `role="combobox"` wrapper owns the listbox
+		(`aria-controls`/`aria-expanded`), while the focusable textarea stays a
+		`textbox`. `aria-expanded`/`aria-controls` are not allowed on a bare
+		textarea, so they live on the wrapper; the textarea keeps the
+		textbox-allowed `aria-autocomplete`/`aria-activedescendant`.
+	-->
+	<div
+		role="combobox"
 		:aria-expanded="ctx.open.value"
 		:aria-controls="ctx.listboxId"
-		:aria-activedescendant="activeId"
-		v-bind="attrs"
-		@input="handleInput"
-		@keydown="handleKeyDown"
-		@keyup="handleKeyUp"
-		@click="handleClick"
-		@blur="handleBlur" />
+		aria-haspopup="listbox"
+		:aria-label="ariaLabel"
+		:aria-labelledby="ariaLabelledBy">
+		<textarea
+			:ref="setInputRef"
+			:value="ctx.text.value"
+			:disabled="ctx.disabled.value"
+			aria-autocomplete="list"
+			:aria-activedescendant="activeId"
+			v-bind="attrs"
+			@input="handleInput"
+			@keydown="handleKeyDown"
+			@keyup="handleKeyUp"
+			@click="handleClick"
+			@blur="handleBlur" />
+	</div>
 </template>

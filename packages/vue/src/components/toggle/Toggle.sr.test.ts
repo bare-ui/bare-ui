@@ -46,9 +46,9 @@ describe('Toggle — screen reader semantics', () => {
 		expect(screen.getByRole('button', { name: 'Bold' })).toBeDisabled();
 	});
 
-	it('exposes the group container with its orientation', () => {
-		// ToggleGroupRoot renders role="group" (not role="toolbar") per WAI-ARIA
-		// group pattern; the orientation attribute is still exposed for AT.
+	it('exposes the group as a toolbar with its orientation', () => {
+		// ToggleGroupRoot renders role="toolbar"; aria-orientation is allowed on
+		// toolbar (unlike group) and is exposed to AT.
 		render({
 			template: `
 				<ToggleGroupRoot type="single" aria-label="Text alignment" orientation="vertical">
@@ -58,8 +58,8 @@ describe('Toggle — screen reader semantics', () => {
 			`,
 			components: { ToggleGroupRoot, Toggle },
 		});
-		const group = expectExposedAs('group', 'Text alignment');
-		expect(group).toHaveAttribute('aria-orientation', 'vertical');
+		const toolbar = expectExposedAs('toolbar', 'Text alignment');
+		expect(toolbar).toHaveAttribute('aria-orientation', 'vertical');
 	});
 
 	it('exposes single-select pressed state, moving it to the newly pressed item', async () => {

@@ -9,6 +9,7 @@ export interface RadioItemContextValue {
 	value: string | number;
 	disabled: boolean;
 	checked: boolean;
+	inputId: string;
 }
 
 export interface RadioRootProps {

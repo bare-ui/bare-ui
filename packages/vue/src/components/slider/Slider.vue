@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { computed, onUnmounted, ref, type CSSProperties } from 'vue';
+import { computed, onUnmounted, ref, useAttrs, type CSSProperties } from 'vue';
 import { getDirection, useDirection } from '@/composables/use-direction';
 import type { SliderOrientation, SliderValue } from './Slider.types';
 
-defineOptions({ name: 'Slider' })
+// `aria-label` / `aria-labelledby` arrive as fallthrough attributes. They name
+// the `role="slider"` thumbs (the actual ARIA input fields), so we read them
+// here and keep them off the root wrapper in single mode.
+defineOptions({ name: 'Slider', inheritAttrs: false })
 
 const props = withDefaults(defineProps<{
 	/** Minimum value. */
@@ -26,8 +29,6 @@ const props = withDefaults(defineProps<{
 	defaultValue?: number | [number, number];
 	/** Called when the value changes. */
 	onChange?: (value: number | [number, number]) => void;
-	/** Optional human-readable label for ARIA. */
-	'aria-label'?: string;
 }>(), {
 	min: 0,
 	max: 100,
@@ -39,7 +40,19 @@ const props = withDefaults(defineProps<{
 	value: undefined,
 	defaultValue: undefined,
 	onChange: undefined,
-	'aria-label': undefined,
+})
+
+const attrs = useAttrs()
+const ariaLabelAttr = computed(() => attrs['aria-label'] as string | undefined)
+const ariaLabelledByAttr = computed(() => attrs['aria-labelledby'] as string | undefined)
+
+// Everything except the ARIA name attributes falls through to the root wrapper;
+// the names themselves are applied to the group / thumbs explicitly.
+const rootAttrs = computed(() => {
+	const { ['aria-label']: _a, ['aria-labelledby']: _al, ...rest } = attrs
+	void _a
+	void _al
+	return rest
 })
 
 // --- Helpers ---------------------------------------------------------------
@@ -229,14 +242,36 @@ function thumbStyle(i: number): CSSProperties {
 		: { position: 'absolute', bottom: `${p}%`, left: '50%', transform: 'translate(-50%, 50%)' }
 }
 
-const ariaLabel = computed(() => (isRange.value ? props['aria-label'] : undefined))
+// The wrapper carries the accessible name for the group (range mode only);
+// the `role="slider"` thumbs are the actual ARIA input fields and each expose
+// a name of their own.
+const ariaLabel = computed(() => (isRange.value ? ariaLabelAttr.value : undefined))
+const ariaLabelledBy = computed(() => (isRange.value ? ariaLabelledByAttr.value : undefined))
+
+// Each thumb is an ARIA input field and needs its own accessible name. In
+// single mode it inherits the consumer's label directly; in range mode the
+// group carries the overall label, so each thumb gets a distinguishing name.
+// `aria-labelledby` (single mode) takes precedence over `aria-label`.
+function thumbLabelledBy(): string | undefined {
+	return !isRange.value ? ariaLabelledByAttr.value : undefined
+}
+
+function thumbLabel(i: number): string | undefined {
+	if (thumbLabelledBy()) return undefined
+	if (isRange.value) {
+		return [i === 0 ? 'Minimum' : 'Maximum', ariaLabelAttr.value].filter(Boolean).join(' ') || undefined
+	}
+	return ariaLabelAttr.value
+}
 </script>
 
 <template>
 	<div
 		ref="trackRef"
+		v-bind="rootAttrs"
 		:role="isRange ? 'group' : undefined"
 		:aria-label="ariaLabel"
+		:aria-labelledby="ariaLabelledBy"
 		:data-orientation="orientation"
 		:data-disabled="disabled ? '' : undefined"
 		:style="rootStyle"
@@ -252,6 +287,8 @@ const ariaLabel = computed(() => (isRange.value ? props['aria-label'] : undefine
 			:key="i"
 			role="slider"
 			:tabindex="disabled ? -1 : 0"
+			:aria-label="thumbLabel(i) || undefined"
+			:aria-labelledby="thumbLabelledBy()"
 			:aria-valuemin="min"
 			:aria-valuemax="max"
 			:aria-valuenow="roundFixed(v, decimals)"

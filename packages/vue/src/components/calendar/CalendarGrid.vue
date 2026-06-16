@@ -164,7 +164,7 @@ const rowStyle = {
 			<template v-for="wd in weekdays" :key="wd.name">
 				<slot
 					name="weekday"
-					:weekday="{ name: wd.name, short: wd.short }">
+					:weekday="{ name: wd.name, short: wd.short, props: { role: 'columnheader', 'aria-label': wd.name } }">
 					<div
 						role="columnheader"
 						:aria-label="wd.name"

@@ -27,6 +27,7 @@ provide(InfiniteScrollKey, reactive({
 
 <template>
 	<div
+		:tabindex="0"
 		:data-loading="loading ? '' : undefined"
 		:data-has-more="hasMore ? '' : undefined"
 	>

@@ -33,12 +33,13 @@ export const Default: Story = {
 			const enabled = ref(false);
 			return () =>
 				h('div', { class: 'flex items-center gap-3' }, [
-					h('label', { class: 'text-sm font-medium text-black' }, 'Enable notifications'),
+					h('label', { id: 'switch-default-label', class: 'text-sm font-medium text-black' }, 'Enable notifications'),
 					h(
 						Switch.Root,
 						{
 							checked: enabled.value,
 							onChange: () => (enabled.value = !enabled.value),
+							'aria-labelledby': 'switch-default-label',
 							class: trackCls,
 						},
 						() => [h(Switch.Thumb, { class: thumbCls })],
@@ -73,12 +74,19 @@ export const Composed: Story = {
 				return h(
 					'div',
 					{ class: 'w-80 divide-y divide-[#2a2a2a] rounded-[8px] border border-black bg-white' },
-					items.map(({ label, value, toggle }) =>
+					items.map(({ label, value, toggle }, i) =>
 						h('div', { key: label, class: 'flex items-center justify-between px-4 py-3' }, [
-							h('p', { class: 'text-sm font-medium text-black' }, label),
-							h(Switch.Root, { checked: value.value, onChange: toggle, class: trackCls }, () => [
-								h(Switch.Thumb, { class: thumbCls }),
-							]),
+							h('p', { id: `switch-composed-${i}`, class: 'text-sm font-medium text-black' }, label),
+							h(
+								Switch.Root,
+								{
+									checked: value.value,
+									onChange: toggle,
+									'aria-labelledby': `switch-composed-${i}`,
+									class: trackCls,
+								},
+								() => [h(Switch.Thumb, { class: thumbCls })],
+							),
 						]),
 					),
 				);
@@ -119,15 +127,23 @@ export const Complex: Story = {
 				return h(
 					'div',
 					{ class: 'w-80 divide-y divide-[#2a2a2a] rounded-[20px] border border-black bg-white' },
-					items.map(({ label, desc, value, toggle }) =>
+					items.map(({ label, desc, value, toggle }, i) =>
 						h('div', { key: label, class: 'flex items-center justify-between px-4 py-3' }, [
 							h('div', null, [
-								h('p', { class: 'text-sm font-medium text-black' }, label),
-								h('p', { class: 'text-xs text-[#6b7280]' }, desc),
+								h('p', { id: `switch-complex-${i}`, class: 'text-sm font-medium text-black' }, label),
+								h('p', { id: `switch-complex-${i}-desc`, class: 'text-xs text-[#6b7280]' }, desc),
 							]),
-							h(Switch.Root, { checked: value.value, onChange: toggle, class: trackCls }, () => [
-								h(Switch.Thumb, { class: thumbCls }),
-							]),
+							h(
+								Switch.Root,
+								{
+									checked: value.value,
+									onChange: toggle,
+									'aria-labelledby': `switch-complex-${i}`,
+									'aria-describedby': `switch-complex-${i}-desc`,
+									class: trackCls,
+								},
+								() => [h(Switch.Thumb, { class: thumbCls })],
+							),
 						]),
 					),
 				);
