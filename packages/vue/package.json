@@ -61,6 +61,8 @@
 		"test:unit": "vitest run --project unit --config vitest.config.ts",
 		"test:sr": "vitest run --project unit --config vitest.config.ts .sr.test",
 		"test:a11y": "vitest run --project storybook --config vitest.config.ts",
+		"test:ssr": "vitest run --config vitest.ssr.config.ts",
+		"test:hydrate": "vitest run --config vitest.ssr.config.ts && vitest run --config vitest.hydrate.config.ts",
 		"test:coverage": "vitest run --project unit --coverage --config vitest.config.ts",
 		"bench": "vitest bench --config vitest.bench.config.ts",
 		"bench:mount": "vitest bench --config vitest.bench.config.ts bench/render.mount.bench.ts",

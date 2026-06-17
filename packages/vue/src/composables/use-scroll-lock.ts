@@ -46,6 +46,11 @@ export function useScrollLock(active: MaybeRefOrGetter<boolean>) {
 	watch(
 		() => toValue(active),
 		(isActive) => {
+			// Scroll-locking is a client-only DOM side effect. The `immediate` watcher
+			// runs during SSR too (for an open-by-default overlay), where there is no
+			// `document`/`window` — no-op there and let the client instance lock on
+			// hydration instead.
+			if (typeof document === 'undefined') return;
 			if (isActive && !held) {
 				acquire();
 				held = true;

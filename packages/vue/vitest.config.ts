@@ -31,6 +31,10 @@ export default defineConfig({
 					globals: true,
 					setupFiles: ['./src/test/setup.ts'],
 					include: ['src/**/*.test.{ts,tsx}'],
+					// The SSR + hydration audits run under their own configs
+					// (test:ssr / test:hydrate): node for the server phase, and a real
+					// hydrate() that consumes the fixtures the SSR phase writes.
+					exclude: ['src/test/ssr.test.ts', 'src/test/hydrate.test.ts'],
 				},
 			},
 			{

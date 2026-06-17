@@ -84,17 +84,29 @@ Vue-aware SSR bundler picks them up without special export conditions.
 
 ## Verifying
 
-`src/test/ssr-hydration.test.ts` (part of the unit suite) reproduces the real
-Nuxt / vite-ssr / vike flow end to end: it renders a representative set of
-components to a string with `renderToString`, plants that HTML in the DOM, then
-hydrates the **same** tree over it with `createSSRApp(...).mount()` and asserts
-Vue logs **no hydration / mismatch warning** (Vue's channel for server/client
-divergence — non-deterministic ids, render-time `Date.now()` / `Math.random()`,
-or DOM-only output like a `<Teleport>` with no server target).
+A two-phase pipeline reproduces the real Nuxt / vite-ssr / vike flow — the server
+render runs in a **no-DOM node** environment and the hydration runs in **jsdom**,
+exactly as a real app splits them. The shared scenarios live in
+`src/test/scenarios.ts`; the phases hand off server markup through a gitignored
+fixture file.
 
-It covers presentational (`Badge`), id-bearing form (`Input`, `Switch`, `Tabs`),
-and — critically — the four portal components rendered **open**
-(`Modal` / `Drawer` / `Sheet` / `ContextMenu`), which is the exact case that
-mismatches without the `useIsMounted()` Teleport guard. A separate assertion
-confirms generated ids are deterministic within a render and unique across
-instances.
+- **`npm run test:ssr`** (phase 1, `vitest.ssr.config.ts`, `environment: node`)
+  renders every scenario with `@vue/server-renderer` and asserts the markup is
+  **byte-identical across two renders** — i.e. no `Date.now()` / `Math.random()`
+  or other non-determinism leaks into the server output. Running with no DOM also
+  proves there is **no module-level (or render-time) browser access**: any
+  `window` / `document` read during render throws here. It also confirms
+  generated ids are unique within a render, and writes each scenario's markup to
+  a fixture for phase 2.
+- **`npm run test:hydrate`** (phase 1, then phase 2 in `vitest.hydrate.config.ts`,
+  `environment: jsdom`) replays each server fixture through a real
+  `createSSRApp(...).mount()` hydration and **fails on any hydration / mismatch
+  log** — Vue's channel for server/client divergence. It also asserts hydration
+  *adopted* the server markup rather than wiping and re-rendering.
+
+Coverage spans presentational (`Badge`, `Card`, `Divider`, `ProgressBar`,
+`Skeleton`, `Spinner`), id-bearing forms (`Input`, `Textarea`, `Password`,
+`Checkbox`, `Radio`), context/open components (`Tabs`, `Accordion`, `Dropdown`,
+`Popover`, `Select`), and — critically — the four portal components rendered
+**open** (`Modal` / `Drawer` / `Sheet` / `ContextMenu`), which is the exact case
+that mismatches without the `useIsMounted()` Teleport guard.
