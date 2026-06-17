@@ -432,7 +432,7 @@ const Input = React.forwardRef<HTMLInputElement, ColorPickerInputProps>(
 
 		// Keep the field in sync with the color unless the user is editing it.
 		useEffect(() => {
-			// eslint-disable-next-line react-hooks/set-state-in-effect
+			 
 			if (!focusedRef.current) setDraft(ctx.hex);
 		}, [ctx.hex]);
 

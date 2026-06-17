@@ -17,7 +17,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
 		if (asChild && React.isValidElement(children)) {
 			const child = children as React.ReactElement<Record<string, unknown>>;
-			// eslint-disable-next-line react-hooks/refs -- forwarding a ref via cloneElement is valid
+			 
 			return React.cloneElement(child, { ref, ...mergeProps(child.props, sharedProps) });
 		}
 

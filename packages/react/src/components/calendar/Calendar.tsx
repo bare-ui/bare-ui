@@ -329,13 +329,14 @@ const Grid = React.forwardRef<HTMLDivElement, CalendarGridProps>(
 		// presses an arrow key, so the grid never steals focus on mount.
 		const [focusedDate, setFocusedDate] = useState<Date | null>(null);
 
+		const { minDate, maxDate, isDateDisabled: isDateDisabledFn } = ctx;
 		const isDisabledDate = useCallback(
 			(d: Date) => {
-				const beforeMin = ctx.minDate ? d < startOfDay(ctx.minDate) : false;
-				const afterMax = ctx.maxDate ? d > startOfDay(ctx.maxDate) : false;
-				return beforeMin || afterMax || (ctx.isDateDisabled?.(d) ?? false);
+				const beforeMin = minDate ? d < startOfDay(minDate) : false;
+				const afterMax = maxDate ? d > startOfDay(maxDate) : false;
+				return beforeMin || afterMax || (isDateDisabledFn?.(d) ?? false);
 			},
-			[ctx.minDate, ctx.maxDate, ctx.isDateDisabled],
+			[minDate, maxDate, isDateDisabledFn],
 		);
 
 		// Exactly one day cell is tabbable (roving tabindex). Prefer the keyboard

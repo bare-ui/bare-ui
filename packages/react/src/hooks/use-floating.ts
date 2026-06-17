@@ -149,7 +149,7 @@ export function useFloating<R extends HTMLElement, F extends HTMLElement>(
 	useLayoutEffect(() => {
 		// DOM measurement pattern — position is derived from getBoundingClientRect, which
 		// is only available after layout. See https://react.dev/reference/react/useLayoutEffect#measuring-layout-before-the-browser-repaints-the-screen
-		// eslint-disable-next-line react-hooks/set-state-in-effect
+		 
 		if (open) update();
 	}, [open, update]);
 

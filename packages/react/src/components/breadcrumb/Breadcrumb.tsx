@@ -49,7 +49,7 @@ const Link = React.forwardRef<HTMLAnchorElement, BreadcrumbLinkProps>(
 		if (asChild && React.isValidElement(children)) {
 			const child = children as React.ReactElement<Record<string, unknown>>;
 			// cloneElement assigns the ref to the new element without reading ref.current.
-			// eslint-disable-next-line react-hooks/refs
+			 
 			return React.cloneElement(child, {
 				...rest,
 				className: [(child.props as { className?: string }).className, className].filter(Boolean).join(' '),
