@@ -52,6 +52,7 @@
 		"build": "vue-tsc -b tsconfig.build.json && vite build",
 		"prepublishOnly": "npm run build",
 		"lint": "eslint .",
+		"typecheck": "vue-tsc -b",
 		"storybook": "storybook dev -p 6007",
 		"build-storybook": "storybook build",
 		"format": "prettier --write \"src/**/*.{ts,vue}\"",
@@ -66,6 +67,7 @@
 		"bench:ssr": "vitest bench --config vitest.bench.config.ts bench/render.ssr.bench.ts",
 		"size": "size-limit",
 		"attw": "attw --pack .",
+		"compiler:check": "node scripts/compiler-check.mjs",
 		"clean": "rm -rf dist"
 	},
 	"peerDependencies": {
