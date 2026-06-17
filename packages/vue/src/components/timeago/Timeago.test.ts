@@ -2,8 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/vue';
 import { h } from 'vue';
 import { Timeago } from '.';
+import type { TimeagoProps } from '.';
 
-function renderTimeago(props: Record<string, unknown>) {
+function renderTimeago(props: TimeagoProps) {
 	return render({
 		setup() {
 			return () => h(Timeago, { ...props });

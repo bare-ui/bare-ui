@@ -11,14 +11,16 @@ import { expectExposedAs } from '@/test/sr';
 import { CodeBlock } from '.';
 import type { CodeBlockLine } from '.';
 
-function renderBlock(props: Partial<{
-	code: string;
-	language: string;
-	diff: Record<number, 'add' | 'remove'>;
-	highlightLines: number[];
-	startLine: number;
-	copyResetAfter: number;
-}> = {}) {
+function renderBlock(
+	props: Partial<{
+		code: string;
+		language: string;
+		diff: Record<number, 'add' | 'remove'>;
+		highlightLines: number[];
+		startLine: number;
+		copyResetAfter: number;
+	}> = {},
+) {
 	return render({
 		setup() {
 			return () =>
@@ -30,16 +32,13 @@ function renderBlock(props: Partial<{
 						...props,
 					},
 					() => [
-						h(CodeBlock.CopyButton, null, ({ copied }: { copied: boolean }) =>
-							copied ? 'Copied' : 'Copy',
-						),
+						h(CodeBlock.CopyButton, null, {
+							default: ({ copied }: { copied: boolean }) => (copied ? 'Copied' : 'Copy'),
+						}),
 						h(CodeBlock.Code, null, () =>
-							h(
-								CodeBlock.Lines,
-								null,
-								({ line }: { line: CodeBlockLine }) =>
-									h('span', null, line.content),
-							),
+							h(CodeBlock.Lines, null, {
+								default: ({ line }: { line: CodeBlockLine }) => h('span', null, line.content),
+							}),
 						),
 					],
 				);

@@ -37,12 +37,18 @@ export const Default: Story = {
 	render: () => ({
 		setup: () => () =>
 			h(TagInput.Root, { defaultValue: ['react', 'tailwind'], class: wrapperCls }, () => [
-				h(TagInput.Items, {}, ({ tag, index, remove }: { tag: string; index: number; remove: () => void }) => [
-					h(Tag.Root, { key: `${tag}-${index}`, class: tagCls }, () => [
-						h(Tag.Label, {}, () => tag),
-						h(Tag.Remove, { class: removeCls, onClick: remove }, () => '×'),
-					]),
-				]),
+				h(
+					TagInput.Items,
+					{},
+					{
+						default: ({ tag, index, remove }: { tag: string; index: number; remove: () => void }) => [
+							h(Tag.Root, { key: `${tag}-${index}`, class: tagCls }, () => [
+								h(Tag.Label, {}, () => tag),
+								h(Tag.Remove, { class: removeCls, onClick: remove }, () => '×'),
+							]),
+						],
+					},
+				),
 				h(TagInput.Field, { placeholder: 'Add a tag…', class: fieldCls }),
 			]),
 	}),
@@ -67,20 +73,22 @@ export const Composed: Story = {
 							h(
 								TagInput.Items,
 								{},
-								({
-									tag,
-									index,
-									remove,
-								}: {
-									tag: string
-									index: number
-									remove: () => void
-								}) => [
-									h(Tag.Root, { key: `${tag}-${index}`, class: tagCls }, () => [
-										h(Tag.Label, {}, () => tag),
-										h(Tag.Remove, { class: removeCls, onClick: remove }, () => '×'),
-									]),
-								],
+								{
+									default: ({
+										tag,
+										index,
+										remove,
+									}: {
+										tag: string;
+										index: number;
+										remove: () => void;
+									}) => [
+										h(Tag.Root, { key: `${tag}-${index}`, class: tagCls }, () => [
+											h(Tag.Label, {}, () => tag),
+											h(Tag.Remove, { class: removeCls, onClick: remove }, () => '×'),
+										]),
+									],
+								},
 							),
 							h(TagInput.Field, {
 								placeholder: tags.value.length >= 5 ? '' : 'Add up to 5 topics',
@@ -88,11 +96,7 @@ export const Composed: Story = {
 							}),
 						],
 					),
-					h(
-						'p',
-						{ class: 'text-xs text-[#6b7280]' },
-						`${tags.value.length}/5 — press Enter or comma to add`,
-					),
+					h('p', { class: 'text-xs text-[#6b7280]' }, `${tags.value.length}/5 — press Enter or comma to add`),
 				]);
 		},
 	}),
@@ -119,20 +123,22 @@ export const Complex: Story = {
 							h(
 								TagInput.Items,
 								{},
-								({
-									tag,
-									index,
-									remove,
-								}: {
-									tag: string
-									index: number
-									remove: () => void
-								}) => [
-									h(Tag.Root, { key: `${tag}-${index}`, class: tagCls }, () => [
-										h(Tag.Label, {}, () => tag),
-										h(Tag.Remove, { class: removeCls, onClick: remove }, () => '×'),
-									]),
-								],
+								{
+									default: ({
+										tag,
+										index,
+										remove,
+									}: {
+										tag: string;
+										index: number;
+										remove: () => void;
+									}) => [
+										h(Tag.Root, { key: `${tag}-${index}`, class: tagCls }, () => [
+											h(Tag.Label, {}, () => tag),
+											h(Tag.Remove, { class: removeCls, onClick: remove }, () => '×'),
+										]),
+									],
+								},
 							),
 							h(TagInput.Field, { placeholder: 'name@company.com', class: fieldCls }),
 						],

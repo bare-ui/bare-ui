@@ -37,42 +37,37 @@ const people: MentionOption[] = [
 
 const inputCls =
 	'w-full resize-none rounded-lg border border-[#d1d5db] p-3 text-sm text-black outline-none focus:border-black';
-const contentCls =
-	'z-10 mt-1 max-h-56 w-56 overflow-auto rounded-lg border border-[#e5e7eb] bg-white p-1 shadow-lg';
+const contentCls = 'z-10 mt-1 max-h-56 w-56 overflow-auto rounded-lg border border-[#e5e7eb] bg-white p-1 shadow-lg';
 const itemCls =
 	'flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm text-black data-[active]:bg-[#f3f4f6] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40';
 
 export const Default: Story = {
 	render: () => ({
 		setup: () => () =>
-			h(
-				Mention.Root,
-				{ options: people, defaultValue: 'Hey ', class: 'relative w-full max-w-md' },
-				() => [
-					h(Mention.Input, {
-						'aria-label': 'Comment',
-						rows: 4,
-						placeholder: 'Type @ to mention someone…',
-						class: inputCls,
-					}),
-					h(Mention.Content, { class: contentCls }, () => [
-						h(Mention.Items, null, ({ option }: { option: MentionOption }) =>
+			h(Mention.Root, { options: people, defaultValue: 'Hey ', class: 'relative w-full max-w-md' }, () => [
+				h(Mention.Input, {
+					'aria-label': 'Comment',
+					rows: 4,
+					placeholder: 'Type @ to mention someone…',
+					class: inputCls,
+				}),
+				h(Mention.Content, { class: contentCls }, () => [
+					h(Mention.Items, null, {
+						default: ({ option }: { option: MentionOption }) =>
 							h('div', { class: itemCls }, [
 								h(
 									'span',
 									{
-										class:
-											'flex size-6 items-center justify-center rounded-full bg-[#eef2ff] text-xs font-semibold text-[#4338ca]',
+										class: 'flex size-6 items-center justify-center rounded-full bg-[#eef2ff] text-xs font-semibold text-[#4338ca]',
 									},
 									option.label.charAt(0),
 								),
 								option.label,
 							]),
-						),
-						h(Mention.Empty, { class: 'px-2 py-1.5 text-sm text-[#9ca3af]' }, () => 'No people found'),
-					]),
-				],
-			),
+					}),
+					h(Mention.Empty, { class: 'px-2 py-1.5 text-sm text-[#9ca3af]' }, () => 'No people found'),
+				]),
+			]),
 	}),
 };
 
@@ -97,23 +92,20 @@ export const Composed: Story = {
 							class: inputCls,
 						}),
 						h(Mention.Content, { class: contentCls }, () => [
-							h(Mention.Items, null, ({ option }: { option: MentionOption }) =>
-								h('div', { class: itemCls }, [
-									h(
-										'span',
-										{
-											class: 'flex size-6 items-center justify-center rounded-full bg-[#eef2ff] text-xs font-semibold text-[#4338ca]',
-										},
-										option.label.charAt(0),
-									),
-									option.label,
-								]),
-							),
-							h(
-								Mention.Empty,
-								{ class: 'px-2 py-1.5 text-sm text-[#9ca3af]' },
-								() => 'No people found',
-							),
+							h(Mention.Items, null, {
+								default: ({ option }: { option: MentionOption }) =>
+									h('div', { class: itemCls }, [
+										h(
+											'span',
+											{
+												class: 'flex size-6 items-center justify-center rounded-full bg-[#eef2ff] text-xs font-semibold text-[#4338ca]',
+											},
+											option.label.charAt(0),
+										),
+										option.label,
+									]),
+							}),
+							h(Mention.Empty, { class: 'px-2 py-1.5 text-sm text-[#9ca3af]' }, () => 'No people found'),
 						]),
 					]),
 				]),
@@ -127,12 +119,13 @@ export const Composed: Story = {
 							class: inputCls,
 						}),
 						h(Mention.Content, { class: contentCls }, () => [
-							h(Mention.Items, null, ({ option }: { option: MentionOption }) =>
-								h('div', { class: itemCls }, [
-									h('span', { class: 'text-[#9ca3af]' }, '#'),
-									option.label,
-								]),
-							),
+							h(Mention.Items, null, {
+								default: ({ option }: { option: MentionOption }) =>
+									h('div', { class: itemCls }, [
+										h('span', { class: 'text-[#9ca3af]' }, '#'),
+										option.label,
+									]),
+							}),
 							h(Mention.Empty, { class: 'px-2 py-1.5 text-sm text-[#9ca3af]' }, () => 'No channels'),
 						]),
 					]),
@@ -147,38 +140,36 @@ export const Complex: Story = {
 			const value = ref('');
 
 			return () =>
-				h(
-					'div',
-					{ class: 'w-full max-w-md rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm' },
-					[
-						h('div', { class: 'flex items-start gap-3' }, [
+				h('div', { class: 'w-full max-w-md rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm' }, [
+					h('div', { class: 'flex items-start gap-3' }, [
+						h(
+							'div',
+							{
+								class: 'flex size-9 shrink-0 items-center justify-center rounded-full bg-black text-sm font-semibold text-white',
+							},
+							'You',
+						),
+						h('div', { class: 'relative flex-1' }, [
 							h(
-								'div',
+								Mention.Root,
 								{
-									class: 'flex size-9 shrink-0 items-center justify-center rounded-full bg-black text-sm font-semibold text-white',
-								},
-								'You',
-							),
-							h('div', { class: 'relative flex-1' }, [
-								h(
-									Mention.Root,
-									{
-										options: people,
-										value: value.value,
-										onChange: (v: string) => {
-											value.value = v;
-										},
-										class: 'relative',
+									options: people,
+									value: value.value,
+									onChange: (v: string) => {
+										value.value = v;
 									},
-									() => [
-										h(Mention.Input, {
-											'aria-label': 'Write a comment',
-											rows: 3,
-											placeholder: 'Add a comment… use @ to notify a teammate',
-											class: inputCls,
-										}),
-										h(Mention.Content, { class: contentCls }, () => [
-											h(Mention.Items, null, ({ option }: { option: MentionOption }) =>
+									class: 'relative',
+								},
+								() => [
+									h(Mention.Input, {
+										'aria-label': 'Write a comment',
+										rows: 3,
+										placeholder: 'Add a comment… use @ to notify a teammate',
+										class: inputCls,
+									}),
+									h(Mention.Content, { class: contentCls }, () => [
+										h(Mention.Items, null, {
+											default: ({ option }: { option: MentionOption }) =>
 												h('div', { class: itemCls }, [
 													h(
 														'span',
@@ -189,36 +180,35 @@ export const Complex: Story = {
 													),
 													option.label,
 												]),
-											),
-											h(
-												Mention.Empty,
-												{ class: 'px-2 py-1.5 text-sm text-[#9ca3af]' },
-												() => 'No people found',
-											),
-										]),
-									],
-								),
-							]),
-						]),
-						h('div', { class: 'mt-3 flex items-center justify-end gap-2' }, [
-							h(
-								'button',
-								{
-									class: 'rounded-lg px-3 py-1.5 text-sm font-medium text-[#6b7280] hover:bg-[#f5f5f5]',
-								},
-								'Cancel',
-							),
-							h(
-								'button',
-								{
-									disabled: value.value.trim().length === 0,
-									class: 'rounded-lg bg-black px-3 py-1.5 text-sm font-medium text-white disabled:opacity-40',
-								},
-								'Comment',
+										}),
+										h(
+											Mention.Empty,
+											{ class: 'px-2 py-1.5 text-sm text-[#9ca3af]' },
+											() => 'No people found',
+										),
+									]),
+								],
 							),
 						]),
-					],
-				);
+					]),
+					h('div', { class: 'mt-3 flex items-center justify-end gap-2' }, [
+						h(
+							'button',
+							{
+								class: 'rounded-lg px-3 py-1.5 text-sm font-medium text-[#6b7280] hover:bg-[#f5f5f5]',
+							},
+							'Cancel',
+						),
+						h(
+							'button',
+							{
+								disabled: value.value.trim().length === 0,
+								class: 'rounded-lg bg-black px-3 py-1.5 text-sm font-medium text-white disabled:opacity-40',
+							},
+							'Comment',
+						),
+					]),
+				]);
 		},
 	}),
 };

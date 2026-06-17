@@ -54,8 +54,13 @@ export const Default: Story = {
 				h(Combobox.Input, { placeholder: 'Search frameworks…', class: inputCls }),
 				h(Combobox.Trigger, { class: triggerCls }, () => '▾'),
 				h(Combobox.Content, { class: contentCls }, () => [
-					h(Combobox.Items, {}, ({ option }: { option: ComboboxOption }) =>
-						h('div', { class: itemCls }, option.label),
+					h(
+						Combobox.Items,
+						{},
+						{
+							default: ({ option }: { option: ComboboxOption }) =>
+								h('div', { class: itemCls }, option.label),
+						},
 					),
 					h(
 						Combobox.Empty,
@@ -88,16 +93,24 @@ export const Composed: Story = {
 								h(
 									Combobox.Items,
 									{},
-									({ option, selected }: { option: ComboboxOption; selected: boolean }) =>
-										h('div', { class: itemCls }, [
-											h('div', { class: 'flex items-center justify-between' }, [
-												h('span', {}, option.label),
-												selected ? h('span', { class: 'text-black' }, '✓') : null,
+									{
+										default: ({
+											option,
+											selected,
+										}: {
+											option: ComboboxOption;
+											selected: boolean;
+										}) =>
+											h('div', { class: itemCls }, [
+												h('div', { class: 'flex items-center justify-between' }, [
+													h('span', {}, option.label),
+													selected ? h('span', { class: 'text-black' }, '✓') : null,
+												]),
+												option.subtitle ?
+													h('p', { class: 'text-xs text-[#6b7280]' }, option.subtitle)
+												:	null,
 											]),
-											option.subtitle
-												? h('p', { class: 'text-xs text-[#6b7280]' }, option.subtitle)
-												: null,
-										]),
+									},
 								),
 								h(
 									Combobox.Empty,
@@ -121,17 +134,10 @@ export const Complex: Story = {
 		setup: () => () => {
 			const filter = (option: ComboboxOption, input: string) => {
 				const q = input.toLowerCase();
-				return (
-					option.label.toLowerCase().includes(q) ||
-					(option.subtitle ?? '').toLowerCase().includes(q)
-				);
+				return option.label.toLowerCase().includes(q) || (option.subtitle ?? '').toLowerCase().includes(q);
 			};
 			return h('div', { class: 'w-80' }, [
-				h(
-					'label',
-					{ class: 'mb-1 block text-sm font-medium text-black' },
-					'Framework',
-				),
+				h('label', { class: 'mb-1 block text-sm font-medium text-black' }, 'Framework'),
 				h(Combobox.Root, { options: frameworks, filter, class: 'relative' }, () => [
 					h(Combobox.Input, {
 						placeholder: 'Type to search by name or description…',
@@ -142,26 +148,26 @@ export const Complex: Story = {
 						h(
 							Combobox.Items,
 							{},
-							({
-								option,
-								highlighted,
-								selected,
-							}: {
-								option: ComboboxOption
-								highlighted: boolean
-								selected: boolean
-							}) =>
-								h('div', { class: itemCls }, [
-									h('div', { class: 'flex items-center justify-between' }, [
-										h('span', { class: selected ? 'font-semibold' : '' }, option.label),
-										highlighted
-											? h('span', { class: 'text-xs text-[#6b7280]' }, '↵')
-											: null,
+							{
+								default: ({
+									option,
+									highlighted,
+									selected,
+								}: {
+									option: ComboboxOption;
+									highlighted: boolean;
+									selected: boolean;
+								}) =>
+									h('div', { class: itemCls }, [
+										h('div', { class: 'flex items-center justify-between' }, [
+											h('span', { class: selected ? 'font-semibold' : '' }, option.label),
+											highlighted ? h('span', { class: 'text-xs text-[#6b7280]' }, '↵') : null,
+										]),
+										option.subtitle ?
+											h('p', { class: 'text-xs text-[#6b7280]' }, option.subtitle)
+										:	null,
 									]),
-									option.subtitle
-										? h('p', { class: 'text-xs text-[#6b7280]' }, option.subtitle)
-										: null,
-								]),
+							},
 						),
 						h(
 							Combobox.Empty,
@@ -170,11 +176,7 @@ export const Complex: Story = {
 						),
 					]),
 				]),
-				h(
-					'p',
-					{ class: 'mt-2 text-xs text-[#6b7280]' },
-					'↑/↓ to navigate · ↵ to select · Esc to close',
-				),
+				h('p', { class: 'mt-2 text-xs text-[#6b7280]' }, '↑/↓ to navigate · ↵ to select · Esc to close'),
 			]);
 		},
 	}),

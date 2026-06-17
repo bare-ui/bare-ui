@@ -9,7 +9,8 @@ const meta = {
 	parameters: {
 		docs: {
 			description: {
-				component: 'Single-value or two-thumb range slider with drag + full keyboard support (arrows, Home/End, PageUp/PageDown).',
+				component:
+					'Single-value or two-thumb range slider with drag + full keyboard support (arrows, Home/End, PageUp/PageDown).',
 			},
 		},
 	},
@@ -37,7 +38,9 @@ export const Default: Story = {
 				h('div', { class: 'flex flex-col gap-3' }, [
 					h(Slider, {
 						value: value.value,
-						onChange: (v: number) => { value.value = v; },
+						onChange: (v) => {
+							value.value = v as number;
+						},
 						min: 0,
 						max: 100,
 						step: 1,
@@ -62,7 +65,9 @@ export const Composed: Story = {
 					h(Slider, {
 						range: true,
 						value: range.value,
-						onChange: (v: [number, number]) => { range.value = v; },
+						onChange: (v) => {
+							range.value = v as [number, number];
+						},
 						min: 0,
 						max: 100,
 						step: 5,
@@ -101,21 +106,57 @@ export const Complex: Story = {
 					labeledSlider(
 						'Volume',
 						`${volume.value}%`,
-						h(Slider, { value: volume.value, onChange: (v: number) => { volume.value = v; }, min: 0, max: 100, step: 1, 'aria-label': 'Volume', class: sliderCls }),
+						h(Slider, {
+							value: volume.value,
+							onChange: (v) => {
+								volume.value = v as number;
+							},
+							min: 0,
+							max: 100,
+							step: 1,
+							'aria-label': 'Volume',
+							class: sliderCls,
+						}),
 					),
 					labeledSlider(
 						'Brightness',
 						`${brightness.value}%`,
-						h(Slider, { value: brightness.value, onChange: (v: number) => { brightness.value = v; }, min: 0, max: 100, step: 5, 'aria-label': 'Brightness', class: sliderCls }),
+						h(Slider, {
+							value: brightness.value,
+							onChange: (v) => {
+								brightness.value = v as number;
+							},
+							min: 0,
+							max: 100,
+							step: 5,
+							'aria-label': 'Brightness',
+							class: sliderCls,
+						}),
 					),
 					labeledSlider(
 						'Temperature',
 						`${temp.value[0]}°C – ${temp.value[1]}°C`,
-						h(Slider, { range: true, value: temp.value, onChange: (v: [number, number]) => { temp.value = v; }, min: 10, max: 30, step: 0.5, 'aria-label': 'Temperature range', class: sliderCls }),
+						h(Slider, {
+							range: true,
+							value: temp.value,
+							onChange: (v) => {
+								temp.value = v as [number, number];
+							},
+							min: 10,
+							max: 30,
+							step: 0.5,
+							'aria-label': 'Temperature range',
+							class: sliderCls,
+						}),
 					),
 					h('div', null, [
 						h('p', { class: 'text-sm font-medium text-black mb-2' }, 'Disabled'),
-						h(Slider, { defaultValue: 50, disabled: true, 'aria-label': 'Disabled', class: `${sliderCls} opacity-50` }),
+						h(Slider, {
+							defaultValue: 50,
+							disabled: true,
+							'aria-label': 'Disabled',
+							class: `${sliderCls} opacity-50`,
+						}),
 					]),
 				]);
 		},

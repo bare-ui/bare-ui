@@ -18,11 +18,9 @@ function renderMention(rootProps: Record<string, unknown> = {}) {
 				h(Mention.Root, { options: people, ...rootProps }, () => [
 					h(Mention.Input, { 'aria-label': 'message' }),
 					h(Mention.Content, null, () => [
-						h(
-							Mention.Items,
-							null,
-							({ option }: { option: MentionOption }) => h('span', null, option.label),
-						),
+						h(Mention.Items, null, {
+							default: ({ option }: { option: MentionOption }) => h('span', null, option.label),
+						}),
 						h(Mention.Empty, null, () => 'No matches'),
 					]),
 				]);

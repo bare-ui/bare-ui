@@ -5,6 +5,7 @@ import { Virtualizer } from '.';
 const meta = {
 	title: 'Layout/Virtualizer',
 	component: Virtualizer.Root,
+	args: { count: 0 },
 	tags: ['autodocs'],
 	parameters: {
 		docs: {
@@ -34,7 +35,9 @@ export const Default: Story = {
 						h('div', { class: 'flex items-center gap-3 border-b border-[#f3f4f6] px-4 py-3 text-sm' }, [
 							h(
 								'span',
-								{ class: 'flex size-7 items-center justify-center rounded-full bg-[#f3f4f6] text-xs text-[#6b7280]' },
+								{
+									class: 'flex size-7 items-center justify-center rounded-full bg-[#f3f4f6] text-xs text-[#6b7280]',
+								},
 								String(index),
 							),
 							h('span', { class: 'text-black' }, `Item number ${index}`),
@@ -65,7 +68,10 @@ export const Composed: Story = {
 									{
 										class: 'flex h-full w-[120px] flex-col items-center justify-center border-r border-[#f3f4f6] text-sm',
 									},
-									[h('span', { class: 'text-2xl' }, '🗂️'), h('span', { class: 'text-black' }, `#${index}`)],
+									[
+										h('span', { class: 'text-2xl' }, '🗂️'),
+										h('span', { class: 'text-black' }, `#${index}`),
+									],
 								),
 						},
 					),
@@ -121,7 +127,9 @@ export const Complex: Story = {
 									.join('');
 								return h(
 									'div',
-									{ class: 'flex items-center gap-3 border-b border-[#f3f4f6] px-4 py-2.5 hover:bg-[#f5f5f5]' },
+									{
+										class: 'flex items-center gap-3 border-b border-[#f3f4f6] px-4 py-2.5 hover:bg-[#f5f5f5]',
+									},
 									[
 										h(
 											'span',

@@ -15,8 +15,7 @@ const meta = {
 	parameters: {
 		docs: {
 			description: {
-				component:
-					'Click-to-pick or drag-and-drop file upload with accept/maxFiles/maxSize validation.',
+				component: 'Click-to-pick or drag-and-drop file upload with accept/maxFiles/maxSize validation.',
 			},
 		},
 	},
@@ -50,29 +49,31 @@ export const Default: Story = {
 					h(
 						FileUpload.Items,
 						{},
-						({ file, index, remove }: { file: File; index: number; remove: () => void }) =>
-							h(
-								'li',
-								{
-									key: index,
-									class: 'flex items-center justify-between rounded-[8px] border border-black bg-white px-3 py-2',
-								},
-								[
-									h('span', { class: 'truncate text-black' }, file.name),
-									h('div', { class: 'flex items-center gap-3' }, [
-										h('span', { class: 'text-xs text-[#6b7280]' }, formatBytes(file.size)),
-										h(
-											'button',
-											{
-												onClick: remove,
-												'aria-label': `Remove ${file.name}`,
-												class: 'cursor-pointer text-sm text-black hover:underline',
-											},
-											'Remove',
-										),
-									]),
-								],
-							),
+						{
+							default: ({ file, index, remove }: { file: File; index: number; remove: () => void }) =>
+								h(
+									'li',
+									{
+										key: index,
+										class: 'flex items-center justify-between rounded-[8px] border border-black bg-white px-3 py-2',
+									},
+									[
+										h('span', { class: 'truncate text-black' }, file.name),
+										h('div', { class: 'flex items-center gap-3' }, [
+											h('span', { class: 'text-xs text-[#6b7280]' }, formatBytes(file.size)),
+											h(
+												'button',
+												{
+													onClick: remove,
+													'aria-label': `Remove ${file.name}`,
+													class: 'cursor-pointer text-sm text-black hover:underline',
+												},
+												'Remove',
+											),
+										]),
+									],
+								),
+						},
 					),
 				]),
 			]),
@@ -82,20 +83,18 @@ export const Default: Story = {
 export const Composed: Story = {
 	render: () => ({
 		setup: () => () =>
-			h(
-				FileUpload.Root,
-				{ accept: 'image/*', maxSize: 2 * 1024 * 1024, multiple: true },
-				() => [
-					h(FileUpload.Input),
-					h('div', { class: 'flex items-center gap-3' }, [
-						h(FileUpload.Trigger, { class: triggerCls }, () => 'Choose images'),
-						h('span', { class: 'text-xs text-[#6b7280]' }, 'PNG / JPG · max 2 MB each'),
-					]),
-					h('ul', { class: 'mt-3 flex flex-col gap-1 text-sm' }, [
-						h(
-							FileUpload.Items,
-							{},
-							({ file, index, remove }: { file: File; index: number; remove: () => void }) =>
+			h(FileUpload.Root, { accept: 'image/*', maxSize: 2 * 1024 * 1024, multiple: true }, () => [
+				h(FileUpload.Input),
+				h('div', { class: 'flex items-center gap-3' }, [
+					h(FileUpload.Trigger, { class: triggerCls }, () => 'Choose images'),
+					h('span', { class: 'text-xs text-[#6b7280]' }, 'PNG / JPG · max 2 MB each'),
+				]),
+				h('ul', { class: 'mt-3 flex flex-col gap-1 text-sm' }, [
+					h(
+						FileUpload.Items,
+						{},
+						{
+							default: ({ file, index, remove }: { file: File; index: number; remove: () => void }) =>
 								h(
 									'li',
 									{
@@ -111,10 +110,10 @@ export const Composed: Story = {
 										),
 									],
 								),
-						),
-					]),
-				],
-			),
+						},
+					),
+				]),
+			]),
 	}),
 };
 
@@ -172,54 +171,59 @@ export const Complex: Story = {
 								h(
 									FileUpload.Items,
 									{},
-									({
-										file,
-										index,
-										remove,
-									}: {
-										file: File
-										index: number
-										remove: () => void
-									}) =>
-										h(
-											'li',
-											{
-												key: index,
-												class: 'flex items-center justify-between rounded-[8px] border border-black bg-white px-3 py-2',
-											},
-											[
-												h('div', { class: 'flex flex-col' }, [
+									{
+										default: ({
+											file,
+											index,
+											remove,
+										}: {
+											file: File;
+											index: number;
+											remove: () => void;
+										}) =>
+											h(
+												'li',
+												{
+													key: index,
+													class: 'flex items-center justify-between rounded-[8px] border border-black bg-white px-3 py-2',
+												},
+												[
+													h('div', { class: 'flex flex-col' }, [
+														h(
+															'span',
+															{ class: 'truncate font-medium text-black' },
+															file.name,
+														),
+														h(
+															'span',
+															{ class: 'text-xs text-[#6b7280]' },
+															formatBytes(file.size),
+														),
+													]),
 													h(
-														'span',
-														{ class: 'truncate font-medium text-black' },
-														file.name,
+														'button',
+														{
+															onClick: remove,
+															class: 'text-sm text-black hover:underline',
+														},
+														'×',
 													),
-													h(
-														'span',
-														{ class: 'text-xs text-[#6b7280]' },
-														formatBytes(file.size),
-													),
-												]),
-												h(
-													'button',
-													{ onClick: remove, class: 'text-sm text-black hover:underline' },
-													'×',
-												),
-											],
-										),
+												],
+											),
+									},
 								),
 							]),
 						],
 					),
-					errors.value.length > 0
-						? h(
-								'ul',
-								{
-									class: 'rounded-[8px] border border-black bg-[#f5f5f5] px-3 py-2 text-xs text-black',
-								},
-								errors.value.map((err, i) => h('li', { key: i }, `⚠ ${err}`)),
-							)
-						: null,
+					errors.value.length > 0 ?
+						h(
+							'ul',
+							{
+								class: 'rounded-[8px] border border-black bg-[#f5f5f5] px-3 py-2 text-xs text-black',
+							},
+							errors.value.map((err, i) => h('li', { key: i }, `⚠ ${err}`)),
+						)
+					:	null,
 				]);
 		},
 	}),

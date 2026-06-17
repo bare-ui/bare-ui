@@ -41,14 +41,20 @@ export const Default: Story = {
 	render: () => ({
 		setup: () => () =>
 			h(CodeBlock.Root, { code: sample, language: 'js', class: shellCls }, () => [
-				h(CodeBlock.CopyButton, { class: copyCls }, ({ copied }: { copied: boolean }) =>
-					copied ? 'Copied!' : 'Copy',
+				h(
+					CodeBlock.CopyButton,
+					{ class: copyCls },
+					{
+						default: ({ copied }: { copied: boolean }) => (copied ? 'Copied!' : 'Copy'),
+					},
 				),
 				h(CodeBlock.Code, { class: preCls }, () =>
-					h(CodeBlock.Lines, null, ({ line }: { line: { number: number; content: string } }) => [
-						h('span', { class: gutterCls }, line.number),
-						line.content,
-					]),
+					h(CodeBlock.Lines, null, {
+						default: ({ line }: { line: { number: number; content: string } }) => [
+							h('span', { class: gutterCls }, line.number),
+							line.content,
+						],
+					}),
 				),
 			]),
 	}),
@@ -61,7 +67,9 @@ function highlight(content: string) {
 	return content
 		.split(KEYWORD_SPLIT)
 		.map((part, i) =>
-			KEYWORDS.includes(part) ? h('span', { key: i, class: 'text-purple-400' }, part) : h('span', { key: i }, part),
+			KEYWORDS.includes(part) ?
+				h('span', { key: i, class: 'text-purple-400' }, part)
+			:	h('span', { key: i }, part),
 		);
 }
 
@@ -69,26 +77,24 @@ export const Composed: Story = {
 	render: () => ({
 		setup: () => () =>
 			h('div', { class: 'flex flex-col gap-6' }, [
-				h(
-					CodeBlock.Root,
-					{ code: sample, language: 'js', highlightLines: [2], class: shellCls },
-					() => [
-						h(CodeBlock.CopyButton, { class: copyCls }, ({ copied }: { copied: boolean }) =>
-							copied ? 'Copied!' : 'Copy',
-						),
-						h(CodeBlock.Code, { class: preCls }, () =>
-							h(
-								CodeBlock.Lines,
-								null,
-								({ line }: { line: { number: number; content: string; highlighted: boolean } }) =>
-									h('span', { class: `block px-2${line.highlighted ? ' bg-white/10' : ''}` }, [
-										h('span', { class: gutterCls }, line.number),
-										...highlight(line.content),
-									]),
-							),
-						),
-					],
-				),
+				h(CodeBlock.Root, { code: sample, language: 'js', highlightLines: [2], class: shellCls }, () => [
+					h(
+						CodeBlock.CopyButton,
+						{ class: copyCls },
+						{
+							default: ({ copied }: { copied: boolean }) => (copied ? 'Copied!' : 'Copy'),
+						},
+					),
+					h(CodeBlock.Code, { class: preCls }, () =>
+						h(CodeBlock.Lines, null, {
+							default: ({ line }: { line: { number: number; content: string; highlighted: boolean } }) =>
+								h('span', { class: `block px-2${line.highlighted ? ' bg-white/10' : ''}` }, [
+									h('span', { class: gutterCls }, line.number),
+									...highlight(line.content),
+								]),
+						}),
+					),
+				]),
 
 				h(
 					CodeBlock.Root,
@@ -99,27 +105,29 @@ export const Composed: Story = {
 						class: shellCls,
 					},
 					() => [
-						h(CodeBlock.CopyButton, { class: copyCls }, ({ copied }: { copied: boolean }) =>
-							copied ? 'Copied!' : 'Copy',
+						h(
+							CodeBlock.CopyButton,
+							{ class: copyCls },
+							{
+								default: ({ copied }: { copied: boolean }) => (copied ? 'Copied!' : 'Copy'),
+							},
 						),
 						h(CodeBlock.Code, { class: preCls }, () =>
-							h(
-								CodeBlock.Lines,
-								null,
-								({ line }: { line: { content: string; diff?: string } }) =>
+							h(CodeBlock.Lines, null, {
+								default: ({ line }: { line: { content: string; diff?: string } }) =>
 									h(
 										'span',
 										{
 											class:
-												line.diff === 'add'
-													? 'block bg-green-500/15 before:mr-2 before:text-green-400 before:content-["+"]'
-													: line.diff === 'remove'
-														? 'block bg-red-500/15 before:mr-2 before:text-red-400 before:content-["-"]'
-														: 'block before:mr-2 before:text-transparent before:content-["·"]',
+												line.diff === 'add' ?
+													'block bg-green-500/15 before:mr-2 before:text-green-400 before:content-["+"]'
+												: line.diff === 'remove' ?
+													'block bg-red-500/15 before:mr-2 before:text-red-400 before:content-["-"]'
+												:	'block before:mr-2 before:text-transparent before:content-["·"]',
 										},
 										line.content,
 									),
-							),
+							}),
 						),
 					],
 				),
@@ -141,7 +149,9 @@ export function Save() {
 					h('div', { class: 'mb-3 flex items-center gap-2 text-xs font-medium text-[#6b7280]' }, [
 						h(
 							'span',
-							{ class: 'inline-flex h-6 w-6 items-center justify-center rounded-full bg-black text-[0.65rem] text-white' },
+							{
+								class: 'inline-flex h-6 w-6 items-center justify-center rounded-full bg-black text-[0.65rem] text-white',
+							},
 							'AI',
 						),
 						'Assistant',
@@ -156,17 +166,20 @@ export function Save() {
 							h('span', { class: 'text-xs font-medium text-[#a1a1aa]' }, 'example.tsx'),
 							h(
 								CodeBlock.CopyButton,
-								{ class: 'rounded-md border border-[#3f3f46] bg-[#27272a] px-2 py-1 text-xs text-[#a1a1aa] transition-colors hover:text-white data-[copied]:text-green-400' },
-								({ copied }: { copied: boolean }) => (copied ? 'Copied!' : 'Copy'),
+								{
+									class: 'rounded-md border border-[#3f3f46] bg-[#27272a] px-2 py-1 text-xs text-[#a1a1aa] transition-colors hover:text-white data-[copied]:text-green-400',
+								},
+								{ default: ({ copied }: { copied: boolean }) => (copied ? 'Copied!' : 'Copy') },
 							),
 						]),
 						h(CodeBlock.Code, { class: preCls }, () =>
-							h(CodeBlock.Lines, null, ({ line }: { line: { number: number; content: string } }) =>
-								h('span', { class: 'block px-2' }, [
-									h('span', { class: gutterCls }, line.number),
-									...highlight(line.content),
-								]),
-							),
+							h(CodeBlock.Lines, null, {
+								default: ({ line }: { line: { number: number; content: string } }) =>
+									h('span', { class: 'block px-2' }, [
+										h('span', { class: gutterCls }, line.number),
+										...highlight(line.content),
+									]),
+							}),
 						),
 					]),
 				]);

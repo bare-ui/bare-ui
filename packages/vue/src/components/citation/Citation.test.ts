@@ -48,10 +48,7 @@ describe('Citation', () => {
 		renderCitation();
 		const list = screen.getByRole('list');
 		expect(list).toHaveTextContent('First source');
-		expect(screen.getByRole('link', { name: 'First source' })).toHaveAttribute(
-			'href',
-			'https://example.com/a',
-		);
+		expect(screen.getByRole('link', { name: 'First source' })).toHaveAttribute('href', 'https://example.com/a');
 	});
 
 	it('sanitizes a dangerous footnote URL, falling back to plain text', () => {
@@ -86,9 +83,7 @@ describe('Citation', () => {
 		const { container } = render({
 			setup() {
 				return () =>
-					h(Citation.Root, { sources }, () => [
-						h(Citation.Ref, { for: 'missing', 'data-testid': 'ghost' }),
-					]);
+					h(Citation.Root, { sources }, () => [h(Citation.Ref, { for: 'missing', 'data-testid': 'ghost' })]);
 			},
 		});
 		expect(container.querySelector('[data-testid="ghost"]')).toBeNull();
@@ -102,8 +97,10 @@ describe('Citation', () => {
 						h(
 							Citation.Ref,
 							{ for: 'b' },
-							({ index, source }: CitationRenderProps) =>
-								h('span', null, `[${index}:${source.title}]`),
+							{
+								default: ({ index, source }: CitationRenderProps) =>
+									h('span', null, `[${index}:${source.title}]`),
+							},
 						),
 					]);
 			},
@@ -116,12 +113,10 @@ describe('Citation', () => {
 			setup() {
 				return () =>
 					h(Citation.Root, { sources }, () => [
-						h(
-							Citation.List,
-							null,
-							({ index, source }: CitationRenderProps) =>
+						h(Citation.List, null, {
+							default: ({ index, source }: CitationRenderProps) =>
 								h('span', null, `${index} — ${source.id}`),
-						),
+						}),
 					]);
 			},
 		});

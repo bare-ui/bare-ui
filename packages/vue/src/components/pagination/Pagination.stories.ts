@@ -37,9 +37,7 @@ function renderItem(item: PaginationItemValue, index: number) {
 	if (item === 'ellipsis') {
 		return h(Pagination.Ellipsis, { key: `e-${index}`, class: 'px-2 text-[#6b7280]' });
 	}
-	return h(Pagination.Item, { key: item, page: item }, () =>
-		h('span', { class: pageBtnCls }, item),
-	);
+	return h(Pagination.Item, { key: item, page: item }, () => h('span', { class: pageBtnCls }, item));
 }
 
 export const Default: Story = {
@@ -51,8 +49,10 @@ export const Default: Story = {
 					h(
 						Pagination.Items,
 						{},
-						({ item, index }: { item: PaginationItemValue; index: number }) =>
-							renderItem(item, index),
+						{
+							default: ({ item, index }: { item: PaginationItemValue; index: number }) =>
+								renderItem(item, index),
+						},
 					),
 					h('li', {}, [h(Pagination.Next, { class: navBtnCls }, () => 'Next')]),
 				]),
@@ -79,8 +79,10 @@ export const Composed: Story = {
 								h(
 									Pagination.Items,
 									{},
-									({ item, index }: { item: PaginationItemValue; index: number }) =>
-										renderItem(item, index),
+									{
+										default: ({ item, index }: { item: PaginationItemValue; index: number }) =>
+											renderItem(item, index),
+									},
 								),
 								h('li', {}, [h(Pagination.Next, { class: navBtnCls }, () => '›')]),
 							]),
@@ -118,28 +120,22 @@ export const Complex: Story = {
 						},
 						() => [
 							h(Pagination.List, { class: listCls }, () => [
-								h('li', {}, [
-									h(Pagination.Previous, { class: navBtnCls }, () => '« First'),
-								]),
+								h('li', {}, [h(Pagination.Previous, { class: navBtnCls }, () => '« First')]),
 								h(
 									Pagination.Items,
 									{},
-									({ item, index }: { item: PaginationItemValue; index: number }) =>
-										renderItem(item, index),
+									{
+										default: ({ item, index }: { item: PaginationItemValue; index: number }) =>
+											renderItem(item, index),
+									},
 								),
-								h('li', {}, [
-									h(Pagination.Next, { class: navBtnCls }, () => 'Last »'),
-								]),
+								h('li', {}, [h(Pagination.Next, { class: navBtnCls }, () => 'Last »')]),
 							]),
 						],
 					),
 					h('p', { class: 'text-xs text-[#6b7280]' }, [
 						'Showing ',
-						h(
-							'span',
-							{ class: 'font-medium text-black' },
-							`${from.value}–${to.value}`,
-						),
+						h('span', { class: 'font-medium text-black' }, `${from.value}–${to.value}`),
 						' of ',
 						h('span', { class: 'font-medium text-black' }, String(totalItems)),
 					]),

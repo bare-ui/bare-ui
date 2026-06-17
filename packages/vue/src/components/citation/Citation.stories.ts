@@ -46,30 +46,32 @@ const markerCls =
 export const Default: Story = {
 	render: () => ({
 		setup: () => () =>
-			h(
-				Citation.Root,
-				{ sources, class: 'max-w-lg space-y-4 text-sm text-[#374151]' },
-				() => [
-					h('p', { class: 'leading-relaxed' }, [
-						'A ',
-						h('code', null, '200 OK'),
-						' response means the request succeeded',
-						h(Citation.Ref, { for: 'rfc', class: markerCls }),
-						'. Status codes are grouped into five classes, from informational to server error',
-						h(Citation.Ref, { for: 'mdn', class: markerCls }),
-						'.',
-					]),
-					h(
-						Citation.List,
-						{ class: 'space-y-1 border-t border-[#e5e7eb] pt-3 text-xs text-[#6b7280]' },
-						({ index, source }: { index: number; source: CitationSource }) =>
+			h(Citation.Root, { sources, class: 'max-w-lg space-y-4 text-sm text-[#374151]' }, () => [
+				h('p', { class: 'leading-relaxed' }, [
+					'A ',
+					h('code', null, '200 OK'),
+					' response means the request succeeded',
+					h(Citation.Ref, { for: 'rfc', class: markerCls }),
+					'. Status codes are grouped into five classes, from informational to server error',
+					h(Citation.Ref, { for: 'mdn', class: markerCls }),
+					'.',
+				]),
+				h(
+					Citation.List,
+					{ class: 'space-y-1 border-t border-[#e5e7eb] pt-3 text-xs text-[#6b7280]' },
+					{
+						default: ({ index, source }: { index: number; source: CitationSource }) =>
 							h('div', { class: 'flex gap-2' }, [
 								h('span', { class: 'font-semibold text-[#4338ca]' }, `${index}.`),
-								h('a', { href: source.url, target: '_blank', rel: 'noreferrer', class: 'hover:underline' }, source.title),
+								h(
+									'a',
+									{ href: source.url, target: '_blank', rel: 'noreferrer', class: 'hover:underline' },
+									source.title,
+								),
 							]),
-					),
-				],
-			),
+					},
+				),
+			]),
 	}),
 };
 
@@ -93,8 +95,11 @@ export const Composed: Story = {
 						'A render function lets a marker show anything — here the source title',
 						h(
 							Citation.Ref,
-							{ for: 'rfc', class: 'mx-0.5 rounded-full bg-black px-1.5 text-[0.65rem] font-semibold text-white no-underline' },
-							({ source }: { source: CitationSource }) => source.title?.split(' ')[1],
+							{
+								for: 'rfc',
+								class: 'mx-0.5 rounded-full bg-black px-1.5 text-[0.65rem] font-semibold text-white no-underline',
+							},
+							{ default: ({ source }: { source: CitationSource }) => source.title?.split(' ')[1] },
 						),
 						'.',
 					]),
@@ -109,23 +114,25 @@ export const Composed: Story = {
 					h(
 						Citation.List,
 						{ class: 'mt-3 space-y-2 border-t border-[#e5e7eb] pt-3 text-xs text-[#6b7280]' },
-						({ index, source }: { index: number; source: CitationSource }) =>
-							h('div', { class: 'flex gap-2' }, [
-								h('span', { class: 'font-semibold text-[#4338ca]' }, `${index}.`),
-								h('div', null, [
-									h(
-										'a',
-										{
-											href: source.url,
-											target: '_blank',
-											rel: 'noreferrer',
-											class: 'font-medium text-[#374151] hover:underline',
-										},
-										source.title,
-									),
-									h('p', { class: 'text-[#9ca3af]' }, source.excerpt),
+						{
+							default: ({ index, source }: { index: number; source: CitationSource }) =>
+								h('div', { class: 'flex gap-2' }, [
+									h('span', { class: 'font-semibold text-[#4338ca]' }, `${index}.`),
+									h('div', null, [
+										h(
+											'a',
+											{
+												href: source.url,
+												target: '_blank',
+												rel: 'noreferrer',
+												class: 'font-medium text-[#374151] hover:underline',
+											},
+											source.title,
+										),
+										h('p', { class: 'text-[#9ca3af]' }, source.excerpt),
+									]),
 								]),
-							]),
+						},
 					),
 				]),
 			]),
@@ -155,7 +162,9 @@ export const Complex: Story = {
 					h('div', { class: 'mb-3 flex items-center gap-2 text-xs font-medium text-[#6b7280]' }, [
 						h(
 							'span',
-							{ class: 'inline-flex h-6 w-6 items-center justify-center rounded-full bg-black text-[0.65rem] text-white' },
+							{
+								class: 'inline-flex h-6 w-6 items-center justify-center rounded-full bg-black text-[0.65rem] text-white',
+							},
 							'AI',
 						),
 						'Assistant',
@@ -178,23 +187,25 @@ export const Complex: Story = {
 							h(
 								Citation.List,
 								{ class: 'space-y-2 text-xs text-[#6b7280]' },
-								({ index, source }: { index: number; source: CitationSource }) =>
-									h('div', { class: 'flex gap-2 rounded-lg border border-[#e5e7eb] p-2' }, [
-										h('span', { class: 'font-semibold text-[#4338ca]' }, `${index}`),
-										h('div', null, [
-											h(
-												'a',
-												{
-													href: source.url,
-													target: '_blank',
-													rel: 'noreferrer',
-													class: 'font-medium text-[#374151] hover:underline',
-												},
-												source.title,
-											),
-											h('p', { class: 'text-[#9ca3af]' }, source.excerpt),
+								{
+									default: ({ index, source }: { index: number; source: CitationSource }) =>
+										h('div', { class: 'flex gap-2 rounded-lg border border-[#e5e7eb] p-2' }, [
+											h('span', { class: 'font-semibold text-[#4338ca]' }, `${index}`),
+											h('div', null, [
+												h(
+													'a',
+													{
+														href: source.url,
+														target: '_blank',
+														rel: 'noreferrer',
+														class: 'font-medium text-[#374151] hover:underline',
+													},
+													source.title,
+												),
+												h('p', { class: 'text-[#9ca3af]' }, source.excerpt),
+											]),
 										]),
-									]),
+								},
 							),
 						]),
 					]),
