@@ -71,6 +71,7 @@
 		"bench:mount": "vitest bench --run --config vitest.bench.config.ts",
 		"bench:ssr": "vitest bench --run --config vitest.bench.ssr.config.ts",
 		"compiler:check": "node scripts/compiler-check.mjs",
+		"license:check": "license-checker-rseidelsohn --production --onlyAllow 'MIT;ISC;BSD-2-Clause;BSD-3-Clause;Apache-2.0;0BSD;CC0-1.0;Unlicense;MIT-0;BlueOak-1.0.0' --summary",
 		"clean": "rm -rf dist"
 	},
 	"peerDependencies": {
@@ -102,6 +103,7 @@
 		"eslint-plugin-storybook": "^10.3.3",
 		"globals": "^17.4.0",
 		"jsdom": "^29.0.1",
+		"license-checker-rseidelsohn": "^5.0.1",
 		"playwright": "^1.58.2",
 		"prettier": "^3.8.1",
 		"size-limit": "^12.1.0",

@@ -95,6 +95,23 @@ Notes:
   raster `data:` images the `Markdown` renderer permits. Tighten or widen the
   source list to match where your own image URLs come from.
 
-A more detailed write-up — including CSP guidance for server-rendered apps and a
-dependency license audit — is published at
-<https://wire-ui.com/security>.
+## Dependency licenses
+
+Every published Wire UI package (`@wire-ui/react`, `@wire-ui/vue`,
+`@wire-ui/solid`) ships **zero runtime dependencies** — the only things a
+consumer installs are the package itself and the framework peer dependency
+(`react`/`react-dom`, `vue`, or `solid-js`) they already have. There is no
+third-party runtime code, so there is no transitive license surface.
+
+To keep that guarantee honest, each package has a `license:check` script
+(`license-checker-rseidelsohn`, run in CI) that scans the **production**
+dependency tree and fails if any package carries a license outside a permissive
+allowlist (MIT, ISC, BSD-2/3-Clause, Apache-2.0, 0BSD, CC0-1.0, Unlicense,
+MIT-0, BlueOak-1.0.0). Today it reports only the MIT-licensed package itself; the
+check exists so that adding a runtime dependency with a non-permissive (e.g.
+copyleft) license breaks the build instead of silently shipping.
+
+The full dependency-license audit — including build-time/dev dependencies, which
+never reach a consumer's bundle — is maintained externally and published at
+<https://wire-ui.com/security>, alongside a more detailed security write-up and
+CSP guidance for server-rendered apps.
