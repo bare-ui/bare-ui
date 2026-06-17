@@ -65,12 +65,14 @@
 		"bench:mount": "vitest bench --config vitest.bench.config.ts bench/render.mount.bench.ts",
 		"bench:ssr": "vitest bench --config vitest.bench.config.ts bench/render.ssr.bench.ts",
 		"size": "size-limit",
+		"attw": "attw --pack .",
 		"clean": "rm -rf dist"
 	},
 	"peerDependencies": {
 		"vue": ">=3.5.0"
 	},
 	"devDependencies": {
+		"@arethetypeswrong/cli": "^0.18.3",
 		"@chromatic-com/storybook": "^5.1.1",
 		"@headlessui/vue": "^1.7.0",
 		"@size-limit/preset-small-lib": "^12.1.0",
