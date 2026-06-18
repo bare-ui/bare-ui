@@ -102,6 +102,7 @@
 		"globals": "^17.4.0",
 		"jsdom": "^29.0.1",
 		"license-checker-rseidelsohn": "^5.0.1",
+		"playwright": "^1.58.2",
 		"prettier": "^3.8.1",
 		"radix-vue": "^1.9.0",
 		"size-limit": "^12.1.0",
