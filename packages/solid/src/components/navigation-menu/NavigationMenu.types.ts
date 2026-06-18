@@ -40,6 +40,12 @@ export interface NavigationMenuRootContextValue {
 	cancelClose: () => void;
 	/** Schedule a close after `skipDelayDuration`. Called when cursor leaves a Trigger or Content. */
 	scheduleClose: () => void;
+	/**
+	 * Set true by a keyboard-driven open so Content moves focus to its first link;
+	 * left false for pointer/hover opens (which must not steal focus). A plain
+	 * mutable holder (not a signal) — it is read imperatively, never tracked.
+	 */
+	focusContentOnOpen: { current: boolean };
 }
 
 export interface NavigationMenuItemContextValue {

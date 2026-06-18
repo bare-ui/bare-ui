@@ -104,6 +104,26 @@ describe('NavigationMenu', () => {
 		}
 	});
 
+	it('ArrowDown opens a menu and moves focus to the first link', async () => {
+		renderNM();
+		const trigger = screen.getByRole('button', { name: 'Products' });
+		trigger.focus();
+		await userEvent.keyboard('{ArrowDown}');
+		expect(screen.getByRole('menu')).toBeInTheDocument();
+		expect(screen.getByRole('link', { name: 'A' })).toHaveFocus();
+	});
+
+	it('Escape inside the content closes it and returns focus to the trigger', async () => {
+		renderNM();
+		const trigger = screen.getByRole('button', { name: 'Products' });
+		trigger.focus();
+		await userEvent.keyboard('{ArrowDown}');
+		expect(screen.getByRole('link', { name: 'A' })).toHaveFocus();
+		await userEvent.keyboard('{Escape}');
+		expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+		expect(trigger).toHaveFocus();
+	});
+
 	it('Link active prop sets aria-current=page', () => {
 		render(() => (
 			<NavigationMenu.Root>

@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, onCleanup, Show, splitProps, useContext, type JSX } from 'solid-js';
+import { createContext, createEffect, onCleanup, Show, splitProps, useContext, type JSX } from 'solid-js';
 import { createClickOutside } from '@/primitives/create-click-outside';
 import { createControllableState } from '@/primitives/create-controllable-state';
 import { createInteractiveState } from '@/primitives/create-interactive-state';
@@ -77,6 +77,11 @@ function Root(props: NavigationMenuRootProps) {
 	// into Content, the Content's `pointerenter` clears its own (null) timer
 	// while the Trigger's pending close timer keeps running and shuts the menu.
 	// Hoisting the timer here lets either compound piece cancel a pending close.
+	// Keyboard-open flag, mirrored from React's `focusContentOnOpenRef`. Set by a
+	// Trigger ArrowDown/ArrowUp so Content focuses its first link on open; left
+	// false for pointer/hover opens so the cursor isn't yanked away.
+	const focusContentOnOpen = { current: false };
+
 	let closeTimer: ReturnType<typeof setTimeout> | null = null;
 	const cancelClose = () => {
 		if (closeTimer) {
@@ -123,6 +128,7 @@ function Root(props: NavigationMenuRootProps) {
 		},
 		cancelClose,
 		scheduleClose,
+		focusContentOnOpen,
 	};
 
 	return (
@@ -214,8 +220,6 @@ function Trigger(props: NavigationMenuTriggerProps) {
 			return !!local.disabled;
 		},
 	});
-	const merged = mergeProps(rest, state.handlers);
-
 	// Open-delay timer is per-trigger (it's tied to this element's hover intent).
 	// The close timer lives on Root so Content can cancel it — see Root.
 	let openTimer: ReturnType<typeof setTimeout> | null = null;
@@ -224,6 +228,20 @@ function Trigger(props: NavigationMenuTriggerProps) {
 		openTimer = null;
 	};
 	onCleanup(clearOpenTimer);
+
+	// ArrowDown/ArrowUp open the menu and move focus into its first link. Layered
+	// after the interactive-state handlers (which only react to Enter/Space) so all
+	// keydown behavior composes — consumer → interactive → this.
+	const handleKeyDown: JSX.EventHandler<HTMLButtonElement, KeyboardEvent> = (e) => {
+		if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+			e.preventDefault();
+			clearOpenTimer();
+			root.cancelClose();
+			root.focusContentOnOpen.current = true;
+			root.setValue(item.value);
+		}
+	};
+	const merged = mergeProps(rest, mergeProps(state.handlers, { onKeyDown: handleKeyDown }));
 
 	const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (e) => {
 		clearOpenTimer();
@@ -280,11 +298,34 @@ function Trigger(props: NavigationMenuTriggerProps) {
 // Content
 // ---------------------------------------------------------------------------
 
+const FOCUSABLE_IN_CONTENT = 'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])';
+
 function Content(props: NavigationMenuContentProps) {
-	const [local, rest] = splitProps(props, ['children', 'class', 'onPointerEnter', 'onPointerLeave']);
+	const [local, rest] = splitProps(props, ['children', 'class', 'onPointerEnter', 'onPointerLeave', 'onKeyDown', 'ref']);
 	const root = useRootContext();
 	const item = useItemContext();
 	const open = () => root.value === item.value;
+
+	let contentEl: HTMLDivElement | undefined;
+	const mergedRef = createMergedRefs<HTMLDivElement>(
+		(el) => (contentEl = el),
+		(el) => (local.ref as ((el: HTMLDivElement) => void) | undefined)?.(el),
+	);
+
+	// When opened from the keyboard, move focus to the first link. Pointer/hover
+	// opens leave the flag false so the cursor isn't yanked away. The effect tracks
+	// `open()`; the flag is read imperatively (never tracked). Effects don't run on
+	// the server, so this is client-only — SSR-safe.
+	createEffect(() => {
+		if (!open() || !root.focusContentOnOpen.current) return;
+		root.focusContentOnOpen.current = false;
+		contentEl?.querySelector<HTMLElement>(FOCUSABLE_IN_CONTENT)?.focus();
+	});
+
+	const returnFocusToTrigger = () => {
+		const trigger = contentEl?.closest('li')?.querySelector<HTMLElement>('[aria-haspopup="menu"]');
+		trigger?.focus();
+	};
 
 	const handlePointerEnter: JSX.EventHandler<HTMLDivElement, PointerEvent> = (e) => {
 		// Cancel the pending close started by Trigger's pointerleave.
@@ -304,15 +345,29 @@ function Content(props: NavigationMenuContentProps) {
 		}
 	};
 
+	const handleKeyDown: JSX.EventHandler<HTMLDivElement, KeyboardEvent> = (e) => {
+		// Escape closes and returns focus to the trigger (APG disclosure nav).
+		if (e.key === 'Escape') {
+			returnFocusToTrigger();
+			root.setValue(null);
+		}
+		const userOnKeyDown = local.onKeyDown;
+		if (typeof userOnKeyDown === 'function') {
+			(userOnKeyDown as (event: typeof e) => void)(e);
+		}
+	};
+
 	return (
 		<Show when={open()}>
 			<div
+				ref={mergedRef}
 				role='menu'
 				class={local.class}
 				data-state='open'
 				{...rest}
 				onPointerEnter={handlePointerEnter}
-				onPointerLeave={handlePointerLeave}>
+				onPointerLeave={handlePointerLeave}
+				onKeyDown={handleKeyDown}>
 				{local.children}
 			</div>
 		</Show>
