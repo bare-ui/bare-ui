@@ -21,6 +21,19 @@ export interface TagInputRootProps extends Omit<JSX.HTMLAttributes<HTMLDivElemen
 
 export type TagInputListProps = JSX.HTMLAttributes<HTMLDivElement>;
 
+export interface TagInputTagProps extends JSX.HTMLAttributes<HTMLSpanElement> {
+	/** The tag's text — used for the remove button's accessible name. */
+	label: string;
+	/** Remove this tag (wire to the `remove` argument from `TagInput.Items`). */
+	onRemove: () => void;
+	/** Override the remove button's accessible name. Defaults to `Remove {label}`. */
+	removeLabel?: string;
+	/** Content of the remove button (defaults to "×"). */
+	removeContent?: JSX.Element;
+	/** Class applied to the built-in remove button. */
+	removeClassName?: string;
+}
+
 export type TagInputFieldProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, 'value' | 'defaultValue' | 'onChange'>;
 
 export interface TagInputContextValue {

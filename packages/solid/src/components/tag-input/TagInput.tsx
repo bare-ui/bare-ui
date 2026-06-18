@@ -7,6 +7,7 @@ import type {
 	TagInputFieldProps,
 	TagInputListProps,
 	TagInputRootProps,
+	TagInputTagProps,
 } from './TagInput.types';
 
 // ---------------------------------------------------------------------------
@@ -191,9 +192,55 @@ function Field(props: TagInputFieldProps) {
 }
 
 // ---------------------------------------------------------------------------
+// Tag — an accessible, keyboard-removable chip (optional convenience over the
+// raw Items render-prop).
+// ---------------------------------------------------------------------------
+
+function Tag(props: TagInputTagProps) {
+	const [local, rest] = splitProps(props, [
+		'label',
+		'onRemove',
+		'removeLabel',
+		'removeContent',
+		'removeClassName',
+		'children',
+		'class',
+	]);
+
+	const handleRemoveClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (e) => {
+		// Move focus to an adjacent remove button *before* this one unmounts, so
+		// keyboard focus isn't dropped to <body>. Solid's keyed <For> preserves the
+		// neighbour's DOM node across the removal, so focus persists.
+		const button = e.currentTarget;
+		const list = button.closest('[data-taginput-tag]')?.parentElement;
+		const buttons = list ? Array.from(list.querySelectorAll<HTMLElement>('[data-taginput-remove]')) : [];
+		const idx = buttons.indexOf(button);
+		(buttons[idx + 1] ?? buttons[idx - 1])?.focus();
+		local.onRemove();
+	};
+
+	return (
+		<span
+			data-taginput-tag=''
+			class={local.class}
+			{...rest}>
+			{local.children ?? local.label}
+			<button
+				type='button'
+				data-taginput-remove=''
+				class={local.removeClassName}
+				aria-label={local.removeLabel ?? `Remove ${local.label}`}
+				onClick={handleRemoveClick}>
+				{local.removeContent ?? '×'}
+			</button>
+		</span>
+	);
+}
+
+// ---------------------------------------------------------------------------
 // Export
 // ---------------------------------------------------------------------------
 
-export const TagInput = { Root, List, Items, Field };
+export const TagInput = { Root, List, Items, Field, Tag };
 
-export { Root, List, Items, Field };
+export { Root, List, Items, Field, Tag };

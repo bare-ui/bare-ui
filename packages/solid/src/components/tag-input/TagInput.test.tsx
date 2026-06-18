@@ -75,4 +75,45 @@ describe('TagInput', () => {
 		await userEvent.click(screen.getByLabelText('remove b'));
 		expect(screen.queryByTestId('tag-b')).not.toBeInTheDocument();
 	});
+
+	describe('Tag convenience component', () => {
+		function renderWithTag(defaultValue = ['react', 'vue', 'solid']) {
+			return render(() => (
+				<TagInput.Root defaultValue={defaultValue}>
+					<TagInput.List>
+						<TagInput.Items>
+							{(tag, _i, remove) => (
+								<TagInput.Tag
+									label={tag}
+									onRemove={remove}>
+									{tag}
+								</TagInput.Tag>
+							)}
+						</TagInput.Items>
+					</TagInput.List>
+					<TagInput.Field aria-label='tags' />
+				</TagInput.Root>
+			));
+		}
+
+		it('renders a focusable remove button with an accessible name', () => {
+			renderWithTag();
+			expect(screen.getByRole('button', { name: 'Remove vue' })).toBeInTheDocument();
+		});
+
+		it('removes the tag when its remove button is activated by keyboard', async () => {
+			renderWithTag();
+			const removeVue = screen.getByRole('button', { name: 'Remove vue' });
+			removeVue.focus();
+			await userEvent.keyboard('{Enter}');
+			expect(screen.queryByRole('button', { name: 'Remove vue' })).not.toBeInTheDocument();
+		});
+
+		it('keeps focus on an adjacent remove button after removing', async () => {
+			renderWithTag();
+			await userEvent.click(screen.getByRole('button', { name: 'Remove vue' }));
+			// Focus moves to the next tag's remove button (solid), not <body>.
+			expect(screen.getByRole('button', { name: 'Remove solid' })).toHaveFocus();
+		});
+	});
 });
