@@ -64,6 +64,30 @@ crashes a server bundle.
   `"Module level directives cause errors when bundled"` notice for the directive
   — it is cosmetic and does not affect output.
 
-Verified by an SSR smoke test that renders representative components with
-`react-dom/server` in a no-DOM Node process and asserts the markup is identical
-across two renders (i.e. no non-deterministic IDs or clock leakage).
+## Verifying
+
+A two-phase pipeline reproduces the real Next.js / Remix / TanStack Start flow —
+the server render runs in a **no-DOM node** environment and the hydration runs in
+**jsdom**, exactly as a real app splits them. The shared scenarios live in
+`src/test/scenarios.tsx`; the phases hand off server markup through a gitignored
+fixture file.
+
+- **`npm run test:ssr`** (phase 1, `vitest.ssr.config.ts`, `environment: node`)
+  renders every scenario with `react-dom/server` and asserts the markup is
+  **byte-identical across two renders** — i.e. no `Date.now()` / `Math.random()`
+  or other non-determinism leaks into the server output (React's `useId` is
+  position-based, so a stable tree yields stable ids). Running with no DOM also
+  proves there is **no module-level (or render-time) browser access**: any
+  `window` / `document` read on import or during render throws here. It writes
+  each scenario's markup to a fixture for phase 2.
+- **`npm run test:hydrate`** (phase 1, then phase 2 in `vitest.hydrate.config.ts`,
+  `environment: jsdom`) replays each server fixture through a real `hydrateRoot()`
+  and **fails on any recoverable error** (`onRecoverableError`, React's channel
+  for a mismatch) **and any hydration `console.error`**. It also asserts hydration
+  *adopted* the server markup rather than wiping and re-rendering.
+
+Coverage spans presentational (`Badge`, `Button`, `Card`, `Divider`,
+`ProgressBar`, `Skeleton`, `Spinner`, `Switch`), id-bearing forms (`Input`,
+`Textarea`, `Password`, `Checkbox`, `Radio`), context/open components (`Tabs`,
+`Accordion`, `Dropdown`, `Popover`, `Select`), and portal overlays
+(`Modal` / `Drawer`, closed).
