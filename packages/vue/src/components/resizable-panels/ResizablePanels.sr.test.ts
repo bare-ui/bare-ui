@@ -4,13 +4,7 @@ import { expectExposedAs } from '@/test/sr';
 import { ResizablePanels } from '.';
 
 describe('ResizablePanels — screen reader semantics', () => {
-	it('exposes a focusable window-splitter with orientation and default accessible name', () => {
-		// NOTE: The Vue PanelHandle declares `aria-label` as a prop and reads it via
-		// $props['aria-label']. Vue 3 normalises hyphenated prop names to camelCase
-		// (ariaLabel), so $props['aria-label'] is always undefined at runtime and the
-		// component always falls back to the built-in 'Resize handle' label. The
-		// consumer-supplied name is therefore not forwarded. This test verifies the
-		// orientation and focusability semantics that do work correctly.
+	it('exposes a focusable window-splitter with orientation and the supplied accessible name', () => {
 		render({
 			components: {
 				PanelGroup: ResizablePanels.Group,
@@ -25,9 +19,8 @@ describe('ResizablePanels — screen reader semantics', () => {
 				</PanelGroup>
 			`,
 		});
-		// Due to the Vue prop normalisation issue above, the handle always uses the
-		// default name. The orientation and tab-index semantics are still verified.
-		const handle = expectExposedAs('separator', 'Resize handle');
+		// The consumer-supplied aria-label is forwarded to the separator.
+		const handle = expectExposedAs('separator', 'Resize sidebar');
 		// A horizontal group splits along a vertical line.
 		expect(handle).toHaveAttribute('aria-orientation', 'vertical');
 		// Keyboard users must be able to reach the splitter.

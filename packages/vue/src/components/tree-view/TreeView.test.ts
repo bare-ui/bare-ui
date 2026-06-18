@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
+import { nextTick } from 'vue';
 import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import { TreeView } from '.';
@@ -107,6 +108,16 @@ describe('TreeView', () => {
 	});
 
 	describe('keyboard navigation', () => {
+		it('exposes exactly one tabbable treeitem (roving tabindex)', () => {
+			renderTree({ defaultExpanded: ['src'] });
+			const tabbable = screen
+				.getAllByRole('treeitem')
+				.filter((i) => i.getAttribute('tabindex') === '0');
+			expect(tabbable).toHaveLength(1);
+			// Defaults to the first node.
+			expect(tabbable[0]).toBe(row('src'));
+		});
+
 		it('ArrowDown/ArrowUp move through visible nodes in display order', async () => {
 			renderTree({ defaultExpanded: ['src'] });
 			row('src').focus();
@@ -130,6 +141,26 @@ describe('TreeView', () => {
 			row('index.ts').focus();
 			await userEvent.keyboard('{ArrowLeft}');
 			expect(row('src')).toHaveFocus();
+		});
+
+		it('Home/End jump to the first and last visible nodes', async () => {
+			renderTree({ defaultExpanded: ['src', 'src/components'] });
+			row('index.ts').focus();
+			await userEvent.keyboard('{End}');
+			await nextTick();
+			expect(row('README.md')).toHaveFocus();
+			await userEvent.keyboard('{Home}');
+			await nextTick();
+			expect(row('src')).toHaveFocus();
+		});
+
+		it('moves the roving tabindex to the focused node', async () => {
+			renderTree({ defaultExpanded: ['src'] });
+			row('src').focus();
+			await userEvent.keyboard('{ArrowDown}');
+			await nextTick();
+			expect(row('index.ts')).toHaveAttribute('tabindex', '0');
+			expect(row('src')).toHaveAttribute('tabindex', '-1');
 		});
 	});
 });

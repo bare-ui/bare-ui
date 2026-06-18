@@ -31,6 +31,11 @@ export function getDirection(el: Element | null | undefined): Direction {
 	return computed === 'rtl' ? 'rtl' : 'ltr';
 }
 
+/** `true` when the element resolves to right-to-left. */
+export function isRtl(el: Element | null | undefined): boolean {
+	return getDirection(el) === 'rtl';
+}
+
 /**
  * Reactively tracks the text direction of `ref`'s element for use during
  * render. Re-reads on mount and whenever a `dir` attribute changes on the

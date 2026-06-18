@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, within } from '@testing-library/vue';
+import { nextTick } from 'vue';
+import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import { DatePicker } from '.';
 import { Calendar } from '../calendar';
@@ -87,14 +88,21 @@ describe('DatePicker', () => {
 		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 	});
 
-	it('renders the calendar grid inside the dialog when opened', async () => {
-		// The React test asserts focus moves into a gridcell on open; the Vue
-		// DatePicker does not auto-focus the grid, so we assert the observable
-		// outcome instead: the calendar grid is present inside the dialog.
+	it('moves focus into the calendar grid when opened', async () => {
 		renderDP();
 		await userEvent.click(screen.getByRole('button', { name: 'Pick a date' }));
-		const dialog = screen.getByRole('dialog');
-		expect(within(dialog).getByRole('grid')).toBeInTheDocument();
-		expect(within(dialog).getAllByRole('gridcell')).toHaveLength(42);
+		await nextTick();
+		expect(document.activeElement).toHaveAttribute('role', 'gridcell');
+		expect(document.activeElement).toHaveAttribute('tabindex', '0');
+	});
+
+	it('returns focus to the trigger when closed via Escape', async () => {
+		renderDP();
+		const trigger = screen.getByRole('button', { name: 'Pick a date' });
+		await userEvent.click(trigger);
+		await nextTick();
+		await userEvent.keyboard('{Escape}');
+		await nextTick();
+		expect(trigger).toHaveFocus();
 	});
 });

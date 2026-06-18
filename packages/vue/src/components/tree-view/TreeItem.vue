@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useTemplateRef } from 'vue'
+import { computed } from 'vue'
 import { useTreeViewContext } from './keys'
 import { getDirection } from '@/composables/use-direction'
 import type { TreeItemState, TreeNode } from './TreeView.types'
@@ -16,21 +16,11 @@ defineSlots<{
 }>()
 
 const ctx = useTreeViewContext()
-const itemRef = useTemplateRef<HTMLDivElement>('itemRef')
 
 const isExpanded = computed(() => ctx.expanded.value.has(props.node.id))
 const isSelected = computed(() => ctx.selected.value.has(props.node.id))
 const hasChildren = computed(() => !!(props.node.children && props.node.children.length > 0))
 const disabled = computed(() => !!props.node.disabled)
-
-function focusSibling(offset: 1 | -1) {
-	const root = itemRef.value?.closest('[role="tree"]')
-	if (!root) return
-	const all = Array.from(root.querySelectorAll<HTMLElement>('[role="treeitem"]'))
-	const idx = all.indexOf(itemRef.value as HTMLElement)
-	const target = all[idx + offset]
-	if (target) target.focus()
-}
 
 function onKeyDown(e: KeyboardEvent) {
 	if (disabled.value) return
@@ -41,21 +31,31 @@ function onKeyDown(e: KeyboardEvent) {
 	switch (e.key) {
 		case expandKey:
 			e.preventDefault()
+			// Collapsed parent: expand. Expanded parent: move into the first child.
 			if (hasChildren.value && !isExpanded.value) ctx.toggleExpanded(props.node.id)
-			else if (hasChildren.value && isExpanded.value) focusSibling(1)
+			else if (hasChildren.value && isExpanded.value) ctx.focusByOffset(props.node.id, 1)
 			break
 		case collapseKey:
 			e.preventDefault()
+			// Expanded parent: collapse. Otherwise move to the parent node.
 			if (hasChildren.value && isExpanded.value) ctx.toggleExpanded(props.node.id)
-			else focusSibling(-1)
+			else ctx.focusParent(props.node.id)
 			break
 		case 'ArrowDown':
 			e.preventDefault()
-			focusSibling(1)
+			ctx.focusByOffset(props.node.id, 1)
 			break
 		case 'ArrowUp':
 			e.preventDefault()
-			focusSibling(-1)
+			ctx.focusByOffset(props.node.id, -1)
+			break
+		case 'Home':
+			e.preventDefault()
+			ctx.focusEdge('first')
+			break
+		case 'End':
+			e.preventDefault()
+			ctx.focusEdge('last')
 			break
 		case 'Enter':
 		case ' ':
@@ -63,6 +63,11 @@ function onKeyDown(e: KeyboardEvent) {
 			ctx.selectNode(props.node.id)
 			break
 	}
+}
+
+function onFocus(e: FocusEvent) {
+	// Roving tabindex follows focus.
+	if (e.target === e.currentTarget) ctx.setActiveId(props.node.id)
 }
 
 function onClick(e: MouseEvent) {
@@ -87,9 +92,9 @@ const state = computed<TreeItemState>(() => ({
 
 <template>
 	<div
-		ref="itemRef"
 		role="treeitem"
-		:tabindex="disabled ? -1 : 0"
+		:data-id="node.id"
+		:tabindex="!disabled && ctx.tabbableId.value === node.id ? 0 : -1"
 		:aria-expanded="hasChildren ? isExpanded : undefined"
 		:aria-selected="isSelected || undefined"
 		:aria-level="level"
@@ -100,6 +105,7 @@ const state = computed<TreeItemState>(() => ({
 		:data-level="level"
 		:data-has-children="hasChildren ? '' : undefined"
 		@keydown="onKeyDown"
+		@focus="onFocus"
 		@click="onClick">
 		<slot
 			:node="node"

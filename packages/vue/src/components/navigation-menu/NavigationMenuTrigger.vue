@@ -52,6 +52,18 @@ function onPointerLeave() {
 	clearOpenTimer()
 	root.scheduleClose()
 }
+
+function onKeydown(event: KeyboardEvent) {
+	// ArrowDown/ArrowUp open the menu and move focus into its first link.
+	if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+		event.preventDefault()
+		clearOpenTimer()
+		root.cancelClose()
+		root.focusContentOnOpen.value = true
+		root.setValue(item.value)
+	}
+	handlers.onKeydown(event)
+}
 </script>
 
 <template>
@@ -71,7 +83,7 @@ function onPointerLeave() {
 		@blur="handlers.onBlur"
 		@pointerdown="handlers.onPointerdown"
 		@pointerup="handlers.onPointerup"
-		@keydown="handlers.onKeydown"
+		@keydown="onKeydown"
 		@keyup="handlers.onKeyup">
 		<slot />
 	</button>

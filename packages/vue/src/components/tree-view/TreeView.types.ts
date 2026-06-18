@@ -46,4 +46,14 @@ export interface TreeViewContextValue {
 	selectionMode: ComputedRef<TreeSelectionMode>;
 	toggleExpanded: (id: string) => void;
 	selectNode: (id: string) => void;
+	/** Id of the single tabbable (roving) treeitem. */
+	tabbableId: ComputedRef<string | null>;
+	/** Mark a node as the active (roving) item. */
+	setActiveId: (id: string) => void;
+	/** Move focus + roving index by a display-order offset from a node. */
+	focusByOffset: (fromId: string, delta: number) => void;
+	/** Move focus + roving index to the first or last visible node. */
+	focusEdge: (edge: 'first' | 'last') => void;
+	/** Move focus + roving index to a node's parent. */
+	focusParent: (fromId: string) => void;
 }

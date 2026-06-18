@@ -90,6 +90,11 @@ describe('MenuBar', () => {
 	});
 
 	describe('keyboard navigation', () => {
+		it('marks the menubar orientation horizontal', () => {
+			renderBar();
+			expect(screen.getByRole('menubar')).toHaveAttribute('aria-orientation', 'horizontal');
+		});
+
 		it('ArrowRight/ArrowLeft move focus between top-level triggers', async () => {
 			renderBar();
 			screen.getByRole('menuitem', { name: 'File' }).focus();

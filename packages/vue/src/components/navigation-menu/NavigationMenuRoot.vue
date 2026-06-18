@@ -59,6 +59,11 @@ function scheduleClose() {
 }
 onUnmounted(cancelClose)
 
+// Set true by a keyboard-driven open (ArrowDown/ArrowUp on a Trigger) so Content
+// moves focus to its first link; left false for pointer/hover opens (which must
+// not steal focus). A plain flag, mirroring React's focusContentOnOpenRef.
+const focusContentOnOpen = ref(false)
+
 const rootRef = ref<HTMLElement | null>(null)
 useClickOutside(rootRef, () => {
 	if (value.value) setValue(null)
@@ -76,6 +81,7 @@ provide(NavigationMenuKey, {
 	skipDelayDuration,
 	cancelClose,
 	scheduleClose,
+	focusContentOnOpen,
 })
 </script>
 

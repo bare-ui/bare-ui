@@ -44,7 +44,8 @@ provide(MenuBarKey, { openMenu, setOpenMenu })
 <template>
 	<div
 		ref="rootRef"
-		role="menubar">
+		role="menubar"
+		aria-orientation="horizontal">
 		<slot />
 	</div>
 </template>

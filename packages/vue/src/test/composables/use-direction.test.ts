@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import { defineComponent, h, nextTick, ref, type Ref } from 'vue';
-import { getDirection, useDirection, type Direction } from '@/composables/use-direction';
+import { getDirection, isRtl, useDirection, type Direction } from '@/composables/use-direction';
 
 describe('getDirection', () => {
 	it('returns "ltr" by default when no dir is present', () => {
@@ -17,6 +17,7 @@ describe('getDirection', () => {
 		wrapper.appendChild(child);
 		document.body.appendChild(wrapper);
 		expect(getDirection(child)).toBe('rtl');
+		expect(isRtl(child)).toBe(true);
 		wrapper.remove();
 	});
 
@@ -35,6 +36,7 @@ describe('getDirection', () => {
 	it('returns "ltr" for null/undefined elements', () => {
 		expect(getDirection(null)).toBe('ltr');
 		expect(getDirection(undefined)).toBe('ltr');
+		expect(isRtl(null)).toBe(false);
 	});
 });
 

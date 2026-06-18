@@ -35,7 +35,8 @@ describe('ResizablePanels', () => {
 		expect(screen.getByTestId('group')).toHaveAttribute('data-orientation', 'horizontal');
 		expect(screen.getByTestId('left')).toHaveAttribute('data-panel', '');
 		expect(screen.getByTestId('right')).toHaveAttribute('data-panel', '');
-		const sep = screen.getByRole('separator');
+		// The aria-label is forwarded to the separator as its accessible name.
+		const sep = screen.getByRole('separator', { name: 'resize' });
 		expect(sep).toHaveAttribute('aria-orientation', 'vertical');
 	});
 
