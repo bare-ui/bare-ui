@@ -27,6 +27,7 @@ export default {
     type: 'separator',
     title: 'API Reference',
   },
+  'api-parity': 'API Parity',
   components: 'Components',
   hooks: 'Hooks / Composables / Primitives',
   '-- resources': {

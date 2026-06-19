@@ -1,0 +1,52 @@
+---
+title: API Parity
+description: Which Wire UI components and hooks exist in each framework — React, Solid, and Vue — and what they're named.
+---
+
+# API Parity
+
+Wire UI ships the same primitives for **React**, **Solid**, and **Vue**. The goal is full parity: a component or hook that exists in one framework exists in the others, with the same parts, props, and `data-*` contract — implemented idiomatically for each renderer.
+
+This page is the authoritative matrix of what exists where. It's **generated from the packages' actual export surface**, so it can't drift from what's published.
+
+## Components
+
+Every component is available in all three frameworks — same compound parts, same `data-*` state attributes. Differences live only in the implementation (React hooks, Solid signals, Vue composition), never in the API shape.
+
+<ComponentParityTable />
+
+## Hooks, primitives & composables
+
+The hook-level utilities follow each framework's idiom and naming convention:
+
+<FeatureList>
+  <FeatureItem><strong>React</strong> — hooks prefixed <code>use*</code> (<code>useDebounce</code>).</FeatureItem>
+  <FeatureItem><strong>Solid</strong> — primitives prefixed <code>create*</code> (<code>createDebounce</code>), matching Solid's reactivity conventions.</FeatureItem>
+  <FeatureItem><strong>Vue</strong> — composables prefixed <code>use*</code> (<code>useDebounce</code>).</FeatureItem>
+</FeatureList>
+
+The matrix matches them by concept and shows the exact identifier exported by each framework. A dash (—) means the utility isn't shipped there.
+
+<HookParityTable />
+
+### Framework-specific utilities
+
+A few hooks exist in only one or two frameworks — by design, because the underlying concern is framework-specific rather than a parity gap:
+
+| Utility | Where | Why |
+|---|---|---|
+| `useIsomorphicLayoutEffect` | React only | Bridges `useLayoutEffect` / `useEffect` for SSR — a React-specific hazard. Solid and Vue have no equivalent footgun. |
+| `useIsMounted` | Vue only | Vue idiom for guarding post-mount work; React and Solid express this differently. |
+| `useMergedRefs` / `createMergedRefs` | React, Solid | Vue's template-ref model doesn't require ref merging, so there's no equivalent. |
+
+These are intentional, not missing features. Direction utilities (`useDirection` / `createDirection`, `getDirection`, `isRtl`) and everything else are at full parity across all three frameworks — Wire UI components honor `dir="rtl"` in React, Solid, and Vue alike.
+
+## How it stays accurate
+
+The matrix is regenerated from each package's `src/index.ts` and validated in CI — a pull request that adds a component to one framework but not the matrix fails the **API parity** drift check. Regenerate it locally with:
+
+```bash
+npm run parity:update
+```
+
+See [Getting Started](/docs/getting-started) to install the package for your framework.

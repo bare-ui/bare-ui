@@ -1,4 +1,5 @@
 import { useMDXComponents as getDocsMDXComponents } from 'nextra-theme-docs'
+import { ComponentParityTable, HookParityTable } from './components/api-parity-table'
 import { BundleSizeTable } from './components/bundle-size-table'
 import { ForReact, ForVue, ForSolid } from './components/code-block'
 import { FeatureList, FeatureItem } from './components/feature-list'
@@ -81,6 +82,8 @@ export function useMDXComponents(components?: Record<string, React.FC>) {
     ForVue,
     ForSolid,
     BundleSizeTable,
+    ComponentParityTable,
+    HookParityTable,
     FeatureList,
     FeatureItem,
     LicenseText,
