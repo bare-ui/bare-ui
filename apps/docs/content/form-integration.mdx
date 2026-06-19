@@ -1,0 +1,558 @@
+---
+title: Form Integration
+description: Wire Wire UI's headless form primitives to your form library — React Hook Form, VeeValidate, Modular Forms, TanStack Form, Zod, and server actions, across React, Vue, and Solid.
+---
+
+# Form Integration
+
+Wire UI's form primitives are **headless and validation-agnostic**. `Form.Field` / `Form.Control` / `Form.Error` handle the wiring — matching labels to controls, `aria-invalid` / `aria-describedby`, showing the error slot — but they run **no validation**. You bring the form library; Wire UI renders the result.
+
+That means every integration, regardless of library or framework, comes down to the **same three connection points**:
+
+<FeatureList>
+  <FeatureItem><strong>Value & events</strong> — the control inside <code>Form.Control</code> gets its <code>value</code>/<code>onChange</code>/<code>ref</code> from your form library.</FeatureItem>
+  <FeatureItem><strong>Invalid flag</strong> — <code>Form.Field</code>'s <code>invalid</code> prop is fed your library's per-field error state, toggling <code>aria-invalid</code> + <code>data-invalid</code>.</FeatureItem>
+  <FeatureItem><strong>Message</strong> — <code>Form.Error</code> renders your library's error message (it's hidden until the field is invalid).</FeatureItem>
+</FeatureList>
+
+## The binding pattern
+
+Here's the shape with plain local state — every recipe below just swaps where `value`, `error`, and the change handler come from. Pick your framework above.
+
+<ForReact>
+
+```tsx
+import { Form } from '@wire-ui/react'
+
+<Form.Root onSubmit={onSubmit}>
+  <Form.Field name="email" invalid={!!error}>
+    <Form.Label>Email</Form.Label>
+    <Form.Control>
+      <input type="email" value={value} onChange={(e) => setValue(e.target.value)} />
+    </Form.Control>
+    {error && <Form.Error>{error}</Form.Error>}
+  </Form.Field>
+</Form.Root>
+```
+
+</ForReact>
+
+<ForVue>
+
+```vue
+<script setup lang="ts">
+import { FormRoot, FormField, FormLabel, FormControl, FormError } from '@wire-ui/vue'
+</script>
+
+<template>
+  <FormRoot @submit.prevent="onSubmit">
+    <FormField name="email" :invalid="!!error">
+      <FormLabel>Email</FormLabel>
+      <FormControl>
+        <input type="email" v-model="value" />
+      </FormControl>
+      <FormError v-if="error">{{ error }}</FormError>
+    </FormField>
+  </FormRoot>
+</template>
+```
+
+</ForVue>
+
+<ForSolid>
+
+```tsx
+import { Form } from '@wire-ui/solid'
+
+<Form.Root onSubmit={onSubmit}>
+  <Form.Field name="email" invalid={!!error()}>
+    <Form.Label>Email</Form.Label>
+    <Form.Control>
+      <input type="email" value={value()} onInput={(e) => setValue(e.currentTarget.value)} />
+    </Form.Control>
+    <Show when={error()}>
+      <Form.Error>{error()}</Form.Error>
+    </Show>
+  </Form.Field>
+</Form.Root>
+```
+
+</ForSolid>
+
+## Native form library
+
+The most common setup: a framework-native form/validation library owns field state and errors.
+
+<ForReact>
+
+**React Hook Form** — spread `register()` onto the control (it returns `ref`/`name`/`onChange`/`onBlur`), and read errors from `formState`.
+
+```tsx
+import { useForm } from 'react-hook-form'
+import { Form } from '@wire-ui/react'
+
+type Values = { email: string }
+
+export function SignupForm() {
+  const { register, handleSubmit, formState: { errors } } = useForm<Values>()
+
+  return (
+    <Form.Root onSubmit={handleSubmit((data) => console.log(data))}>
+      <Form.Field name="email" invalid={!!errors.email}>
+        <Form.Label>Email</Form.Label>
+        <Form.Control>
+          <input
+            type="email"
+            {...register('email', { required: 'Email is required' })}
+          />
+        </Form.Control>
+        <Form.Error>{errors.email?.message}</Form.Error>
+      </Form.Field>
+      <button type="submit">Sign up</button>
+    </Form.Root>
+  )
+}
+```
+
+</ForReact>
+
+<ForVue>
+
+**VeeValidate** — `useField` exposes a reactive `value` and `errorMessage` per field; bind them straight to the control and `FormError`.
+
+```vue
+<script setup lang="ts">
+import { useForm, useField } from 'vee-validate'
+import { FormRoot, FormField, FormLabel, FormControl, FormError } from '@wire-ui/vue'
+
+const { handleSubmit } = useForm()
+const { value, errorMessage } = useField<string>('email', (v) =>
+  v ? true : 'Email is required',
+)
+const onSubmit = handleSubmit((values) => console.log(values))
+</script>
+
+<template>
+  <FormRoot @submit.prevent="onSubmit">
+    <FormField name="email" :invalid="!!errorMessage">
+      <FormLabel>Email</FormLabel>
+      <FormControl>
+        <input type="email" v-model="value" />
+      </FormControl>
+      <FormError v-if="errorMessage">{{ errorMessage }}</FormError>
+    </FormField>
+    <button type="submit">Sign up</button>
+  </FormRoot>
+</template>
+```
+
+</ForVue>
+
+<ForSolid>
+
+**Modular Forms** — `@modular-forms/solid` drives state through its own `Form`/`Field`; nest Wire UI's parts inside the `Field` render callback. Alias Wire UI's `Form` to avoid the name clash.
+
+```tsx
+import { createForm, required } from '@modular-forms/solid'
+import { Form as WireForm } from '@wire-ui/solid'
+
+type Values = { email: string }
+
+export function SignupForm() {
+  const [, { Form, Field }] = createForm<Values>()
+
+  return (
+    <Form onSubmit={(values) => console.log(values)}>
+      <Field name="email" validate={[required('Email is required')]}>
+        {(field, props) => (
+          <WireForm.Field name="email" invalid={!!field.error}>
+            <WireForm.Label>Email</WireForm.Label>
+            <WireForm.Control>
+              <input {...props} type="email" value={field.value ?? ''} />
+            </WireForm.Control>
+            <WireForm.Error>{field.error}</WireForm.Error>
+          </WireForm.Field>
+        )}
+      </Field>
+      <button type="submit">Sign up</button>
+    </Form>
+  )
+}
+```
+
+</ForSolid>
+
+## TanStack Form
+
+[TanStack Form](https://tanstack.com/form) is the one library with first-class adapters for all three frameworks — same mental model everywhere. Each field exposes `state.value`, a `handleChange`, and `state.meta.errors`.
+
+<ForReact>
+
+```tsx
+import { useForm } from '@tanstack/react-form'
+import { Form } from '@wire-ui/react'
+
+export function SignupForm() {
+  const form = useForm({
+    defaultValues: { email: '' },
+    onSubmit: ({ value }) => console.log(value),
+  })
+
+  return (
+    <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
+      <form.Field
+        name="email"
+        validators={{ onChange: ({ value }) => (value ? undefined : 'Email is required') }}
+      >
+        {(field) => (
+          <Form.Field name="email" invalid={field.state.meta.errors.length > 0}>
+            <Form.Label>Email</Form.Label>
+            <Form.Control>
+              <input
+                type="email"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            </Form.Control>
+            <Form.Error>{field.state.meta.errors.join(', ')}</Form.Error>
+          </Form.Field>
+        )}
+      </form.Field>
+      <button type="submit">Sign up</button>
+    </form>
+  )
+}
+```
+
+</ForReact>
+
+<ForVue>
+
+```vue
+<script setup lang="ts">
+import { useForm } from '@tanstack/vue-form'
+import { FormRoot, FormField, FormLabel, FormControl, FormError } from '@wire-ui/vue'
+
+const form = useForm({
+  defaultValues: { email: '' },
+  onSubmit: ({ value }) => console.log(value),
+})
+</script>
+
+<template>
+  <FormRoot @submit.prevent="form.handleSubmit">
+    <form.Field
+      name="email"
+      :validators="{ onChange: ({ value }) => (value ? undefined : 'Email is required') }"
+    >
+      <template #default="{ field }">
+        <FormField name="email" :invalid="field.state.meta.errors.length > 0">
+          <FormLabel>Email</FormLabel>
+          <FormControl>
+            <input
+              type="email"
+              :value="field.state.value"
+              @blur="field.handleBlur"
+              @input="(e) => field.handleChange((e.target as HTMLInputElement).value)"
+            />
+          </FormControl>
+          <FormError v-if="field.state.meta.errors.length">
+            {{ field.state.meta.errors.join(', ') }}
+          </FormError>
+        </FormField>
+      </template>
+    </form.Field>
+  </FormRoot>
+</template>
+```
+
+</ForVue>
+
+<ForSolid>
+
+```tsx
+import { createForm } from '@tanstack/solid-form'
+import { Form } from '@wire-ui/solid'
+
+export function SignupForm() {
+  const form = createForm(() => ({
+    defaultValues: { email: '' },
+    onSubmit: ({ value }) => console.log(value),
+  }))
+
+  return (
+    <Form.Root onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
+      <form.Field
+        name="email"
+        validators={{ onChange: ({ value }) => (value ? undefined : 'Email is required') }}
+      >
+        {(field) => (
+          <Form.Field name="email" invalid={field().state.meta.errors.length > 0}>
+            <Form.Label>Email</Form.Label>
+            <Form.Control>
+              <input
+                type="email"
+                value={field().state.value}
+                onBlur={field().handleBlur}
+                onInput={(e) => field().handleChange(e.currentTarget.value)}
+              />
+            </Form.Control>
+            <Form.Error>{field().state.meta.errors.join(', ')}</Form.Error>
+          </Form.Field>
+        )}
+      </form.Field>
+      <button type="submit">Sign up</button>
+    </Form.Root>
+  )
+}
+```
+
+</ForSolid>
+
+## Schema validation with Zod
+
+[Zod](https://zod.dev) is framework-agnostic — define the schema once and reuse it everywhere. You can validate on submit directly, or plug Zod into the libraries above (`@hookform/resolvers/zod` for React Hook Form, the `zod` validator adapters for TanStack Form, `toTypedSchema` for VeeValidate).
+
+```ts
+// schema.ts — shared across every framework
+import { z } from 'zod'
+
+export const signupSchema = z.object({
+  email: z.string().email('Enter a valid email'),
+  password: z.string().min(8, 'At least 8 characters'),
+})
+export type SignupValues = z.infer<typeof signupSchema>
+```
+
+Validate on submit and map `error.flatten().fieldErrors` onto each `Form.Field`:
+
+<ForReact>
+
+```tsx
+import { useState } from 'react'
+import { Form } from '@wire-ui/react'
+import { signupSchema } from './schema'
+
+export function SignupForm() {
+  const [errors, setErrors] = useState<Record<string, string[]>>({})
+
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const data = Object.fromEntries(new FormData(e.currentTarget))
+    const result = signupSchema.safeParse(data)
+    if (!result.success) return setErrors(result.error.flatten().fieldErrors)
+    setErrors({})
+    console.log(result.data)
+  }
+
+  return (
+    <Form.Root onSubmit={onSubmit}>
+      <Form.Field name="email" invalid={!!errors.email}>
+        <Form.Label>Email</Form.Label>
+        <Form.Control><input name="email" type="email" /></Form.Control>
+        <Form.Error>{errors.email?.[0]}</Form.Error>
+      </Form.Field>
+    </Form.Root>
+  )
+}
+```
+
+With React Hook Form, skip the manual mapping entirely:
+
+```tsx
+import { zodResolver } from '@hookform/resolvers/zod'
+const { register, formState: { errors } } = useForm({ resolver: zodResolver(signupSchema) })
+```
+
+</ForReact>
+
+<ForVue>
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { FormRoot, FormField, FormLabel, FormControl, FormError } from '@wire-ui/vue'
+import { signupSchema } from './schema'
+
+const errors = ref<Record<string, string[] | undefined>>({})
+const form = ref({ email: '' })
+
+function onSubmit() {
+  const result = signupSchema.safeParse(form.value)
+  errors.value = result.success ? {} : result.error.flatten().fieldErrors
+}
+</script>
+
+<template>
+  <FormRoot @submit.prevent="onSubmit">
+    <FormField name="email" :invalid="!!errors.email">
+      <FormLabel>Email</FormLabel>
+      <FormControl><input v-model="form.email" type="email" /></FormControl>
+      <FormError v-if="errors.email">{{ errors.email[0] }}</FormError>
+    </FormField>
+  </FormRoot>
+</template>
+```
+
+With VeeValidate, pass the schema via `toTypedSchema(signupSchema)` to `useForm({ validationSchema })`.
+
+</ForVue>
+
+<ForSolid>
+
+```tsx
+import { createSignal } from 'solid-js'
+import { Form } from '@wire-ui/solid'
+import { signupSchema } from './schema'
+
+export function SignupForm() {
+  const [errors, setErrors] = createSignal<Record<string, string[] | undefined>>({})
+
+  function onSubmit(e: SubmitEvent) {
+    e.preventDefault()
+    const data = Object.fromEntries(new FormData(e.currentTarget as HTMLFormElement))
+    const result = signupSchema.safeParse(data)
+    setErrors(result.success ? {} : result.error.flatten().fieldErrors)
+  }
+
+  return (
+    <Form.Root onSubmit={onSubmit}>
+      <Form.Field name="email" invalid={!!errors().email}>
+        <Form.Label>Email</Form.Label>
+        <Form.Control><input name="email" type="email" /></Form.Control>
+        <Form.Error>{errors().email?.[0]}</Form.Error>
+      </Form.Field>
+    </Form.Root>
+  )
+}
+```
+
+With Modular Forms, pass the schema through `zodForm$(signupSchema)` to `createForm`.
+
+</ForSolid>
+
+## Server actions & form data
+
+Wire UI forms are plain `<form>` elements, so they work with the uncontrolled, `FormData`-based server patterns each meta-framework provides. Give each control a `name`, let the server validate (Zod pairs well here), and feed the returned errors back into `Form.Field`.
+
+<ForReact>
+
+**Next.js (Server Actions)** — the action receives `FormData`; surface errors with `useActionState`.
+
+```tsx
+// actions.ts
+'use server'
+import { signupSchema } from './schema'
+
+export async function signup(_prev: unknown, formData: FormData) {
+  const result = signupSchema.safeParse(Object.fromEntries(formData))
+  if (!result.success) return { errors: result.error.flatten().fieldErrors }
+  // …persist, redirect, etc.
+  return { errors: {} }
+}
+```
+
+```tsx
+'use client'
+import { useActionState } from 'react'
+import { Form } from '@wire-ui/react'
+import { signup } from './actions'
+
+export function SignupForm() {
+  const [state, action] = useActionState(signup, { errors: {} })
+  return (
+    <Form.Root action={action}>
+      <Form.Field name="email" invalid={!!state.errors?.email}>
+        <Form.Label>Email</Form.Label>
+        <Form.Control><input name="email" type="email" /></Form.Control>
+        <Form.Error>{state.errors?.email?.[0]}</Form.Error>
+      </Form.Field>
+      <button type="submit">Sign up</button>
+    </Form.Root>
+  )
+}
+```
+
+**Remix** — wrap the fields in Remix's `<Form method="post">` (pass it via `asChild`-free composition by using Remix `Form` as the root element), validate in the route `action`, and read errors from `useActionData`.
+
+</ForReact>
+
+<ForVue>
+
+**Nuxt** — post the `FormData` to a server route (`server/api/signup.post.ts`) and map the returned errors back.
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { FormRoot, FormField, FormLabel, FormControl, FormError } from '@wire-ui/vue'
+
+const errors = ref<Record<string, string[] | undefined>>({})
+
+async function onSubmit(e: Event) {
+  const body = new FormData(e.target as HTMLFormElement)
+  const res = await $fetch('/api/signup', { method: 'POST', body }).catch((err) => err.data)
+  errors.value = res?.errors ?? {}
+}
+</script>
+
+<template>
+  <FormRoot @submit.prevent="onSubmit">
+    <FormField name="email" :invalid="!!errors.email">
+      <FormLabel>Email</FormLabel>
+      <FormControl><input name="email" type="email" /></FormControl>
+      <FormError v-if="errors.email">{{ errors.email[0] }}</FormError>
+    </FormField>
+    <button type="submit">Sign up</button>
+  </FormRoot>
+</template>
+```
+
+The Nuxt route uses `readFormData(event)` (or `readBody`) and validates with the shared Zod schema.
+
+</ForVue>
+
+<ForSolid>
+
+**SolidStart** — define a server `action`, drive it with the native `<form action={...} method="post">`, and read pending/error state with `useSubmission`.
+
+```tsx
+import { action, useSubmission } from '@solidjs/router'
+import { Form } from '@wire-ui/solid'
+import { signupSchema } from './schema'
+
+const signup = action(async (formData: FormData) => {
+  'use server'
+  const result = signupSchema.safeParse(Object.fromEntries(formData))
+  if (!result.success) return { errors: result.error.flatten().fieldErrors }
+  return { errors: {} }
+}, 'signup')
+
+export function SignupForm() {
+  const submission = useSubmission(signup)
+  const errors = () => submission.result?.errors ?? {}
+
+  return (
+    <Form.Root action={signup} method="post">
+      <Form.Field name="email" invalid={!!errors().email}>
+        <Form.Label>Email</Form.Label>
+        <Form.Control><input name="email" type="email" /></Form.Control>
+        <Form.Error>{errors().email?.[0]}</Form.Error>
+      </Form.Field>
+      <button type="submit">Sign up</button>
+    </Form.Root>
+  )
+}
+```
+
+</ForSolid>
+
+## Notes
+
+<FeatureList>
+  <FeatureItem><code>Form.Control</code> clones its single child and merges in <code>id</code> and ARIA attributes — so a spread like <code>{`{...register('email')}`}</code> or a TanStack field's handlers coexist with Wire UI's wiring.</FeatureItem>
+  <FeatureItem>Keep validation where your library wants it (on change, on blur, on submit) — Wire UI only reacts to the resulting <code>invalid</code> boolean, so there's no schema lock-in.</FeatureItem>
+  <FeatureItem>For server patterns, prefer <strong>uncontrolled</strong> inputs with a <code>name</code> and let <code>FormData</code> carry the values — no client state needed.</FeatureItem>
+</FeatureList>
+
+See the [Form component](/docs/components/form) for the full list of parts and their `data-*` attributes.

@@ -12,6 +12,7 @@ export default {
   'browser-support': 'Browser Support',
   'bundle-size': 'Bundle Size',
   internationalization: 'Internationalization',
+  'form-integration': 'Form Integration',
   changelog: {
     title: 'Changelog',
     href: 'https://github.com/wire-ui/wire-ui/blob/main/packages/react/CHANGELOG.md',
