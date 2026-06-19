@@ -136,3 +136,29 @@ jobs:
 
       - name: Check parity matrix is up to date
         run: npm run parity:check
+
+  # Behavioral parity tests. The same framework-agnostic scenarios
+  # (@wire-ui/parity-tests) are run against each framework's real components, so
+  # identical observable behavior — data-* state, ARIA, focus, keyboard — is
+  # asserted everywhere. A divergence in one framework fails only that leg.
+  # No build: the suite imports components from source via vitest. Vue runs here
+  # too (it's still held out of the `quality` matrix).
+  behavioral-parity:
+    name: ${{ matrix.package }} · behavioral parity
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [react, solid, vue]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Behavioral parity scenarios
+        run: npm run test:parity --workspace @wire-ui/${{ matrix.package }}

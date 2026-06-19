@@ -12,6 +12,7 @@
     "format": "turbo format",
     "test": "turbo test",
     "test:run": "turbo test:run",
+    "test:parity": "turbo test:parity",
     "size": "turbo size",
     "size:update": "node scripts/update-size-budgets.mjs",
     "parity:update": "node scripts/update-parity-matrix.mjs",
