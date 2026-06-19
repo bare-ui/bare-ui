@@ -7,6 +7,7 @@ export default {
   'getting-started': 'Getting Started',
   faq: 'FAQ',
   accessibility: 'Accessibility',
+  'wcag-compliance': 'WCAG 2.2 AA',
   'data-attributes': 'Data Attributes',
   'browser-support': 'Browser Support',
   changelog: {

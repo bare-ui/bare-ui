@@ -1,0 +1,115 @@
+---
+title: WCAG 2.2 AA Compliance
+description: Wire UI's formal conformance statement for WCAG 2.2 Level AA, including scope, the shared-responsibility model, and how conformance was evaluated.
+---
+
+# WCAG 2.2 AA Compliance Statement
+
+Wire UI is designed to conform to the **Web Content Accessibility Guidelines (WCAG) 2.2 at Level AA**. This page is our formal conformance statement: it explains what we mean by "conformant" for a headless, zero-CSS library, which success criteria we own, which depend on you, and how we verify our side of the contract.
+
+For the practical, how-to guidance — keyboard conventions, focus styling, labeling patterns — see the [Accessibility](/docs/accessibility) page. This page is the formal statement that sits behind it.
+
+> **Conformance target:** WCAG 2.2, Level AA
+> **Scope:** the component primitives and hooks shipped in `@wire-ui/react`, `@wire-ui/vue`, and `@wire-ui/solid`
+> **Statement date:** 19 June 2026
+> **Applies to versions:** 0.5.0 and later
+
+## What "conformant" means for a headless library
+
+Wire UI ships **zero CSS**. It provides the *behavior* of an accessible component — roles, states, keyboard interaction, focus management — and leaves all *presentation* to you. WCAG conformance is therefore a **shared responsibility**, and no headless library can claim full conformance on its own: a success criterion like contrast or target size can only be satisfied by the rendered result, which Wire UI never produces by itself.
+
+So this statement is split into two parts:
+
+- **Wire UI conforms** to the success criteria that are determined entirely by markup, semantics, and behavior.
+- **You complete conformance** for the criteria that are determined by the visual layer you add.
+
+A Wire UI primitive used correctly and styled in line with the guidance below results in a component that meets WCAG 2.2 Level AA. Used without that styling, the structural conformance is still present, but the end result is not yet conformant.
+
+## Conformance summary
+
+<FeatureList>
+  <FeatureItem><strong>Supported</strong> — the criterion is fully handled by Wire UI's behavior and markup, with nothing required from you.</FeatureItem>
+  <FeatureItem><strong>Shared</strong> — Wire UI provides the structural foundation; you complete it with styling or content (labels, contrast, sizing).</FeatureItem>
+  <FeatureItem><strong>Your responsibility</strong> — the criterion is determined entirely by the visual layer or content you supply; Wire UI ships nothing that affects it.</FeatureItem>
+</FeatureList>
+
+### Criteria Wire UI supports
+
+| Success criterion | Level | How Wire UI satisfies it |
+|---|---|---|
+| 1.3.1 Info and Relationships | A | Correct ARIA roles, states, and relationships (`aria-labelledby`, `aria-controls`, `aria-expanded`, etc.) applied automatically. |
+| 2.1.1 Keyboard | A | Every interactive primitive is fully operable by keyboard. |
+| 2.1.2 No Keyboard Trap | A | Focus traps (Modal, Drawer) are escapable via <kbd>Esc</kbd> and restore focus to the trigger. |
+| 2.4.3 Focus Order | A | Focus order follows a logical sequence; roving tabindex used for composite widgets. |
+| 2.4.7 Focus Visible | AA | A `data-focus-visible` attribute is exposed for you to style (see *Shared* below). |
+| 4.1.2 Name, Role, Value | A | All states are programmatically exposed; labeling attributes pass through. |
+
+### New in WCAG 2.2
+
+WCAG 2.2 adds nine success criteria over 2.1. The table below covers each one and how Wire UI addresses it. (One older criterion, 4.1.1 Parsing, was **removed** in 2.2 and no longer applies.)
+
+| Success criterion | Level | Status | Notes |
+|---|---|---|---|
+| 2.4.11 Focus Not Obscured (Minimum) | AA | **Supported** | Overlays (Modal, Drawer, Popover, Dropdown) manage stacking so the focused element is not fully hidden behind library-rendered content. Sticky/fixed elements *you* add are your responsibility. |
+| 2.4.12 Focus Not Obscured (Enhanced) | AAA | Shared | Above the AA target; achievable with your layout. |
+| 2.4.13 Focus Appearance | AAA | Your responsibility | Focus-indicator size/contrast is styling — see [Accessibility → focus-visible](/docs/accessibility#focus-visible-styling). |
+| 2.5.7 Dragging Movements | AA | **Supported** | Primitives with drag interactions (Slider, Resizable Panels, Carousel) provide a keyboard and/or click alternative — no operation depends on dragging alone. |
+| 2.5.8 Target Size (Minimum) | AA | Shared | Wire UI imposes no sizes. Style interactive targets to at least 24×24 CSS px (44×44 recommended). |
+| 3.2.6 Consistent Help | A | Your responsibility | Placement of help mechanisms is an application-level concern. |
+| 3.3.7 Redundant Entry | A | Shared | Form state is consumer-controlled; reuse values rather than asking twice. Hooks like `useLocalStorage` help. |
+| 3.3.8 Accessible Authentication (Minimum) | AA | Shared | OTP and Password primitives support paste and password-manager autofill; don't block them. |
+| 3.3.9 Accessible Authentication (Enhanced) | AAA | Your responsibility | Above the AA target. |
+
+### Criteria you complete
+
+These are determined by the visuals and content you supply. Wire UI ships nothing that affects them, but meeting them is required for end-to-end AA conformance:
+
+| Success criterion | Level | What you provide |
+|---|---|---|
+| 1.4.3 Contrast (Minimum) | AA | 4.5:1 for text, 3:1 for large text and UI components. Wire UI ships no colors. |
+| 1.4.11 Non-text Contrast | AA | 3:1 for UI component boundaries, states, and focus indicators. |
+| 1.4.4 Resize Text / 1.4.10 Reflow | AA | Layout that survives 200% zoom and 320px reflow. |
+| 1.4.12 Text Spacing | AA | Layout that tolerates user text-spacing overrides. |
+| 1.1.1 Non-text Content | A | `aria-label` on icon-only controls; `alt` text on images. |
+| 2.4.7 Focus Visible | AA | Style `[data-focus-visible]` so keyboard focus is always visible. |
+| 2.5.8 Target Size | AA | Size interactive targets per the threshold above. |
+
+## How conformance was evaluated
+
+Wire UI's structural conformance is verified with a combination of automated and manual testing on every release:
+
+<FeatureList>
+  <FeatureItem><strong>axe-core in CI</strong> — every component runs through axe-core in Storybook and Vitest; accessibility violations fail the build.</FeatureItem>
+  <FeatureItem><strong>Screen reader pass</strong> — smoke-tested against VoiceOver (Safari), NVDA (Firefox/Chrome), and JAWS.</FeatureItem>
+  <FeatureItem><strong>Focus management audit</strong> — every dialog, menu, and popover is verified to trap and restore focus correctly.</FeatureItem>
+  <FeatureItem><strong>Keyboard navigation audit</strong> — every interactive component is verified to be fully operable without a mouse.</FeatureItem>
+  <FeatureItem><strong>RTL audit</strong> — every component is verified to render and navigate correctly under <code>dir="rtl"</code>.</FeatureItem>
+</FeatureList>
+
+These checks cover the part of conformance Wire UI is responsible for. Because the criteria in the "you complete" table depend on your styling, **a final audit of your rendered application is still required** before claiming WCAG 2.2 AA conformance for a product built with Wire UI.
+
+## Known limitations
+
+In the spirit of an honest statement, the boundaries of this claim:
+
+- **Conformance is structural, not visual.** Wire UI cannot guarantee contrast, target size, focus-indicator appearance, or reflow — those are produced by your CSS.
+- **Per-component detail varies.** Each component page has its own **Accessibility** and **Keyboard Interactions** section; consult it for the authoritative pattern for that widget.
+- **AAA criteria are out of scope.** This statement targets Level AA. Where a primitive happens to support a AAA criterion, it is noted but not guaranteed.
+- **`asChild` polymorphism shifts responsibility.** Swapping a component's root element via `asChild` preserves Wire UI's behavior, but you become responsible for the semantics of the element you swap in.
+
+## Feedback
+
+We treat accessibility gaps as bugs. If you find a component that doesn't meet the conformance described here:
+
+- Email **accessibility@wire-ui.com**, or
+- Open an issue on [GitHub](https://github.com/wire-ui/wire-ui/issues) labelled `a11y`.
+
+We aim to acknowledge accessibility reports within 48 hours and prioritize fixes that affect conformance.
+
+## References
+
+- [WCAG 2.2 Recommendation](https://www.w3.org/TR/WCAG22/)
+- [WCAG 2.2 Quick Reference (How to Meet)](https://www.w3.org/WAI/WCAG22/quickref/)
+- [What's New in WCAG 2.2](https://www.w3.org/WAI/standards-guidelines/wcag/new-in-22/)
+- [WAI-ARIA Authoring Practices Guide](https://www.w3.org/WAI/ARIA/apg/)
+- [Accessibility](/docs/accessibility) — the practical, how-to companion to this statement
