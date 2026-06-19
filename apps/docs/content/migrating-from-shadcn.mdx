@@ -1,0 +1,178 @@
+---
+title: Migrating from shadcn/ui
+description: Wire UI and shadcn/ui co-exist — reuse your shadcn design tokens to style Wire UI primitives, and adopt incrementally.
+---
+
+# Migrating from shadcn/ui
+
+shadcn/ui isn't a dependency you uninstall — it's **Radix UI + Tailwind code that lives in your repo** (`components/ui/*`). So this isn't a rip-and-replace migration. It's **co-existence**: Wire UI sits next to shadcn, reuses the same design tokens, and fills the gaps shadcn doesn't cover.
+
+Two facts make this easy:
+
+<FeatureList>
+  <FeatureItem><strong>Same foundation.</strong> shadcn components are Radix primitives under the hood — same <code>data-state</code> model, same Tailwind styling approach as Wire UI. If you ever swap one out, the <a href="/docs/migrating-from-radix">Radix map</a> applies directly.</FeatureItem>
+  <FeatureItem><strong>Same tokens.</strong> Wire UI ships zero CSS, so you style it with the exact shadcn CSS variables (<code>--primary</code>, <code>--border</code>, <code>--ring</code>, …) you already have — the two look identical.</FeatureItem>
+</FeatureList>
+
+> **Framework note.** shadcn/ui is React, but the same approach holds for [shadcn-vue](https://www.shadcn-vue.com) and shadcn-solid (both Reka-UI/Kobalte based). Wire UI styles identically in all three — toggle the picker on the examples below. The only syntax difference is `className` (React/Solid) vs `class` (Vue) and how children/props are passed.
+
+## Why add Wire UI to a shadcn project
+
+Reach for Wire UI for the primitives shadcn/Radix never shipped — without leaving your design system:
+
+- **AI-native primitives** — `Chat`, `Markdown`, `CodeBlock`, `Mention`, `Stream`, `Citation`.
+- **Richer inputs** — `Calendar`, `Combobox`, `Command`, `ColorPicker`, `OTP`, `FileUpload`, `TagInput`.
+- **Multi-framework** — the same API in Vue and Solid, which shadcn (React-only) can't offer.
+
+## The shadcn-compat theme
+
+Because shadcn styling is just Tailwind classes over CSS variables, you style a Wire UI primitive with the **same classes** and it matches pixel-for-pixel. Here's a Wire UI `Button` wearing shadcn's default button styling:
+
+<ForReact>
+
+```tsx
+import { Button } from '@wire-ui/react'
+
+export function ShadcnButton(props: React.ComponentProps<typeof Button>) {
+  return (
+    <Button
+      className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md
+        text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1
+        focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50
+        bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2"
+      {...props}
+    />
+  )
+}
+```
+
+</ForReact>
+
+<ForVue>
+
+```vue
+<script setup lang="ts">
+import { Button } from '@wire-ui/vue'
+</script>
+
+<template>
+  <Button
+    class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md
+      text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1
+      focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50
+      bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2"
+  >
+    <slot />
+  </Button>
+</template>
+```
+
+</ForVue>
+
+<ForSolid>
+
+```tsx
+import { Button } from '@wire-ui/solid'
+import type { JSX } from 'solid-js'
+
+export function ShadcnButton(props: JSX.ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <Button
+      class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md
+        text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1
+        focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50
+        bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2"
+      {...props}
+    />
+  )
+}
+```
+
+</ForSolid>
+
+For stateful components, map shadcn's Radix `data-[state=…]` selectors to Wire UI's attributes. A shadcn `Switch` keys off `data-[state=checked]`; Wire UI's `Switch` exposes `data-checked`:
+
+<ForReact>
+
+```tsx
+import { Switch } from '@wire-ui/react'
+
+<Switch.Root className="peer inline-flex h-5 w-9 shrink-0 items-center rounded-full border-2
+  border-transparent transition-colors bg-input data-[checked]:bg-primary">
+  <Switch.Thumb className="pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg
+    transition-transform translate-x-0 data-[checked]:translate-x-4" />
+</Switch.Root>
+```
+
+</ForReact>
+
+<ForVue>
+
+```vue
+<script setup lang="ts">
+import { SwitchRoot, SwitchThumb } from '@wire-ui/vue'
+</script>
+
+<template>
+  <SwitchRoot class="peer inline-flex h-5 w-9 shrink-0 items-center rounded-full border-2
+    border-transparent transition-colors bg-input data-[checked]:bg-primary">
+    <SwitchThumb class="pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg
+      transition-transform translate-x-0 data-[checked]:translate-x-4" />
+  </SwitchRoot>
+</template>
+```
+
+</ForVue>
+
+<ForSolid>
+
+```tsx
+import { Switch } from '@wire-ui/solid'
+
+<Switch.Root class="peer inline-flex h-5 w-9 shrink-0 items-center rounded-full border-2
+  border-transparent transition-colors bg-input data-[checked]:bg-primary">
+  <Switch.Thumb class="pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg
+    transition-transform translate-x-0 data-[checked]:translate-x-4" />
+</Switch.Root>
+```
+
+</ForSolid>
+
+The only real translation is the attribute name — see [Data Attributes](/docs/data-attributes) for the full Wire UI set (e.g. `data-state` on Accordion/Tabs, `data-checked` on Switch/Checkbox, `data-highlighted` on menu items).
+
+## A drop-in pattern
+
+To match shadcn's `variant`/`size` API so your team's muscle memory survives, wrap a Wire UI primitive with `cva` — the same tool shadcn already uses:
+
+```tsx
+import { cva, type VariantProps } from 'class-variance-authority'
+import { Button as WireButton } from '@wire-ui/react'
+import { cn } from '@/lib/utils'
+
+const buttonVariants = cva('inline-flex items-center justify-center rounded-md text-sm font-medium …', {
+  variants: {
+    variant: {
+      default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+      outline: 'border border-input bg-background hover:bg-accent',
+      ghost: 'hover:bg-accent hover:text-accent-foreground',
+    },
+    size: { default: 'h-9 px-4 py-2', sm: 'h-8 px-3', lg: 'h-10 px-6' },
+  },
+  defaultVariants: { variant: 'default', size: 'default' },
+})
+
+export function Button({ className, variant, size, ...props }:
+  React.ComponentProps<typeof WireButton> & VariantProps<typeof buttonVariants>) {
+  return <WireButton className={cn(buttonVariants({ variant, size }), className)} {...props} />
+}
+```
+
+Drop that in `components/ui/button.tsx` and it's indistinguishable from a shadcn button — backed by a Wire UI primitive that also runs in Vue and Solid. `cva` is framework-agnostic: in Vue bind `buttonVariants(...)` to `:class`, in Solid to `class` — the variant logic is identical.
+
+## Strategy
+
+<FeatureList>
+  <FeatureItem><strong>Don't migrate what works.</strong> Keep your existing shadcn components. Introduce Wire UI for new surfaces and for the components shadcn lacks.</FeatureItem>
+  <FeatureItem><strong>Swap opportunistically.</strong> When a shadcn/Radix component hits a wall (no Calendar, no Combobox keyboard model you want), replace just that one using the <a href="/docs/migrating-from-radix">Radix map</a> + your `cva` wrapper.</FeatureItem>
+  <FeatureItem><strong>One token source.</strong> Both read your <code>globals.css</code> variables, so a theme change updates shadcn and Wire UI together.</FeatureItem>
+</FeatureList>
