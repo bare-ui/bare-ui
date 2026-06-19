@@ -11,6 +11,7 @@ export default {
   'data-attributes': 'Data Attributes',
   'browser-support': 'Browser Support',
   'bundle-size': 'Bundle Size',
+  internationalization: 'Internationalization',
   changelog: {
     title: 'Changelog',
     href: 'https://github.com/wire-ui/wire-ui/blob/main/packages/react/CHANGELOG.md',

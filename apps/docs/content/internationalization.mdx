@@ -1,0 +1,356 @@
+---
+title: Internationalization
+description: Localize Wire UI with your own i18n library — locale + message bridging, with recipes for React (next-intl, react-intl, Lingui), Vue (vue-i18n), and Solid.
+---
+
+# Internationalization
+
+Wire UI is **i18n-library agnostic**. It ships no translation runtime and bundles no locale data — instead it exposes two integration points and lets your existing i18n library drive them. You keep one source of translations for your whole app; Wire UI just reads from it.
+
+There are exactly two things to wire up:
+
+<FeatureList>
+  <FeatureItem><strong>Locale</strong> — a BCP 47 tag (<code>en-US</code>, <code>de-DE</code>) that drives <code>Intl</code>-based formatting in Calendar, DatePicker, NumberInput, and Timeago.</FeatureItem>
+  <FeatureItem><strong>Messages</strong> — the handful of user-facing strings components render internally (aria-labels, live-region announcements, placeholders).</FeatureItem>
+</FeatureList>
+
+Both are passed through one provider. Use the framework switcher above to see the syntax for your stack:
+
+<ForReact>
+
+```tsx
+import { WireUIProvider } from '@wire-ui/react'
+
+<WireUIProvider locale="de-DE" messages={{ calendar: { nextMonth: 'Nächster Monat' } }}>
+  <App />
+</WireUIProvider>
+```
+
+</ForReact>
+
+<ForVue>
+
+```vue
+<script setup lang="ts">
+import { WireUIProvider } from '@wire-ui/vue'
+</script>
+
+<template>
+  <WireUIProvider locale="de-DE" :messages="{ calendar: { nextMonth: 'Nächster Monat' } }">
+    <App />
+  </WireUIProvider>
+</template>
+```
+
+</ForVue>
+
+<ForSolid>
+
+```tsx
+import { WireUIProvider } from '@wire-ui/solid'
+
+<WireUIProvider locale="de-DE" messages={{ calendar: { nextMonth: 'Nächster Monat' } }}>
+  <App />
+</WireUIProvider>
+```
+
+</ForSolid>
+
+The provider is **optional** — without it, components fall back to `en-US` and their English defaults. `messages` is a deep-partial: override only the strings you want; the rest stay default. Nested providers inherit and merge, so you can switch locale for a subtree.
+
+## What's translatable
+
+Every internal string lives in a typed catalog (`WireUIMessages`), grouped by component. Most are plain strings; a few are **functions** that interpolate runtime values — those are the ones to watch when bridging a library. This catalog is identical across React, Vue, and Solid.
+
+| Namespace | Keys | Interpolated (function) keys |
+|---|---|---|
+| `calendar` | `previousMonth`, `nextMonth` | — |
+| `numberInput` | `increment`, `decrement` | — |
+| `timeago` | `justNow`, `today` | `today(time)` |
+| `pagination` | `label`, `previous`, `next`, `page` | `page(page)` |
+| `carousel` | `previous`, `next`, `slide` | `slide(current, count)` |
+| `password` | `show`, `hide` | — |
+| `combobox` | `toggle` | — |
+| `rating` | `label`, `valueText`, `starText` | `valueText(value, max)`, `starText(star, max)` |
+| `otp` | `digit` | `digit(index)` |
+| `toast` | `region`, `close` | — |
+
+The `PartialMessages` type makes overrides type-safe — your editor autocompletes the namespaces and flags typos. The full English catalog is `defaultMessages`, exported for reference.
+
+## Just need locale-aware formatting?
+
+If your UI is single-language but you want Wire UI's dates/numbers formatted for a locale, pass `locale` alone and skip `messages` entirely:
+
+<ForReact>
+
+```tsx
+<WireUIProvider locale="fr-FR">
+  <DatePicker /> {/* months, weekday names, number formatting follow fr-FR */}
+</WireUIProvider>
+```
+
+</ForReact>
+
+<ForVue>
+
+```vue
+<template>
+  <WireUIProvider locale="fr-FR">
+    <DatePicker /> <!-- months, weekday names, number formatting follow fr-FR -->
+  </WireUIProvider>
+</template>
+```
+
+</ForVue>
+
+<ForSolid>
+
+```tsx
+<WireUIProvider locale="fr-FR">
+  <DatePicker /> {/* months, weekday names, number formatting follow fr-FR */}
+</WireUIProvider>
+```
+
+</ForSolid>
+
+Wire UI also exports the `Intl`-backed formatters it uses internally — `formatDate`, `formatNumber`, `formatRelativeTime`, `getMonthNames`, `getDayNames`, and friends — so you can format your own values with the same locale rules.
+
+## Recipes
+
+The pattern is always the same: a small component reads the active **locale** and **translations** from your i18n library and passes them to `WireUIProvider`. Define it once near your app root. Pick your framework above.
+
+<ForReact>
+
+**next-intl**
+
+In an App Router app, add a `wireui` namespace to your message catalog (`messages/de.json`):
+
+```json
+{
+  "wireui": {
+    "calendar": { "previousMonth": "Vorheriger Monat", "nextMonth": "Nächster Monat" },
+    "pagination": { "label": "Seitennummerierung", "previous": "Zurück", "next": "Weiter", "page": "Gehe zu Seite {page}" },
+    "carousel": { "previous": "Vorherige Folie", "next": "Nächste Folie", "slide": "Folie {current} von {count}" }
+  }
+}
+```
+
+Then bridge it in a client component mounted inside `NextIntlClientProvider`:
+
+```tsx
+'use client'
+
+import { useLocale, useTranslations } from 'next-intl'
+import { WireUIProvider, type PartialMessages } from '@wire-ui/react'
+
+export function WireUIIntlProvider({ children }: { children: React.ReactNode }) {
+  const locale = useLocale()
+  const t = useTranslations('wireui')
+
+  const messages: PartialMessages = {
+    calendar: {
+      previousMonth: t('calendar.previousMonth'),
+      nextMonth: t('calendar.nextMonth'),
+    },
+    pagination: {
+      label: t('pagination.label'),
+      previous: t('pagination.previous'),
+      next: t('pagination.next'),
+      // Function key → call next-intl with the ICU argument.
+      page: (page) => t('pagination.page', { page }),
+    },
+    carousel: {
+      previous: t('carousel.previous'),
+      next: t('carousel.next'),
+      slide: (current, count) => t('carousel.slide', { current, count }),
+    },
+    // …fill in the remaining namespaces from the catalog above.
+  }
+
+  return (
+    <WireUIProvider locale={locale} messages={messages}>
+      {children}
+    </WireUIProvider>
+  )
+}
+```
+
+**react-intl (FormatJS)**
+
+react-intl exposes the locale and `formatMessage` through `useIntl()`. Give your Wire UI strings `wireui.*` IDs with standard ICU syntax, e.g. `"wireui.pagination.page": "Go to page {page}"`.
+
+```tsx
+import { useIntl } from 'react-intl'
+import { WireUIProvider, type PartialMessages } from '@wire-ui/react'
+
+export function WireUIIntlProvider({ children }: { children: React.ReactNode }) {
+  const intl = useIntl()
+  const m = (id: string, values?: Record<string, string | number>) =>
+    intl.formatMessage({ id }, values)
+
+  const messages: PartialMessages = {
+    calendar: {
+      previousMonth: m('wireui.calendar.previousMonth'),
+      nextMonth: m('wireui.calendar.nextMonth'),
+    },
+    rating: {
+      label: m('wireui.rating.label'),
+      valueText: (value, max) => m('wireui.rating.valueText', { value, max }),
+      starText: (star, max) => m('wireui.rating.starText', { star, max }),
+    },
+  }
+
+  return (
+    <WireUIProvider locale={intl.locale} messages={messages}>
+      {children}
+    </WireUIProvider>
+  )
+}
+```
+
+**Lingui**
+
+Lingui is macro-based. Declare your Wire UI strings with the `msg` macro (so the extractor picks them up) and resolve them through the active `i18n` instance.
+
+```tsx
+import { useLingui } from '@lingui/react'
+import { msg } from '@lingui/core/macro'
+import { WireUIProvider, type PartialMessages } from '@wire-ui/react'
+
+export function WireUIIntlProvider({ children }: { children: React.ReactNode }) {
+  const { i18n } = useLingui()
+
+  const messages: PartialMessages = {
+    calendar: {
+      previousMonth: i18n._(msg`Previous month`),
+      nextMonth: i18n._(msg`Next month`),
+    },
+    pagination: {
+      previous: i18n._(msg`Previous`),
+      next: i18n._(msg`Next`),
+      // Interpolation lives inside the macro template.
+      page: (page) => i18n._(msg`Go to page ${page}`),
+    },
+  }
+
+  return (
+    <WireUIProvider locale={i18n.locale} messages={messages}>
+      {children}
+    </WireUIProvider>
+  )
+}
+```
+
+Run `lingui extract` and the `msg` strings land in your catalogs alongside the rest of your app.
+
+</ForReact>
+
+<ForVue>
+
+**vue-i18n**
+
+vue-i18n exposes the active `locale` and `t` through `useI18n()`. Wrap them in a small provider component and put a `wireui` namespace in each locale's messages (`{ wireui: { pagination: { page: 'Gehe zu Seite {page}' } } }`).
+
+```vue
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { WireUIProvider, type PartialMessages } from '@wire-ui/vue'
+
+const { locale, t } = useI18n()
+
+const messages = computed<PartialMessages>(() => ({
+  calendar: {
+    previousMonth: t('wireui.calendar.previousMonth'),
+    nextMonth: t('wireui.calendar.nextMonth'),
+  },
+  pagination: {
+    label: t('wireui.pagination.label'),
+    previous: t('wireui.pagination.previous'),
+    next: t('wireui.pagination.next'),
+    // Function key → call t with the named argument.
+    page: (page: number) => t('wireui.pagination.page', { page }),
+  },
+  carousel: {
+    previous: t('wireui.carousel.previous'),
+    next: t('wireui.carousel.next'),
+    slide: (current: number, count: number) => t('wireui.carousel.slide', { current, count }),
+  },
+}))
+</script>
+
+<template>
+  <WireUIProvider :locale="locale" :messages="messages">
+    <slot />
+  </WireUIProvider>
+</template>
+```
+
+Mount `<WireUIIntlProvider>` once near the root, inside your app's `createI18n` plugin.
+
+> **Lingui** also supports Vue via `@lingui/vue`. The bridge is the same shape as the React recipe — read `i18n` from `useLingui()`, resolve `msg` descriptors with `i18n._()`, and hand a `computed` `messages` object to `WireUIProvider`.
+
+</ForVue>
+
+<ForSolid>
+
+**@solid-primitives/i18n**
+
+Build a translator over your dictionaries, then derive Wire UI's `messages` from it inside a `createMemo` so it re-resolves on locale change. (`@solid-primitives/i18n` uses `{{ key }}` interpolation via `resolveTemplate`.)
+
+```tsx
+import { createSignal, createMemo, type JSX } from 'solid-js'
+import * as i18n from '@solid-primitives/i18n'
+import { WireUIProvider, type PartialMessages } from '@wire-ui/solid'
+
+const dictionaries = {
+  'en-US': { wireui: { calendar: { previousMonth: 'Previous month', nextMonth: 'Next month' }, pagination: { page: 'Go to page {{ page }}' } } },
+  'de-DE': { wireui: { calendar: { previousMonth: 'Voriger Monat', nextMonth: 'Nächster Monat' }, pagination: { page: 'Gehe zu Seite {{ page }}' } } },
+}
+
+export const [locale, setLocale] = createSignal<keyof typeof dictionaries>('en-US')
+
+export function WireUIIntlProvider(props: { children: JSX.Element }) {
+  const t = createMemo(() =>
+    i18n.translator(() => i18n.flatten(dictionaries[locale()]), i18n.resolveTemplate),
+  )
+
+  const messages = createMemo<PartialMessages>(() => {
+    const tr = t()
+    return {
+      calendar: {
+        previousMonth: tr('wireui.calendar.previousMonth') ?? 'Previous month',
+        nextMonth: tr('wireui.calendar.nextMonth') ?? 'Next month',
+      },
+      pagination: {
+        // Function key → call the translator with the runtime value.
+        page: (page) => tr('wireui.pagination.page', { page }) ?? `Go to page ${page}`,
+      },
+    }
+  })
+
+  return (
+    <WireUIProvider locale={locale()} messages={messages()}>
+      {props.children}
+    </WireUIProvider>
+  )
+}
+```
+
+> **Lingui** also supports Solid via `@lingui/solid`. Read `i18n` from `useLingui()`, resolve `msg` descriptors with `i18n._()`, and pass a memoized `messages` object to `WireUIProvider`.
+
+</ForSolid>
+
+## Notes
+
+<FeatureList>
+  <FeatureItem>Define the bridge <strong>once</strong> and place it near the root — every Wire UI component below it is localized. Re-rendering on locale change is handled by your i18n library's reactivity.</FeatureItem>
+  <FeatureItem>You don't have to translate everything at once. Override only the namespaces you use; unspecified strings stay at their English defaults.</FeatureItem>
+  <FeatureItem><strong>Lingui</strong> is the one library that spans all three frameworks (<code>@lingui/react</code> / <code>@lingui/vue</code> / <code>@lingui/solid</code>) with the same bridging shape — useful for a shared design system across stacks.</FeatureItem>
+</FeatureList>
+
+Message overrides are set through the provider. The four formatting components — Calendar, DatePicker, NumberInput, and Timeago — additionally accept a `locale` prop directly, handy for rendering a one-off widget in a different locale without nesting another provider:
+
+```tsx
+<DatePicker locale="ja-JP" />
+```
