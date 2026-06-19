@@ -1,0 +1,157 @@
+---
+title: Migrating from Headless UI
+description: A component-by-component map from Headless UI to Wire UI, with a codemod for the mechanical rewrites.
+---
+
+# Migrating from Headless UI
+
+Headless UI and Wire UI are close cousins — both are **unstyled, accessible primitives** you bring your own styling to. The migration is mostly mechanical, with two real differences to internalize:
+
+<FeatureList>
+  <FeatureItem><strong>Render props → <code>data-*</code> state.</strong> Where Headless UI gives you <code>{`{({ open }) => …}`}</code>, Wire UI exposes <code>data-state</code> / <code>data-open</code> attributes you style with plain CSS — no render functions.</FeatureItem>
+  <FeatureItem><strong><code>as</code> → <code>asChild</code>.</strong> Headless UI's <code>as</code> prop for polymorphism becomes Wire UI's <code>asChild</code>.</FeatureItem>
+  <FeatureItem><strong>Different part names.</strong> <code>Menu.Items</code> → <code>Dropdown.Menu</code>, <code>Dialog.Panel</code> → <code>Modal.Content</code>, etc. — so expect more hand-tuning than a Radix migration.</FeatureItem>
+  <FeatureItem><strong>More components.</strong> Wire UI adds everything Headless UI never shipped — Calendar, Tooltip, Toast, the AI primitives, and more.</FeatureItem>
+</FeatureList>
+
+> Headless UI ships for **React and Vue**. Wire UI covers both (plus Solid). The codemod below is for React; Vue is a manual import swap of the same map.
+
+## 1. Swap the dependency
+
+```bash
+npm uninstall @headlessui/react   # or @headlessui/vue
+npm install @wire-ui/react        # or @wire-ui/vue / @wire-ui/solid
+```
+
+## 2. Run the codemod (React)
+
+```bash
+npx jscodeshift \
+  -t https://wire-ui.com/codemods/headless-ui-to-wire-ui.cjs \
+  --extensions=tsx,ts,jsx,js --parser=tsx \
+  src/
+```
+
+It repoints `@headlessui/react` imports to `@wire-ui/react`, renames the top-level components (`Menu` → `Dropdown`, `Dialog` → `Modal`, `Listbox` → `Select`, `Tab` → `Tabs`), and drops `Transition` (no equivalent). Because Headless UI's **part** names differ, the renamed parts (`Dropdown.Items`, `Modal.Panel`) will then show as type errors — that's your fix-it checklist.
+
+## Component map
+
+✅ drop-in · ✏️ codemod renames it · 🔧 rename + adjust parts
+
+| Headless UI | Wire UI | | Notes |
+|---|---|---|---|
+| `Switch` | `Switch` | 🔧 | Now compound: `Switch.Root` + `Switch.Thumb`. `checked`/`onChange` carry over. |
+| `Popover` | `Popover` | ✏️ | `Popover.Button`/`Panel` → `Popover.Trigger`/`Content`. |
+| `Combobox` | `Combobox` | 🔧 | `Combobox.Input`/`Options`/`Option` → `Combobox.Input`/`Content`/`Item`. |
+| `Menu` | `Dropdown` | 🔧 | `Menu.Button`/`Items`/`Item` → `Dropdown.Trigger` + `Dropdown.Menu` (items are plain children). |
+| `Listbox` | `Select` | 🔧 | `Listbox.Button`/`Options`/`Option` → `Select.Trigger`/`Content`/`Item`. |
+| `Dialog` | `Modal` | 🔧 | `Dialog.Panel` → `Modal.Content` nested inside `Modal.Overlay`; `Dialog.Title` → a plain heading. |
+| `Disclosure` | `Accordion` | 🔧 | One-item `Accordion type="single" collapsible`; `Disclosure.Button`/`Panel` → `Accordion.Trigger`/`Content`. |
+| `RadioGroup` | `Radio` | 🔧 | `RadioGroup.Option` → `Radio.Item` (+ `Radio.Indicator`/`Label`). |
+| `Tab` group | `Tabs` | 🔧 | `Tab.Group`/`List`/`Tab`/`Panels`/`Panel` → `Tabs.Root`/`List`/`Trigger`/`Content`. |
+| `Field`/`Label`/`Description` | `Form.*` | ✏️ | See the [Form Integration](/docs/form-integration) guide. |
+| `Button`/`Input`/`Textarea`/`Checkbox` | same | ✅ | The v2 form controls map by name. |
+| `Transition` | — | 🔧 | No Transition primitive. Drive enter/exit from `data-state` with CSS or your animation library. |
+
+## Worked example: Menu → Dropdown
+
+Note how the render-prop + part structure flattens into compound parts with `data-*` state.
+
+<ForReact>
+
+**Before (Headless UI):**
+
+```tsx
+import { Menu } from '@headlessui/react'
+
+<Menu>
+  <Menu.Button>Options</Menu.Button>
+  <Menu.Items>
+    <Menu.Item>{({ active }) => <a data-active={active}>Edit</a>}</Menu.Item>
+    <Menu.Item><a>Delete</a></Menu.Item>
+  </Menu.Items>
+</Menu>
+```
+
+**After (Wire UI):**
+
+```tsx
+import { Dropdown } from '@wire-ui/react'
+
+<Dropdown.Root>
+  <Dropdown.Trigger>Options</Dropdown.Trigger>
+  <Dropdown.Menu>
+    {/* style the active item with [data-highlighted] instead of a render prop */}
+    <button>Edit</button>
+    <button>Delete</button>
+  </Dropdown.Menu>
+</Dropdown.Root>
+```
+
+</ForReact>
+
+<ForVue>
+
+**Before (Headless UI):**
+
+```vue
+<script setup>
+import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
+</script>
+
+<template>
+  <Menu>
+    <MenuButton>Options</MenuButton>
+    <MenuItems>
+      <MenuItem v-slot="{ active }"><a :data-active="active">Edit</a></MenuItem>
+    </MenuItems>
+  </Menu>
+</template>
+```
+
+**After (Wire UI):**
+
+```vue
+<script setup>
+import { DropdownRoot, DropdownTrigger, DropdownMenu } from '@wire-ui/vue'
+</script>
+
+<template>
+  <DropdownRoot>
+    <DropdownTrigger>Options</DropdownTrigger>
+    <DropdownMenu>
+      <button>Edit</button>
+      <button>Delete</button>
+    </DropdownMenu>
+  </DropdownRoot>
+</template>
+```
+
+</ForVue>
+
+<ForSolid>
+
+Headless UI has no Solid build, so there's nothing to migrate — you're adopting Wire UI fresh. The Wire UI Solid API matches the React shape:
+
+```tsx
+import { Dropdown } from '@wire-ui/solid'
+
+<Dropdown.Root>
+  <Dropdown.Trigger>Options</Dropdown.Trigger>
+  <Dropdown.Menu>
+    <button>Edit</button>
+    <button>Delete</button>
+  </Dropdown.Menu>
+</Dropdown.Root>
+```
+
+</ForSolid>
+
+## After the codemod — checklist
+
+<FeatureList>
+  <FeatureItem>Let <code>tsc</code> run — every renamed part (<code>Dropdown.Items</code>, <code>Modal.Panel</code>, …) surfaces as the exact line to fix against the map.</FeatureItem>
+  <FeatureItem>Replace render-prop children (<code>{`{({ open, active }) => …}`}</code>) with <code>[data-state]</code> / <code>[data-highlighted]</code> CSS — see <a href="/docs/data-attributes">Data Attributes</a>.</FeatureItem>
+  <FeatureItem>Swap <code>Transition</code> for a <code>data-state</code>-driven CSS transition or your animation library of choice.</FeatureItem>
+  <FeatureItem>Rework <code>Dialog</code> → <code>Modal</code> structure (Content inside Overlay, your own trigger button) — see the <a href="/docs/migrating-from-radix#overlays-dialog-modal">overlay walkthrough</a>.</FeatureItem>
+</FeatureList>
