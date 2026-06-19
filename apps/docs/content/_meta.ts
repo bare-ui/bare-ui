@@ -37,6 +37,9 @@ export default {
     title: 'Migration',
   },
   'migrating-from-radix': 'From Radix UI',
+  'migrating-from-headless-ui': 'From Headless UI',
+  'migrating-from-shadcn': 'From shadcn/ui',
+  'migrating-from-chakra-mantine-mui': 'From Chakra / Mantine / MUI',
   '-- resources': {
     type: 'separator',
     title: 'Resources',
