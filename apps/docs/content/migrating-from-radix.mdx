@@ -16,6 +16,8 @@ What actually changes:
   <FeatureItem><strong>Some overlays restructure.</strong> Modal and Dropdown have a slightly different anatomy than their Radix counterparts — a one-time hand edit.</FeatureItem>
 </FeatureList>
 
+> **Framework note.** Radix UI is React-only. If you're on **Vue** you're likely coming from [Reka UI](https://reka-ui.com) (the Radix port, formerly Radix Vue); on **Solid**, from Kobalte or corvu. The component map applies either way, and the Wire UI target code below adapts to the framework you pick above.
+
 ## 1. Swap the dependencies
 
 ```bash
@@ -51,6 +53,8 @@ import { Divider, Modal, Tabs } from '@wire-ui/react'
 
 **What it does:** import consolidation + namespace renames — always safe.
 **What it doesn't:** restructure markup, rename parts, or convert props. After running it, let TypeScript guide you to the spots flagged in the map below.
+
+> The codemod is for React (jscodeshift). Migrating a **Vue** (Reka UI) or **Solid** codebase? The same component map applies — swap the imports to `@wire-ui/vue` / `@wire-ui/solid` by hand using your framework's syntax (toggle the picker on the examples below).
 
 ## Component map
 
@@ -114,6 +118,8 @@ import * as Dialog from '@radix-ui/react-dialog'
 
 **After (Wire UI):**
 
+<ForReact>
+
 ```tsx
 import { useState } from 'react'
 import { Modal } from '@wire-ui/react'
@@ -134,6 +140,62 @@ const [open, setOpen] = useState(false)
   </Modal.Portal>
 </Modal.Root>
 ```
+
+</ForReact>
+
+<ForVue>
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { ModalRoot, ModalPortal, ModalOverlay, ModalContent, ModalClose } from '@wire-ui/vue'
+
+const open = ref(false)
+</script>
+
+<template>
+  <button @click="open = true">Delete account</button>
+
+  <ModalRoot :open="open" @open-change="open = $event">
+    <ModalPortal>
+      <ModalOverlay>
+        <ModalContent aria-labelledby="title" aria-describedby="desc">
+          <h2 id="title">Delete account</h2>
+          <p id="desc">This cannot be undone.</p>
+          <ModalClose>Cancel</ModalClose>
+        </ModalContent>
+      </ModalOverlay>
+    </ModalPortal>
+  </ModalRoot>
+</template>
+```
+
+</ForVue>
+
+<ForSolid>
+
+```tsx
+import { createSignal } from 'solid-js'
+import { Modal } from '@wire-ui/solid'
+
+const [open, setOpen] = createSignal(false)
+
+<button onClick={() => setOpen(true)}>Delete account</button>
+
+<Modal.Root open={open()} onOpenChange={setOpen}>
+  <Modal.Portal>
+    <Modal.Overlay>
+      <Modal.Content aria-labelledby="title" aria-describedby="desc">
+        <h2 id="title">Delete account</h2>
+        <p id="desc">This cannot be undone.</p>
+        <Modal.Close>Cancel</Modal.Close>
+      </Modal.Content>
+    </Modal.Overlay>
+  </Modal.Portal>
+</Modal.Root>
+```
+
+</ForSolid>
 
 The `open` / `defaultOpen` / `onOpenChange` props are **identical to Radix**, so only the trigger and the Overlay/Content nesting change. Prefer not to manage state by hand? Use the [`useDisclosure`](/docs/hooks/use-disclosure) hook.
 
