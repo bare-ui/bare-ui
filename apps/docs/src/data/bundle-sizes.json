@@ -1,0 +1,644 @@
+{
+  "frameworks": [
+    "react",
+    "solid",
+    "vue"
+  ],
+  "components": [
+    {
+      "slug": "accordion",
+      "name": "Accordion",
+      "sizes": {
+        "react": 1349,
+        "solid": 1258,
+        "vue": 1382
+      }
+    },
+    {
+      "slug": "alert",
+      "name": "Alert",
+      "sizes": {
+        "react": 1084,
+        "solid": 1058,
+        "vue": 1531
+      }
+    },
+    {
+      "slug": "aspect-ratio",
+      "name": "AspectRatio",
+      "sizes": {
+        "react": 326,
+        "solid": 208,
+        "vue": 172
+      }
+    },
+    {
+      "slug": "avatar",
+      "name": "Avatar",
+      "sizes": {
+        "react": 815,
+        "solid": 753,
+        "vue": 720
+      }
+    },
+    {
+      "slug": "badge",
+      "name": "Badge",
+      "sizes": {
+        "react": 306,
+        "solid": 144,
+        "vue": 123
+      }
+    },
+    {
+      "slug": "breadcrumb",
+      "name": "Breadcrumb",
+      "sizes": {
+        "react": 540,
+        "solid": 458,
+        "vue": 524
+      }
+    },
+    {
+      "slug": "button",
+      "name": "Button",
+      "sizes": {
+        "react": 724,
+        "solid": 1040,
+        "vue": 644
+      }
+    },
+    {
+      "slug": "calendar",
+      "name": "Calendar",
+      "sizes": {
+        "react": 3228,
+        "solid": 3246,
+        "vue": 3441
+      }
+    },
+    {
+      "slug": "card",
+      "name": "Card",
+      "sizes": {
+        "react": 299,
+        "solid": 130,
+        "vue": 117
+      }
+    },
+    {
+      "slug": "carousel",
+      "name": "Carousel",
+      "sizes": {
+        "react": 2236,
+        "solid": 2049,
+        "vue": 2346
+      }
+    },
+    {
+      "slug": "chat",
+      "name": "Chat",
+      "sizes": {
+        "react": 1934,
+        "solid": 1985,
+        "vue": 2041
+      }
+    },
+    {
+      "slug": "checkbox",
+      "name": "Checkbox",
+      "sizes": {
+        "react": 1359,
+        "solid": 1278,
+        "vue": 1387
+      }
+    },
+    {
+      "slug": "citation",
+      "name": "Citation",
+      "sizes": {
+        "react": 1123,
+        "solid": 1082,
+        "vue": 1103
+      }
+    },
+    {
+      "slug": "code-block",
+      "name": "CodeBlock",
+      "sizes": {
+        "react": 1238,
+        "solid": 1164,
+        "vue": 1641
+      }
+    },
+    {
+      "slug": "color-picker",
+      "name": "ColorPicker",
+      "sizes": {
+        "react": 2579,
+        "solid": 2395,
+        "vue": 2961
+      }
+    },
+    {
+      "slug": "combobox",
+      "name": "Combobox",
+      "sizes": {
+        "react": 2835,
+        "solid": 2906,
+        "vue": 3052
+      }
+    },
+    {
+      "slug": "command",
+      "name": "Command",
+      "sizes": {
+        "react": 2791,
+        "solid": 2638,
+        "vue": 2893
+      }
+    },
+    {
+      "slug": "context-menu",
+      "name": "ContextMenu",
+      "sizes": {
+        "react": 2768,
+        "solid": 2673,
+        "vue": 2801
+      }
+    },
+    {
+      "slug": "date-picker",
+      "name": "DatePicker",
+      "sizes": {
+        "react": 4776,
+        "solid": 4841,
+        "vue": 5505
+      }
+    },
+    {
+      "slug": "diff",
+      "name": "Diff",
+      "sizes": {
+        "react": 1029,
+        "solid": 932,
+        "vue": 971
+      }
+    },
+    {
+      "slug": "divider",
+      "name": "Divider",
+      "sizes": {
+        "react": 326,
+        "solid": 177,
+        "vue": 179
+      }
+    },
+    {
+      "slug": "drawer",
+      "name": "Drawer",
+      "sizes": {
+        "react": 1963,
+        "solid": 1911,
+        "vue": 2221
+      }
+    },
+    {
+      "slug": "dropdown",
+      "name": "Dropdown",
+      "sizes": {
+        "react": 2118,
+        "solid": 2053,
+        "vue": 2136
+      }
+    },
+    {
+      "slug": "editable",
+      "name": "Editable",
+      "sizes": {
+        "react": 1443,
+        "solid": 1204,
+        "vue": 1438
+      }
+    },
+    {
+      "slug": "empty-state",
+      "name": "EmptyState",
+      "sizes": {
+        "react": 406,
+        "solid": 208,
+        "vue": 242
+      }
+    },
+    {
+      "slug": "file-upload",
+      "name": "FileUpload",
+      "sizes": {
+        "react": 1895,
+        "solid": 1844,
+        "vue": 1917
+      }
+    },
+    {
+      "slug": "form",
+      "name": "Form",
+      "sizes": {
+        "react": 1108,
+        "solid": 1029,
+        "vue": 1057
+      }
+    },
+    {
+      "slug": "hover-card",
+      "name": "HoverCard",
+      "sizes": {
+        "react": 1136,
+        "solid": 1079,
+        "vue": 1093
+      }
+    },
+    {
+      "slug": "icon",
+      "name": "Icon",
+      "sizes": {
+        "react": 484,
+        "solid": 335,
+        "vue": 332
+      }
+    },
+    {
+      "slug": "image",
+      "name": "Image",
+      "sizes": {
+        "react": 409,
+        "solid": 359,
+        "vue": 301
+      }
+    },
+    {
+      "slug": "infinite-scroll",
+      "name": "InfiniteScroll",
+      "sizes": {
+        "react": 948,
+        "solid": 765,
+        "vue": 879
+      }
+    },
+    {
+      "slug": "input",
+      "name": "Input",
+      "sizes": {
+        "react": 968,
+        "solid": 888,
+        "vue": 1067
+      }
+    },
+    {
+      "slug": "list",
+      "name": "List",
+      "sizes": {
+        "react": 349,
+        "solid": 160,
+        "vue": 201
+      }
+    },
+    {
+      "slug": "markdown",
+      "name": "Markdown",
+      "sizes": {
+        "react": 1079,
+        "solid": 1132,
+        "vue": 867
+      }
+    },
+    {
+      "slug": "mention",
+      "name": "Mention",
+      "sizes": {
+        "react": 2499,
+        "solid": 2609,
+        "vue": 2558
+      }
+    },
+    {
+      "slug": "menu-bar",
+      "name": "MenuBar",
+      "sizes": {
+        "react": 2835,
+        "solid": 2753,
+        "vue": 2868
+      }
+    },
+    {
+      "slug": "modal",
+      "name": "Modal",
+      "sizes": {
+        "react": 1940,
+        "solid": 1887,
+        "vue": 2178
+      }
+    },
+    {
+      "slug": "navigation-menu",
+      "name": "NavigationMenu",
+      "sizes": {
+        "react": 2231,
+        "solid": 2064,
+        "vue": 2154
+      }
+    },
+    {
+      "slug": "number-input",
+      "name": "NumberInput",
+      "sizes": {
+        "react": 2271,
+        "solid": 2256,
+        "vue": 2473
+      }
+    },
+    {
+      "slug": "otp",
+      "name": "OTP",
+      "sizes": {
+        "react": 1687,
+        "solid": 1578,
+        "vue": 1858
+      }
+    },
+    {
+      "slug": "pagination",
+      "name": "Pagination",
+      "sizes": {
+        "react": 1903,
+        "solid": 1983,
+        "vue": 2210
+      }
+    },
+    {
+      "slug": "password",
+      "name": "Password",
+      "sizes": {
+        "react": 1683,
+        "solid": 1716,
+        "vue": 1587
+      }
+    },
+    {
+      "slug": "popover",
+      "name": "Popover",
+      "sizes": {
+        "react": 2089,
+        "solid": 2036,
+        "vue": 2329
+      }
+    },
+    {
+      "slug": "progress-bar",
+      "name": "ProgressBar",
+      "sizes": {
+        "react": 377,
+        "solid": 232,
+        "vue": 231
+      }
+    },
+    {
+      "slug": "radio",
+      "name": "Radio",
+      "sizes": {
+        "react": 1204,
+        "solid": 1274,
+        "vue": 1357
+      }
+    },
+    {
+      "slug": "rating",
+      "name": "Rating",
+      "sizes": {
+        "react": 1518,
+        "solid": 1615,
+        "vue": 1562
+      }
+    },
+    {
+      "slug": "resizable-panels",
+      "name": "ResizablePanels",
+      "sizes": {
+        "react": 2306,
+        "solid": 2070,
+        "vue": 2601
+      }
+    },
+    {
+      "slug": "rich-text",
+      "name": "RichText",
+      "sizes": {
+        "react": 1969,
+        "solid": 2078,
+        "vue": 1751
+      }
+    },
+    {
+      "slug": "scroll-area",
+      "name": "ScrollArea",
+      "sizes": {
+        "react": 1736,
+        "solid": 1721,
+        "vue": 1709
+      }
+    },
+    {
+      "slug": "search",
+      "name": "Search",
+      "sizes": {
+        "react": 1793,
+        "solid": 1762,
+        "vue": 1725
+      }
+    },
+    {
+      "slug": "select",
+      "name": "Select",
+      "sizes": {
+        "react": 2527,
+        "solid": 2533,
+        "vue": 1855
+      }
+    },
+    {
+      "slug": "sheet",
+      "name": "Sheet",
+      "sizes": {
+        "react": 3113,
+        "solid": 3136,
+        "vue": 3906
+      }
+    },
+    {
+      "slug": "skeleton",
+      "name": "Skeleton",
+      "sizes": {
+        "react": 348,
+        "solid": 191,
+        "vue": 189
+      }
+    },
+    {
+      "slug": "slider",
+      "name": "Slider",
+      "sizes": {
+        "react": 2006,
+        "solid": 2191,
+        "vue": 1993
+      }
+    },
+    {
+      "slug": "spinner",
+      "name": "Spinner",
+      "sizes": {
+        "react": 431,
+        "solid": 297,
+        "vue": 274
+      }
+    },
+    {
+      "slug": "stat",
+      "name": "Stat",
+      "sizes": {
+        "react": 757,
+        "solid": 679,
+        "vue": 788
+      }
+    },
+    {
+      "slug": "stepper",
+      "name": "Stepper",
+      "sizes": {
+        "react": 1197,
+        "solid": 1061,
+        "vue": 1333
+      }
+    },
+    {
+      "slug": "switch",
+      "name": "Switch",
+      "sizes": {
+        "react": 912,
+        "solid": 891,
+        "vue": 889
+      }
+    },
+    {
+      "slug": "tabs",
+      "name": "Tabs",
+      "sizes": {
+        "react": 1836,
+        "solid": 1726,
+        "vue": 2015
+      }
+    },
+    {
+      "slug": "tag",
+      "name": "Tag",
+      "sizes": {
+        "react": 727,
+        "solid": 655,
+        "vue": 1157
+      }
+    },
+    {
+      "slug": "tag-input",
+      "name": "TagInput",
+      "sizes": {
+        "react": 1272,
+        "solid": 1192,
+        "vue": 1334
+      }
+    },
+    {
+      "slug": "textarea",
+      "name": "Textarea",
+      "sizes": {
+        "react": 965,
+        "solid": 893,
+        "vue": 1072
+      }
+    },
+    {
+      "slug": "timeago",
+      "name": "Timeago",
+      "sizes": {
+        "react": 1594,
+        "solid": 1425,
+        "vue": 1541
+      }
+    },
+    {
+      "slug": "toast",
+      "name": "Toast",
+      "sizes": {
+        "react": 1687,
+        "solid": 1573,
+        "vue": 1840
+      }
+    },
+    {
+      "slug": "toggle",
+      "name": "Toggle",
+      "sizes": {
+        "react": 1928,
+        "solid": 985,
+        "vue": 1090
+      }
+    },
+    {
+      "slug": "toolbar",
+      "name": "Toolbar",
+      "sizes": {
+        "react": 1664,
+        "solid": 1444,
+        "vue": 1591
+      }
+    },
+    {
+      "slug": "tooltip",
+      "name": "Tooltip",
+      "sizes": {
+        "react": 1130,
+        "solid": 1020,
+        "vue": 1068
+      }
+    },
+    {
+      "slug": "tree-view",
+      "name": "TreeView",
+      "sizes": {
+        "react": 1752,
+        "solid": 1774,
+        "vue": 1780
+      }
+    },
+    {
+      "slug": "typewriter",
+      "name": "Typewriter",
+      "sizes": {
+        "react": 1173,
+        "solid": 1044,
+        "vue": 1209
+      }
+    },
+    {
+      "slug": "virtualizer",
+      "name": "Virtualizer",
+      "sizes": {
+        "react": 1188,
+        "solid": 1193,
+        "vue": 1040
+      }
+    }
+  ],
+  "barrel": {
+    "react": 49737,
+    "solid": 54081,
+    "vue": 60039
+  }
+}

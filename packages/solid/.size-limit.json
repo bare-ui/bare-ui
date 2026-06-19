@@ -1,51 +1,783 @@
 [
 	{
-		"name": "Button (single import)",
+		"name": "Accordion (single import)",
 		"path": "dist/index.js",
-		"import": "{ Button }",
-		"ignore": ["solid-js", "solid-js/web", "solid-js/store"],
-		"limit": "1.5 kB"
+		"import": "{ Accordion }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.7 kB"
+	},
+	{
+		"name": "Alert (single import)",
+		"path": "dist/index.js",
+		"import": "{ Alert }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.45 kB"
+	},
+	{
+		"name": "Aspect Ratio (single import)",
+		"path": "dist/index.js",
+		"import": "{ AspectRatio }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "0.4 kB"
+	},
+	{
+		"name": "Avatar (single import)",
+		"path": "dist/index.js",
+		"import": "{ Avatar }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.05 kB"
 	},
 	{
 		"name": "Badge (single import)",
 		"path": "dist/index.js",
 		"import": "{ Badge }",
-		"ignore": ["solid-js", "solid-js/web", "solid-js/store"],
-		"limit": "0.5 kB"
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "0.35 kB"
+	},
+	{
+		"name": "Breadcrumb (single import)",
+		"path": "dist/index.js",
+		"import": "{ Breadcrumb }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "0.65 kB"
+	},
+	{
+		"name": "Button (single import)",
+		"path": "dist/index.js",
+		"import": "{ Button }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.45 kB"
+	},
+	{
+		"name": "Calendar (single import)",
+		"path": "dist/index.js",
+		"import": "{ Calendar }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "4.4 kB"
+	},
+	{
+		"name": "Card (single import)",
+		"path": "dist/index.js",
+		"import": "{ Card }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "0.35 kB"
+	},
+	{
+		"name": "Carousel (single import)",
+		"path": "dist/index.js",
+		"import": "{ Carousel }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "2.8 kB"
+	},
+	{
+		"name": "Chat (single import)",
+		"path": "dist/index.js",
+		"import": "{ Chat }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "2.7 kB"
+	},
+	{
+		"name": "Checkbox (single import)",
+		"path": "dist/index.js",
+		"import": "{ Checkbox }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.75 kB"
+	},
+	{
+		"name": "Citation (single import)",
+		"path": "dist/index.js",
+		"import": "{ Citation }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.5 kB"
+	},
+	{
+		"name": "Code Block (single import)",
+		"path": "dist/index.js",
+		"import": "{ CodeBlock }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.6 kB"
+	},
+	{
+		"name": "Color Picker (single import)",
+		"path": "dist/index.js",
+		"import": "{ ColorPicker }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "3.25 kB"
+	},
+	{
+		"name": "Combobox (single import)",
+		"path": "dist/index.js",
+		"import": "{ Combobox }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "3.95 kB"
+	},
+	{
+		"name": "Command (single import)",
+		"path": "dist/index.js",
+		"import": "{ Command }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "3.6 kB"
+	},
+	{
+		"name": "Context Menu (single import)",
+		"path": "dist/index.js",
+		"import": "{ ContextMenu }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "3.65 kB"
+	},
+	{
+		"name": "Date Picker (single import)",
+		"path": "dist/index.js",
+		"import": "{ DatePicker }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "6.55 kB"
+	},
+	{
+		"name": "Diff (single import)",
+		"path": "dist/index.js",
+		"import": "{ Diff }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.3 kB"
 	},
 	{
 		"name": "Divider (single import)",
 		"path": "dist/index.js",
 		"import": "{ Divider }",
-		"ignore": ["solid-js", "solid-js/web", "solid-js/store"],
-		"limit": "0.5 kB"
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "0.4 kB"
 	},
 	{
-		"name": "Tooltip (single import)",
+		"name": "Drawer (single import)",
 		"path": "dist/index.js",
-		"import": "{ Tooltip }",
-		"ignore": ["solid-js", "solid-js/web", "solid-js/store"],
+		"import": "{ Drawer }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "2.6 kB"
+	},
+	{
+		"name": "Dropdown (single import)",
+		"path": "dist/index.js",
+		"import": "{ Dropdown }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "2.8 kB"
+	},
+	{
+		"name": "Editable (single import)",
+		"path": "dist/index.js",
+		"import": "{ Editable }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.65 kB"
+	},
+	{
+		"name": "Empty State (single import)",
+		"path": "dist/index.js",
+		"import": "{ EmptyState }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "0.4 kB"
+	},
+	{
+		"name": "File Upload (single import)",
+		"path": "dist/index.js",
+		"import": "{ FileUpload }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "2.5 kB"
+	},
+	{
+		"name": "Form (single import)",
+		"path": "dist/index.js",
+		"import": "{ Form }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.4 kB"
+	},
+	{
+		"name": "Hover Card (single import)",
+		"path": "dist/index.js",
+		"import": "{ HoverCard }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
 		"limit": "1.5 kB"
 	},
 	{
-		"name": "Accordion (single import)",
+		"name": "Icon (single import)",
 		"path": "dist/index.js",
-		"import": "{ Accordion }",
-		"ignore": ["solid-js", "solid-js/web", "solid-js/store"],
-		"limit": "1.75 kB"
+		"import": "{ Icon }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "0.55 kB"
+	},
+	{
+		"name": "Image (single import)",
+		"path": "dist/index.js",
+		"import": "{ Image }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "0.55 kB"
+	},
+	{
+		"name": "Infinite Scroll (single import)",
+		"path": "dist/index.js",
+		"import": "{ InfiniteScroll }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.05 kB"
+	},
+	{
+		"name": "Input (single import)",
+		"path": "dist/index.js",
+		"import": "{ Input }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.2 kB"
+	},
+	{
+		"name": "List (single import)",
+		"path": "dist/index.js",
+		"import": "{ List }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "0.35 kB"
+	},
+	{
+		"name": "Markdown (single import)",
+		"path": "dist/index.js",
+		"import": "{ Markdown }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.55 kB"
+	},
+	{
+		"name": "Mention (single import)",
+		"path": "dist/index.js",
+		"import": "{ Mention }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "3.55 kB"
+	},
+	{
+		"name": "Menu Bar (single import)",
+		"path": "dist/index.js",
+		"import": "{ MenuBar }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "3.75 kB"
 	},
 	{
 		"name": "Modal (single import)",
 		"path": "dist/index.js",
 		"import": "{ Modal }",
-		"ignore": ["solid-js", "solid-js/web", "solid-js/store"],
-		"limit": "2.5 kB"
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "2.55 kB"
+	},
+	{
+		"name": "Navigation Menu (single import)",
+		"path": "dist/index.js",
+		"import": "{ NavigationMenu }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "2.8 kB"
+	},
+	{
+		"name": "Number Input (single import)",
+		"path": "dist/index.js",
+		"import": "{ NumberInput }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "3.05 kB"
+	},
+	{
+		"name": "Otp (single import)",
+		"path": "dist/index.js",
+		"import": "{ OTP }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "2.15 kB"
+	},
+	{
+		"name": "Pagination (single import)",
+		"path": "dist/index.js",
+		"import": "{ Pagination }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "2.7 kB"
+	},
+	{
+		"name": "Password (single import)",
+		"path": "dist/index.js",
+		"import": "{ Password }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "2.35 kB"
+	},
+	{
+		"name": "Popover (single import)",
+		"path": "dist/index.js",
+		"import": "{ Popover }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "2.75 kB"
+	},
+	{
+		"name": "Progress Bar (single import)",
+		"path": "dist/index.js",
+		"import": "{ ProgressBar }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "0.45 kB"
+	},
+	{
+		"name": "Radio (single import)",
+		"path": "dist/index.js",
+		"import": "{ Radio }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.75 kB"
+	},
+	{
+		"name": "Rating (single import)",
+		"path": "dist/index.js",
+		"import": "{ Rating }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "2.2 kB"
+	},
+	{
+		"name": "Resizable Panels (single import)",
+		"path": "dist/index.js",
+		"import": "{ ResizablePanels }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "2.8 kB"
+	},
+	{
+		"name": "Rich Text (single import)",
+		"path": "dist/index.js",
+		"import": "{ RichText }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "2.85 kB"
+	},
+	{
+		"name": "Scroll Area (single import)",
+		"path": "dist/index.js",
+		"import": "{ ScrollArea }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "2.35 kB"
+	},
+	{
+		"name": "Search (single import)",
+		"path": "dist/index.js",
+		"import": "{ Search }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "2.4 kB"
+	},
+	{
+		"name": "Select (single import)",
+		"path": "dist/index.js",
+		"import": "{ Select }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "3.45 kB"
+	},
+	{
+		"name": "Sheet (single import)",
+		"path": "dist/index.js",
+		"import": "{ Sheet }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "4.25 kB"
+	},
+	{
+		"name": "Skeleton (single import)",
+		"path": "dist/index.js",
+		"import": "{ Skeleton }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "0.4 kB"
+	},
+	{
+		"name": "Slider (single import)",
+		"path": "dist/index.js",
+		"import": "{ Slider }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "3 kB"
+	},
+	{
+		"name": "Spinner (single import)",
+		"path": "dist/index.js",
+		"import": "{ Spinner }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "0.5 kB"
+	},
+	{
+		"name": "Stat (single import)",
+		"path": "dist/index.js",
+		"import": "{ Stat }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "0.95 kB"
+	},
+	{
+		"name": "Stepper (single import)",
+		"path": "dist/index.js",
+		"import": "{ Stepper }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.45 kB"
+	},
+	{
+		"name": "Switch (single import)",
+		"path": "dist/index.js",
+		"import": "{ Switch }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.25 kB"
+	},
+	{
+		"name": "Tabs (single import)",
+		"path": "dist/index.js",
+		"import": "{ Tabs }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "2.35 kB"
+	},
+	{
+		"name": "Tag (single import)",
+		"path": "dist/index.js",
+		"import": "{ Tag }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "0.9 kB"
+	},
+	{
+		"name": "Tag Input (single import)",
+		"path": "dist/index.js",
+		"import": "{ TagInput }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.65 kB"
+	},
+	{
+		"name": "Textarea (single import)",
+		"path": "dist/index.js",
+		"import": "{ Textarea }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.25 kB"
+	},
+	{
+		"name": "Timeago (single import)",
+		"path": "dist/index.js",
+		"import": "{ Timeago }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.95 kB"
+	},
+	{
+		"name": "Toast (single import)",
+		"path": "dist/index.js",
+		"import": "{ Toast }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "2.15 kB"
+	},
+	{
+		"name": "Toggle (single import)",
+		"path": "dist/index.js",
+		"import": "{ Toggle }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.35 kB"
+	},
+	{
+		"name": "Toolbar (single import)",
+		"path": "dist/index.js",
+		"import": "{ Toolbar }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.95 kB"
+	},
+	{
+		"name": "Tooltip (single import)",
+		"path": "dist/index.js",
+		"import": "{ Tooltip }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.4 kB"
+	},
+	{
+		"name": "Tree View (single import)",
+		"path": "dist/index.js",
+		"import": "{ TreeView }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "2.4 kB"
+	},
+	{
+		"name": "Typewriter (single import)",
+		"path": "dist/index.js",
+		"import": "{ Typewriter }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.45 kB"
+	},
+	{
+		"name": "Virtualizer (single import)",
+		"path": "dist/index.js",
+		"import": "{ Virtualizer }",
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "1.65 kB"
 	},
 	{
 		"name": "Whole library (barrel import)",
 		"path": "dist/index.js",
 		"import": "*",
-		"ignore": ["solid-js", "solid-js/web", "solid-js/store"],
-		"limit": "56 kB"
+		"ignore": [
+			"solid-js",
+			"solid-js/web",
+			"solid-js/store"
+		],
+		"limit": "65 kB"
 	}
 ]
