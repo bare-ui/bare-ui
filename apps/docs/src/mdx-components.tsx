@@ -1,4 +1,5 @@
 import { useMDXComponents as getDocsMDXComponents } from 'nextra-theme-docs'
+import { BundleSizeTable } from './components/bundle-size-table'
 import { ForReact, ForVue, ForSolid } from './components/code-block'
 import { FeatureList, FeatureItem } from './components/feature-list'
 import { LicenseText } from './components/license-text'
@@ -79,6 +80,7 @@ export function useMDXComponents(components?: Record<string, React.FC>) {
     ForReact,
     ForVue,
     ForSolid,
+    BundleSizeTable,
     FeatureList,
     FeatureItem,
     LicenseText,

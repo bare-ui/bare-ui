@@ -12,6 +12,8 @@
     "format": "turbo format",
     "test": "turbo test",
     "test:run": "turbo test:run",
+    "size": "turbo size",
+    "size:update": "node scripts/update-size-budgets.mjs",
     "clean": "turbo clean"
   },
   "devDependencies": {

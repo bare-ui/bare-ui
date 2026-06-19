@@ -1,0 +1,59 @@
+---
+title: Bundle Size
+description: The gzipped cost of every Wire UI component, per framework, with the per-component budgets that gate CI.
+---
+
+# Bundle Size
+
+Wire UI is built to disappear into your bundle. Every component is a headless primitive with **zero CSS** and **zero runtime dependencies**, so the only thing you ship is the behavior you actually import. Because the packages are fully tree-shakeable (`"sideEffects": false`), importing one component pulls in that component — not the library.
+
+The table below publishes the measured cost of each component, and every number here is enforced as a **budget in CI**: a pull request that pushes a component past its budget fails the build.
+
+## How we measure
+
+Each number is the **minified + gzipped** size of a single tree-shaken import — what `import { Button } from '@wire-ui/react'` adds to a production bundle:
+
+<FeatureList>
+  <FeatureItem>Measured with <a href="https://github.com/ai/size-limit"><code>size-limit</code></a> against the published <code>dist</code>, using its esbuild bundler.</FeatureItem>
+  <FeatureItem>Framework peer dependencies (<code>react</code> / <code>solid-js</code> / <code>vue</code>) are excluded — you already ship those.</FeatureItem>
+  <FeatureItem>Shared internals are counted once per import, so importing two components costs less than the sum of their rows.</FeatureItem>
+  <FeatureItem>The <strong>barrel</strong> row is the whole library imported at once (<code>import * </code>) — the realistic ceiling, not a typical app.</FeatureItem>
+</FeatureList>
+
+Click any column header to sort. Component names link to their docs.
+
+## Per-component size
+
+<BundleSizeTable />
+
+Sizes vary slightly by framework because each implementation is idiomatic to its renderer — Solid compiles reactivity inline, Vue ships its own render helpers, React leans on hooks. None of the three depends on the others.
+
+## Budgets & CI enforcement
+
+Every row above has a committed budget in each package's `.size-limit.json`. The budget is the measured size plus headroom (~35% for components, rounded up), which absorbs normal build-to-build noise while still catching real regressions. CI runs `size-limit` for each package on every pull request:
+
+```bash
+npm run size --workspace @wire-ui/react
+```
+
+If a change makes a component exceed its budget, the **per-component bundle budgets** CI job fails — the regression is caught before merge, not after a user files a "why did my bundle grow" issue.
+
+### Re-baselining after an intentional change
+
+When a component legitimately grows (a new feature, not an accident), re-baseline the budgets and refresh this table in one step from the repo root:
+
+```bash
+npm run size:update
+```
+
+This re-measures every component across all three packages, rewrites each `.size-limit.json`, and regenerates the data behind the table on this page. The diff is reviewable, so an intentional size increase is an explicit, visible change in the PR rather than a silent one.
+
+## Keeping your own bundle small
+
+<FeatureList>
+  <FeatureItem>Import named components (<code>{`import { Button } from '@wire-ui/react'`}</code>) rather than re-exporting the barrel from a local module.</FeatureItem>
+  <FeatureItem>Make sure your bundler runs production mode with tree-shaking enabled — Vite, Next.js, and Rollup do by default.</FeatureItem>
+  <FeatureItem>Heavier primitives like Calendar, Chat, and Slider carry more logic by nature; reach for them deliberately.</FeatureItem>
+</FeatureList>
+
+See also [Browser Support](/docs/browser-support) for the runtime targets these sizes are built against.

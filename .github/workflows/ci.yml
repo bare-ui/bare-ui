@@ -79,17 +79,43 @@ jobs:
         if: matrix.package == 'react' || matrix.package == 'solid'
         run: npm run compiler:check --workspace @wire-ui/${{ matrix.package }}
 
-      # size-limit and attw run against the built dist, so build first.
+      # attw runs against the built dist, so build first. (Per-component bundle
+      # budgets run in the dedicated `bundle-size` job below, across all three
+      # frameworks.)
       - name: Build
         if: matrix.package == 'react' || matrix.package == 'solid'
         run: npm run build --workspace @wire-ui/${{ matrix.package }}
-
-      # Per-component import budgets — fails if tree-shaking regresses.
-      - name: Tree-shaking size budgets
-        if: matrix.package == 'react' || matrix.package == 'solid'
-        run: npm run size --workspace @wire-ui/${{ matrix.package }}
 
       # Validate published type resolution across module systems.
       - name: Type resolution (are-the-types-wrong)
         if: matrix.package == 'react' || matrix.package == 'solid'
         run: npm run attw --workspace @wire-ui/${{ matrix.package }}
+
+  # Per-component bundle-size budgets. Lives in its own job (not the quality
+  # matrix) so Vue is gated too — Vue is held out of `quality` until its a11y
+  # harness lands, but its size budgets are ready now. Each package's
+  # .size-limit.json holds a budget per component; `npm run size` fails if a
+  # tree-shaken import grows past its budget. Re-baseline with
+  # `npm run size:update` from the repo root.
+  bundle-size:
+    name: ${{ matrix.package }} · per-component bundle budgets
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [react, solid, vue]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build --workspace @wire-ui/${{ matrix.package }}
+
+      - name: Per-component bundle budgets
+        run: npm run size --workspace @wire-ui/${{ matrix.package }}

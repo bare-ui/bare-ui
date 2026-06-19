@@ -28,6 +28,9 @@
       "dependsOn": ["^build"],
       "outputs": ["coverage/**"]
     },
+    "size": {
+      "dependsOn": ["build"]
+    },
     "clean": {
       "cache": false
     }

@@ -10,6 +10,7 @@ export default {
   'wcag-compliance': 'WCAG 2.2 AA',
   'data-attributes': 'Data Attributes',
   'browser-support': 'Browser Support',
+  'bundle-size': 'Bundle Size',
   changelog: {
     title: 'Changelog',
     href: 'https://github.com/wire-ui/wire-ui/blob/main/packages/react/CHANGELOG.md',
