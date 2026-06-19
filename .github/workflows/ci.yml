@@ -119,3 +119,20 @@ jobs:
 
       - name: Per-component bundle budgets
         run: npm run size --workspace @wire-ui/${{ matrix.package }}
+
+  # API parity matrix drift check. The matrix published in the docs is generated
+  # from each package's export surface; this fails if a component/hook was added
+  # to one framework without regenerating it (`npm run parity:update`). It's a
+  # pure source parse, so it needs neither dependencies nor a build.
+  api-parity:
+    name: api parity matrix · drift check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Check parity matrix is up to date
+        run: npm run parity:check

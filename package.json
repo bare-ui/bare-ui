@@ -14,6 +14,8 @@
     "test:run": "turbo test:run",
     "size": "turbo size",
     "size:update": "node scripts/update-size-budgets.mjs",
+    "parity:update": "node scripts/update-parity-matrix.mjs",
+    "parity:check": "node scripts/update-parity-matrix.mjs --check",
     "clean": "turbo clean"
   },
   "devDependencies": {
