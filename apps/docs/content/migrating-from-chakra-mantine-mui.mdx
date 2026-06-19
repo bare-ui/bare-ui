@@ -1,0 +1,153 @@
+---
+title: Migrating from Chakra UI / Mantine / MUI
+description: A broad-strokes guide to moving from a styled component library to Wire UI's headless primitives.
+---
+
+# Migrating from Chakra UI / Mantine / MUI
+
+This is the highest-friction migration Wire UI documents, because it's a **change of model**, not a rename. Chakra, Mantine, and MUI are *batteries-included*: they own styling through a theme object and a runtime CSS engine (Emotion), and you configure components with style props (`colorScheme`, `variant`, `sx`). Wire UI is *headless*: it ships **zero CSS** and exposes behavior + `data-*` state, and **you** own the visual layer.
+
+So there's no codemod — the APIs are too different. Instead, this guide is about the shift and a strategy to make it incremental.
+
+> **Framework note.** Chakra (with a separate Vue port), Mantine, and MUI are React-first. Wire UI's headless model is the same in **React, Vue, and Solid** — the wrapper pattern below works identically in each; toggle the picker to see your framework's syntax (`className` vs `class`, props vs `defineProps`).
+
+## What actually changes
+
+<FeatureList>
+  <FeatureItem><strong>You bring the styling.</strong> Style props (<code>{`<Button colorScheme="blue" size="lg">`}</code>) become your classes or a styled wrapper. No Emotion runtime — styling is Tailwind or plain CSS.</FeatureItem>
+  <FeatureItem><strong>Layout primitives aren't included.</strong> <code>Box</code>, <code>Stack</code>, <code>Flex</code>, <code>Grid</code>, <code>Typography</code>, <code>Table</code> have no Wire UI equivalent — they're CSS. Replace them with Tailwind utilities or your own elements.</FeatureItem>
+  <FeatureItem><strong>Theming moves to tokens.</strong> The theme object becomes CSS variables (or Tailwind config). State that the library tracked internally is now <code>data-*</code> attributes you target in CSS.</FeatureItem>
+  <FeatureItem><strong>What you gain.</strong> No runtime CSS cost, full visual control, a smaller bundle, and the same primitives in React, Vue, and Solid.</FeatureItem>
+</FeatureList>
+
+## Component map
+
+The interactive components map fairly directly — it's the *styling* that moves, not the structure.
+
+| Concept | Chakra UI | Mantine | MUI | Wire UI |
+|---|---|---|---|---|
+| Button | `Button` | `Button` | `Button` | `Button` |
+| Dialog | `Modal` | `Modal` | `Dialog` | `Modal` |
+| Drawer | `Drawer` | `Drawer` | `Drawer` | `Drawer` |
+| Menu | `Menu` | `Menu` | `Menu` | `Dropdown` |
+| Select | `Select` | `Select` | `Select` | `Select` |
+| Autocomplete | `AutoComplete`¹ | `Autocomplete` | `Autocomplete` | `Combobox` |
+| Tabs | `Tabs` | `Tabs` | `Tabs` | `Tabs` |
+| Accordion | `Accordion` | `Accordion` | `Accordion` | `Accordion` |
+| Tooltip | `Tooltip` | `Tooltip` | `Tooltip` | `Tooltip` |
+| Popover | `Popover` | `Popover` | `Popover` | `Popover` |
+| Switch | `Switch` | `Switch` | `Switch` | `Switch` |
+| Checkbox / Radio | `Checkbox` / `Radio` | `Checkbox` / `Radio` | `Checkbox` / `Radio` | `Checkbox` / `Radio` |
+| Slider | `Slider` | `Slider` | `Slider` | `Slider` |
+| Progress | `Progress` | `Progress` | `LinearProgress` | `ProgressBar` |
+| Notifications | `useToast` | `notifications` | `Snackbar` | `Toast` |
+| Stepper | `Stepper`¹ | `Stepper` | `Stepper` | `Stepper` |
+| Pagination | — | `Pagination` | `Pagination` | `Pagination` |
+| Avatar / Badge / Card | ✓ | ✓ | ✓ | `Avatar` / `Badge` / `Card` |
+
+¹ Chakra ships these via separate packages or community add-ons. Layout primitives (`Box`/`Stack`/`Grid`) and `Table` have no Wire UI equivalent — use CSS/Tailwind.
+
+## Translating a styled component
+
+Move the style props into a wrapper so the rest of your app barely changes. A styled-library `Button` (e.g. MUI's `<Button variant="contained" color="primary" size="large">`) becomes one styled Wire UI `Button` whose wrapper mirrors your old prop names:
+
+<ForReact>
+
+```tsx
+import { Button as WireButton } from '@wire-ui/react'
+
+const styles = {
+  contained: 'bg-blue-600 text-white hover:bg-blue-700 shadow',
+  outlined: 'border border-blue-600 text-blue-600 hover:bg-blue-50',
+  text: 'text-blue-600 hover:bg-blue-50',
+}
+
+export function Button({ variant = 'contained', className = '', ...props }) {
+  return (
+    <WireButton
+      className={`inline-flex items-center rounded-md px-4 py-2 font-medium
+        focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-50
+        ${styles[variant]} ${className}`}
+      {...props}
+    />
+  )
+}
+```
+
+</ForReact>
+
+<ForVue>
+
+```vue
+<script setup lang="ts">
+import { computed } from 'vue'
+import { Button as WireButton } from '@wire-ui/vue'
+
+const props = withDefaults(defineProps<{ variant?: 'contained' | 'outlined' | 'text' }>(), {
+  variant: 'contained',
+})
+
+const styles = {
+  contained: 'bg-blue-600 text-white hover:bg-blue-700 shadow',
+  outlined: 'border border-blue-600 text-blue-600 hover:bg-blue-50',
+  text: 'text-blue-600 hover:bg-blue-50',
+}
+const cls = computed(
+  () => `inline-flex items-center rounded-md px-4 py-2 font-medium
+    focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-50 ${styles[props.variant]}`,
+)
+</script>
+
+<template>
+  <WireButton :class="cls"><slot /></WireButton>
+</template>
+```
+
+</ForVue>
+
+<ForSolid>
+
+```tsx
+import { Button as WireButton } from '@wire-ui/solid'
+import type { JSX } from 'solid-js'
+
+const styles = {
+  contained: 'bg-blue-600 text-white hover:bg-blue-700 shadow',
+  outlined: 'border border-blue-600 text-blue-600 hover:bg-blue-50',
+  text: 'text-blue-600 hover:bg-blue-50',
+}
+
+export function Button(
+  props: { variant?: keyof typeof styles } & JSX.ButtonHTMLAttributes<HTMLButtonElement>,
+) {
+  return (
+    <WireButton
+      class={`inline-flex items-center rounded-md px-4 py-2 font-medium
+        focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-50
+        ${styles[props.variant ?? 'contained']}`}
+      {...props}
+    />
+  )
+}
+```
+
+</ForSolid>
+
+Build these wrappers once, keyed to your old prop names, and most call sites migrate with just an import change.
+
+## Strategy
+
+A model change is best done incrementally — don't attempt a big-bang rewrite.
+
+<FeatureList>
+  <FeatureItem><strong>Set up the styling layer first.</strong> Adopt Tailwind (or a CSS-variable token set) and port your theme — colors, spacing, radii — into it before touching components.</FeatureItem>
+  <FeatureItem><strong>Build wrappers that mirror your current API.</strong> A <code>Button</code>/<code>Modal</code>/<code>Select</code> wrapper with your existing prop names lets app code migrate with minimal churn.</FeatureItem>
+  <FeatureItem><strong>Replace layout with CSS.</strong> Swap <code>Stack</code>/<code>Box</code>/<code>Grid</code> for fl/grid utilities as you touch each surface.</FeatureItem>
+  <FeatureItem><strong>Migrate surface by surface.</strong> Both libraries can run side by side during the transition — there's no global provider conflict, since Wire UI ships no styles to collide.</FeatureItem>
+</FeatureList>
+
+## Is this migration worth it?
+
+Switch when you want **control and portability** over **convenience**: a smaller, runtime-CSS-free bundle, design that isn't fighting a theme system, AI-native primitives these libraries don't have, and one component layer across React, Vue, and Solid. If a styled library's defaults already serve you and you don't need those, there's no urgency — Wire UI can also be adopted just for the primitives that are missing.
+
+See the [API Parity](/docs/api-parity) matrix for the full component list and [Data Attributes](/docs/data-attributes) for the styling hooks that replace style props.
