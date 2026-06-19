@@ -32,6 +32,11 @@ export default {
   'api-parity': 'API Parity',
   components: 'Components',
   hooks: 'Hooks / Composables / Primitives',
+  '-- migration': {
+    type: 'separator',
+    title: 'Migration',
+  },
+  'migrating-from-radix': 'From Radix UI',
   '-- resources': {
     type: 'separator',
     title: 'Resources',

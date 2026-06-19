@@ -1,0 +1,150 @@
+---
+title: Migrating from Radix UI
+description: A component-by-component map from Radix UI primitives to Wire UI, plus a codemod for the mechanical rewrites.
+---
+
+# Migrating from Radix UI
+
+Radix UI and Wire UI share a philosophy — **headless, unstyled, accessible primitives driven by `data-*` state attributes** — so this is one of the smoothest migrations you can make. Most of your styling carries over untouched, because both libraries expose the same `[data-state="open"]` / `[data-disabled]` selectors you're already targeting.
+
+What actually changes:
+
+<FeatureList>
+  <FeatureItem><strong>One package.</strong> Radix's per-primitive packages (<code>@radix-ui/react-dialog</code>, <code>@radix-ui/react-tabs</code>, …) collapse into a single <code>@wire-ui/react</code>.</FeatureItem>
+  <FeatureItem><strong>A few renames.</strong> Dialog → Modal, DropdownMenu → Dropdown, Separator → Divider, and a handful more.</FeatureItem>
+  <FeatureItem><strong>Same <code>asChild</code>.</strong> Wire UI supports the <code>asChild</code> polymorphism you rely on, so composition patterns transfer directly.</FeatureItem>
+  <FeatureItem><strong>Some overlays restructure.</strong> Modal and Dropdown have a slightly different anatomy than their Radix counterparts — a one-time hand edit.</FeatureItem>
+</FeatureList>
+
+## 1. Swap the dependencies
+
+```bash
+npm uninstall @radix-ui/react-dialog @radix-ui/react-tabs # …and the rest
+npm install @wire-ui/react
+```
+
+## 2. Run the codemod
+
+A jscodeshift codemod does the mechanical 80% — rewriting imports and renaming component namespaces (in both JSX and member expressions):
+
+```bash
+npx jscodeshift \
+  -t https://wire-ui.com/codemods/radix-to-wire-ui.cjs \
+  --extensions=tsx,ts,jsx,js --parser=tsx \
+  src/
+```
+
+It turns this:
+
+```tsx
+import * as Dialog from '@radix-ui/react-dialog'
+import * as Tabs from '@radix-ui/react-tabs'
+import * as Separator from '@radix-ui/react-separator'
+```
+
+into this:
+
+```tsx
+import { Divider, Modal, Tabs } from '@wire-ui/react'
+// <Dialog.Root> → <Modal.Root>, <Separator.Root> → <Divider.Root>, <Tabs.*> unchanged
+```
+
+**What it does:** import consolidation + namespace renames — always safe.
+**What it doesn't:** restructure markup, rename parts, or convert props. After running it, let TypeScript guide you to the spots flagged in the map below.
+
+## Component map
+
+✅ drop-in · ✏️ codemod renames it · 🔧 needs a hand edit after the codemod
+
+| Radix UI | Wire UI | | Notes |
+|---|---|---|---|
+| `Accordion` | `Accordion` | ✅ | Same `Root/Item/Trigger/Content`. Drop Radix's `Accordion.Header` wrapper. `type` + `collapsible` props match. |
+| `AspectRatio` | `AspectRatio` | ✅ | `ratio` prop is identical. |
+| `Avatar` | `Avatar` | ✅ | `Root/Image/Fallback` — identical. |
+| `ContextMenu` | `ContextMenu` | ✅ | `Root/Trigger/Content/Item/Separator`. |
+| `HoverCard` | `HoverCard` | ✅ | `Root/Trigger/Content`. |
+| `NavigationMenu` | `NavigationMenu` | ✅ | `Root/List/Item/Trigger/Content/Link`. |
+| `Popover` | `Popover` | ✅ | `Root/Trigger/Portal/Content/Close`. |
+| `ScrollArea` | `ScrollArea` | ✅ | `Root/Viewport/Scrollbar/Thumb`. |
+| `Select` | `Select` | ✅ | `Root/Trigger/Value/Content/Item/Group/GroupLabel/Separator`. |
+| `Switch` | `Switch` | ✅ | `Root/Thumb`. |
+| `Tabs` | `Tabs` | ✅ | `Root/List/Trigger/Content` — identical. |
+| `Toggle` | `Toggle` | ✅ | Single component, `pressed` prop. |
+| `ToggleGroup` | `ToggleGroup` | ✅ | `Root/Item`. |
+| `Toolbar` | `Toolbar` | ✅ | `Root/Button/Toggle/Link/Separator`. |
+| `Menubar` | `MenuBar` | ✏️ | `Root/Menu/Trigger/Content/Item/Separator/Sub/SubTrigger/SubContent`. |
+| `Separator` | `Divider` | ✏️ | `orientation` prop carries over. |
+| `Form` | `Form` | ✅ | `Root/Field/Label/Control/Message/Submit`. See the [Form guide](/docs/form-integration). |
+| `Label` | `Form.Label` / `Input.Label` | 🔧 | No standalone `Label`; use the field's label part. |
+| `Dialog` | `Modal` | 🔧 | Renamed by the codemod; then restructure (see below). |
+| `AlertDialog` | `Modal` | 🔧 | Same as Dialog. Set `role="alertdialog"` on the content and skip the overlay-click close. |
+| `DropdownMenu` | `Dropdown` | 🔧 | Wire UI uses `Root/Trigger/Menu`; map Radix's `Content`/`Item` into `Menu`. |
+| `RadioGroup` | `Radio` | 🔧 | `Root/Item/Indicator/Label` — add `Radio.Label` per item. |
+| `Checkbox` | `Checkbox` | 🔧 | Wire UI wraps the box in `Checkbox.Item`; structure is `Root/Item/Indicator/Label`. |
+| `Progress` | `ProgressBar` | 🔧 | Not compound — a single component driven by a `percentage` prop (no `Indicator`). |
+| `Slider` | `Slider` | 🔧 | Not compound — props instead of `Track/Range/Thumb`. |
+| `Tooltip` | `Tooltip` | 🔧 | `Root/Trigger/Content`. Remove `Tooltip.Provider`; `delayDuration` is a prop on `Tooltip.Root`. |
+| `Collapsible` | `Accordion` | 🔧 | No standalone Collapsible — use `Accordion type="single" collapsible` with one item. |
+
+Components with no Radix equivalent (Calendar, Combobox, Command, FileUpload, the AI primitives, and more) are listed in the [API Parity](/docs/api-parity) matrix.
+
+## Overlays: Dialog → Modal
+
+The one structural change worth walking through. Wire UI's Modal has **no `Trigger` part** (you drive `open` yourself), nests `Content` **inside** `Overlay`, and uses plain elements for the title/description.
+
+**Before (Radix):**
+
+```tsx
+import * as Dialog from '@radix-ui/react-dialog'
+
+<Dialog.Root>
+  <Dialog.Trigger asChild>
+    <button>Delete account</button>
+  </Dialog.Trigger>
+  <Dialog.Portal>
+    <Dialog.Overlay />
+    <Dialog.Content>
+      <Dialog.Title>Delete account</Dialog.Title>
+      <Dialog.Description>This cannot be undone.</Dialog.Description>
+      <Dialog.Close asChild><button>Cancel</button></Dialog.Close>
+    </Dialog.Content>
+  </Dialog.Portal>
+</Dialog.Root>
+```
+
+**After (Wire UI):**
+
+```tsx
+import { useState } from 'react'
+import { Modal } from '@wire-ui/react'
+
+const [open, setOpen] = useState(false)
+
+<button onClick={() => setOpen(true)}>Delete account</button>
+
+<Modal.Root open={open} onOpenChange={setOpen}>
+  <Modal.Portal>
+    <Modal.Overlay>
+      <Modal.Content aria-labelledby="title" aria-describedby="desc">
+        <h2 id="title">Delete account</h2>
+        <p id="desc">This cannot be undone.</p>
+        <Modal.Close>Cancel</Modal.Close>
+      </Modal.Content>
+    </Modal.Overlay>
+  </Modal.Portal>
+</Modal.Root>
+```
+
+The `open` / `defaultOpen` / `onOpenChange` props are **identical to Radix**, so only the trigger and the Overlay/Content nesting change. Prefer not to manage state by hand? Use the [`useDisclosure`](/docs/hooks/use-disclosure) hook.
+
+## After the codemod — checklist
+
+<FeatureList>
+  <FeatureItem>Let <code>tsc</code> run: every 🔧 component surfaces as a type error pointing at the exact line to adjust.</FeatureItem>
+  <FeatureItem>Move <code>Dialog.Trigger</code> / <code>Dialog.Close</code> logic to your own button + <code>open</code> state (or <code>useDisclosure</code>).</FeatureItem>
+  <FeatureItem>Replace <code>Tooltip.Provider</code> wrappers — Wire UI's Tooltip takes <code>delayDuration</code> on <code>Root</code>.</FeatureItem>
+  <FeatureItem>Your existing CSS keeps working: Wire UI emits the same <code>[data-state]</code> selectors. Confirm against the <a href="/docs/data-attributes">Data Attributes</a> reference.</FeatureItem>
+  <FeatureItem>Run your axe/keyboard tests — accessibility behavior is equivalent, but verify focus order on the restructured overlays.</FeatureItem>
+</FeatureList>
+
+Migrating a multi-framework codebase, or coming from another library? See the [API Parity](/docs/api-parity) matrix and the other migration guides.
