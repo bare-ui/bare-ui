@@ -5,6 +5,70 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-06-20
+
+Cross-cutting quality pass — accessibility, performance, SSR/RSC, security, i18n, and cross-framework parity.
+No new components; this release hardens the existing surface. See [ROADMAP 0.5](../../.claude/ROADMAP.md) and the
+[parity audit](../../.claude/parity-audit-0.5.md) / [round 2](../../.claude/parity-audit-0.5-round2.md).
+
+### Added
+
+#### Internationalization
+
+- **`WireUIProvider`** — context provider propagating `locale` and a `messages` catalog to locale-aware components
+  (Calendar, DatePicker, NumberInput, Timeago, …); exports `useWireUILocale`, `useWireUIMessages`, `useWireUI`, and
+  `DEFAULT_LOCALE`, plus the `WireUIProviderProps` type
+- **Intl formatters** — `formatDate`, `formatNumber`, `formatRelativeTime`, `parseLocaleNumber`, `getDayNames`,
+  `getMonthNames`, and the memoized `Intl` factory helpers `getDateTimeFormat` / `getNumberFormat` /
+  `getRelativeTimeFormat`; delegate to the platform `Intl` APIs with **no bundled locale data**
+- **Message catalog** — `defaultMessages` and `mergeMessages` for overriding built-in strings, with the
+  `WireUIMessages` / `PartialMessages` types
+
+#### Hooks
+
+- **`useDirection`** — resolves the nearest ancestor's text direction (`'ltr'` / `'rtl'`) for a referenced element and
+  reacts to later `dir` changes; ships alongside the static `getDirection` / `isRtl` helpers and the `Direction` type
+
+#### Security
+
+- **`sanitizeUrl`** — exported URL sanitizer (strips `javascript:` / `vbscript:` / unsafe `data:` / `file:` schemes) for
+  reuse in custom Markdown / CodeBlock / Citation renderers, with the `SanitizeUrlOptions` type
+
+#### Tooling & tests
+
+- **Quality scripts** in `package.json`: `typecheck` (`tsc -b`), `size` (size-limit per-component budgets), `attw`
+  (`@arethetypeswrong/cli` export-map check), `bench` (render benchmark suite vs Radix / Headless UI), `compiler:check`
+  (`react-compiler-healthcheck` for React 19 compiler readiness), and `license:check` (permissive-license guardrail);
+  split test scripts `test:unit`, `test:sr`, `test:parity`, `test:a11y`, `test:ssr`, `test:hydrate`
+- **Accessibility tests** — a `.sr.test.tsx` screen-reader suite for all 70 components plus shared `src/test/sr.ts`
+  helpers; axe-core runs through a Storybook browser test project (`a11y.test = 'error'`)
+- **2-phase SSR / hydration tests** — dedicated `vitest.ssr.config.ts` (node, no DOM) and `vitest.hydrate.config.ts`
+  (jsdom, real `hydrateRoot()` replay that fails on any hydration mismatch), with shared `scenarios` / fixtures
+- **RTL** (`src/test/rtl.test.tsx`), **behavioral parity** (`src/test/parity/*` — same scenarios run against
+  React/Vue/Solid), and **i18n formatter** / **sanitize-url** unit tests
+
+### Changed
+
+- **Package `exports` map** — build output renamed to `dist/index.js` (ESM), `dist/index.cjs` (CJS), and
+  `dist/index.d.ts` / `dist/index.d.cts`, with a conditional `import` / `require` exports map carrying per-condition
+  types. `main` / `module` updated accordingly. Improves Node16/ESM resolution and `@arethetypeswrong/cli` correctness;
+  consumers using the documented package entry are unaffected, but deep imports of the old `wire-ui.es.js` /
+  `wire-ui.cjs.js` filenames must update
+- **Explicit client/server split** — `'use client'` is now applied only to components that need it, reducing the
+  client boundary for App Router / RSC consumers
+- **RTL support** — interactive components resolve text direction via `useDirection` and mirror arrow-key navigation
+  and positioning under `dir="rtl"`
+- **Localization** — components no longer hard-code user-facing English strings; they read from the `messages` context
+  (with `defaultMessages` fallback) and format dates / numbers / relative time through the locale-aware formatters
+- **URL sanitization** — Markdown, CodeBlock, and Citation sanitize `href` / `src` output by default (Icon SVG remains
+  the one documented opt-in raw path)
+- **TypeScript strict mode** — production `src` is free of `any` and `@ts-ignore` / `@ts-expect-error`
+
+### Fixed
+
+- **SSR / hydration** — eliminated hydration mismatches and `console.error`s across examples (deterministic ids,
+  guarded browser-only access, portals that emit nothing on the server and first client render)
+
 ## [0.4.0] - 2026-05-30
 
 ### Added
