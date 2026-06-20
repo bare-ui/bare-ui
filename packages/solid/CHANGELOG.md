@@ -5,6 +5,77 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-06-20
+
+Cross-cutting quality pass — accessibility, performance, SSR, security, i18n, and cross-framework parity. No new
+components; this release hardens the existing surface.
+
+### Added
+
+#### Internationalization
+
+- **`WireUIProvider`** — provider propagating `locale` and a `messages` catalog to locale-aware components
+  (Calendar, DatePicker, NumberInput, Timeago, …); exports `useWireUILocale`, `useWireUIMessages`, `useWireUI`,
+  `DEFAULT_LOCALE`, and `WireUIContext`, plus the `WireUIProviderProps` / `WireUIContextValue` types
+- **Intl formatters** — `formatDate`, `formatNumber`, `formatRelativeTime`, `parseLocaleNumber`, `getDayNames`,
+  `getMonthNames`, and the memoized `Intl` factory helpers `getDateTimeFormat` / `getNumberFormat` /
+  `getRelativeTimeFormat`; delegate to the platform `Intl` APIs with **no bundled locale data**
+- **Message catalog** — `defaultMessages` and `mergeMessages` for overriding built-in strings, with the `WireUIMessages`
+  / `PartialMessages` types
+
+#### Primitives
+
+- **`createDirection`** — resolves the nearest ancestor's text direction (`'ltr'` / `'rtl'`) for an element accessor and
+  reacts to later `dir` changes; ships alongside the static `getDirection` / `isRtl` helpers and the `Direction` type
+
+#### Security
+
+- **`sanitizeUrl`** — exported URL sanitizer (strips `javascript:` / `vbscript:` / unsafe `data:` / `file:` schemes) for
+  reuse in custom Markdown / CodeBlock / Citation renderers, with the `SanitizeUrlOptions` type
+
+#### Components
+
+- **TagInput.Tag** — convenience sub-component rendering a labelled tag with a built-in remove button (accessible name
+  defaults to `Remove {label}`); moves focus to the adjacent remove button after removal
+
+#### Tooling & tests
+
+- **Quality scripts** in `package.json`: `typecheck` (`tsc -b`), `size` (size-limit per-component budgets), `attw`
+  (`@arethetypeswrong/cli` export-map check), `bench` / `bench:mount` / `bench:ssr` (render benchmark suite vs Kobalte /
+  Corvu, with separate DOM and SSR configs since the Solid compiler emits different output per mode), `compiler:check`
+  (`scripts/compiler-check.mjs` — transpiles every `.tsx` through the Babel Solid preset in both DOM and SSR modes), and
+  `license:check` (permissive-license guardrail); split test scripts `test:unit`, `test:sr`, `test:parity`, `test:a11y`,
+  `test:ssr`, `test:hydrate`
+- **Accessibility tests** — a `.sr.test.tsx` screen-reader suite for all 70 components plus shared `src/test/sr.ts`
+  helpers; axe-core runs through a Storybook browser test project (`a11y.test = 'error'`)
+- **2-phase SSR / hydration tests** — dedicated `vitest.ssr.config.ts` (node, no DOM) and `vitest.hydrate.config.ts`
+  (jsdom, real `hydrate()` replay that fails on any hydration mismatch), with shared `scenarios` / fixtures
+- **RTL** (`src/test/rtl.test.tsx`), **behavioral parity** (`src/test/parity/*` — same scenarios run against
+  React/Vue/Solid), **`create-direction`** / **`create-menu-navigation`** primitive tests, and **i18n formatter** /
+  **sanitize-url** unit tests
+
+### Changed
+
+- **Package `exports` map** — build output renamed to `dist/index.js` (ESM), `dist/index.cjs` (CJS), and
+  `dist/index.d.ts` / `dist/index.d.cts`, with a conditional `import` / `require` exports map carrying per-condition
+  types (the `solid` export condition now points at `dist/index.js`). `main` / `module` updated accordingly. Improves
+  Node16/ESM resolution and `@arethetypeswrong/cli` correctness; consumers using the documented package entry are
+  unaffected, but deep imports of the old `wire-ui-solid.es.js` / `wire-ui-solid.cjs.js` filenames must update
+- **RTL support** — interactive components resolve text direction via `createDirection` and mirror arrow-key navigation
+  and positioning under `dir="rtl"`
+- **Localization** — components no longer hard-code user-facing English strings; they read from the `messages` context
+  (with `defaultMessages` fallback) and format dates / numbers / relative time through the locale-aware formatters
+- **URL sanitization** — Markdown, CodeBlock, and Citation sanitize `href` / `src` output by default (Icon SVG remains
+  the one documented opt-in raw path)
+- **NavigationMenu** — opens on ArrowDown (focusing the first link) and restores focus to the trigger on Escape,
+  matching React / Vue
+- **TypeScript strict mode** — production `src` is free of `any` and `@ts-ignore` / `@ts-expect-error`
+
+### Fixed
+
+- **SSR / hydration** — eliminated hydration mismatches and `console.error`s across examples (deterministic ids, guarded
+  browser-only access in client-only effects, portals that emit nothing on the server and first client render)
+
 ## [0.4.0] - 2026-05-30
 
 ### Added
