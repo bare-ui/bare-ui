@@ -7,9 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [0.5.0] - 2026-06-20
 
-Cross-cutting quality pass — accessibility, performance, SSR/RSC, security, i18n, and cross-framework parity.
-No new components; this release hardens the existing surface. See [ROADMAP 0.5](../../.claude/ROADMAP.md) and the
-[parity audit](../../.claude/parity-audit-0.5.md) / [round 2](../../.claude/parity-audit-0.5-round2.md).
+Cross-cutting quality pass — accessibility, performance, SSR/RSC, security, i18n, and cross-framework parity. No new
+components; this release hardens the existing surface.
 
 ### Added
 
@@ -21,8 +20,8 @@ No new components; this release hardens the existing surface. See [ROADMAP 0.5](
 - **Intl formatters** — `formatDate`, `formatNumber`, `formatRelativeTime`, `parseLocaleNumber`, `getDayNames`,
   `getMonthNames`, and the memoized `Intl` factory helpers `getDateTimeFormat` / `getNumberFormat` /
   `getRelativeTimeFormat`; delegate to the platform `Intl` APIs with **no bundled locale data**
-- **Message catalog** — `defaultMessages` and `mergeMessages` for overriding built-in strings, with the
-  `WireUIMessages` / `PartialMessages` types
+- **Message catalog** — `defaultMessages` and `mergeMessages` for overriding built-in strings, with the `WireUIMessages`
+  / `PartialMessages` types
 
 #### Hooks
 
@@ -54,10 +53,10 @@ No new components; this release hardens the existing surface. See [ROADMAP 0.5](
   types. `main` / `module` updated accordingly. Improves Node16/ESM resolution and `@arethetypeswrong/cli` correctness;
   consumers using the documented package entry are unaffected, but deep imports of the old `wire-ui.es.js` /
   `wire-ui.cjs.js` filenames must update
-- **Explicit client/server split** — `'use client'` is now applied only to components that need it, reducing the
-  client boundary for App Router / RSC consumers
-- **RTL support** — interactive components resolve text direction via `useDirection` and mirror arrow-key navigation
-  and positioning under `dir="rtl"`
+- **Explicit client/server split** — `'use client'` is now applied only to components that need it, reducing the client
+  boundary for App Router / RSC consumers
+- **RTL support** — interactive components resolve text direction via `useDirection` and mirror arrow-key navigation and
+  positioning under `dir="rtl"`
 - **Localization** — components no longer hard-code user-facing English strings; they read from the `messages` context
   (with `defaultMessages` fallback) and format dates / numbers / relative time through the locale-aware formatters
 - **URL sanitization** — Markdown, CodeBlock, and Citation sanitize `href` / `src` output by default (Icon SVG remains
@@ -66,8 +65,8 @@ No new components; this release hardens the existing surface. See [ROADMAP 0.5](
 
 ### Fixed
 
-- **SSR / hydration** — eliminated hydration mismatches and `console.error`s across examples (deterministic ids,
-  guarded browser-only access, portals that emit nothing on the server and first client render)
+- **SSR / hydration** — eliminated hydration mismatches and `console.error`s across examples (deterministic ids, guarded
+  browser-only access, portals that emit nothing on the server and first client render)
 
 ## [0.4.0] - 2026-05-30
 
@@ -91,8 +90,8 @@ No new components; this release hardens the existing surface. See [ROADMAP 0.5](
   copy-to-clipboard (`copyResetAfter`); `data-language` on root and `<pre>`; sub-components: `CodeBlock.Root`,
   `CodeBlock.Code`, `CodeBlock.Lines` (render-prop with `{ number, content, diff, highlighted }`),
   `CodeBlock.CopyButton` (render-prop with `{ copied }`)
-- **ColorPicker** — HSVA color picker with pointer-drag saturation/value area, hue and alpha tracks, controlled value
-  as a hex string (`value` / `defaultValue` / `onChange`), and toggleable `alpha`; sub-components: `ColorPicker.Root`,
+- **ColorPicker** — HSVA color picker with pointer-drag saturation/value area, hue and alpha tracks, controlled value as
+  a hex string (`value` / `defaultValue` / `onChange`), and toggleable `alpha`; sub-components: `ColorPicker.Root`,
   `ColorPicker.Area`, `ColorPicker.AreaThumb`, `ColorPicker.Hue`, `ColorPicker.HueThumb`, `ColorPicker.Alpha`,
   `ColorPicker.AlphaThumb`, `ColorPicker.Swatch`, `ColorPicker.Input`
 - **Command** — command palette with fuzzy `filter`, roving arrow-key navigation (`loop`), optional global `shortcut`
@@ -106,8 +105,8 @@ No new components; this release hardens the existing surface. See [ROADMAP 0.5](
   `onSubmit` / `onCancel` / `onEdit` callbacks; controlled value and editing state; sub-components: `Editable.Root`,
   `Editable.Preview`, `Editable.Input`, `Editable.Area`, `Editable.EditTrigger`, `Editable.SubmitTrigger`,
   `Editable.CancelTrigger`
-- **EmptyState** — placeholder layout for empty/zero-data views; root carries `role="status"`, media is
-  `aria-hidden`; sub-components: `EmptyState.Root`, `EmptyState.Media`, `EmptyState.Title`, `EmptyState.Description`,
+- **EmptyState** — placeholder layout for empty/zero-data views; root carries `role="status"`, media is `aria-hidden`;
+  sub-components: `EmptyState.Root`, `EmptyState.Media`, `EmptyState.Title`, `EmptyState.Description`,
   `EmptyState.Actions`
 - **HoverCard** — richer hover-triggered floating card with configurable `openDelay` / `closeDelay`, `side` /
   `sideOffset`, `forceMount`, and controlled/uncontrolled open state; sub-components: `HoverCard.Root`,
@@ -119,8 +118,8 @@ No new components; this release hardens the existing surface. See [ROADMAP 0.5](
 - **Markdown** — parser-agnostic Markdown renderer that accepts a pre-parsed `nodes` tree or raw `content` + `parse`
   function, with a `components` override map keyed by mdast node type; default renderers emit semantic HTML for
   paragraphs, headings, lists, code, links, images, blockquotes, and inline marks
-- **Mention** — inline `@`-mention input with caret-aware suggestion detection over an `options` list, custom
-  `trigger` and `filter`, `appendSpace`, and `onSelect`; controlled/uncontrolled value; sub-components: `Mention.Root`,
+- **Mention** — inline `@`-mention input with caret-aware suggestion detection over an `options` list, custom `trigger`
+  and `filter`, `appendSpace`, and `onSelect`; controlled/uncontrolled value; sub-components: `Mention.Root`,
   `Mention.Input` (textarea), `Mention.Content`, `Mention.Items` (render-prop with `{ option, active, index }`),
   `Mention.Empty`
 - **RichText** — slot-based Markdown editor scaffold built on [[Markdown]] with `edit` / `preview` / `split` modes,
@@ -137,10 +136,10 @@ No new components; this release hardens the existing surface. See [ROADMAP 0.5](
   text, and an SVG `Sparkline`; root carries `role="group"`; sub-components: `Stat.Root`, `Stat.Label`, `Stat.Value`,
   `Stat.Delta`, `Stat.HelpText`, `Stat.Sparkline` (`data`, `width`, `height`, `strokeWidth`)
 - **Stepper** — multi-step / wizard flow with `count`, controlled/uncontrolled 0-based active step,
-  `orientation="horizontal" | "vertical"`, and `linear` mode that blocks forward jumps; per-step state
-  (`active` / `completed` / `inactive`), `data-orientation` on root; sub-components: `Stepper.Root`, `Stepper.List`,
-  `Stepper.Item`, `Stepper.Trigger`, `Stepper.Separator`, `Stepper.Content` (`forceMount`), `Stepper.PrevTrigger`,
-  `Stepper.NextTrigger` (auto-disabled at boundaries)
+  `orientation="horizontal" | "vertical"`, and `linear` mode that blocks forward jumps; per-step state (`active` /
+  `completed` / `inactive`), `data-orientation` on root; sub-components: `Stepper.Root`, `Stepper.List`, `Stepper.Item`,
+  `Stepper.Trigger`, `Stepper.Separator`, `Stepper.Content` (`forceMount`), `Stepper.PrevTrigger`, `Stepper.NextTrigger`
+  (auto-disabled at boundaries)
 - **Toggle** — two-state pressable button with `pressed` / `defaultPressed` / `onPressedChange`, `aria-pressed`, and
   `data-state` (`on` / `off`); ships with **ToggleGroup** for `single` / `multiple` selection with roving focus,
   arrow-key navigation, `loop`, and `orientation`; sub-components: `Toggle`, `ToggleGroup.Root`, `ToggleGroup.Item`
@@ -158,8 +157,8 @@ No new components; this release hardens the existing surface. See [ROADMAP 0.5](
 
 ### Changed
 
-- **`useLocalStorage`** / **`useSessionStorage`** — moved into a shared `use-storage` module for naming consistency;
-  no API change (exports and behavior are unchanged)
+- **`useLocalStorage`** / **`useSessionStorage`** — moved into a shared `use-storage` module for naming consistency; no
+  API change (exports and behavior are unchanged)
 
 ## [0.3.0] - 2026-05-23
 
@@ -195,8 +194,8 @@ No new components; this release hardens the existing surface. See [ROADMAP 0.5](
 - **AvatarFallback** — show-delay timer now uses [[use-timeout]]
 - **ContextMenu** — outside-click/Escape handling now uses [[use-event-listener]]
 - **Group** — internal listeners now use [[use-event-listener]]
-- **NavigationMenu** — hover-intent open/close timers now use [[use-timeout]] (no behavior change to the timer-hoist
-  fix from 0.2.0)
+- **NavigationMenu** — hover-intent open/close timers now use [[use-timeout]] (no behavior change to the timer-hoist fix
+  from 0.2.0)
 - **Timeago** — periodic re-render now uses [[use-interval]] instead of a manual `setInterval`
 - **Toast** — per-toast auto-dismiss timer now uses [[use-timeout]]
 - **Tooltip** — show/hide delay timers now use [[use-timeout]]
@@ -217,7 +216,8 @@ No new components; this release hardens the existing surface. See [ROADMAP 0.5](
 - **Breadcrumb** — navigation trail with `Breadcrumb.Root`, `Breadcrumb.List`, `Breadcrumb.Item`, `Breadcrumb.Link`,
   `Breadcrumb.Separator`, and `Breadcrumb.Ellipsis`; `aria-current="page"` on the active item
 - **Calendar** — date grid with `month`/`year` navigation, single and range selection, controlled/uncontrolled state,
-  `disabled` and `min`/`max` boundaries; `data-selected`, `data-today`, `data-outside`, `data-range-start`/`-end` per day
+  `disabled` and `min`/`max` boundaries; `data-selected`, `data-today`, `data-outside`, `data-range-start`/`-end` per
+  day
 - **Combobox** — input + listbox with async filtering, keyboard navigation (ArrowUp/Down, Enter, Escape, Home/End),
   `data-highlighted` on active option, controlled/uncontrolled value; sub-components: `Combobox.Root`, `Combobox.Input`,
   `Combobox.Trigger`, `Combobox.Content`, `Combobox.Item`, `Combobox.Empty`
@@ -245,9 +245,9 @@ No new components; this release hardens the existing surface. See [ROADMAP 0.5](
   `NumberInput.Increment`, `NumberInput.Decrement`
 - **Pagination** — page-navigation control with previous/next, page items, optional ellipsis, configurable
   `siblingCount` and `boundaryCount`; `aria-current="page"` on the active page
-- **Popover** — floating panel anchored to a trigger with portal rendering, click-outside and Escape close,
-  configurable `side` and `align`, controlled/uncontrolled; sub-components: `Popover.Root`, `Popover.Trigger`,
-  `Popover.Portal`, `Popover.Content`, `Popover.Close`
+- **Popover** — floating panel anchored to a trigger with portal rendering, click-outside and Escape close, configurable
+  `side` and `align`, controlled/uncontrolled; sub-components: `Popover.Root`, `Popover.Trigger`, `Popover.Portal`,
+  `Popover.Content`, `Popover.Close`
 - **ResizablePanels** — split-pane layout with draggable handles, `direction="horizontal" | "vertical"`, per-panel
   `defaultSize` / `minSize` / `maxSize`, controlled sizes; sub-components: `ResizablePanels.Root`,
   `ResizablePanels.Panel`, `ResizablePanels.Handle`
@@ -256,14 +256,14 @@ No new components; this release hardens the existing surface. See [ROADMAP 0.5](
 - **Slider** — value selector with one or many thumbs, `min`/`max`/`step`, keyboard arrow nudging,
   `orientation="horizontal" | "vertical"`, controlled/uncontrolled; sub-components: `Slider.Root`, `Slider.Track`,
   `Slider.Range`, `Slider.Thumb`
-- **Tabs** — tab list with controlled/uncontrolled active tab, arrow-key navigation, optional `loop` and `activationMode`
-  (`automatic` | `manual`); sub-components: `Tabs.Root`, `Tabs.List`, `Tabs.Trigger`, `Tabs.Content`
+- **Tabs** — tab list with controlled/uncontrolled active tab, arrow-key navigation, optional `loop` and
+  `activationMode` (`automatic` | `manual`); sub-components: `Tabs.Root`, `Tabs.List`, `Tabs.Trigger`, `Tabs.Content`
 - **Tag** — pill element with optional `Tag.Dismiss` button; `data-color` and `data-size` variant attributes
 - **TagInput** — token-style input with keyboard-driven add (Enter/comma), Backspace-to-remove, paste-to-split,
   `maxTags`, controlled/uncontrolled values; sub-components: `TagInput.Root`, `TagInput.Input`, `TagInput.List`,
   `TagInput.Item`, `TagInput.Dismiss`
-- **Toast** — notification system with imperative `toast()` API, auto-dismiss timer, configurable position and
-  duration, swipe-to-dismiss, action and close slots; sub-components: `Toast.Provider`, `Toast.Viewport`, `Toast.Root`,
+- **Toast** — notification system with imperative `toast()` API, auto-dismiss timer, configurable position and duration,
+  swipe-to-dismiss, action and close slots; sub-components: `Toast.Provider`, `Toast.Viewport`, `Toast.Root`,
   `Toast.Title`, `Toast.Description`, `Toast.Action`, `Toast.Close`
 - **TreeView** — hierarchical disclosure with expand/collapse, keyboard navigation, single- and multi-select,
   controlled/uncontrolled state; sub-components: `TreeView.Root`, `TreeView.Item`, `TreeView.Trigger`,
