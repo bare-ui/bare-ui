@@ -1,0 +1,23 @@
+{
+	"compilerOptions": {
+		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
+		"target": "ES2023",
+		"lib": ["ES2023"],
+		"module": "CommonJS",
+		"types": ["node", "vscode"],
+		"skipLibCheck": true,
+
+		/* Bundler mode */
+		"moduleResolution": "node",
+		"moduleDetection": "force",
+		"noEmit": true,
+
+		/* Linting */
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedSideEffectImports": true
+	},
+	"include": ["src"]
+}

@@ -1,0 +1,12 @@
+# Source & config — only the bundled dist ships in the .vsix
+src/**
+node_modules/**
+tsconfig.json
+tsup.config.ts
+.vscode/**
+**/*.map
+**/*.ts
+!dist/**
+
+# Keep these out of the package
+CHANGELOG.md

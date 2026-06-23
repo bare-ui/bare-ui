@@ -1,0 +1,57 @@
+{
+  "name": "wire-ui",
+  "displayName": "Wire UI",
+  "description": "Editor intelligence for Wire UI — autocomplete, hover docs, snippets, and lints for the AI-native unstyled primitives framework",
+  "version": "0.0.0",
+  "private": true,
+  "publisher": "wire-ui",
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "./dist/extension.js",
+  "icon": "assets/icon.png",
+  "homepage": "https://wire-ui.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wire-ui/wire-ui.git",
+    "directory": "packages/vscode-extension"
+  },
+  "bugs": {
+    "url": "https://github.com/wire-ui/wire-ui/issues"
+  },
+  "keywords": [
+    "wire-ui",
+    "ai-native",
+    "headless",
+    "components",
+    "react",
+    "vue",
+    "solid"
+  ],
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Linters",
+    "Other"
+  ],
+  "engines": {
+    "vscode": "^1.90.0",
+    "node": ">=20.19.0"
+  },
+  "activationEvents": [],
+  "contributes": {},
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "package": "vsce package --no-dependencies",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "@types/node": "^24.12.0",
+    "@types/vscode": "^1.90.0",
+    "@vscode/vsce": "^3.2.0",
+    "prettier": "^3.8.1",
+    "tsup": "^8.5.0",
+    "typescript": "~5.9.3"
+  }
+}
