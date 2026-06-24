@@ -7,6 +7,13 @@
   "bin": {
     "wire-ui-mcp": "./dist/index.js"
   },
+  "exports": {
+    "./data": {
+      "types": "./dist/data.d.ts",
+      "import": "./dist/data.js"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
     "dist"
   ],
