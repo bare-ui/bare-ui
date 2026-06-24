@@ -3,12 +3,12 @@
 		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
 		"target": "ES2023",
 		"lib": ["ES2023"],
-		"module": "CommonJS",
+		"module": "preserve",
 		"types": ["node", "vscode"],
 		"skipLibCheck": true,
 
-		/* Bundler mode */
-		"moduleResolution": "node",
+		/* Bundler mode (tsup/esbuild handles the CJS emit) */
+		"moduleResolution": "bundler",
 		"moduleDetection": "force",
 		"noEmit": true,
 
