@@ -1,11 +1,13 @@
 import { defineConfig } from 'vitest/config'
 
-// The metadata layer imports `@wire-ui/mcp/data`, which resolves to the built
-// dist of the mcp package (turbo's `test`/`test:run` tasks depend on `^build`,
-// so the catalog is built first). Node-environment tests only — no DOM needed.
+// The extension's intelligence lives in @wire-ui/typescript-plugin (metadata
+// layer, completions, diagnostics), which carries its own tests. This package
+// has no tests of its own yet — activation/feature wiring lands in later 0.8
+// days — so don't fail the suite when there are none.
 export default defineConfig({
   test: {
     environment: 'node',
     include: ['src/**/*.test.ts'],
+    passWithNoTests: true,
   },
 })
