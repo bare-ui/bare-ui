@@ -27,7 +27,10 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+# Ai configs
 .claude
+CLAUDE.md
 
 *storybook.log
 storybook-static
