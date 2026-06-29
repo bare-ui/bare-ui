@@ -37,8 +37,44 @@
     "vscode": "^1.90.0",
     "node": ">=20.19.0"
   },
-  "activationEvents": [],
-  "contributes": {},
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact",
+    "onLanguage:vue"
+  ],
+  "contributes": {
+    "typescriptServerPlugins": [
+      {
+        "name": "@wire-ui/typescript-plugin",
+        "enableForWorkspaceTypeScriptVersions": true
+      }
+    ],
+    "commands": [
+      {
+        "command": "wire-ui.showOutput",
+        "title": "Show Output Log",
+        "category": "Wire UI"
+      }
+    ],
+    "configuration": {
+      "title": "Wire UI",
+      "properties": {
+        "wire-ui.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Wire UI editor intelligence (autocomplete, hover docs, diagnostics)."
+        },
+        "wire-ui.trace.server": {
+          "type": "string",
+          "enum": ["off", "messages", "verbose"],
+          "default": "off",
+          "description": "Trace the communication with the Wire UI TypeScript Language Service plugin."
+        }
+      }
+    }
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",

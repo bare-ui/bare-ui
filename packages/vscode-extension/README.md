@@ -43,8 +43,13 @@ npm run build  --workspace wire-ui
 npm run dev    --workspace wire-ui
 ```
 
-Press `F5` in VS Code to launch an Extension Development Host once an entry point
-is wired up.
+Open the **repo root** in VS Code and press `F5` (the "Run Wire UI Extension"
+launch config) to start an Extension Development Host. It runs
+`build:vscode-extension` first (builds the extension plus its
+`@wire-ui/typescript-plugin` / `@wire-ui/mcp` dependencies via Turbo), then
+launches. On activation the extension logs to the **Wire UI** output channel
+(Output panel → "Wire UI", or run **Wire UI: Show Output Log**) and shows a
+status bar item.
 
 ## License
 
