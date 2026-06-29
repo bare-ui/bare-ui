@@ -1,7 +1,7 @@
 ---
 name: wire-ui
 description: AI-native unstyled primitives framework. Headless, compound components with zero CSS.
-version: 0.4.0
+version: 0.5.0
 tags:
   - react
   - headless
