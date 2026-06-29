@@ -6,11 +6,12 @@
 // transforms what the catalog already knows (parsing value unions, deriving the
 // canonical docs URL, narrowing the framework map to a list).
 
-import { components, type ComponentData, type Framework } from '@wire-ui/mcp/data'
-import type {
-	ComponentMetadata,
-	DataAttributeMetadata,
-} from './types.js'
+import {
+	components,
+	type ComponentData,
+	type Framework,
+} from "@wire-ui/mcp/data";
+import type { ComponentMetadata, DataAttributeMetadata } from "./types.js";
 
 export type {
 	ComponentMetadata,
@@ -18,12 +19,12 @@ export type {
 	ComponentCategory,
 	Framework,
 	PropInfo,
-} from './types.js'
+} from "./types.js";
 
-const DOCS_BASE = 'https://wire-ui.com/docs/components'
+const DOCS_BASE = "https://wire-ui.com/docs/components";
 
 /** All frameworks Wire UI targets, in catalog order. */
-export const FRAMEWORKS: readonly Framework[] = ['react', 'vue', 'solid']
+export const FRAMEWORKS: readonly Framework[] = ["react", "vue", "solid"];
 
 /**
  * Convert a component name to its kebab-case docs slug.
@@ -34,9 +35,9 @@ export const FRAMEWORKS: readonly Framework[] = ['react', 'vue', 'solid']
  */
 function toSlug(name: string): string {
 	return name
-		.replace(/([a-z0-9])([A-Z])/g, '$1-$2')
-		.replace(/([A-Z]+)([A-Z][a-z])/g, '$1-$2')
-		.toLowerCase()
+		.replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+		.replace(/([A-Z]+)([A-Z][a-z])/g, "$1-$2")
+		.toLowerCase();
 }
 
 /**
@@ -45,29 +46,31 @@ function toSlug(name: string): string {
  * carry no value union.
  */
 function parseValues(raw: string | undefined): string[] {
-	if (!raw) return []
-	const matches = raw.match(/"([^"]*)"/g)
-	if (matches) return matches.map((m) => m.slice(1, -1))
+	if (!raw) return [];
+	const matches = raw.match(/"([^"]*)"/g);
+	if (matches) return matches.map((m) => m.slice(1, -1));
 	// Fall back to splitting a bare `a | b | c` union with no quotes.
 	return raw
-		.split('|')
+		.split("|")
 		.map((s) => s.trim())
-		.filter(Boolean)
+		.filter(Boolean);
 }
 
-function toDataAttribute(attr: ComponentData['dataAttributes'][number]): DataAttributeMetadata {
+function toDataAttribute(
+	attr: ComponentData["dataAttributes"][number],
+): DataAttributeMetadata {
 	return {
 		name: attr.name,
 		description: attr.description,
 		values: parseValues(attr.values),
 		rawValues: attr.values,
 		appliesTo: attr.appliesTo,
-	}
+	};
 }
 
 function toMetadata(component: ComponentData): ComponentMetadata {
-	const dataAttributes = component.dataAttributes.map(toDataAttribute)
-	const dataState = dataAttributes.find((a) => a.name === 'data-state')
+	const dataAttributes = component.dataAttributes.map(toDataAttribute);
+	const dataState = dataAttributes.find((a) => a.name === "data-state");
 
 	return {
 		name: component.name,
@@ -81,20 +84,20 @@ function toMetadata(component: ComponentData): ComponentMetadata {
 		frameworks: FRAMEWORKS.filter((fw) => component.frameworks[fw]),
 		docsUrl: `${DOCS_BASE}/${toSlug(component.name)}`,
 		notes: component.notes ?? [],
-	}
+	};
 }
 
 // Built lazily and memoized — the catalog is static for the process lifetime.
-let cache: Map<string, ComponentMetadata> | null = null
+let cache: Map<string, ComponentMetadata> | null = null;
 
 function getCache(): Map<string, ComponentMetadata> {
-	if (cache) return cache
-	const map = new Map<string, ComponentMetadata>()
+	if (cache) return cache;
+	const map = new Map<string, ComponentMetadata>();
 	for (const component of components) {
-		map.set(component.name.toLowerCase(), toMetadata(component))
+		map.set(component.name.toLowerCase(), toMetadata(component));
 	}
-	cache = map
-	return map
+	cache = map;
+	return map;
 }
 
 /**
@@ -105,26 +108,28 @@ function getCache(): Map<string, ComponentMetadata> {
  * getComponentMetadata('Accordion')?.parts // ["Root", "Item", "Trigger", "Content"]
  * getComponentMetadata('Accordion')?.dataStateValues // ["open", "closed"]
  */
-export function getComponentMetadata(name: string): ComponentMetadata | undefined {
-	return getCache().get(name.toLowerCase())
+export function getComponentMetadata(
+	name: string,
+): ComponentMetadata | undefined {
+	return getCache().get(name.toLowerCase());
 }
 
 /** All component metadata, in catalog order. */
 export function getAllComponentMetadata(): ComponentMetadata[] {
-	return [...getCache().values()]
+	return [...getCache().values()];
 }
 
 /** Canonical component names, in catalog order. */
 export function listComponentNames(): string[] {
-	return getAllComponentMetadata().map((c) => c.name)
+	return getAllComponentMetadata().map((c) => c.name);
 }
 
 /** Whether a name (case-insensitive) is a known Wire UI component. */
 export function isWireComponent(name: string): boolean {
-	return getCache().has(name.toLowerCase())
+	return getCache().has(name.toLowerCase());
 }
 
 /** Reset the cache. Intended for tests only. */
 export function __resetMetadataCache(): void {
-	cache = null
+	cache = null;
 }
