@@ -1,4 +1,10 @@
 import type * as ts from "typescript/lib/tsserverlibrary";
+import {
+	buildDataAttributeEntries,
+	getDataAttributeEntryDetails,
+	resolveDataAttributeContext,
+	WIRE_DATA_ATTRIBUTE_SOURCE,
+} from "./completions.js";
 import { listComponentNames } from "./metadata/index.js";
 import { collectWireComponentsInProgram } from "./scan.js";
 
@@ -38,9 +44,8 @@ function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
 			);
 		}
 
-		// Passthrough proxy — no language features overridden yet. Each method is
-		// bound to the original service; later days replace individual members
-		// (getCompletionsAtPosition, getSemanticDiagnostics, …).
+		// Start from a passthrough proxy — every method bound to the original
+		// service — then override the individual members we augment below.
 		const proxy = Object.create(null) as ts.LanguageService;
 		for (const key of Object.keys(info.languageService) as Array<
 			keyof ts.LanguageService
@@ -52,6 +57,99 @@ function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
 					? member.bind(info.languageService)
 					: member;
 		}
+
+		// data-* attribute completion. Merge Wire UI's attributes into whatever
+		// tsserver already offers inside a Wire UI JSX element. Guarded so a
+		// failure falls back to the host's own completions.
+		proxy.getCompletionsAtPosition = (
+			fileName,
+			position,
+			options,
+			formattingSettings,
+		) => {
+			const prior = info.languageService.getCompletionsAtPosition(
+				fileName,
+				position,
+				options,
+				formattingSettings,
+			);
+			try {
+				const sourceFile = info.languageService
+					.getProgram()
+					?.getSourceFile(fileName);
+				if (!sourceFile) return prior;
+
+				const context = resolveDataAttributeContext(
+					tsLib,
+					sourceFile,
+					position,
+				);
+				if (!context) return prior;
+
+				const entries = buildDataAttributeEntries(tsLib, context);
+				if (!prior) {
+					return {
+						isGlobalCompletion: false,
+						isMemberCompletion: false,
+						isNewIdentifierLocation: true,
+						entries,
+					};
+				}
+
+				const seen = new Set(prior.entries.map((e) => e.name));
+				const additions = entries.filter((e) => !seen.has(e.name));
+				return { ...prior, entries: [...additions, ...prior.entries] };
+			} catch (error) {
+				log(
+					`completion augmentation failed: ${error instanceof Error ? error.message : String(error)}`,
+				);
+				return prior;
+			}
+		};
+
+		// Serve Wire UI docs for the entries we injected; delegate everything else.
+		proxy.getCompletionEntryDetails = (
+			fileName,
+			position,
+			entryName,
+			formatOptions,
+			source,
+			preferences,
+			data,
+		) => {
+			if (source === WIRE_DATA_ATTRIBUTE_SOURCE) {
+				try {
+					const sourceFile = info.languageService
+						.getProgram()
+						?.getSourceFile(fileName);
+					const context =
+						sourceFile &&
+						resolveDataAttributeContext(
+							tsLib,
+							sourceFile,
+							position,
+						);
+					const details =
+						context &&
+						getDataAttributeEntryDetails(tsLib, context, entryName);
+					if (details) return details;
+				} catch (error) {
+					log(
+						`completion detail lookup failed: ${error instanceof Error ? error.message : String(error)}`,
+					);
+				}
+			}
+			return info.languageService.getCompletionEntryDetails(
+				fileName,
+				position,
+				entryName,
+				formatOptions,
+				source,
+				preferences,
+				data,
+			);
+		};
+
 		return proxy;
 	}
 

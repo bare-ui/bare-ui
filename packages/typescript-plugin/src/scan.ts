@@ -46,6 +46,41 @@ export function collectWireComponentsInFile(
 	return [...found];
 }
 
+/**
+ * Map the local names bound to Wire UI components in a file to their canonical
+ * component name. Alias-aware: `import { Switch as Toggle } from '@wire-ui/react'`
+ * yields `Toggle -> Switch`, so `<Toggle>` resolves to `Switch`'s metadata.
+ * Only named imports from a `@wire-ui/*` package that name a known component are
+ * included, so a same-named component from another library is never matched.
+ */
+export function wireImportBindings(
+	tsLib: TsModule,
+	sourceFile: ts.SourceFile,
+): Map<string, string> {
+	const bindingsByLocal = new Map<string, string>();
+
+	for (const statement of sourceFile.statements) {
+		if (!tsLib.isImportDeclaration(statement)) continue;
+
+		const specifier = statement.moduleSpecifier;
+		if (!tsLib.isStringLiteral(specifier)) continue;
+		if (!isWireUiModuleSpecifier(specifier.text)) continue;
+
+		const bindings = statement.importClause?.namedBindings;
+		if (!bindings || !tsLib.isNamedImports(bindings)) continue;
+
+		for (const element of bindings.elements) {
+			// `propertyName` is set when the import is aliased (`X as Y`).
+			const importedName = (element.propertyName ?? element.name).text;
+			if (isWireComponent(importedName)) {
+				bindingsByLocal.set(element.name.text, importedName);
+			}
+		}
+	}
+
+	return bindingsByLocal;
+}
+
 /** A Wire UI component seen in a project file, with the file it was found in. */
 export interface WireComponentSighting {
 	component: string;
