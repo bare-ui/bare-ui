@@ -2,9 +2,13 @@ import { describe, expect, it } from "vitest";
 import * as ts from "typescript";
 import {
 	buildDataAttributeEntries,
+	buildDataAttributeValueEntries,
 	getDataAttributeEntryDetails,
+	getDataAttributeValueEntryDetails,
 	resolveDataAttributeContext,
+	resolveDataAttributeValueContext,
 	WIRE_DATA_ATTRIBUTE_SOURCE,
+	WIRE_DATA_VALUE_SOURCE,
 } from "./completions.js";
 
 // The Wire UI imports every JSX fixture below relies on. Prepended by `at()` so
@@ -37,6 +41,12 @@ function attrNames(code: string, prelude?: string): string[] | undefined {
 	const { sourceFile, position } = at(code, prelude);
 	const context = resolveDataAttributeContext(ts, sourceFile, position);
 	return context?.attributes.map((a) => a.name);
+}
+
+function valueNames(code: string, prelude?: string): string[] | undefined {
+	const { sourceFile, position } = at(code, prelude);
+	const context = resolveDataAttributeValueContext(ts, sourceFile, position);
+	return context?.values;
 }
 
 describe("resolveDataAttributeContext", () => {
@@ -131,6 +141,145 @@ describe("resolveDataAttributeContext", () => {
 
 	it("does not fire in JSX children", () => {
 		expect(attrNames("const x = <Switch>data-|</Switch>")).toBeUndefined();
+	});
+});
+
+describe("resolveDataAttributeValueContext", () => {
+	it("completes the value enum inside a data-state string", () => {
+		expect(valueNames('const x = <Switch data-state="|" />')).toEqual([
+			"checked",
+			"unchecked",
+		]);
+	});
+
+	it("completes different values per component", () => {
+		const acc = "import { Accordion } from '@wire-ui/solid'\n";
+		expect(
+			valueNames('const x = <Accordion.Item data-state="|" />', acc),
+		).toEqual(["open", "closed"]);
+	});
+
+	it("works with a partial value already typed", () => {
+		expect(valueNames('const x = <Switch data-state="che|" />')).toEqual([
+			"checked",
+			"unchecked",
+		]);
+	});
+
+	it("works on an unterminated string while typing", () => {
+		expect(valueNames('const x = <Switch data-state="|')).toEqual([
+			"checked",
+			"unchecked",
+		]);
+	});
+
+	it("resolves through aliased imports", () => {
+		const alias = "import { Switch as Toggle } from '@wire-ui/vue'\n";
+		expect(
+			valueNames('const x = <Toggle data-state="|" />', alias),
+		).toEqual(["checked", "unchecked"]);
+	});
+
+	it("returns a replacement span covering the string content", () => {
+		const { sourceFile, position } = at(
+			'const x = <Switch data-state="ch|" />',
+		);
+		const ctx = resolveDataAttributeValueContext(ts, sourceFile, position)!;
+		const text = sourceFile.text.substr(
+			ctx.replacementSpan.start,
+			ctx.replacementSpan.length,
+		);
+		expect(text).toBe("ch");
+	});
+
+	it("does not fire for a presence-flag attribute with no values", () => {
+		expect(
+			valueNames('const x = <Switch data-disabled="|" />'),
+		).toBeUndefined();
+	});
+
+	it("does not fire when the attribute is invalid for the part", () => {
+		// data-state does not apply to Accordion.Root.
+		const acc = "import { Accordion } from '@wire-ui/react'\n";
+		expect(
+			valueNames('const x = <Accordion.Root data-state="|" />', acc),
+		).toBeUndefined();
+	});
+
+	it("does not fire in an expression value", () => {
+		expect(
+			valueNames("const x = <Switch data-state={|} />"),
+		).toBeUndefined();
+	});
+
+	it("does not fire in the attribute-name position", () => {
+		expect(valueNames("const x = <Switch data-| />")).toBeUndefined();
+	});
+
+	it("does not fire for a non-Wire component", () => {
+		const other = "import { Switch } from 'some-other-lib'\n";
+		expect(
+			valueNames('const x = <Switch data-state="|" />', other),
+		).toBeUndefined();
+	});
+});
+
+describe("buildDataAttributeValueEntries", () => {
+	it("emits string entries tagged with the value source and replacement span", () => {
+		const { sourceFile, position } = at(
+			'const x = <Switch data-state="|" />',
+		);
+		const context = resolveDataAttributeValueContext(
+			ts,
+			sourceFile,
+			position,
+		)!;
+		const entries = buildDataAttributeValueEntries(ts, context);
+
+		expect(entries.map((e) => e.name)).toEqual(["checked", "unchecked"]);
+		for (const entry of entries) {
+			expect(entry.source).toBe(WIRE_DATA_VALUE_SOURCE);
+			expect(entry.kind).toBe(ts.ScriptElementKind.string);
+			expect(entry.replacementSpan).toEqual(context.replacementSpan);
+		}
+	});
+});
+
+describe("getDataAttributeValueEntryDetails", () => {
+	it("documents the value with the attribute description and docs link", () => {
+		const { sourceFile, position } = at(
+			'const x = <Switch data-state="|" />',
+		);
+		const context = resolveDataAttributeValueContext(
+			ts,
+			sourceFile,
+			position,
+		)!;
+		const details = getDataAttributeValueEntryDetails(
+			ts,
+			context,
+			"checked",
+		)!;
+
+		expect(details.name).toBe("checked");
+		const doc = details.documentation!.map((d) => d.text).join("");
+		expect(doc).toContain('data-state="checked"');
+		expect(doc).toContain("Reflects the switch state.");
+		expect(doc).toContain("https://wire-ui.com/docs/components/switch");
+	});
+
+	it("returns undefined for a value not in the enum", () => {
+		const { sourceFile, position } = at(
+			'const x = <Switch data-state="|" />',
+		);
+		const context = resolveDataAttributeValueContext(
+			ts,
+			sourceFile,
+			position,
+		)!;
+		expect(
+			getDataAttributeValueEntryDetails(ts, context, "bogus"),
+		).toBeUndefined();
 	});
 });
 

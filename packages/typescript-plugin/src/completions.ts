@@ -12,6 +12,9 @@ import { wireImportBindings, type TsModule } from "./scan.js";
  */
 export const WIRE_DATA_ATTRIBUTE_SOURCE = "wire-ui/data-attributes";
 
+/** Marks the `data-*` *value* completion entries this plugin injects. */
+export const WIRE_DATA_VALUE_SOURCE = "wire-ui/data-values";
+
 /**
  * The resolved context for offering `data-*` completions: the Wire UI component
  * under the cursor, the compound part being edited (if the tag is `X.Part`), and
@@ -106,11 +109,38 @@ function appliesToPart(
 }
 
 /**
+ * Resolve a JSX opening element to the Wire UI component it renders and the
+ * compound part being edited. The tag's local name must map to a real
+ * `@wire-ui/*` import in this file — this rejects same-named components from
+ * other libraries and makes aliased imports (`Switch as Toggle` → `<Toggle>`)
+ * work. Returns `undefined` when the tag is not a Wire component or names an
+ * unknown compound part.
+ */
+function resolveWireComponent(
+	tsLib: TsModule,
+	sourceFile: ts.SourceFile,
+	element: JsxOpeningLikeElement,
+): { component: ComponentMetadata; part?: string } | undefined {
+	const tag = resolveTag(tsLib, element.tagName);
+	if (!tag) return undefined;
+
+	const componentName = wireImportBindings(tsLib, sourceFile).get(tag.name);
+	if (!componentName) return undefined;
+
+	const component = getComponentMetadata(componentName);
+	if (!component) return undefined;
+	// `Accordion.NotAPart` — a compound access that names no real part.
+	if (tag.part && !component.parts.includes(tag.part)) return undefined;
+
+	return { component, part: tag.part };
+}
+
+/**
  * Resolve the `data-*` completion context at `position`, or `undefined` when the
  * cursor is not inside the attribute-name region of a Wire UI JSX element.
  *
  * Deliberately returns `undefined` for attribute *value* positions
- * (`data-state="…"`) — value completion is a separate feature (Day 5).
+ * (`data-state="…"`) — that is `resolveDataAttributeValueContext`'s job.
  */
 export function resolveDataAttributeContext(
 	tsLib: TsModule,
@@ -139,26 +169,87 @@ export function resolveDataAttributeContext(
 	// element name (`<Switc|`).
 	if (position <= element.tagName.getEnd()) return undefined;
 
-	const tag = resolveTag(tsLib, element.tagName);
-	if (!tag) return undefined;
+	const resolved = resolveWireComponent(tsLib, sourceFile, element);
+	if (!resolved) return undefined;
 
-	// The tag's local name must resolve to a Wire UI component actually imported
-	// in this file — this rejects same-named components from other libraries and
-	// makes aliased imports (`Switch as Toggle` → `<Toggle>`) work.
-	const componentName = wireImportBindings(tsLib, sourceFile).get(tag.name);
-	if (!componentName) return undefined;
-
-	const component = getComponentMetadata(componentName);
-	if (!component) return undefined;
-	// `Accordion.NotAPart` — a compound access that names no real part.
-	if (tag.part && !component.parts.includes(tag.part)) return undefined;
-
-	const attributes = component.dataAttributes.filter((attr) =>
-		appliesToPart(attr.appliesTo, tag.part),
+	const attributes = resolved.component.dataAttributes.filter((attr) =>
+		appliesToPart(attr.appliesTo, resolved.part),
 	);
 	if (attributes.length === 0) return undefined;
 
-	return { component, part: tag.part, attributes };
+	return { component: resolved.component, part: resolved.part, attributes };
+}
+
+/**
+ * The resolved context for completing a `data-*` attribute's *value*: the Wire
+ * UI component, the specific attribute, its value enum, and the text span the
+ * completion should replace (the string's content, inside the quotes).
+ */
+export interface DataAttributeValueContext {
+	component: ComponentMetadata;
+	attribute: DataAttributeMetadata;
+	/** The attribute's value enum, e.g. `["checked", "unchecked"]`. */
+	values: string[];
+	/** Content span inside the quotes, replaced when a value is selected. */
+	replacementSpan: ts.TextSpan;
+}
+
+/**
+ * Resolve the `data-*` value completion context at `position`, or `undefined`
+ * unless the cursor is inside the string-literal value of a value-carrying
+ * `data-*` attribute on a Wire UI element (`<Switch data-state="|">`).
+ * Expression values (`data-state={…}`) are intentionally not handled.
+ */
+export function resolveDataAttributeValueContext(
+	tsLib: TsModule,
+	sourceFile: ts.SourceFile,
+	position: number,
+): DataAttributeValueContext | undefined {
+	const token = findTokenAtPosition(sourceFile, position);
+	if (!token || !tsLib.isStringLiteral(token)) return undefined;
+
+	const attribute = token.parent;
+	if (
+		!attribute ||
+		!tsLib.isJsxAttribute(attribute) ||
+		attribute.initializer !== token
+	) {
+		return undefined;
+	}
+
+	// Cursor must sit inside the quotes. The string may be unterminated while
+	// typing (`data-state="|`), so only strip a trailing quote when one is there.
+	const raw = token.getText(sourceFile);
+	const start = token.getStart(sourceFile);
+	const end = token.getEnd();
+	const terminated = raw.length >= 2 && raw[raw.length - 1] === raw[0];
+	const contentStart = start + 1;
+	const contentEnd = terminated ? end - 1 : end;
+	if (position < contentStart || position > contentEnd) return undefined;
+
+	const element = findOpeningLikeElement(tsLib, attribute);
+	if (!element) return undefined;
+
+	const resolved = resolveWireComponent(tsLib, sourceFile, element);
+	if (!resolved) return undefined;
+
+	const attrName = attribute.name.getText(sourceFile);
+	const attrMeta = resolved.component.dataAttributes.find(
+		(attr) =>
+			attr.name === attrName &&
+			appliesToPart(attr.appliesTo, resolved.part),
+	);
+	if (!attrMeta || attrMeta.values.length === 0) return undefined;
+
+	return {
+		component: resolved.component,
+		attribute: attrMeta,
+		values: attrMeta.values,
+		replacementSpan: {
+			start: contentStart,
+			length: contentEnd - contentStart,
+		},
+	};
 }
 
 /** Completion entries for the `data-*` attributes valid at this position. */
@@ -201,6 +292,50 @@ export function getDataAttributeEntryDetails(
 			{ text: "Wire UI", kind: "text" },
 			{ text: ") ", kind: "punctuation" },
 			{ text: attr.name, kind: "propertyName" },
+		],
+		documentation: [{ text: doc.join("\n\n"), kind: "text" }],
+	};
+}
+
+/** Completion entries for a `data-*` attribute's valid values at this position. */
+export function buildDataAttributeValueEntries(
+	tsLib: TsModule,
+	context: DataAttributeValueContext,
+): ts.CompletionEntry[] {
+	return context.values.map((value, index) => ({
+		name: value,
+		kind: tsLib.ScriptElementKind.string,
+		kindModifiers: "",
+		sortText: `01_wire_${String(index).padStart(3, "0")}`,
+		source: WIRE_DATA_VALUE_SOURCE,
+		// Replace whatever is already between the quotes, not just insert.
+		replacementSpan: context.replacementSpan,
+	}));
+}
+
+/** Detail pane for one injected `data-*` value entry. */
+export function getDataAttributeValueEntryDetails(
+	tsLib: TsModule,
+	context: DataAttributeValueContext,
+	entryName: string,
+): ts.CompletionEntryDetails | undefined {
+	if (!context.values.includes(entryName)) return undefined;
+
+	const doc = [
+		`\`${context.attribute.name}="${entryName}"\` on \`${context.component.name}\`.`,
+		context.attribute.description,
+		`[Wire UI docs](${context.component.docsUrl})`,
+	];
+
+	return {
+		name: entryName,
+		kind: tsLib.ScriptElementKind.string,
+		kindModifiers: "",
+		displayParts: [
+			{ text: "(", kind: "punctuation" },
+			{ text: "Wire UI", kind: "text" },
+			{ text: ") ", kind: "punctuation" },
+			{ text: `"${entryName}"`, kind: "stringLiteral" },
 		],
 		documentation: [{ text: doc.join("\n\n"), kind: "text" }],
 	};

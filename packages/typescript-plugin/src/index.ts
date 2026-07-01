@@ -1,14 +1,46 @@
 import type * as ts from "typescript/lib/tsserverlibrary";
 import {
 	buildDataAttributeEntries,
+	buildDataAttributeValueEntries,
 	getDataAttributeEntryDetails,
+	getDataAttributeValueEntryDetails,
 	resolveDataAttributeContext,
+	resolveDataAttributeValueContext,
 	WIRE_DATA_ATTRIBUTE_SOURCE,
+	WIRE_DATA_VALUE_SOURCE,
 } from "./completions.js";
 import { listComponentNames } from "./metadata/index.js";
 import { collectWireComponentsInProgram } from "./scan.js";
 
 const LOG_PREFIX = "[wire-ui]";
+
+/** Docs for an injected data-* attribute-name entry, or `undefined` if it isn't ours. */
+function nameDetails(
+	tsLib: typeof ts,
+	sourceFile: ts.SourceFile,
+	position: number,
+	entryName: string,
+): ts.CompletionEntryDetails | undefined {
+	const context = resolveDataAttributeContext(tsLib, sourceFile, position);
+	return context && getDataAttributeEntryDetails(tsLib, context, entryName);
+}
+
+/** Docs for an injected data-* value entry, or `undefined` if it isn't ours. */
+function valueDetails(
+	tsLib: typeof ts,
+	sourceFile: ts.SourceFile,
+	position: number,
+	entryName: string,
+): ts.CompletionEntryDetails | undefined {
+	const context = resolveDataAttributeValueContext(
+		tsLib,
+		sourceFile,
+		position,
+	);
+	return (
+		context && getDataAttributeValueEntryDetails(tsLib, context, entryName)
+	);
+}
 
 function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
 	const tsLib = modules.typescript;
@@ -58,9 +90,9 @@ function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
 					: member;
 		}
 
-		// data-* attribute completion. Merge Wire UI's attributes into whatever
-		// tsserver already offers inside a Wire UI JSX element. Guarded so a
-		// failure falls back to the host's own completions.
+		// data-* completion. Inside a Wire UI JSX element, merge Wire's attribute
+		// names (name position) or a data-* attribute's valid values (inside its
+		// string value). Guarded so a failure falls back to host completions.
 		proxy.getCompletionsAtPosition = (
 			fileName,
 			position,
@@ -78,6 +110,39 @@ function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
 					.getProgram()
 					?.getSourceFile(fileName);
 				if (!sourceFile) return prior;
+
+				// Value position (inside `data-state="…"`) — mutually exclusive
+				// with the name position below.
+				const valueContext = resolveDataAttributeValueContext(
+					tsLib,
+					sourceFile,
+					position,
+				);
+				if (valueContext) {
+					const entries = buildDataAttributeValueEntries(
+						tsLib,
+						valueContext,
+					);
+					if (!prior) {
+						return {
+							isGlobalCompletion: false,
+							isMemberCompletion: false,
+							isNewIdentifierLocation: false,
+							optionalReplacementSpan:
+								valueContext.replacementSpan,
+							entries,
+						};
+					}
+					const seen = new Set(prior.entries.map((e) => e.name));
+					const additions = entries.filter((e) => !seen.has(e.name));
+					return {
+						...prior,
+						optionalReplacementSpan:
+							prior.optionalReplacementSpan ??
+							valueContext.replacementSpan,
+						entries: [...additions, ...prior.entries],
+					};
+				}
 
 				const context = resolveDataAttributeContext(
 					tsLib,
@@ -117,22 +182,31 @@ function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
 			preferences,
 			data,
 		) => {
-			if (source === WIRE_DATA_ATTRIBUTE_SOURCE) {
+			if (
+				source === WIRE_DATA_ATTRIBUTE_SOURCE ||
+				source === WIRE_DATA_VALUE_SOURCE
+			) {
 				try {
 					const sourceFile = info.languageService
 						.getProgram()
 						?.getSourceFile(fileName);
-					const context =
-						sourceFile &&
-						resolveDataAttributeContext(
-							tsLib,
-							sourceFile,
-							position,
-						);
-					const details =
-						context &&
-						getDataAttributeEntryDetails(tsLib, context, entryName);
-					if (details) return details;
+					if (sourceFile) {
+						const details =
+							source === WIRE_DATA_VALUE_SOURCE
+								? valueDetails(
+										tsLib,
+										sourceFile,
+										position,
+										entryName,
+									)
+								: nameDetails(
+										tsLib,
+										sourceFile,
+										position,
+										entryName,
+									);
+						if (details) return details;
+					}
 				} catch (error) {
 					log(
 						`completion detail lookup failed: ${error instanceof Error ? error.message : String(error)}`,
