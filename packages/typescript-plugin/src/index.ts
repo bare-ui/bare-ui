@@ -1,14 +1,19 @@
 import type * as ts from "typescript/lib/tsserverlibrary";
 import {
+	buildComponentPartEntries,
 	buildDataAttributeEntries,
 	buildDataAttributeValueEntries,
+	getComponentPartEntryDetails,
 	getDataAttributeEntryDetails,
 	getDataAttributeValueEntryDetails,
+	resolveComponentPartsContext,
 	resolveDataAttributeContext,
 	resolveDataAttributeValueContext,
+	WIRE_COMPONENT_PARTS_SOURCE,
 	WIRE_DATA_ATTRIBUTE_SOURCE,
 	WIRE_DATA_VALUE_SOURCE,
 } from "./completions.js";
+import { buildHoverQuickInfo, resolveHoverContext } from "./hover.js";
 import { listComponentNames } from "./metadata/index.js";
 import { collectWireComponentsInProgram } from "./scan.js";
 
@@ -40,6 +45,17 @@ function valueDetails(
 	return (
 		context && getDataAttributeValueEntryDetails(tsLib, context, entryName)
 	);
+}
+
+/** Docs for an injected compound-part entry, or `undefined` if it isn't ours. */
+function partDetails(
+	tsLib: typeof ts,
+	sourceFile: ts.SourceFile,
+	position: number,
+	entryName: string,
+): ts.CompletionEntryDetails | undefined {
+	const context = resolveComponentPartsContext(tsLib, sourceFile, position);
+	return context && getComponentPartEntryDetails(tsLib, context, entryName);
 }
 
 function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
@@ -144,6 +160,36 @@ function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
 					};
 				}
 
+				// Compound-part position (`<Accordion.|`) — a tag-name position,
+				// mutually exclusive with the attribute-name position below.
+				const partsContext = resolveComponentPartsContext(
+					tsLib,
+					sourceFile,
+					position,
+				);
+				if (partsContext) {
+					const entries = buildComponentPartEntries(
+						tsLib,
+						partsContext,
+					);
+					if (!prior) {
+						return {
+							isGlobalCompletion: false,
+							isMemberCompletion: true,
+							isNewIdentifierLocation: false,
+							optionalReplacementSpan:
+								partsContext.replacementSpan,
+							entries,
+						};
+					}
+					const seen = new Set(prior.entries.map((e) => e.name));
+					const additions = entries.filter((e) => !seen.has(e.name));
+					return {
+						...prior,
+						entries: [...additions, ...prior.entries],
+					};
+				}
+
 				const context = resolveDataAttributeContext(
 					tsLib,
 					sourceFile,
@@ -184,7 +230,8 @@ function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
 		) => {
 			if (
 				source === WIRE_DATA_ATTRIBUTE_SOURCE ||
-				source === WIRE_DATA_VALUE_SOURCE
+				source === WIRE_DATA_VALUE_SOURCE ||
+				source === WIRE_COMPONENT_PARTS_SOURCE
 			) {
 				try {
 					const sourceFile = info.languageService
@@ -199,12 +246,19 @@ function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
 										position,
 										entryName,
 									)
-								: nameDetails(
-										tsLib,
-										sourceFile,
-										position,
-										entryName,
-									);
+								: source === WIRE_COMPONENT_PARTS_SOURCE
+									? partDetails(
+											tsLib,
+											sourceFile,
+											position,
+											entryName,
+										)
+									: nameDetails(
+											tsLib,
+											sourceFile,
+											position,
+											entryName,
+										);
 						if (details) return details;
 					}
 				} catch (error) {
@@ -221,6 +275,33 @@ function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
 				source,
 				preferences,
 				data,
+			);
+		};
+
+		// Hover docs. Over a Wire UI tag name (`<Accordion>`, `<Accordion.Trigger>`,
+		// or the closing tag), replace tsserver's type hover with a reference card:
+		// parts table + data-* table + docs link. Guarded → fall back to host.
+		proxy.getQuickInfoAtPosition = (fileName, position) => {
+			try {
+				const sourceFile = info.languageService
+					.getProgram()
+					?.getSourceFile(fileName);
+				if (sourceFile) {
+					const context = resolveHoverContext(
+						tsLib,
+						sourceFile,
+						position,
+					);
+					if (context) return buildHoverQuickInfo(tsLib, context);
+				}
+			} catch (error) {
+				log(
+					`hover augmentation failed: ${error instanceof Error ? error.message : String(error)}`,
+				);
+			}
+			return info.languageService.getQuickInfoAtPosition(
+				fileName,
+				position,
 			);
 		};
 

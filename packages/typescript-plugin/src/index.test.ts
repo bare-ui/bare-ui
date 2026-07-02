@@ -115,6 +115,44 @@ describe("plugin factory", () => {
 			passthroughSentinel,
 		);
 	});
+
+	it("serves a Wire UI hover over a component tag, delegating otherwise", () => {
+		const source =
+			`import { Accordion } from '@wire-ui/react'\n` +
+			`const x = <Accordion.Trigger />\n`;
+		const program = ts.createProgram({
+			rootNames: ["hover.tsx"],
+			options: { noLib: true, noResolve: true },
+			host: stubCompilerHost({ "hover.tsx": source }),
+		});
+		const hostSentinel = { kind: "host" } as unknown as ts.QuickInfo;
+		const languageService = {
+			getProgram: () => program,
+			getQuickInfoAtPosition: () => hostSentinel,
+		} as unknown as ts.LanguageService;
+
+		const proxy = initFactory({ typescript: ts as never }).create({
+			languageService,
+			project: {
+				projectService: { logger: { info: () => {} } },
+			},
+		} as never);
+
+		// Cursor inside the `Trigger` tag name → Wire hover.
+		const tagOffset = source.indexOf("Trigger") + 2;
+		const hover = proxy.getQuickInfoAtPosition!("hover.tsx", tagOffset);
+		expect(hover).not.toBe(hostSentinel);
+		const doc = hover!.documentation!.map((p) => p.text).join("");
+		expect(doc).toContain("**Accordion.Trigger**");
+		expect(doc).toContain("**Data attributes**");
+
+		// Cursor elsewhere (the `const` keyword) → host behaviour.
+		const elsewhere = proxy.getQuickInfoAtPosition!(
+			"hover.tsx",
+			source.indexOf("const"),
+		);
+		expect(elsewhere).toBe(hostSentinel);
+	});
 });
 
 /** Minimal CompilerHost backed by an in-memory file map (for program tests). */

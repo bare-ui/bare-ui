@@ -1,12 +1,16 @@
 import { describe, expect, it } from "vitest";
 import * as ts from "typescript";
 import {
+	buildComponentPartEntries,
 	buildDataAttributeEntries,
 	buildDataAttributeValueEntries,
+	getComponentPartEntryDetails,
 	getDataAttributeEntryDetails,
 	getDataAttributeValueEntryDetails,
+	resolveComponentPartsContext,
 	resolveDataAttributeContext,
 	resolveDataAttributeValueContext,
+	WIRE_COMPONENT_PARTS_SOURCE,
 	WIRE_DATA_ATTRIBUTE_SOURCE,
 	WIRE_DATA_VALUE_SOURCE,
 } from "./completions.js";
@@ -47,6 +51,12 @@ function valueNames(code: string, prelude?: string): string[] | undefined {
 	const { sourceFile, position } = at(code, prelude);
 	const context = resolveDataAttributeValueContext(ts, sourceFile, position);
 	return context?.values;
+}
+
+function partNames(code: string, prelude?: string): string[] | undefined {
+	const { sourceFile, position } = at(code, prelude);
+	const context = resolveComponentPartsContext(ts, sourceFile, position);
+	return context?.parts;
 }
 
 describe("resolveDataAttributeContext", () => {
@@ -324,6 +334,156 @@ describe("getDataAttributeEntryDetails", () => {
 		const context = resolveDataAttributeContext(ts, sourceFile, position)!;
 		expect(
 			getDataAttributeEntryDetails(ts, context, "data-nope"),
+		).toBeUndefined();
+	});
+});
+
+describe("resolveComponentPartsContext", () => {
+	it("offers a compound component's parts after the dot, Root first", () => {
+		expect(partNames("const x = <Accordion.| />")).toEqual([
+			"Root",
+			"Item",
+			"Trigger",
+			"Content",
+		]);
+	});
+
+	it("still fires with a partial part name typed", () => {
+		expect(partNames("const x = <Accordion.It| />")).toEqual([
+			"Root",
+			"Item",
+			"Trigger",
+			"Content",
+		]);
+	});
+
+	it("works on an unterminated tag while typing", () => {
+		expect(partNames("const x = <Accordion.|")).toEqual([
+			"Root",
+			"Item",
+			"Trigger",
+			"Content",
+		]);
+	});
+
+	it("works inside a non-self-closing opening tag", () => {
+		expect(partNames("const x = <Accordion.| ></Accordion>")).toEqual([
+			"Root",
+			"Item",
+			"Trigger",
+			"Content",
+		]);
+	});
+
+	it("resolves aliased imports to the canonical component's parts", () => {
+		const alias = "import { Accordion as Acc } from '@wire-ui/vue'\n";
+		expect(partNames("const x = <Acc.| />", alias)).toEqual([
+			"Root",
+			"Item",
+			"Trigger",
+			"Content",
+		]);
+	});
+
+	it("does not fire on the expression side of the dot", () => {
+		expect(partNames("const x = <Acc|ordion.Item />")).toBeUndefined();
+	});
+
+	it("does not fire once past the tag name into attributes", () => {
+		expect(partNames("const x = <Accordion.Item | />")).toBeUndefined();
+	});
+
+	it("does not fire for a non-compound component", () => {
+		expect(partNames("const x = <Button.| />")).toBeUndefined();
+	});
+
+	it("does not fire for a same-named component from another package", () => {
+		const other = "import { Accordion } from 'some-other-lib'\n";
+		expect(partNames("const x = <Accordion.| />", other)).toBeUndefined();
+	});
+
+	it("does not fire when the component is not imported at all", () => {
+		expect(partNames("const x = <Accordion.| />", "")).toBeUndefined();
+	});
+
+	it("does not fire for a plain (non-dotted) tag", () => {
+		expect(partNames("const x = <Accordion | />")).toBeUndefined();
+	});
+});
+
+describe("buildComponentPartEntries", () => {
+	it("emits snippet entries that expand a clean self-closing tag", () => {
+		const { sourceFile, position } = at("const x = <Accordion.| />");
+		const context = resolveComponentPartsContext(ts, sourceFile, position)!;
+		const entries = buildComponentPartEntries(ts, context);
+
+		expect(entries.map((e) => e.name)).toEqual([
+			"Root",
+			"Item",
+			"Trigger",
+			"Content",
+		]);
+		const item = entries.find((e) => e.name === "Item")!;
+		expect(item.source).toBe(WIRE_COMPONENT_PARTS_SOURCE);
+		expect(item.kind).toBe(ts.ScriptElementKind.memberVariableElement);
+		expect(item.isSnippet).toBe(true);
+		expect(item.insertText).toBe("Item>$0</Accordion.Item>");
+		expect(item.sortText.startsWith("01_wire_")).toBe(true);
+		// The replacement span swallows the tag's ` />` terminator so the snippet
+		// owns the whole element.
+		const replaced = sourceFile.text.substr(
+			item.replacementSpan!.start,
+			item.replacementSpan!.length,
+		);
+		expect(replaced).toBe(" />");
+	});
+
+	it("builds the closing tag from the local alias", () => {
+		const alias = "import { Accordion as Acc } from '@wire-ui/react'\n";
+		const { sourceFile, position } = at("const x = <Acc.| />", alias);
+		const context = resolveComponentPartsContext(ts, sourceFile, position)!;
+		const entries = buildComponentPartEntries(ts, context);
+		const item = entries.find((e) => e.name === "Item")!;
+		expect(item.insertText).toBe("Item>$0</Acc.Item>");
+	});
+
+	it("inserts the bare part (no snippet) when the tag has attributes", () => {
+		const { sourceFile, position } = at(
+			"const x = <Accordion.It| data-foo />",
+		);
+		const context = resolveComponentPartsContext(ts, sourceFile, position)!;
+		const entries = buildComponentPartEntries(ts, context);
+		const item = entries.find((e) => e.name === "Item")!;
+		expect(item.isSnippet).toBeUndefined();
+		expect(item.insertText).toBe("Item");
+	});
+});
+
+describe("getComponentPartEntryDetails", () => {
+	it("documents Root as the context-providing wrapper with a docs link", () => {
+		const { sourceFile, position } = at("const x = <Accordion.| />");
+		const context = resolveComponentPartsContext(ts, sourceFile, position)!;
+		const details = getComponentPartEntryDetails(ts, context, "Root")!;
+
+		expect(details.name).toBe("Root");
+		const doc = details.documentation!.map((d) => d.text).join("");
+		expect(doc).toContain("Root of the Accordion compound");
+		expect(doc).toContain("https://wire-ui.com/docs/components/accordion");
+	});
+
+	it("documents a non-root part", () => {
+		const { sourceFile, position } = at("const x = <Accordion.| />");
+		const context = resolveComponentPartsContext(ts, sourceFile, position)!;
+		const details = getComponentPartEntryDetails(ts, context, "Item")!;
+		const doc = details.documentation!.map((d) => d.text).join("");
+		expect(doc).toContain("`Accordion.Item`");
+	});
+
+	it("returns undefined for a part not in context", () => {
+		const { sourceFile, position } = at("const x = <Accordion.| />");
+		const context = resolveComponentPartsContext(ts, sourceFile, position)!;
+		expect(
+			getComponentPartEntryDetails(ts, context, "Nope"),
 		).toBeUndefined();
 	});
 });
