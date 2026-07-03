@@ -238,6 +238,41 @@ describe("plugin factory", () => {
 		);
 		expect(offTag).toBeUndefined();
 	});
+
+	it("appends Wire diagnostics to the host's semantic diagnostics", () => {
+		const source =
+			`import { Input } from '@wire-ui/react'\n` +
+			`const x = <Input.Field />\n`;
+		const program = ts.createProgram({
+			rootNames: ["diag.tsx"],
+			options: { noLib: true, noResolve: true },
+			host: stubCompilerHost({ "diag.tsx": source }),
+		});
+		const hostDiag = {
+			file: undefined,
+			start: 0,
+			length: 1,
+			messageText: "host",
+			category: ts.DiagnosticCategory.Warning,
+			code: 1,
+		} as unknown as ts.Diagnostic;
+		const languageService = {
+			getProgram: () => program,
+			getSemanticDiagnostics: () => [hostDiag],
+		} as unknown as ts.LanguageService;
+
+		const proxy = initFactory({ typescript: ts as never }).create({
+			languageService,
+			project: { projectService: { logger: { info: () => {} } } },
+		} as never);
+
+		const diags = proxy.getSemanticDiagnostics("diag.tsx");
+		// Host diagnostic preserved, Wire diagnostic appended.
+		expect(diags[0]).toBe(hostDiag);
+		expect(diags).toHaveLength(2);
+		expect(diags[1].source).toBe("wire-ui");
+		expect(diags[1].messageText).toContain("<Input.Root>");
+	});
 });
 
 /** Minimal CompilerHost backed by an in-memory file map (for program tests). */

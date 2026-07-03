@@ -4,6 +4,7 @@ import {
 	augmentDefinitionAndBoundSpan,
 	augmentDefinitions,
 } from "./definition.js";
+import { computeWireDiagnostics } from "./diagnostics.js";
 import {
 	buildComponentPartEntries,
 	buildDataAttributeEntries,
@@ -365,6 +366,27 @@ function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
 			} catch (error) {
 				log(
 					`definition augmentation failed: ${error instanceof Error ? error.message : String(error)}`,
+				);
+				return prior;
+			}
+		};
+
+		// Semantic diagnostics. Append Wire UI's compound-usage diagnostics
+		// (missing root wrapper, part outside root) to tsserver's own. Guarded →
+		// never drop the host's diagnostics on a rule failure.
+		proxy.getSemanticDiagnostics = (fileName) => {
+			const prior = info.languageService.getSemanticDiagnostics(fileName);
+			try {
+				const sourceFile = info.languageService
+					.getProgram()
+					?.getSourceFile(fileName);
+				if (!sourceFile) return prior;
+
+				const wire = computeWireDiagnostics(tsLib, sourceFile);
+				return wire.length > 0 ? [...prior, ...wire] : prior;
+			} catch (error) {
+				log(
+					`diagnostics failed: ${error instanceof Error ? error.message : String(error)}`,
 				);
 				return prior;
 			}
