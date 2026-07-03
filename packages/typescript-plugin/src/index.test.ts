@@ -153,6 +153,91 @@ describe("plugin factory", () => {
 		);
 		expect(elsewhere).toBe(hostSentinel);
 	});
+
+	it("offers a docs definition on a Wire tag when the host has no source", () => {
+		const source =
+			`import { Button } from '@wire-ui/react'\n` +
+			`const x = <Button />\n`;
+		const program = ts.createProgram({
+			rootNames: ["def.tsx"],
+			options: { noLib: true, noResolve: true },
+			host: stubCompilerHost({ "def.tsx": source }),
+		});
+		// The host resolves nothing (noResolve) — the docs fallback should fire.
+		const languageService = {
+			getProgram: () => program,
+			getDefinitionAndBoundSpan: () => undefined,
+			getDefinitionAtPosition: () => undefined,
+		} as unknown as ts.LanguageService;
+
+		const proxy = initFactory({ typescript: ts as never }).create({
+			languageService,
+			project: { projectService: { logger: { info: () => {} } } },
+		} as never);
+
+		const tagOffset = source.indexOf("Button", source.indexOf("<")) + 1;
+		const result = proxy.getDefinitionAndBoundSpan!("def.tsx", tagOffset);
+		expect(result?.definitions).toHaveLength(1);
+		expect(result?.definitions![0].fileName).toBe(
+			"https://wire-ui.com/docs/components/button",
+		);
+		const span = source.substr(
+			result!.textSpan.start,
+			result!.textSpan.length,
+		);
+		expect(span).toBe("Button");
+	});
+
+	it("keeps the host's source jump and delegates off-tag", () => {
+		const source =
+			`import { Button } from '@wire-ui/react'\n` +
+			`const x = <Button />\n`;
+		const program = ts.createProgram({
+			rootNames: ["def.tsx"],
+			options: { noLib: true, noResolve: true },
+			host: stubCompilerHost({ "def.tsx": source }),
+		});
+		const sourceJump: ts.DefinitionInfoAndBoundSpan = {
+			definitions: [
+				{
+					fileName: "/repo/src/components/button/Button.tsx",
+					textSpan: { start: 0, length: 0 },
+					kind: ts.ScriptElementKind.classElement,
+					name: "Button",
+					containerKind: ts.ScriptElementKind.unknown,
+					containerName: "",
+				},
+			],
+			textSpan: { start: 1, length: 6 },
+		};
+		const hostArray = sourceJump.definitions!;
+		const languageService = {
+			getProgram: () => program,
+			getDefinitionAndBoundSpan: (_f: string, pos: number) =>
+				pos === source.indexOf("Button", source.indexOf("<")) + 1
+					? sourceJump
+					: undefined,
+			getDefinitionAtPosition: () => hostArray,
+		} as unknown as ts.LanguageService;
+
+		const proxy = initFactory({ typescript: ts as never }).create({
+			languageService,
+			project: { projectService: { logger: { info: () => {} } } },
+		} as never);
+
+		// On the tag with real source → host result passes through unchanged.
+		const tagOffset = source.indexOf("Button", source.indexOf("<")) + 1;
+		const onTag = proxy.getDefinitionAndBoundSpan!("def.tsx", tagOffset);
+		expect(onTag?.definitions).toEqual(sourceJump.definitions);
+		expect(onTag?.textSpan).toEqual(sourceJump.textSpan);
+
+		// Off any Wire tag (the `const` keyword) → host behaviour, no docs target.
+		const offTag = proxy.getDefinitionAndBoundSpan!(
+			"def.tsx",
+			source.indexOf("const"),
+		);
+		expect(offTag).toBeUndefined();
+	});
 });
 
 /** Minimal CompilerHost backed by an in-memory file map (for program tests). */

@@ -1,4 +1,9 @@
 import type * as ts from "typescript/lib/tsserverlibrary";
+import { resolveWireTagContext } from "./ast.js";
+import {
+	augmentDefinitionAndBoundSpan,
+	augmentDefinitions,
+} from "./definition.js";
 import {
 	buildComponentPartEntries,
 	buildDataAttributeEntries,
@@ -303,6 +308,66 @@ function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
 				fileName,
 				position,
 			);
+		};
+
+		// Go-to-definition. cmd-clicking a Wire UI tag name keeps tsserver's jump
+		// to real component source when it exists; when the component ships only
+		// bundled `.d.ts` (a plain npm install), append its docs page as a target.
+		// Guarded → fall back to host.
+		proxy.getDefinitionAndBoundSpan = (fileName, position) => {
+			const prior = info.languageService.getDefinitionAndBoundSpan(
+				fileName,
+				position,
+			);
+			try {
+				const sourceFile = info.languageService
+					.getProgram()
+					?.getSourceFile(fileName);
+				if (!sourceFile) return prior;
+
+				const context = resolveWireTagContext(
+					tsLib,
+					sourceFile,
+					position,
+				);
+				if (!context) return prior;
+
+				return augmentDefinitionAndBoundSpan(tsLib, context, prior);
+			} catch (error) {
+				log(
+					`definition augmentation failed: ${error instanceof Error ? error.message : String(error)}`,
+				);
+				return prior;
+			}
+		};
+
+		// The plain-array variant, for clients that call it instead of the
+		// bound-span form. Same source-vs-docs decision.
+		proxy.getDefinitionAtPosition = (fileName, position) => {
+			const prior = info.languageService.getDefinitionAtPosition(
+				fileName,
+				position,
+			);
+			try {
+				const sourceFile = info.languageService
+					.getProgram()
+					?.getSourceFile(fileName);
+				if (!sourceFile) return prior;
+
+				const context = resolveWireTagContext(
+					tsLib,
+					sourceFile,
+					position,
+				);
+				if (!context) return prior;
+
+				return augmentDefinitions(tsLib, context, prior ?? []);
+			} catch (error) {
+				log(
+					`definition augmentation failed: ${error instanceof Error ? error.message : String(error)}`,
+				);
+				return prior;
+			}
 		};
 
 		return proxy;

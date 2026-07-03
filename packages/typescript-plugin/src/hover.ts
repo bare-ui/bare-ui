@@ -1,68 +1,26 @@
 import type * as ts from "typescript";
-import { findTaggedElement, findTokenAtPosition, resolveTag } from "./ast.js";
-import {
-	getComponentMetadata,
-	type ComponentMetadata,
-} from "./metadata/index.js";
-import { wireImportBindings, type TsModule } from "./scan.js";
+import { resolveWireTagContext, type WireTagContext } from "./ast.js";
+import { type ComponentMetadata } from "./metadata/index.js";
+import { type TsModule } from "./scan.js";
 
 /**
  * The resolved context for a Wire UI hover: the component under the cursor, the
  * compound part when the tag is `X.Part`, and the tag-name span the hover
- * highlights.
+ * highlights. Structurally the shared {@link WireTagContext}.
  */
-export interface HoverContext {
-	component: ComponentMetadata;
-	/** The compound part under the cursor (`Accordion.Trigger` → `Trigger`). */
-	part?: string;
-	/** Span of the tag name, highlighted by the hover. */
-	span: ts.TextSpan;
-}
+export type HoverContext = WireTagContext;
 
 /**
  * Resolve the hover context at `position`, or `undefined` unless the cursor is
- * over the *tag name* of a Wire UI JSX element — a root (`<Accordion>`), a part
- * (`<Accordion.Trigger>`), or the matching closing tag. Import-gated and
- * alias-aware via `wireImportBindings`; an unknown compound part
- * (`<Accordion.Nope>`) returns `undefined` so tsserver's own hover shows.
+ * over the *tag name* of a Wire UI JSX element. Thin alias over the shared
+ * {@link resolveWireTagContext}, which hover and go-to-definition both use.
  */
 export function resolveHoverContext(
 	tsLib: TsModule,
 	sourceFile: ts.SourceFile,
 	position: number,
 ): HoverContext | undefined {
-	const token = findTokenAtPosition(sourceFile, position);
-	if (!token) return undefined;
-
-	const element = findTaggedElement(tsLib, token);
-	if (!element) return undefined;
-
-	// Only fire when the cursor is on the tag name, not its attributes/children.
-	const tagName = element.tagName;
-	if (
-		position < tagName.getStart(sourceFile) ||
-		position > tagName.getEnd()
-	) {
-		return undefined;
-	}
-
-	const tag = resolveTag(tsLib, tagName);
-	if (!tag) return undefined;
-
-	const componentName = wireImportBindings(tsLib, sourceFile).get(tag.name);
-	if (!componentName) return undefined;
-
-	const component = getComponentMetadata(componentName);
-	if (!component) return undefined;
-	// `Accordion.NotAPart` — a compound access that names no real part.
-	if (tag.part && !component.parts.includes(tag.part)) return undefined;
-
-	const start = tagName.getStart(sourceFile);
-	return {
-		component,
-		part: tag.part,
-		span: { start, length: tagName.getEnd() - start },
-	};
+	return resolveWireTagContext(tsLib, sourceFile, position);
 }
 
 /** Sanitize a value for a markdown table cell (escape pipes, flatten newlines). */

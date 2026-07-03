@@ -1,5 +1,9 @@
 import type * as ts from "typescript";
-import type { TsModule } from "./scan.js";
+import {
+	getComponentMetadata,
+	type ComponentMetadata,
+} from "./metadata/index.js";
+import { wireImportBindings, type TsModule } from "./scan.js";
 
 /** A JSX tag that carries attributes — `<X …>` or `<X … />`. */
 export type JsxOpeningLikeElement =
@@ -68,6 +72,66 @@ export function findTaggedElement(
 			tsLib.isJsxSelfClosingElement(n) ||
 			tsLib.isJsxClosingElement(n),
 	);
+}
+
+/**
+ * A Wire UI JSX tag resolved from the cursor: the component, the compound part
+ * when the tag is `X.Part`, and the tag-name span the cursor sits on.
+ */
+export interface WireTagContext {
+	component: ComponentMetadata;
+	/** The compound part under the cursor (`Accordion.Trigger` → `Trigger`). */
+	part?: string;
+	/** Span of the tag name (`Accordion` or `Accordion.Trigger`). */
+	span: ts.TextSpan;
+}
+
+/**
+ * Resolve the Wire UI tag under `position`, or `undefined` unless the cursor is
+ * over the *tag name* of a Wire UI JSX element — a root (`<Accordion>`), a part
+ * (`<Accordion.Trigger>`), or the matching closing tag (`</Accordion.Item>`).
+ * Import-gated and alias-aware via `wireImportBindings` (rejects same-named,
+ * unimported, and non-Wire tags); an unknown compound part (`<Accordion.Nope>`)
+ * returns `undefined` so tsserver's own behaviour shows. Shared by hover
+ * (Day 7) and go-to-definition (Day 8).
+ */
+export function resolveWireTagContext(
+	tsLib: TsModule,
+	sourceFile: ts.SourceFile,
+	position: number,
+): WireTagContext | undefined {
+	const token = findTokenAtPosition(sourceFile, position);
+	if (!token) return undefined;
+
+	const element = findTaggedElement(tsLib, token);
+	if (!element) return undefined;
+
+	// Only fire when the cursor is on the tag name, not its attributes/children.
+	const tagName = element.tagName;
+	if (
+		position < tagName.getStart(sourceFile) ||
+		position > tagName.getEnd()
+	) {
+		return undefined;
+	}
+
+	const tag = resolveTag(tsLib, tagName);
+	if (!tag) return undefined;
+
+	const componentName = wireImportBindings(tsLib, sourceFile).get(tag.name);
+	if (!componentName) return undefined;
+
+	const component = getComponentMetadata(componentName);
+	if (!component) return undefined;
+	// `Accordion.NotAPart` — a compound access that names no real part.
+	if (tag.part && !component.parts.includes(tag.part)) return undefined;
+
+	const start = tagName.getStart(sourceFile);
+	return {
+		component,
+		part: tag.part,
+		span: { start, length: tagName.getEnd() - start },
+	};
 }
 
 /** Resolve a JSX tag name to a component and, for `X.Part`, its part. */
