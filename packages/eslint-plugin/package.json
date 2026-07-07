@@ -1,7 +1,7 @@
 {
-  "name": "@wire-ui/typescript-plugin",
+  "name": "@wire-ui/eslint-plugin",
   "version": "0.0.0",
-  "description": "TypeScript Language Service plugin powering Wire UI editor intelligence — the shared brain behind the VS Code extension and other editors",
+  "description": "ESLint rules for Wire UI — catches compound-component misuse using the same metadata catalog as the VS Code extension",
   "license": "MIT",
   "type": "commonjs",
   "main": "./dist/index.js",
@@ -9,12 +9,8 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "require": "./dist/index.js"
-    },
-    "./metadata": {
-      "types": "./dist/metadata.d.ts",
-      "require": "./dist/metadata.js",
-      "default": "./dist/metadata.js"
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -25,16 +21,16 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/wire-ui/wire-ui.git",
-    "directory": "packages/typescript-plugin"
+    "directory": "packages/eslint-plugin"
   },
   "bugs": {
     "url": "https://github.com/wire-ui/wire-ui/issues"
   },
   "keywords": [
     "wire-ui",
-    "typescript",
-    "tsserver",
-    "language-service-plugin",
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
     "ai-native",
     "headless",
     "components"
@@ -52,13 +48,16 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@wire-ui/mcp": "*"
+    "@typescript-eslint/utils": "^8.58.1",
+    "@wire-ui/typescript-plugin": "*"
   },
   "peerDependencies": {
-    "typescript": ">=5.0.0"
+    "eslint": ">=8.57.0"
   },
   "devDependencies": {
     "@types/node": "^24.12.0",
+    "@typescript-eslint/parser": "^8.58.1",
+    "eslint": "^9.39.0",
     "prettier": "^3.8.1",
     "tsup": "^8.5.0",
     "typescript": "~5.9.3",
