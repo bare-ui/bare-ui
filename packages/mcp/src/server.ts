@@ -11,7 +11,7 @@ import { registerGetExportsList } from "./tools/get-exports-list.js";
 export function createServer() {
 	const server = new McpServer({
 		name: "wire-ui",
-		version: "0.4.0",
+		version: "0.5.0",
 	});
 
 	registerListComponents(server);

@@ -119,10 +119,10 @@ npm install @wire-ui/vue
 
 ## Peer Dependencies
 
-Vue >= 3.4.0.
+Vue >= 3.5.0.
 
 \`\`\`bash
-npm install vue@^3.4
+npm install vue@^3.5
 \`\`\`
 
 ## Styling Approach
@@ -176,12 +176,23 @@ Attributes are present as an empty string when active, and absent when not — n
 | data-focus-visible  | Keyboard focus (mirrors :focus-visible) |
 | data-active         | Element is being pressed                |
 | data-disabled       | Element is disabled                     |
-| data-state          | Open/closed, checked/unchecked          |
+| data-state          | Named state; values vary by component   |
 | data-invalid        | Consumer-controlled via invalidType     |
-| data-success        | Consumer-controlled via isSuccess       |
+| data-success        | Consumer-controlled via isSuccess (Input, Textarea) |
 | data-highlighted    | Keyboard-highlighted option/item        |
 | data-selected       | Currently selected item                 |
+| data-checked        | Checkbox/Radio/Switch is on             |
 | data-side / data-align | Resolved popover placement           |
+| data-part           | Marks an element Wire UI renders for you |
+
+\`data-state\` is always a named string, never a boolean. The value set depends on the component:
+\`open|closed\` (Modal, Popover, Accordion, Select, …), \`active|inactive\` (Tabs), \`on|off\` (Toolbar.Toggle),
+\`active|completed|inactive\` (Stepper), \`visible|hidden\` (ScrollArea), \`typing|done\` (Typewriter).
+
+Checked state is presence-based \`data-checked\`, **not** \`data-state="checked"\`.
+
+Components that render internal elements for you (Slider, ProgressBar, Alert, Image) mark them with
+\`data-part\`; that attribute is the only styling hook those elements have.
 `;
 
 const schema = {

@@ -62,21 +62,30 @@ function partNames(code: string, prelude?: string): string[] | undefined {
 describe("resolveDataAttributeContext", () => {
 	it("offers a component's data-* attributes inside its opening tag", () => {
 		expect(attrNames("const x = <Switch data-| />")).toEqual([
-			"data-state",
+			"data-checked",
+			"data-hover",
+			"data-focus-visible",
+			"data-active",
 			"data-disabled",
 		]);
 	});
 
 	it("works in the whitespace before the tag terminator", () => {
 		expect(attrNames("const x = <Switch | />")).toEqual([
-			"data-state",
+			"data-checked",
+			"data-hover",
+			"data-focus-visible",
+			"data-active",
 			"data-disabled",
 		]);
 	});
 
 	it("works inside a non-self-closing opening tag", () => {
 		expect(attrNames("const x = <Switch |></Switch>")).toEqual([
-			"data-state",
+			"data-checked",
+			"data-hover",
+			"data-focus-visible",
+			"data-active",
 			"data-disabled",
 		]);
 	});
@@ -95,6 +104,7 @@ describe("resolveDataAttributeContext", () => {
 		// data-state applies to Item/Trigger/Content, not Root.
 		expect(attrNames("const x = <Accordion.Item data-| />")).toEqual([
 			"data-state",
+			"data-disabled",
 		]);
 		expect(
 			attrNames("const x = <Accordion.Root data-| />"),
@@ -104,13 +114,17 @@ describe("resolveDataAttributeContext", () => {
 	it("offers every attribute on a bare compound tag (no part)", () => {
 		expect(attrNames("const x = <Accordion data-| />")).toEqual([
 			"data-state",
+			"data-disabled",
 		]);
 	});
 
 	it("resolves aliased imports to the canonical component", () => {
 		const alias = "import { Switch as Toggle } from '@wire-ui/vue'\n";
 		expect(attrNames("const x = <Toggle data-| />", alias)).toEqual([
-			"data-state",
+			"data-checked",
+			"data-hover",
+			"data-focus-visible",
+			"data-active",
 			"data-disabled",
 		]);
 	});
@@ -156,10 +170,9 @@ describe("resolveDataAttributeContext", () => {
 
 describe("resolveDataAttributeValueContext", () => {
 	it("completes the value enum inside a data-state string", () => {
-		expect(valueNames('const x = <Switch data-state="|" />')).toEqual([
-			"checked",
-			"unchecked",
-		]);
+		expect(valueNames('const x = <Accordion.Item data-state="|" />')).toEqual(
+			["open", "closed"],
+		);
 	});
 
 	it("completes different values per component", () => {
@@ -170,36 +183,35 @@ describe("resolveDataAttributeValueContext", () => {
 	});
 
 	it("works with a partial value already typed", () => {
-		expect(valueNames('const x = <Switch data-state="che|" />')).toEqual([
-			"checked",
-			"unchecked",
-		]);
+		expect(
+			valueNames('const x = <Accordion.Item data-state="op|" />'),
+		).toEqual(["open", "closed"]);
 	});
 
 	it("works on an unterminated string while typing", () => {
-		expect(valueNames('const x = <Switch data-state="|')).toEqual([
-			"checked",
-			"unchecked",
+		expect(valueNames('const x = <Accordion.Item data-state="|')).toEqual([
+			"open",
+			"closed",
 		]);
 	});
 
 	it("resolves through aliased imports", () => {
-		const alias = "import { Switch as Toggle } from '@wire-ui/vue'\n";
+		const alias = "import { Accordion as Acc } from '@wire-ui/vue'\n";
 		expect(
-			valueNames('const x = <Toggle data-state="|" />', alias),
-		).toEqual(["checked", "unchecked"]);
+			valueNames('const x = <Acc.Item data-state="|" />', alias),
+		).toEqual(["open", "closed"]);
 	});
 
 	it("returns a replacement span covering the string content", () => {
 		const { sourceFile, position } = at(
-			'const x = <Switch data-state="ch|" />',
+			'const x = <Accordion.Item data-state="op|" />',
 		);
 		const ctx = resolveDataAttributeValueContext(ts, sourceFile, position)!;
 		const text = sourceFile.text.substr(
 			ctx.replacementSpan.start,
 			ctx.replacementSpan.length,
 		);
-		expect(text).toBe("ch");
+		expect(text).toBe("op");
 	});
 
 	it("does not fire for a presence-flag attribute with no values", () => {
@@ -237,7 +249,7 @@ describe("resolveDataAttributeValueContext", () => {
 describe("buildDataAttributeValueEntries", () => {
 	it("emits string entries tagged with the value source and replacement span", () => {
 		const { sourceFile, position } = at(
-			'const x = <Switch data-state="|" />',
+			'const x = <Accordion.Item data-state="|" />',
 		);
 		const context = resolveDataAttributeValueContext(
 			ts,
@@ -246,7 +258,7 @@ describe("buildDataAttributeValueEntries", () => {
 		)!;
 		const entries = buildDataAttributeValueEntries(ts, context);
 
-		expect(entries.map((e) => e.name)).toEqual(["checked", "unchecked"]);
+		expect(entries.map((e) => e.name)).toEqual(["open", "closed"]);
 		for (const entry of entries) {
 			expect(entry.source).toBe(WIRE_DATA_VALUE_SOURCE);
 			expect(entry.kind).toBe(ts.ScriptElementKind.string);
@@ -258,29 +270,25 @@ describe("buildDataAttributeValueEntries", () => {
 describe("getDataAttributeValueEntryDetails", () => {
 	it("documents the value with the attribute description and docs link", () => {
 		const { sourceFile, position } = at(
-			'const x = <Switch data-state="|" />',
+			'const x = <Accordion.Item data-state="|" />',
 		);
 		const context = resolveDataAttributeValueContext(
 			ts,
 			sourceFile,
 			position,
 		)!;
-		const details = getDataAttributeValueEntryDetails(
-			ts,
-			context,
-			"checked",
-		)!;
+		const details = getDataAttributeValueEntryDetails(ts, context, "open")!;
 
-		expect(details.name).toBe("checked");
+		expect(details.name).toBe("open");
 		const doc = details.documentation!.map((d) => d.text).join("");
-		expect(doc).toContain('data-state="checked"');
-		expect(doc).toContain("Reflects the switch state.");
-		expect(doc).toContain("https://wire-ui.com/docs/components/switch");
+		expect(doc).toContain('data-state="open"');
+		expect(doc).toContain("Open/closed state.");
+		expect(doc).toContain("https://wire-ui.com/docs/components/accordion");
 	});
 
 	it("returns undefined for a value not in the enum", () => {
 		const { sourceFile, position } = at(
-			'const x = <Switch data-state="|" />',
+			'const x = <Accordion.Item data-state="|" />',
 		);
 		const context = resolveDataAttributeValueContext(
 			ts,
@@ -300,7 +308,10 @@ describe("buildDataAttributeEntries", () => {
 		const entries = buildDataAttributeEntries(ts, context);
 
 		expect(entries.map((e) => e.name)).toEqual([
-			"data-state",
+			"data-checked",
+			"data-hover",
+			"data-focus-visible",
+			"data-active",
 			"data-disabled",
 		]);
 		for (const entry of entries) {
@@ -313,7 +324,7 @@ describe("buildDataAttributeEntries", () => {
 
 describe("getDataAttributeEntryDetails", () => {
 	it("documents the attribute with its value enum and a docs link", () => {
-		const { sourceFile, position } = at("const x = <Switch data-| />");
+		const { sourceFile, position } = at("const x = <Accordion.Item data-| />");
 		const context = resolveDataAttributeContext(ts, sourceFile, position)!;
 		const details = getDataAttributeEntryDetails(
 			ts,
@@ -323,10 +334,10 @@ describe("getDataAttributeEntryDetails", () => {
 
 		expect(details.name).toBe("data-state");
 		const doc = details.documentation!.map((d) => d.text).join("");
-		expect(doc).toContain("Reflects the switch state.");
-		expect(doc).toContain("`checked`");
-		expect(doc).toContain("`unchecked`");
-		expect(doc).toContain("https://wire-ui.com/docs/components/switch");
+		expect(doc).toContain("Open/closed state.");
+		expect(doc).toContain("`open`");
+		expect(doc).toContain("`closed`");
+		expect(doc).toContain("https://wire-ui.com/docs/components/accordion");
 	});
 
 	it("returns undefined for an attribute not in context", () => {

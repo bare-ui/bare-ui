@@ -1,14 +1,16 @@
 import type { ComponentData } from "./types.js";
 
 // ────────────────────────────────────────────────────────────────────
-// Wire UI 0.2 component catalog — React, Solid, Vue
+// Wire UI 0.5 component catalog — React, Solid, Vue
 //
-// Solid and Vue ship near-identical APIs to React, with these adaptations:
+// The three libraries are kept at full parity: every component here ships in
+// all three packages with the same parts, props, and data-* contract. Only the
+// authoring syntax differs:
 //   - Solid: signals (createSignal), call signal as function in JSX (value())
-//   - Vue: SFC template syntax, kebab-case events (@open-change), ref() values
+//   - Vue: SFC template syntax, kebab-case props (:default-value), ref() values
 //
-// Components only available in React are noted with a single `react` framework
-// snippet. All others list all three frameworks.
+// Every entry must list all three framework snippets. If you find yourself
+// writing "React only", the catalog is out of date — check the library first.
 // ────────────────────────────────────────────────────────────────────
 
 export const components: ComponentData[] = [
@@ -383,10 +385,16 @@ export const components: ComponentData[] = [
 					description: "Marks the field as required.",
 				},
 				{
-					name: "isSuccess",
-					type: "boolean",
+					name: "onFocus",
+					type: "() => void",
 					required: false,
-					description: "Sets data-success on the field.",
+					description: "Called when the field gains focus.",
+				},
+				{
+					name: "onBlur",
+					type: "() => void",
+					required: false,
+					description: "Called when the field loses focus.",
 				},
 			],
 		},
@@ -399,11 +407,6 @@ export const components: ComponentData[] = [
 			{
 				name: "data-invalid",
 				description: "Present when invalidType is set.",
-				appliesTo: "Field",
-			},
-			{
-				name: "data-success",
-				description: "Present when isSuccess is true.",
 				appliesTo: "Field",
 			},
 		],
@@ -492,13 +495,46 @@ export const components: ComponentData[] = [
 					required: false,
 					description: "Disable this checkbox item.",
 				},
+				{
+					name: "indeterminate",
+					type: "boolean",
+					required: false,
+					description:
+						'Show the mixed/partial state (e.g. a "select all" that is only partly checked). Sets the native input\'s indeterminate property so assistive tech announces aria-checked="mixed".',
+				},
 			],
 		},
 		dataAttributes: [
 			{
 				name: "data-checked",
-				description: "Present when the item is checked.",
+				description:
+					"Present when the item is checked. Indicator only renders while checked, so it always carries this.",
+				appliesTo: "Item, Indicator",
+			},
+			{
+				name: "data-indeterminate",
+				description: "Present when the item is in the indeterminate state.",
 				appliesTo: "Item",
+			},
+			{
+				name: "data-hover",
+				description: "Present when the pointer is over the item.",
+				appliesTo: "Item",
+			},
+			{
+				name: "data-focus-visible",
+				description: "Present on keyboard focus.",
+				appliesTo: "Item",
+			},
+			{
+				name: "data-active",
+				description: "Present while the item is pressed.",
+				appliesTo: "Item",
+			},
+			{
+				name: "data-disabled",
+				description: "Present when the item is disabled.",
+				appliesTo: "Item, Label",
 			},
 		],
 		frameworks: {
@@ -588,8 +624,29 @@ export const components: ComponentData[] = [
 		dataAttributes: [
 			{
 				name: "data-checked",
-				description: "Present when the item is selected.",
+				description:
+					"Present when the item is selected. Indicator only renders while selected, so it always carries this.",
+				appliesTo: "Item, Indicator",
+			},
+			{
+				name: "data-hover",
+				description: "Present when the pointer is over the item.",
 				appliesTo: "Item",
+			},
+			{
+				name: "data-focus-visible",
+				description: "Present on keyboard focus.",
+				appliesTo: "Item",
+			},
+			{
+				name: "data-active",
+				description: "Present while the item is pressed.",
+				appliesTo: "Item",
+			},
+			{
+				name: "data-disabled",
+				description: "Present when the item is disabled.",
+				appliesTo: "Item, Label",
 			},
 		],
 		frameworks: {
@@ -641,7 +698,13 @@ export const components: ComponentData[] = [
 					description: "Controlled checked state.",
 				},
 				{
-					name: "onCheckedChange",
+					name: "defaultChecked",
+					type: "boolean",
+					required: false,
+					description: "Initial checked state (uncontrolled).",
+				},
+				{
+					name: "onChange",
 					type: "(checked: boolean) => void",
 					required: false,
 					description: "Called when the switch is toggled.",
@@ -656,27 +719,41 @@ export const components: ComponentData[] = [
 		},
 		dataAttributes: [
 			{
-				name: "data-state",
-				description: "Reflects the switch state.",
-				values: '"checked" | "unchecked"',
+				name: "data-checked",
+				description: "Present when the switch is on.",
+				appliesTo: "Root, Thumb",
+			},
+			{
+				name: "data-hover",
+				description: "Present when the pointer is over the switch.",
+				appliesTo: "Root",
+			},
+			{
+				name: "data-focus-visible",
+				description: "Present on keyboard focus.",
+				appliesTo: "Root",
+			},
+			{
+				name: "data-active",
+				description: "Present while the switch is pressed.",
 				appliesTo: "Root",
 			},
 			{
 				name: "data-disabled",
-				description: "Present when disabled.",
-				appliesTo: "Root",
+				description: "Present when the switch is disabled.",
+				appliesTo: "Root, Thumb",
 			},
 		],
 		frameworks: {
 			react: {
 				importStatement: "import { Switch } from '@wire-ui/react'",
-				basicExample: `<Switch.Root checked={on} onCheckedChange={setOn}>
+				basicExample: `<Switch.Root checked={on} onChange={setOn}>
   <Switch.Thumb />
 </Switch.Root>`,
 			},
 			solid: {
 				importStatement: "import { Switch } from '@wire-ui/solid'",
-				basicExample: `<Switch.Root checked={on()} onCheckedChange={setOn}>
+				basicExample: `<Switch.Root checked={on()} onChange={setOn}>
   <Switch.Thumb />
 </Switch.Root>`,
 			},
@@ -716,6 +793,12 @@ export const components: ComponentData[] = [
 					description: "Controlled selected value.",
 				},
 				{
+					name: "defaultValue",
+					type: "string",
+					required: false,
+					description: "Initial selected value (uncontrolled).",
+				},
+				{
 					name: "onChange",
 					type: "(value: string) => void",
 					required: false,
@@ -743,14 +826,32 @@ export const components: ComponentData[] = [
 					required: false,
 					description: "Disables the item.",
 				},
+				{
+					name: "textValue",
+					type: "string",
+					required: false,
+					description:
+						"Override the display label used in the trigger and for typeahead. Defaults to the item's string children.",
+				},
 			],
 		},
 		dataAttributes: [
 			{
 				name: "data-state",
-				description: "Open/closed state of the dropdown.",
+				description:
+					"Open/closed state. Content only renders while open, so it always reads \"open\".",
 				values: '"open" | "closed"',
-				appliesTo: "Trigger",
+				appliesTo: "Trigger, Content",
+			},
+			{
+				name: "data-open",
+				description: "Present on the root while the dropdown is open.",
+				appliesTo: "Root",
+			},
+			{
+				name: "data-placeholder",
+				description: "Present while no option is selected.",
+				appliesTo: "Value",
 			},
 			{
 				name: "data-selected",
@@ -758,14 +859,30 @@ export const components: ComponentData[] = [
 				appliesTo: "Item",
 			},
 			{
-				name: "data-hover",
-				description: "Present when hovering an item.",
+				name: "data-highlighted",
+				description:
+					"Present on the item referenced by aria-activedescendant — the keyboard-highlighted option. Distinct from data-active, which is the pressed state.",
 				appliesTo: "Item",
 			},
 			{
+				name: "data-hover",
+				description: "Present when the pointer is over the element.",
+				appliesTo: "Trigger, Item",
+			},
+			{
+				name: "data-focus-visible",
+				description: "Present on keyboard focus.",
+				appliesTo: "Trigger, Item",
+			},
+			{
+				name: "data-active",
+				description: "Present while the element is pressed.",
+				appliesTo: "Trigger, Item",
+			},
+			{
 				name: "data-disabled",
-				description: "Present when an item is disabled.",
-				appliesTo: "Item",
+				description: "Present when the element is disabled.",
+				appliesTo: "Root, Trigger, Item",
 			},
 		],
 		frameworks: {
@@ -916,6 +1033,28 @@ export const components: ComponentData[] = [
 				description: "Present while results are loading.",
 				appliesTo: "Root",
 			},
+			{
+				name: "data-state",
+				description:
+					"Open/closed state of the results panel. Content only renders while open.",
+				values: '"open" | "closed"',
+				appliesTo: "Content",
+			},
+			{
+				name: "data-hover",
+				description: "Present when the pointer is over the item.",
+				appliesTo: "Item",
+			},
+			{
+				name: "data-focus-visible",
+				description: "Present on keyboard focus.",
+				appliesTo: "Item",
+			},
+			{
+				name: "data-active",
+				description: "Present while the item is pressed.",
+				appliesTo: "Item",
+			},
 		],
 		frameworks: {
 			react: {
@@ -963,34 +1102,92 @@ export const components: ComponentData[] = [
 		description:
 			"Compound autocomplete combining an input with a filterable listbox. Supports async filtering.",
 		isCompound: true,
-		parts: ["Root", "Input", "Trigger", "Content", "Item", "Empty"],
+		parts: ["Root", "Input", "Trigger", "Content", "Items", "Empty"],
 		props: {
 			Root: [
 				{
+					name: "options",
+					type: "ComboboxOption[]",
+					required: true,
+					description:
+						"Available options. ComboboxOption is { value: string; label: string; subtitle?: string; disabled?: boolean }.",
+				},
+				{
 					name: "value",
-					type: "string",
+					type: "string | null",
 					required: false,
-					description: "Controlled selected value.",
+					description: "Controlled selected value. Use null for empty.",
+				},
+				{
+					name: "defaultValue",
+					type: "string | null",
+					required: false,
+					description: "Initial selected value (uncontrolled).",
 				},
 				{
 					name: "onChange",
-					type: "(value: string) => void",
+					type: "(value: string | null, option: ComboboxOption | null) => void",
 					required: false,
-					description: "Called when a selection is made.",
+					description:
+						"Called when the selection changes. Receives both the value and the full option.",
+				},
+				{
+					name: "inputValue",
+					type: "string",
+					required: false,
+					description: "Controlled input text.",
+				},
+				{
+					name: "defaultInputValue",
+					type: "string",
+					required: false,
+					description: "Initial input text (uncontrolled).",
 				},
 				{
 					name: "onInputChange",
-					type: "(query: string) => void",
+					type: "(value: string) => void",
 					required: false,
-					description: "Called when the input text changes.",
+					description: "Called when the user types.",
+				},
+				{
+					name: "filter",
+					type: "(option: ComboboxOption, inputValue: string) => boolean",
+					required: false,
+					description:
+						"Custom filter predicate. Defaults to a case-insensitive label match.",
+				},
+				{
+					name: "open",
+					type: "boolean",
+					required: false,
+					description: "Controlled open state.",
+				},
+				{
+					name: "defaultOpen",
+					type: "boolean",
+					required: false,
+					description: "Initial open state.",
+				},
+				{
+					name: "onOpenChange",
+					type: "(open: boolean) => void",
+					required: false,
+					description: "Called when the open state changes.",
+				},
+				{
+					name: "disabled",
+					type: "boolean",
+					required: false,
+					description: "Disable the entire combobox.",
 				},
 			],
-			Item: [
+			Items: [
 				{
-					name: "value",
-					type: "string",
+					name: "children",
+					type: "(props: { option: ComboboxOption; highlighted: boolean; selected: boolean }) => ReactNode",
 					required: true,
-					description: "Value for this option.",
+					description:
+						"Render prop called once per filtered option. Wire UI renders the row element and its data attributes; you render the inner content.",
 				},
 			],
 		},
@@ -999,38 +1196,48 @@ export const components: ComponentData[] = [
 				name: "data-state",
 				description: "Open/closed state.",
 				values: '"open" | "closed"',
-				appliesTo: "Content",
+				appliesTo: "Root, Content, Empty",
 			},
 			{
 				name: "data-highlighted",
-				description: "Present on the keyboard-highlighted item.",
-				appliesTo: "Item",
+				description: "Present on the keyboard-highlighted row.",
+				appliesTo: "Items row",
 			},
 			{
 				name: "data-selected",
-				description: "Present on the currently selected item.",
-				appliesTo: "Item",
+				description: "Present on the currently selected row.",
+				appliesTo: "Items row",
+			},
+			{
+				name: "data-disabled",
+				description:
+					"Present on the root when disabled, and on any row whose option is disabled.",
+				appliesTo: "Root, Items row",
 			},
 		],
 		frameworks: {
 			react: {
 				importStatement: "import { Combobox } from '@wire-ui/react'",
-				basicExample: `<Combobox.Root value={value} onChange={setValue} onInputChange={setQuery}>
+				basicExample: `<Combobox.Root options={options} value={value} onChange={setValue}>
   <Combobox.Input placeholder="Type to filter..." />
   <Combobox.Trigger>▾</Combobox.Trigger>
   <Combobox.Content>
-    {options.map(o => <Combobox.Item key={o.id} value={o.id}>{o.label}</Combobox.Item>)}
+    <Combobox.Items>
+      {({ option }) => <div>{option.label}</div>}
+    </Combobox.Items>
     <Combobox.Empty>No matches</Combobox.Empty>
   </Combobox.Content>
 </Combobox.Root>`,
 			},
 			solid: {
 				importStatement: "import { Combobox } from '@wire-ui/solid'",
-				basicExample: `<Combobox.Root value={value()} onChange={setValue} onInputChange={setQuery}>
+				basicExample: `<Combobox.Root options={options()} value={value()} onChange={setValue}>
   <Combobox.Input placeholder="Type to filter..." />
   <Combobox.Trigger>▾</Combobox.Trigger>
   <Combobox.Content>
-    <For each={options()}>{(o) => <Combobox.Item value={o.id}>{o.label}</Combobox.Item>}</For>
+    <Combobox.Items>
+      {({ option }) => <div>{option.label}</div>}
+    </Combobox.Items>
     <Combobox.Empty>No matches</Combobox.Empty>
   </Combobox.Content>
 </Combobox.Root>`,
@@ -1038,11 +1245,13 @@ export const components: ComponentData[] = [
 			vue: {
 				importStatement: "import { Combobox } from '@wire-ui/vue'",
 				basicExample: `<template>
-  <Combobox.Root :value="value" @change="value = $event" @input-change="setQuery">
+  <Combobox.Root :options="options" :value="value" @change="value = $event">
     <Combobox.Input placeholder="Type to filter..." />
     <Combobox.Trigger>▾</Combobox.Trigger>
     <Combobox.Content>
-      <Combobox.Item v-for="o in options" :key="o.id" :value="o.id">{{ o.label }}</Combobox.Item>
+      <Combobox.Items v-slot="{ option }">
+        <div>{{ option.label }}</div>
+      </Combobox.Items>
       <Combobox.Empty>No matches</Combobox.Empty>
     </Combobox.Content>
   </Combobox.Root>
@@ -1103,6 +1312,33 @@ export const components: ComponentData[] = [
 					required: false,
 					description:
 						"Disables the field for direct input but still allows the buttons.",
+				},
+				{
+					name: "disabled",
+					type: "boolean",
+					required: false,
+					description: "Disable the field and both stepper buttons.",
+				},
+				{
+					name: "precision",
+					type: "number",
+					required: false,
+					description:
+						"Decimal precision. Defaults to the step's decimal count.",
+				},
+				{
+					name: "locale",
+					type: "string",
+					required: false,
+					description:
+						"BCP 47 locale for number formatting. Falls back to the nearest WireUIProvider, then en-US. Only affects display/parsing when formatOptions is also set.",
+				},
+				{
+					name: "formatOptions",
+					type: "Intl.NumberFormatOptions",
+					required: false,
+					description:
+						"Intl.NumberFormat options. When provided, the committed value is displayed via Intl.NumberFormat(locale, formatOptions) and input is parsed using the locale's separators. When omitted, the raw numeric string is shown.",
 				},
 			],
 		},
@@ -1189,10 +1425,18 @@ export const components: ComponentData[] = [
 					description: "Disables the input.",
 				},
 				{
-					name: "alphanumeric",
-					type: "boolean",
+					name: "pattern",
+					type: '"numeric" | "alphanumeric"',
 					required: false,
-					description: "Allow letters in addition to digits.",
+					description:
+						"Which characters the slots accept. Use \"alphanumeric\" to allow letters as well as digits.",
+					defaultValue: '"numeric"',
+				},
+				{
+					name: "defaultValue",
+					type: "string",
+					required: false,
+					description: "Initial value (uncontrolled).",
 				},
 			],
 			Slot: [
@@ -1208,7 +1452,7 @@ export const components: ComponentData[] = [
 			{
 				name: "data-complete",
 				description: "Present when all slots are filled.",
-				appliesTo: "Root",
+				appliesTo: "Root, Slot",
 			},
 			{
 				name: "data-active",
@@ -1219,6 +1463,11 @@ export const components: ComponentData[] = [
 				name: "data-filled",
 				description: "Present when the slot has a value.",
 				appliesTo: "Slot",
+			},
+			{
+				name: "data-disabled",
+				description: "Present when the input is disabled.",
+				appliesTo: "Root, Slot",
 			},
 		],
 		frameworks: {
@@ -1304,6 +1553,13 @@ export const components: ComponentData[] = [
 					description: "Prevents user interaction.",
 				},
 				{
+					name: "starClassName",
+					type: "string",
+					required: false,
+					description:
+						"Class applied to each individual star button. Named starClass in @wire-ui/solid, which follows Solid's class convention.",
+				},
+				{
 					name: "disabled",
 					type: "boolean",
 					required: false,
@@ -1314,11 +1570,26 @@ export const components: ComponentData[] = [
 		dataAttributes: [
 			{
 				name: "data-filled",
-				description: "Present on stars up to the current value.",
+				description:
+					"Present on stars at or below the selected value. Style with starClassName plus a [data-filled] variant.",
+				appliesTo: "star button",
 			},
 			{
 				name: "data-highlighted",
-				description: "Present on stars up to the hovered value.",
+				description:
+					"Present on stars at or below the current hover value (falls back to the selected value when not hovering).",
+				appliesTo: "star button",
+			},
+			{
+				name: "data-disabled",
+				description: "Present when the rating is disabled.",
+				appliesTo: "root, star button",
+			},
+			{
+				name: "data-readonly",
+				description:
+					'Present when the rating is read-only. The root also switches to role="img" in this mode.',
+				appliesTo: "root",
 			},
 		],
 		frameworks: {
@@ -1429,10 +1700,25 @@ export const components: ComponentData[] = [
 				name: "data-orientation",
 				description: "Reflects the orientation prop.",
 				values: '"horizontal" | "vertical"',
+				appliesTo: "root",
 			},
 			{
 				name: "data-disabled",
 				description: "Present when the slider is disabled.",
+				appliesTo: "root, thumb",
+			},
+			{
+				name: "data-part",
+				description:
+					"Identifies the internal elements the Slider renders for you. Since Slider ships no CSS, these are the hooks you style against — [data-part=track], [data-part=fill], [data-part=thumb].",
+				values: '"track" | "fill" | "thumb"',
+				appliesTo: "track, fill, thumb",
+			},
+			{
+				name: "data-thumb-index",
+				description:
+					"Zero-based index of the thumb. In range mode, 0 is the minimum and 1 the maximum.",
+				appliesTo: "thumb",
 			},
 		],
 		frameworks: {
@@ -1463,7 +1749,7 @@ export const components: ComponentData[] = [
 		description:
 			"Compound token-style input. Enter/comma adds a tag; Backspace removes the last tag.",
 		isCompound: true,
-		parts: ["Root", "List", "Item", "Dismiss", "Input"],
+		parts: ["Root", "List", "Items", "Tag", "Field"],
 		props: {
 			Root: [
 				{
@@ -1476,13 +1762,13 @@ export const components: ComponentData[] = [
 					name: "defaultValue",
 					type: "string[]",
 					required: false,
-					description: "Uncontrolled default tags.",
+					description: "Initial list (uncontrolled).",
 				},
 				{
 					name: "onChange",
-					type: "(tags: string[]) => void",
+					type: "(value: string[]) => void",
 					required: false,
-					description: "Called when the tag list changes.",
+					description: "Called when tags are added or removed.",
 				},
 				{
 					name: "maxTags",
@@ -1491,10 +1777,75 @@ export const components: ComponentData[] = [
 					description: "Maximum number of tags allowed.",
 				},
 				{
+					name: "allowDuplicates",
+					type: "boolean",
+					required: false,
+					description: "Reject duplicate values (case-sensitive) when false.",
+					defaultValue: "true",
+				},
+				{
+					name: "commitKeys",
+					type: "string[]",
+					required: false,
+					description: "Keys that commit the current input as a tag.",
+					defaultValue: "['Enter', ',']",
+				},
+				{
+					name: "validate",
+					type: "(tag: string, current: string[]) => boolean",
+					required: false,
+					description: "Optional validator — return false to reject the tag.",
+				},
+				{
 					name: "disabled",
 					type: "boolean",
 					required: false,
-					description: "Disables tag input.",
+					description: "Disable the field and all remove buttons.",
+				},
+			],
+			Items: [
+				{
+					name: "children",
+					type: "(tag: string, index: number, remove: () => void) => ReactNode",
+					required: true,
+					description:
+						"Render prop called once per tag. Wire the provided remove callback to your chip's dismiss control.",
+				},
+			],
+			Tag: [
+				{
+					name: "label",
+					type: "string",
+					required: true,
+					description:
+						"The tag's text — used for the remove button's accessible name.",
+				},
+				{
+					name: "onRemove",
+					type: "() => void",
+					required: true,
+					description: "Remove this tag. Wire to the remove argument from Items.",
+				},
+				{
+					name: "removeLabel",
+					type: "string",
+					required: false,
+					description:
+						"Override the remove button's accessible name.",
+					defaultValue: '"Remove {label}"',
+				},
+				{
+					name: "removeContent",
+					type: "ReactNode",
+					required: false,
+					description: "Content of the remove button.",
+					defaultValue: '"×"',
+				},
+				{
+					name: "removeClassName",
+					type: "string",
+					required: false,
+					description: "Class applied to the built-in remove button.",
 				},
 			],
 		},
@@ -1504,30 +1855,37 @@ export const components: ComponentData[] = [
 				description: "Present when the input is disabled.",
 				appliesTo: "Root",
 			},
+			{
+				name: "data-taginput-tag",
+				description:
+					"Marks a rendered chip. Used internally to move focus to an adjacent remove button before the current one unmounts.",
+				appliesTo: "Tag",
+			},
+			{
+				name: "data-taginput-remove",
+				description: "Marks the built-in remove button inside a Tag.",
+				appliesTo: "Tag",
+			},
 		],
 		frameworks: {
 			react: {
 				importStatement: "import { TagInput } from '@wire-ui/react'",
 				basicExample: `<TagInput.Root value={tags} onChange={setTags}>
   <TagInput.List>
-    {tags.map(t => (
-      <TagInput.Item key={t} value={t}>
-        {t} <TagInput.Dismiss value={t}>×</TagInput.Dismiss>
-      </TagInput.Item>
-    ))}
+    <TagInput.Items>
+      {(tag, i, remove) => <TagInput.Tag key={i} label={tag} onRemove={remove} />}
+    </TagInput.Items>
   </TagInput.List>
-  <TagInput.Input placeholder="Add tag..." />
+  <TagInput.Field placeholder="Add tag..." />
 </TagInput.Root>`,
 			},
 			solid: {
 				importStatement: "import { TagInput } from '@wire-ui/solid'",
 				basicExample: `<TagInput.Root value={tags()} onChange={setTags}>
   <TagInput.List>
-    <For each={tags()}>{(t) => (
-      <TagInput.Item value={t}>
-        {t} <TagInput.Dismiss value={t}>×</TagInput.Dismiss>
-      </TagInput.Item>
-    )}</For>
+    <TagInput.Items>
+      {(tag, i, remove) => <TagInput.Tag label={tag} onRemove={remove} />}
+    </TagInput.Items>
   </TagInput.List>
   <TagInput.Field placeholder="Add tag..." />
 </TagInput.Root>`,
@@ -1537,11 +1895,11 @@ export const components: ComponentData[] = [
 				basicExample: `<template>
   <TagInput.Root :value="tags" @change="tags = $event">
     <TagInput.List>
-      <TagInput.Item v-for="t in tags" :key="t" :value="t">
-        {{ t }} <TagInput.Dismiss :value="t">×</TagInput.Dismiss>
-      </TagInput.Item>
+      <TagInput.Items v-slot="{ tag, remove }">
+        <TagInput.Tag :label="tag" :on-remove="remove" />
+      </TagInput.Items>
     </TagInput.List>
-    <TagInput.Input placeholder="Add tag..." />
+    <TagInput.Field placeholder="Add tag..." />
   </TagInput.Root>
 </template>`,
 			},
@@ -1554,47 +1912,73 @@ export const components: ComponentData[] = [
 		description:
 			"Compound drag-and-drop file uploader with file list and clear control.",
 		isCompound: true,
-		parts: [
-			"Root",
-			"Input",
-			"Trigger",
-			"Dropzone",
-			"List",
-			"Item",
-			"Clear",
-		],
+		parts: ["Root", "Input", "Trigger", "Dropzone", "Items"],
 		props: {
 			Root: [
+				{
+					name: "value",
+					type: "File[]",
+					required: false,
+					description: "Controlled list of files.",
+				},
+				{
+					name: "defaultValue",
+					type: "File[]",
+					required: false,
+					description: "Initial file list (uncontrolled).",
+				},
 				{
 					name: "accept",
 					type: "string",
 					required: false,
 					description:
-						'MIME types or extensions to accept (e.g. "image/*").',
+						'MIME types or extensions to accept (e.g. "image/*" or ".pdf,.doc").',
 				},
 				{
 					name: "multiple",
 					type: "boolean",
 					required: false,
-					description: "Allow multiple files.",
+					description: "Allow selecting multiple files.",
+				},
+				{
+					name: "maxFiles",
+					type: "number",
+					required: false,
+					description: "Maximum number of files.",
 				},
 				{
 					name: "maxSize",
 					type: "number",
 					required: false,
-					description: "Maximum file size in bytes.",
+					description: "Maximum size per file in bytes.",
 				},
 				{
 					name: "onChange",
 					type: "(files: File[]) => void",
 					required: false,
-					description: "Called when the selected files change.",
+					description: "Called whenever the file list changes.",
+				},
+				{
+					name: "onReject",
+					type: "(rejected: { file: File; reason: 'maxFiles' | 'maxSize' | 'accept' }[]) => void",
+					required: false,
+					description:
+						"Called when files are rejected — too many, too large, or the wrong type.",
 				},
 				{
 					name: "disabled",
 					type: "boolean",
 					required: false,
-					description: "Disables the uploader.",
+					description: "Disable the dropzone and trigger.",
+				},
+			],
+			Items: [
+				{
+					name: "children",
+					type: "(file: File, index: number, remove: () => void) => ReactNode",
+					required: true,
+					description:
+						"Render prop called once per selected file. Wire the provided remove callback to your own remove control.",
 				},
 			],
 		},
@@ -1619,10 +2003,11 @@ export const components: ComponentData[] = [
     Drop files here or <FileUpload.Trigger>browse</FileUpload.Trigger>
   </FileUpload.Dropzone>
   <FileUpload.Input />
-  <FileUpload.List>
-    {files.map(f => <FileUpload.Item key={f.name} file={f}>{f.name}</FileUpload.Item>)}
-  </FileUpload.List>
-  <FileUpload.Clear>Clear all</FileUpload.Clear>
+  <FileUpload.Items>
+    {(file, i, remove) => (
+      <div key={i}>{file.name} <button onClick={remove}>Remove</button></div>
+    )}
+  </FileUpload.Items>
 </FileUpload.Root>`,
 			},
 			solid: {
@@ -1632,19 +2017,24 @@ export const components: ComponentData[] = [
     Drop files here or <FileUpload.Trigger>browse</FileUpload.Trigger>
   </FileUpload.Dropzone>
   <FileUpload.Input />
-  <FileUpload.Items />
+  <FileUpload.Items>
+    {(file, i, remove) => (
+      <div>{file.name} <button onClick={remove}>Remove</button></div>
+    )}
+  </FileUpload.Items>
 </FileUpload.Root>`,
 			},
 			vue: {
 				importStatement: "import { FileUpload } from '@wire-ui/vue'",
 				basicExample: `<template>
   <FileUpload.Root accept="image/*" multiple @change="onChange">
-    <FileUpload.Trigger>Choose files</FileUpload.Trigger>
+    <FileUpload.Dropzone>
+      Drop files here or <FileUpload.Trigger>browse</FileUpload.Trigger>
+    </FileUpload.Dropzone>
     <FileUpload.Input />
-    <FileUpload.List>
-      <FileUpload.Item v-for="f in files" :key="f.name" :file="f">{{ f.name }}</FileUpload.Item>
-    </FileUpload.List>
-    <FileUpload.Clear>Clear</FileUpload.Clear>
+    <FileUpload.Items v-slot="{ file, remove }">
+      <div>{{ file.name }} <button @click="remove">Remove</button></div>
+    </FileUpload.Items>
   </FileUpload.Root>
 </template>`,
 			},
@@ -1747,9 +2137,35 @@ export const components: ComponentData[] = [
 		dataAttributes: [
 			{
 				name: "data-state",
-				description: "Open/closed state of the popover.",
+				description:
+					"Open/closed state of the popover. Content only renders while open, so it always reads \"open\".",
 				values: '"open" | "closed"',
-				appliesTo: "Content",
+				appliesTo: "Root, Trigger, Content",
+			},
+			{
+				name: "data-placeholder",
+				description: "Present while no date is selected.",
+				appliesTo: "Value",
+			},
+			{
+				name: "data-hover",
+				description: "Present when the pointer is over the trigger.",
+				appliesTo: "Trigger",
+			},
+			{
+				name: "data-focus-visible",
+				description: "Present on keyboard focus.",
+				appliesTo: "Trigger",
+			},
+			{
+				name: "data-active",
+				description: "Present while the trigger is pressed.",
+				appliesTo: "Trigger",
+			},
+			{
+				name: "data-disabled",
+				description: "Present when the date picker is disabled.",
+				appliesTo: "Root, Trigger",
 			},
 		],
 		frameworks: {
@@ -1795,106 +2211,136 @@ export const components: ComponentData[] = [
 		name: "Form",
 		category: "form",
 		description:
-			"Compound form container with field-level validation slots, label/control/message parts.",
+			"Compound form container wiring label, control, description, and error together with the right ids and aria-*.",
 		isCompound: true,
-		parts: [
-			"Root",
-			"Field",
-			"Label",
-			"Control",
-			"Message",
-			"Submit",
-			"Description",
-		],
+		parts: ["Root", "Field", "Label", "Control", "Description", "Error"],
 		props: {
-			Root: [
-				{
-					name: "onSubmit",
-					type: "(values: Record<string, any>) => void",
-					required: false,
-					description: "Called when the form is submitted.",
-				},
-			],
+			Root: [],
 			Field: [
 				{
 					name: "name",
 					type: "string",
-					required: true,
-					description: "Field name. Used for value mapping.",
-				},
-				{
-					name: "invalidType",
-					type: "string",
 					required: false,
-					description: "Sets data-invalid when truthy.",
+					description:
+						"Used as the id prefix, and set on the name attribute if Control wraps a native field.",
 				},
 				{
-					name: "isRequired",
+					name: "invalid",
 					type: "boolean",
 					required: false,
-					description: "Marks the field as required.",
+					description:
+						"Marks the whole field as invalid; toggles aria-invalid and data-invalid on the control.",
+				},
+				{
+					name: "required",
+					type: "boolean",
+					required: false,
+					description:
+						"Marks the field as required; toggles aria-required and data-required.",
+				},
+				{
+					name: "disabled",
+					type: "boolean",
+					required: false,
+					description:
+						"Marks the field as disabled; toggles disabled and data-disabled on the control.",
+				},
+			],
+			Label: [
+				{
+					name: "asChild",
+					type: "boolean",
+					required: false,
+					description: "Render a different element instead of <label>.",
+				},
+			],
+			Control: [
+				{
+					name: "children",
+					type: "ReactElement",
+					required: true,
+					description:
+						"A single form control. The Field's id, aria-* and disabled props are merged into it.",
+				},
+			],
+			Error: [
+				{
+					name: "forceMount",
+					type: "boolean",
+					required: false,
+					description:
+						"Render even when the surrounding Field is not invalid.",
 				},
 			],
 		},
 		dataAttributes: [
 			{
 				name: "data-invalid",
-				description: "Present when the field has a validation error.",
-				appliesTo: "Field",
+				description: "Present when the field is invalid.",
+				appliesTo: "Field, Label, Control",
 			},
 			{
 				name: "data-required",
 				description: "Present when the field is required.",
-				appliesTo: "Field",
+				appliesTo: "Field, Label, Control",
 			},
 			{
 				name: "data-disabled",
 				description: "Present when the field is disabled.",
-				appliesTo: "Field",
+				appliesTo: "Field, Label, Control",
 			},
 		],
 		frameworks: {
 			react: {
 				importStatement: "import { Form } from '@wire-ui/react'",
 				basicExample: `<Form.Root onSubmit={onSubmit}>
-  <Form.Field name="email" isRequired>
+  <Form.Field name="email" required invalid={hasError}>
     <Form.Label>Email</Form.Label>
-    <Form.Control asChild>
+    <Form.Control>
       <input type="email" />
     </Form.Control>
-    <Form.Message>Invalid email</Form.Message>
+    <Form.Description>We never share this.</Form.Description>
+    <Form.Error>Invalid email</Form.Error>
   </Form.Field>
-  <Form.Submit>Send</Form.Submit>
+  <button type="submit">Send</button>
 </Form.Root>`,
 			},
 			solid: {
 				importStatement: "import { Form } from '@wire-ui/solid'",
 				basicExample: `<Form.Root onSubmit={onSubmit}>
-  <Form.Field name="email" isRequired>
+  <Form.Field name="email" required invalid={hasError()}>
     <Form.Label>Email</Form.Label>
     <Form.Control>
       <input type="email" />
     </Form.Control>
+    <Form.Description>We never share this.</Form.Description>
     <Form.Error>Invalid email</Form.Error>
   </Form.Field>
+  <button type="submit">Send</button>
 </Form.Root>`,
 			},
 			vue: {
 				importStatement: "import { Form } from '@wire-ui/vue'",
 				basicExample: `<template>
   <Form.Root @submit="onSubmit">
-    <Form.Field name="email" :is-required="true">
+    <Form.Field name="email" required :invalid="hasError">
       <Form.Label>Email</Form.Label>
       <Form.Control>
         <input type="email" />
       </Form.Control>
-      <Form.Message>Invalid email</Form.Message>
+      <Form.Description>We never share this.</Form.Description>
+      <Form.Error>Invalid email</Form.Error>
     </Form.Field>
-    <Form.Submit>Send</Form.Submit>
+    <button type="submit">Send</button>
   </Form.Root>
 </template>`,
 			},
 		},
+		notes: [
+			"There is no Form.Submit part — use a plain <button type=\"submit\">.",
+			"Root is a bare <form>; submission is handled with the native onSubmit event, not a values callback.",
+			"Error renders only when the surrounding Field is invalid, unless forceMount is set.",
+		],
 	},
 
 	// ─── Overlay ────────────────────────────────────────────────────────
@@ -2154,6 +2600,11 @@ export const components: ComponentData[] = [
 				name: "data-state",
 				description: "Open/closed state of the menu.",
 				values: '"open" | "closed"',
+				appliesTo: "Trigger, Menu",
+			},
+			{
+				name: "data-position",
+				description: "Reflects the Menu's position prop.",
 				appliesTo: "Menu",
 			},
 		],
@@ -2252,13 +2703,19 @@ export const components: ComponentData[] = [
 		dataAttributes: [
 			{
 				name: "data-state",
-				description: "Open/closed state.",
+				description:
+					"Open/closed state. Content only renders while open, so it always reads \"open\".",
 				values: '"open" | "closed"',
-				appliesTo: "Content",
+				appliesTo: "Root, Trigger, Content",
 			},
 			{
 				name: "data-highlighted",
 				description: "Present on the keyboard-highlighted item.",
+				appliesTo: "Item",
+			},
+			{
+				name: "data-disabled",
+				description: "Present on a disabled item.",
 				appliesTo: "Item",
 			},
 		],
@@ -2308,9 +2765,9 @@ export const components: ComponentData[] = [
 		name: "Popover",
 		category: "overlay",
 		description:
-			"Compound floating popover anchored to a trigger with configurable side/align. React only.",
+			"Compound floating popover anchored to a trigger with configurable side/align.",
 		isCompound: true,
-		parts: ["Root", "Trigger", "Portal", "Content", "Close"],
+		parts: ["Root", "Trigger", "Content", "Close"],
 		props: {
 			Root: [
 				{
@@ -2320,16 +2777,36 @@ export const components: ComponentData[] = [
 					description: "Controlled open state.",
 				},
 				{
+					name: "defaultOpen",
+					type: "boolean",
+					required: false,
+					description: "Initial open state (uncontrolled).",
+				},
+				{
 					name: "onOpenChange",
 					type: "(open: boolean) => void",
 					required: false,
 					description: "Called when open state changes.",
 				},
+				{
+					name: "closeOnOutsideClick",
+					type: "boolean",
+					required: false,
+					description: "Close the popover when clicking outside the content.",
+					defaultValue: "true",
+				},
+				{
+					name: "closeOnEscape",
+					type: "boolean",
+					required: false,
+					description: "Close the popover when Escape is pressed.",
+					defaultValue: "true",
+				},
 			],
 			Content: [
 				{
 					name: "side",
-					type: '"top" | "bottom" | "left" | "right"',
+					type: '"top" | "right" | "bottom" | "left"',
 					required: false,
 					description: "Preferred side relative to the trigger.",
 					defaultValue: '"bottom"',
@@ -2341,6 +2818,14 @@ export const components: ComponentData[] = [
 					description: "Alignment along the side axis.",
 					defaultValue: '"center"',
 				},
+				{
+					name: "forceMount",
+					type: "boolean",
+					required: false,
+					description:
+						"Keep the content mounted while closed and toggle visibility via data-state and hidden.",
+					defaultValue: "false",
+				},
 			],
 		},
 		dataAttributes: [
@@ -2348,17 +2833,32 @@ export const components: ComponentData[] = [
 				name: "data-state",
 				description: "Open/closed state.",
 				values: '"open" | "closed"',
-				appliesTo: "Content",
+				appliesTo: "Root, Trigger, Content",
 			},
 			{
 				name: "data-side",
-				description: "Resolved side after collision detection.",
+				description: "Side the content is anchored to.",
 				appliesTo: "Content",
 			},
 			{
 				name: "data-align",
-				description: "Resolved alignment.",
+				description: "Alignment along the side axis.",
 				appliesTo: "Content",
+			},
+			{
+				name: "data-hover",
+				description: "Present when the pointer is over the element.",
+				appliesTo: "Trigger, Close",
+			},
+			{
+				name: "data-focus-visible",
+				description: "Present on keyboard focus.",
+				appliesTo: "Trigger, Close",
+			},
+			{
+				name: "data-active",
+				description: "Present while the element is pressed.",
+				appliesTo: "Trigger, Close",
 			},
 		],
 		frameworks: {
@@ -2366,16 +2866,38 @@ export const components: ComponentData[] = [
 				importStatement: "import { Popover } from '@wire-ui/react'",
 				basicExample: `<Popover.Root>
   <Popover.Trigger>Open</Popover.Trigger>
-  <Popover.Portal>
+  <Popover.Content side="bottom" align="start">
+    <p>Hello from a popover</p>
+    <Popover.Close>Dismiss</Popover.Close>
+  </Popover.Content>
+</Popover.Root>`,
+			},
+			solid: {
+				importStatement: "import { Popover } from '@wire-ui/solid'",
+				basicExample: `<Popover.Root>
+  <Popover.Trigger>Open</Popover.Trigger>
+  <Popover.Content side="bottom" align="start">
+    <p>Hello from a popover</p>
+    <Popover.Close>Dismiss</Popover.Close>
+  </Popover.Content>
+</Popover.Root>`,
+			},
+			vue: {
+				importStatement: "import { Popover } from '@wire-ui/vue'",
+				basicExample: `<template>
+  <Popover.Root>
+    <Popover.Trigger>Open</Popover.Trigger>
     <Popover.Content side="bottom" align="start">
       <p>Hello from a popover</p>
       <Popover.Close>Dismiss</Popover.Close>
     </Popover.Content>
-  </Popover.Portal>
-</Popover.Root>`,
+  </Popover.Root>
+</template>`,
 			},
 		},
-		notes: ["Popover is only available in @wire-ui/react."],
+		notes: [
+			"There is no Popover.Portal part — Content renders in place. Position it with your own CSS.",
+		],
 	},
 
 	{
@@ -2387,6 +2909,24 @@ export const components: ComponentData[] = [
 		parts: ["Root", "Trigger", "Content"],
 		props: {
 			Root: [
+				{
+					name: "open",
+					type: "boolean",
+					required: false,
+					description: "Controlled open state.",
+				},
+				{
+					name: "defaultOpen",
+					type: "boolean",
+					required: false,
+					description: "Initial open state (uncontrolled).",
+				},
+				{
+					name: "onOpenChange",
+					type: "(open: boolean) => void",
+					required: false,
+					description: "Called when the open state changes.",
+				},
 				{
 					name: "delayDuration",
 					type: "number",
@@ -2450,7 +2990,7 @@ export const components: ComponentData[] = [
 
 	{
 		name: "Accordion",
-		category: "overlay",
+		category: "layout",
 		description:
 			"Compound collapsible sections supporting single or multiple open items.",
 		isCompound: true,
@@ -2476,6 +3016,12 @@ export const components: ComponentData[] = [
 					required: false,
 					description: "Initially open item value(s).",
 				},
+				{
+					name: "disabled",
+					type: "boolean",
+					required: false,
+					description: "Disables all items.",
+				},
 			],
 			Item: [
 				{
@@ -2483,6 +3029,21 @@ export const components: ComponentData[] = [
 					type: "string",
 					required: true,
 					description: "Unique value identifying this item.",
+				},
+				{
+					name: "disabled",
+					type: "boolean",
+					required: false,
+					description: "Disables this item only.",
+				},
+			],
+			Content: [
+				{
+					name: "forceMount",
+					type: "boolean",
+					required: false,
+					description:
+						"Keep content mounted in the DOM even when closed (useful for CSS animations).",
 				},
 			],
 		},
@@ -2492,6 +3053,12 @@ export const components: ComponentData[] = [
 				description: "Open/closed state.",
 				values: '"open" | "closed"',
 				appliesTo: "Item, Trigger, Content",
+			},
+			{
+				name: "data-disabled",
+				description:
+					"Present when the item is disabled, either via Item.disabled or the Root's disabled set.",
+				appliesTo: "Item, Trigger",
 			},
 		],
 		frameworks: {
@@ -2535,15 +3102,32 @@ export const components: ComponentData[] = [
 		description:
 			"Compound hierarchical navigation trail. Items mark themselves as data-current when active.",
 		isCompound: true,
-		parts: ["Root", "List", "Item", "Link", "Separator", "Ellipsis"],
+		parts: ["Root", "List", "Item", "Link", "Separator"],
 		props: {
+			Root: [
+				{
+					name: "aria-label",
+					type: "string",
+					required: false,
+					description: "Accessible label for the navigation landmark.",
+					defaultValue: '"Breadcrumb"',
+				},
+			],
 			Item: [
 				{
-					name: "isCurrent",
+					name: "current",
 					type: "boolean",
 					required: false,
 					description:
-						'Marks the item as the current page (aria-current="page").',
+						'Marks this item as the current page (sets aria-current="page" and data-current).',
+				},
+			],
+			Link: [
+				{
+					name: "asChild",
+					type: "boolean",
+					required: false,
+					description: "Render a different element instead of <a>.",
 				},
 			],
 		},
@@ -2564,7 +3148,7 @@ export const components: ComponentData[] = [
     <Breadcrumb.Separator>/</Breadcrumb.Separator>
     <Breadcrumb.Item><Breadcrumb.Link href="/docs">Docs</Breadcrumb.Link></Breadcrumb.Item>
     <Breadcrumb.Separator>/</Breadcrumb.Separator>
-    <Breadcrumb.Item isCurrent>Components</Breadcrumb.Item>
+    <Breadcrumb.Item current>Components</Breadcrumb.Item>
   </Breadcrumb.List>
 </Breadcrumb.Root>`,
 			},
@@ -2574,7 +3158,7 @@ export const components: ComponentData[] = [
   <Breadcrumb.List>
     <Breadcrumb.Item><Breadcrumb.Link href="/">Home</Breadcrumb.Link></Breadcrumb.Item>
     <Breadcrumb.Separator>/</Breadcrumb.Separator>
-    <Breadcrumb.Item isCurrent>Components</Breadcrumb.Item>
+    <Breadcrumb.Item current>Components</Breadcrumb.Item>
   </Breadcrumb.List>
 </Breadcrumb.Root>`,
 			},
@@ -2585,7 +3169,7 @@ export const components: ComponentData[] = [
     <Breadcrumb.List>
       <Breadcrumb.Item><Breadcrumb.Link href="/">Home</Breadcrumb.Link></Breadcrumb.Item>
       <Breadcrumb.Separator>/</Breadcrumb.Separator>
-      <Breadcrumb.Item :is-current="true">Components</Breadcrumb.Item>
+      <Breadcrumb.Item current>Components</Breadcrumb.Item>
     </Breadcrumb.List>
   </Breadcrumb.Root>
 </template>`,
@@ -2597,13 +3181,13 @@ export const components: ComponentData[] = [
 		name: "Pagination",
 		category: "navigation",
 		description:
-			"Compound page navigation with first/prev/next/last and ellipsis items.",
+			"Compound page navigation. The Root computes the page/ellipsis sequence; Items emits it via a render prop.",
 		isCompound: true,
 		parts: [
 			"Root",
 			"List",
+			"Items",
 			"Item",
-			"Button",
 			"Previous",
 			"Next",
 			"Ellipsis",
@@ -2611,35 +3195,67 @@ export const components: ComponentData[] = [
 		props: {
 			Root: [
 				{
+					name: "totalPages",
+					type: "number",
+					required: true,
+					description: "Total number of pages (>= 1).",
+				},
+				{
 					name: "page",
 					type: "number",
 					required: false,
-					description: "Controlled current page (1-indexed).",
+					description: "Controlled current page (1-based).",
 				},
 				{
 					name: "defaultPage",
 					type: "number",
 					required: false,
-					description: "Uncontrolled default page.",
+					description: "Initial page (1-based, uncontrolled).",
 				},
 				{
-					name: "onPageChange",
+					name: "onChange",
 					type: "(page: number) => void",
 					required: false,
 					description: "Called when the page changes.",
-				},
-				{
-					name: "total",
-					type: "number",
-					required: true,
-					description: "Total number of pages.",
 				},
 				{
 					name: "siblingCount",
 					type: "number",
 					required: false,
 					description:
-						"Number of page buttons to show on either side of the current page.",
+						"How many sibling pages to show on each side of the current page.",
+					defaultValue: "1",
+				},
+				{
+					name: "boundaryCount",
+					type: "number",
+					required: false,
+					description:
+						"How many pages to always show at the start and end.",
+					defaultValue: "1",
+				},
+			],
+			Items: [
+				{
+					name: "children",
+					type: "(item: number | 'ellipsis', index: number) => ReactNode",
+					required: true,
+					description:
+						"Render prop called once per computed entry. Branch on the 'ellipsis' literal to render a gap.",
+				},
+			],
+			Item: [
+				{
+					name: "page",
+					type: "number",
+					required: true,
+					description: "Page number (1-based).",
+				},
+				{
+					name: "disabled",
+					type: "boolean",
+					required: false,
+					description: "Disable the button.",
 				},
 			],
 		},
@@ -2653,35 +3269,71 @@ export const components: ComponentData[] = [
 		frameworks: {
 			react: {
 				importStatement: "import { Pagination } from '@wire-ui/react'",
-				basicExample: `<Pagination.Root page={page} onPageChange={setPage} total={20}>
+				basicExample: `<Pagination.Root totalPages={20} page={page} onChange={setPage}>
   <Pagination.List>
-    <Pagination.Previous>‹</Pagination.Previous>
-    <Pagination.Item value={1}>1</Pagination.Item>
-    <Pagination.Ellipsis />
-    <Pagination.Item value={10}>10</Pagination.Item>
-    <Pagination.Next>›</Pagination.Next>
+    <li><Pagination.Previous>‹</Pagination.Previous></li>
+    <Pagination.Items>
+      {(item, i) =>
+        item === 'ellipsis' ? (
+          <Pagination.Ellipsis key={\`e-\${i}\`} />
+        ) : (
+          <Pagination.Item key={item} page={item}>{item}</Pagination.Item>
+        )
+      }
+    </Pagination.Items>
+    <li><Pagination.Next>›</Pagination.Next></li>
   </Pagination.List>
 </Pagination.Root>`,
 			},
 			solid: {
-				importStatement:
-					"import { Pagination, getPaginationItems } from '@wire-ui/solid'",
-				basicExample: `<Pagination page={page()} onPageChange={setPage} total={20} />`,
+				importStatement: "import { Pagination } from '@wire-ui/solid'",
+				basicExample: `<Pagination.Root totalPages={20} page={page()} onChange={setPage}>
+  <Pagination.List>
+    <li><Pagination.Previous>‹</Pagination.Previous></li>
+    <Pagination.Items>
+      {(item) =>
+        item === 'ellipsis' ? (
+          <Pagination.Ellipsis />
+        ) : (
+          <Pagination.Item page={item}>{item}</Pagination.Item>
+        )
+      }
+    </Pagination.Items>
+    <li><Pagination.Next>›</Pagination.Next></li>
+  </Pagination.List>
+</Pagination.Root>`,
 			},
 			vue: {
 				importStatement: "import { Pagination } from '@wire-ui/vue'",
 				basicExample: `<template>
-  <Pagination :page="page" @page-change="page = $event" :total="20" />
+  <Pagination.Root :total-pages="20" :page="page" @change="page = $event">
+    <Pagination.List>
+      <li><Pagination.Previous>‹</Pagination.Previous></li>
+      <Pagination.Items v-slot="{ item }">
+        <Pagination.Ellipsis v-if="item === 'ellipsis'" />
+        <Pagination.Item
+          v-else
+          :page="item">
+          {{ item }}
+        </Pagination.Item>
+      </Pagination.Items>
+      <li><Pagination.Next>›</Pagination.Next></li>
+    </Pagination.List>
+  </Pagination.Root>
 </template>`,
 			},
 		},
+		notes: [
+			"Previous/Next/Ellipsis render inline — wrap them in your own <li> inside List, which renders a <ul>.",
+			"Item takes page, not value. The page-change callback is onChange, not onPageChange.",
+		],
 	},
 
 	{
 		name: "Tabs",
 		category: "navigation",
 		description:
-			"Compound tab list with keyboard arrow navigation. React only.",
+			"Compound tab list with roving-tabindex keyboard arrow navigation.",
 		isCompound: true,
 		parts: ["Root", "List", "Trigger", "Content"],
 		props: {
@@ -2696,10 +3348,10 @@ export const components: ComponentData[] = [
 					name: "defaultValue",
 					type: "string",
 					required: false,
-					description: "Uncontrolled default value.",
+					description: "Initial active tab value (uncontrolled).",
 				},
 				{
-					name: "onValueChange",
+					name: "onChange",
 					type: "(value: string) => void",
 					required: false,
 					description: "Called when the active tab changes.",
@@ -2708,8 +3360,17 @@ export const components: ComponentData[] = [
 					name: "orientation",
 					type: '"horizontal" | "vertical"',
 					required: false,
-					description: "Tab list orientation.",
+					description:
+						"Layout orientation; controls which arrow keys move between tabs.",
 					defaultValue: '"horizontal"',
+				},
+				{
+					name: "activationMode",
+					type: '"automatic" | "manual"',
+					required: false,
+					description:
+						'"automatic" activates a trigger on focus; "manual" requires Enter/Space.',
+					defaultValue: '"automatic"',
 				},
 			],
 			Trigger: [
@@ -2719,6 +3380,12 @@ export const components: ComponentData[] = [
 					required: true,
 					description: "Identifier matching the Content.value.",
 				},
+				{
+					name: "disabled",
+					type: "boolean",
+					required: false,
+					description: "Disable this tab.",
+				},
 			],
 			Content: [
 				{
@@ -2726,6 +3393,14 @@ export const components: ComponentData[] = [
 					type: "string",
 					required: true,
 					description: "Identifier matching the Trigger.value.",
+				},
+				{
+					name: "forceMount",
+					type: "boolean",
+					required: false,
+					description:
+						"Keep the panel mounted while inactive and toggle visibility via data-state and hidden.",
+					defaultValue: "false",
 				},
 			],
 		},
@@ -2741,6 +3416,26 @@ export const components: ComponentData[] = [
 				description: "Reflects the orientation prop.",
 				appliesTo: "Root, List, Trigger, Content",
 			},
+			{
+				name: "data-disabled",
+				description: "Present when the trigger is disabled.",
+				appliesTo: "Trigger",
+			},
+			{
+				name: "data-hover",
+				description: "Present when the pointer is over the trigger.",
+				appliesTo: "Trigger",
+			},
+			{
+				name: "data-focus-visible",
+				description: "Present on keyboard focus.",
+				appliesTo: "Trigger",
+			},
+			{
+				name: "data-active",
+				description: "Present while the trigger is pressed.",
+				appliesTo: "Trigger",
+			},
 		],
 		frameworks: {
 			react: {
@@ -2754,8 +3449,35 @@ export const components: ComponentData[] = [
   <Tabs.Content value="b">Panel B</Tabs.Content>
 </Tabs.Root>`,
 			},
+			solid: {
+				importStatement: "import { Tabs } from '@wire-ui/solid'",
+				basicExample: `<Tabs.Root defaultValue="a">
+  <Tabs.List>
+    <Tabs.Trigger value="a">Tab A</Tabs.Trigger>
+    <Tabs.Trigger value="b">Tab B</Tabs.Trigger>
+  </Tabs.List>
+  <Tabs.Content value="a">Panel A</Tabs.Content>
+  <Tabs.Content value="b">Panel B</Tabs.Content>
+</Tabs.Root>`,
+			},
+			vue: {
+				importStatement: "import { Tabs } from '@wire-ui/vue'",
+				basicExample: `<template>
+  <Tabs.Root default-value="a">
+    <Tabs.List>
+      <Tabs.Trigger value="a">Tab A</Tabs.Trigger>
+      <Tabs.Trigger value="b">Tab B</Tabs.Trigger>
+    </Tabs.List>
+    <Tabs.Content value="a">Panel A</Tabs.Content>
+    <Tabs.Content value="b">Panel B</Tabs.Content>
+  </Tabs.Root>
+</template>`,
+			},
 		},
-		notes: ["Tabs is only available in @wire-ui/react."],
+		notes: [
+			"The change callback is named onChange, not onValueChange.",
+			"Content unmounts when inactive unless forceMount is set.",
+		],
 	},
 
 	{
@@ -2768,10 +3490,53 @@ export const components: ComponentData[] = [
 		props: {
 			Root: [
 				{
+					name: "value",
+					type: "string | null",
+					required: false,
+					description: "Controlled open item value.",
+				},
+				{
+					name: "defaultValue",
+					type: "string | null",
+					required: false,
+					description: "Initial open item (uncontrolled).",
+				},
+				{
+					name: "onValueChange",
+					type: "(value: string | null) => void",
+					required: false,
+					description: "Called when the open item changes.",
+				},
+				{
 					name: "delayDuration",
 					type: "number",
 					required: false,
 					description: "Delay in ms before opening on hover.",
+				},
+				{
+					name: "skipDelayDuration",
+					type: "number",
+					required: false,
+					description:
+						"Time in ms the user has to move from trigger to content before it closes.",
+					defaultValue: "300",
+				},
+			],
+			Item: [
+				{
+					name: "value",
+					type: "string",
+					required: false,
+					description:
+						"Unique identifier for this item. Required only if it has Trigger/Content children.",
+				},
+			],
+			Trigger: [
+				{
+					name: "disabled",
+					type: "boolean",
+					required: false,
+					description: "Disables the trigger.",
 				},
 			],
 			Link: [
@@ -2855,18 +3620,44 @@ export const components: ComponentData[] = [
 		description:
 			"Compound horizontal application menu with cascading submenus and arrow-key navigation.",
 		isCompound: true,
-		parts: [
-			"Root",
-			"Menu",
-			"Trigger",
-			"Content",
-			"Item",
-			"Separator",
-			"Sub",
-			"SubTrigger",
-			"SubContent",
-		],
+		parts: ["Root", "Menu", "Trigger", "Content", "Item", "Separator"],
 		props: {
+			Root: [
+				{
+					name: "value",
+					type: "string | null",
+					required: false,
+					description: "Controlled id of the open menu.",
+				},
+				{
+					name: "defaultValue",
+					type: "string | null",
+					required: false,
+					description: "Initial open menu (uncontrolled).",
+				},
+				{
+					name: "onValueChange",
+					type: "(value: string | null) => void",
+					required: false,
+					description: "Called when the open menu changes.",
+				},
+			],
+			Menu: [
+				{
+					name: "value",
+					type: "string",
+					required: true,
+					description: "Unique id for this menu, matched against Root's value.",
+				},
+			],
+			Trigger: [
+				{
+					name: "disabled",
+					type: "boolean",
+					required: false,
+					description: "Disables the trigger.",
+				},
+			],
 			Item: [
 				{
 					name: "onSelect",
@@ -2887,25 +3678,30 @@ export const components: ComponentData[] = [
 				name: "data-state",
 				description: "Open/closed state.",
 				values: '"open" | "closed"',
-				appliesTo: "Content, SubContent",
+				appliesTo: "Trigger, Content",
+			},
+			{
+				name: "data-menu-value",
+				description: "The owning menu's value, mirrored onto the trigger.",
+				appliesTo: "Trigger",
+			},
+			{
+				name: "data-disabled",
+				description: "Present when the item is disabled.",
+				appliesTo: "Item",
 			},
 		],
 		frameworks: {
 			react: {
 				importStatement: "import { MenuBar } from '@wire-ui/react'",
 				basicExample: `<MenuBar.Root>
-  <MenuBar.Menu>
+  <MenuBar.Menu value="file">
     <MenuBar.Trigger>File</MenuBar.Trigger>
     <MenuBar.Content>
       <MenuBar.Item onSelect={newDoc}>New</MenuBar.Item>
       <MenuBar.Item onSelect={openDoc}>Open</MenuBar.Item>
       <MenuBar.Separator />
-      <MenuBar.Sub>
-        <MenuBar.SubTrigger>Recent</MenuBar.SubTrigger>
-        <MenuBar.SubContent>
-          <MenuBar.Item>file-a.md</MenuBar.Item>
-        </MenuBar.SubContent>
-      </MenuBar.Sub>
+      <MenuBar.Item disabled>Revert</MenuBar.Item>
     </MenuBar.Content>
   </MenuBar.Menu>
 </MenuBar.Root>`,
@@ -2913,7 +3709,7 @@ export const components: ComponentData[] = [
 			solid: {
 				importStatement: "import { MenuBar } from '@wire-ui/solid'",
 				basicExample: `<MenuBar.Root>
-  <MenuBar.Menu>
+  <MenuBar.Menu value="file">
     <MenuBar.Trigger>File</MenuBar.Trigger>
     <MenuBar.Content>
       <MenuBar.Item onSelect={newDoc}>New</MenuBar.Item>
@@ -2927,7 +3723,7 @@ export const components: ComponentData[] = [
 				importStatement: "import { MenuBar } from '@wire-ui/vue'",
 				basicExample: `<template>
   <MenuBar.Root>
-    <MenuBar.Menu>
+    <MenuBar.Menu value="file">
       <MenuBar.Trigger>File</MenuBar.Trigger>
       <MenuBar.Content>
         <MenuBar.Item @select="newDoc">New</MenuBar.Item>
@@ -2939,6 +3735,10 @@ export const components: ComponentData[] = [
 </template>`,
 			},
 		},
+		notes: [
+			"There are no Sub/SubTrigger/SubContent parts — MenuBar is a single level of menus. Nest a Dropdown inside Content for cascading menus.",
+			"Menu.value is required and identifies the menu to Root's controlled value.",
+		],
 	},
 
 	// ─── Display ────────────────────────────────────────────────────────
@@ -3012,6 +3812,12 @@ export const components: ComponentData[] = [
 				values: '"on" | "off"',
 				appliesTo: "Toggle",
 			},
+			{
+				name: "data-toolbar-item",
+				description:
+					"Marks every focusable toolbar item. Style all items uniformly with a single [data-toolbar-item] rule.",
+				appliesTo: "Button, Toggle, Link",
+			},
 		],
 		frameworks: {
 			react: {
@@ -3080,14 +3886,23 @@ export const components: ComponentData[] = [
 						"Automatically dismiss the alert after a duration.",
 				},
 				{
-					name: "dismissDuration",
+					name: "dismissCountdown",
 					type: "number",
 					required: false,
-					description: "Duration in ms before auto-dismiss.",
+					description:
+						"Milliseconds before auto-dismiss fires (only used when isAutoDismissable is set).",
+					defaultValue: "3000",
 				},
 			],
 		},
 		dataAttributes: [
+			{
+				name: "data-part",
+				description:
+					"Identifies the Title and Description elements — [data-part=title], [data-part=description].",
+				values: '"title" | "description"',
+				appliesTo: "Title, Description",
+			},
 			{
 				name: "data-status",
 				description: "Reflects the status prop.",
@@ -3147,6 +3962,16 @@ export const components: ComponentData[] = [
 					type: "string",
 					required: true,
 					description: "Alt text for the image.",
+				},
+			],
+			Fallback: [
+				{
+					name: "delayMs",
+					type: "number",
+					required: false,
+					description:
+						"Delay in ms before the fallback becomes visible. Avoids a flash of the fallback during fast image loads.",
+					defaultValue: "0",
 				},
 			],
 		},
@@ -3306,20 +4131,80 @@ export const components: ComponentData[] = [
 					description: "Called when the selected date changes.",
 				},
 				{
-					name: "min",
+					name: "minDate",
 					type: "Date",
 					required: false,
-					description: "Minimum selectable date.",
+					description: "Earliest selectable date.",
 				},
 				{
-					name: "max",
+					name: "maxDate",
 					type: "Date",
 					required: false,
-					description: "Maximum selectable date.",
+					description: "Latest selectable date.",
+				},
+				{
+					name: "defaultMonth",
+					type: "Date",
+					required: false,
+					description:
+						"Initial month displayed (uncontrolled). Defaults to today.",
+				},
+				{
+					name: "month",
+					type: "Date",
+					required: false,
+					description: "Controlled month displayed.",
+				},
+				{
+					name: "onMonthChange",
+					type: "(month: Date) => void",
+					required: false,
+					description: "Called when the visible month changes.",
+				},
+				{
+					name: "isDateDisabled",
+					type: "(date: Date) => boolean",
+					required: false,
+					description: "Custom predicate to disable specific dates.",
+				},
+				{
+					name: "weekStartsOn",
+					type: "WeekStart",
+					required: false,
+					description: "First day of the week. 0 = Sunday, 1 = Monday, …",
+					defaultValue: "0",
+				},
+				{
+					name: "locale",
+					type: "string",
+					required: false,
+					description: "Locale for month and weekday names.",
+					defaultValue: '"en-US"',
+				},
+			],
+			Grid: [
+				{
+					name: "renderDay",
+					type: "(day: CalendarDay) => ReactNode",
+					required: false,
+					description:
+						"Render prop for each day cell. Receives the date and its render-state.",
+				},
+				{
+					name: "renderWeekday",
+					type: "(weekday: CalendarWeekday) => ReactNode",
+					required: false,
+					description: "Render prop for the weekday header row.",
 				},
 			],
 		},
 		dataAttributes: [
+			{
+				name: "data-date",
+				description:
+					"The day's date as an ISO yyyy-mm-dd string. Also the hook the Grid uses to move focus between days, so keep it intact if you re-render cells.",
+				appliesTo: "day",
+			},
 			{
 				name: "data-selected",
 				description: "Present on the selected day.",
@@ -3383,37 +4268,67 @@ export const components: ComponentData[] = [
 		name: "TreeView",
 		category: "display",
 		description:
-			"Compound hierarchical disclosure tree with keyboard navigation and single/multi-select.",
-		isCompound: true,
-		parts: ["Root", "Item", "Trigger", "Content", "Label"],
+			"Data-driven hierarchical tree with keyboard navigation, roving tabindex, and single/multi-select. Rows come from a nodes array plus a renderItem render prop.",
+		isCompound: false,
+		parts: ["Root"],
 		props: {
 			Root: [
 				{
-					name: "selectionMode",
-					type: '"single" | "multiple"',
-					required: false,
-					description: "Selection model.",
-					defaultValue: '"single"',
+					name: "nodes",
+					type: "TreeNode[]",
+					required: true,
+					description:
+						"Tree data. TreeNode is { id: string; label?: ReactNode; children?: TreeNode[]; disabled?: boolean; data?: T }.",
 				},
 				{
-					name: "value",
-					type: "string | string[]",
-					required: false,
-					description: "Controlled selected item id(s).",
+					name: "renderItem",
+					type: "(node: TreeNode, state: TreeItemState) => ReactNode",
+					required: true,
+					description:
+						"Render prop for each visible row. TreeItemState is { level, expanded, selected, hasChildren, disabled, toggle, select }. Wire UI renders the treeitem wrapper and its data attributes.",
 				},
 				{
-					name: "expandedValues",
+					name: "expanded",
 					type: "string[]",
 					required: false,
-					description: "Controlled expanded item ids.",
+					description: "Controlled expanded node ids.",
 				},
-			],
-			Item: [
 				{
-					name: "value",
-					type: "string",
-					required: true,
-					description: "Unique identifier for the item.",
+					name: "defaultExpanded",
+					type: "string[]",
+					required: false,
+					description: "Initial expanded ids (uncontrolled).",
+				},
+				{
+					name: "onExpandedChange",
+					type: "(expanded: string[]) => void",
+					required: false,
+					description: "Called when the expanded set changes.",
+				},
+				{
+					name: "selectionMode",
+					type: '"none" | "single" | "multiple"',
+					required: false,
+					description: "Selection behaviour.",
+					defaultValue: '"none"',
+				},
+				{
+					name: "selected",
+					type: "string[]",
+					required: false,
+					description: "Controlled selection.",
+				},
+				{
+					name: "defaultSelected",
+					type: "string[]",
+					required: false,
+					description: "Initial selection (uncontrolled).",
+				},
+				{
+					name: "onSelectionChange",
+					type: "(selected: string[]) => void",
+					required: false,
+					description: "Called when selection changes.",
 				},
 			],
 		},
@@ -3422,62 +4337,108 @@ export const components: ComponentData[] = [
 				name: "data-state",
 				description: "Expanded/collapsed state.",
 				values: '"open" | "closed"',
-				appliesTo: "Item",
+				appliesTo: "treeitem row",
 			},
 			{
 				name: "data-selected",
-				description: "Present on the selected item.",
-				appliesTo: "Item",
+				description: "Present on a selected row.",
+				appliesTo: "treeitem row",
+			},
+			{
+				name: "data-disabled",
+				description: "Present on a disabled row.",
+				appliesTo: "treeitem row",
 			},
 			{
 				name: "data-level",
-				description: "Numeric nesting level starting at 0.",
-				appliesTo: "Item",
+				description: "Numeric nesting level, starting at 1.",
+				appliesTo: "treeitem row",
 			},
 			{
 				name: "data-has-children",
-				description: "Present on parent nodes.",
-				appliesTo: "Item",
+				description: "Present on rows that have children.",
+				appliesTo: "treeitem row",
+			},
+			{
+				name: "data-id",
+				description: "The node's id, used for focus management.",
+				appliesTo: "treeitem row",
+			},
+			{
+				name: "data-tree-toggle",
+				description:
+					"Put this on your own expand/collapse control inside renderItem. Clicks on it are excluded from row selection.",
+				appliesTo: "consumer-rendered toggle",
 			},
 		],
 		frameworks: {
 			react: {
 				importStatement: "import { TreeView } from '@wire-ui/react'",
-				basicExample: `<TreeView.Root>
-  <TreeView.Item value="src">
-    <TreeView.Trigger>src</TreeView.Trigger>
-    <TreeView.Content>
-      <TreeView.Item value="src/index.ts">
-        <TreeView.Label>index.ts</TreeView.Label>
-      </TreeView.Item>
-    </TreeView.Content>
-  </TreeView.Item>
-</TreeView.Root>`,
+				basicExample: `const nodes = [
+  { id: 'src', label: 'src', children: [{ id: 'src/index.ts', label: 'index.ts' }] },
+];
+
+<TreeView.Root
+  nodes={nodes}
+  defaultExpanded={['src']}
+  selectionMode="single"
+  renderItem={(node, state) => (
+    <div style={{ paddingLeft: (state.level - 1) * 16 }}>
+      {state.hasChildren && (
+        <button data-tree-toggle onClick={(e) => { e.stopPropagation(); state.toggle(); }}>
+          {state.expanded ? '▾' : '▸'}
+        </button>
+      )}
+      <span>{node.label}</span>
+    </div>
+  )}
+/>`,
 			},
 			solid: {
 				importStatement: "import { TreeView } from '@wire-ui/solid'",
-				basicExample: `<TreeView.Root>
-  <TreeView.Item value="src" label="src">
-    <TreeView.Item value="src/index.ts" label="index.ts" />
-  </TreeView.Item>
-</TreeView.Root>`,
+				basicExample: `<TreeView.Root
+  nodes={nodes}
+  defaultExpanded={['src']}
+  selectionMode="single"
+  renderItem={(node, state) => (
+    <div style={{ 'padding-left': \`\${(state.level - 1) * 16}px\` }}>
+      {state.hasChildren && (
+        <button data-tree-toggle onClick={(e) => { e.stopPropagation(); state.toggle(); }}>
+          {state.expanded ? '▾' : '▸'}
+        </button>
+      )}
+      <span>{node.label}</span>
+    </div>
+  )}
+/>`,
 			},
 			vue: {
 				importStatement: "import { TreeView } from '@wire-ui/vue'",
 				basicExample: `<template>
-  <TreeView.Root>
-    <TreeView.Item value="src">
-      <TreeView.Trigger>src</TreeView.Trigger>
-      <TreeView.Content>
-        <TreeView.Item value="src/index.ts">
-          <TreeView.Label>index.ts</TreeView.Label>
-        </TreeView.Item>
-      </TreeView.Content>
-    </TreeView.Item>
+  <TreeView.Root
+    :nodes="nodes"
+    :default-expanded="['src']"
+    selection-mode="single"
+    v-slot="{ node, state }">
+    <div :style="{ paddingLeft: \`\${(state.level - 1) * 16}px\` }">
+      <button
+        v-if="state.hasChildren"
+        data-tree-toggle
+        @click.stop="state.toggle()">
+        {{ state.expanded ? '▾' : '▸' }}
+      </button>
+      <span>{{ node.label }}</span>
+    </div>
   </TreeView.Root>
 </template>`,
 			},
 		},
+		notes: [
+			"TreeView is not a compound component — the only part is Root. There are no Item/Trigger/Content/Label parts.",
+			"Rows are driven by the nodes array; you render each row's contents via renderItem (Vue: the default slot).",
+			"data-level starts at 1 for top-level nodes.",
+			"Put data-tree-toggle on your expand control so its clicks don't also select the row.",
+		],
 	},
 
 	{
@@ -3490,40 +4451,56 @@ export const components: ComponentData[] = [
 		props: {
 			Root: [
 				{
-					name: "color",
+					name: "disabled",
+					type: "boolean",
+					required: false,
+					description:
+						"Disabled state: removes interaction and applies data-disabled.",
+				},
+			],
+			Remove: [
+				{
+					name: "aria-label",
 					type: "string",
 					required: false,
-					description: "Sets data-color attribute.",
-				},
-				{
-					name: "size",
-					type: "string",
-					required: false,
-					description: "Sets data-size attribute.",
-				},
-				{
-					name: "onRemove",
-					type: "() => void",
-					required: false,
-					description: "Called when the remove button is clicked.",
+					description: "Accessible label for the remove button.",
+					defaultValue: '"Remove"',
 				},
 			],
 		},
 		dataAttributes: [
-			{ name: "data-color", description: "Reflects the color prop." },
-			{ name: "data-size", description: "Reflects the size prop." },
+			{
+				name: "data-disabled",
+				description: "Present when the tag is disabled.",
+				appliesTo: "Root",
+			},
+			{
+				name: "data-hover",
+				description: "Present when the pointer is over the remove button.",
+				appliesTo: "Remove",
+			},
+			{
+				name: "data-focus-visible",
+				description: "Present on keyboard focus.",
+				appliesTo: "Remove",
+			},
+			{
+				name: "data-active",
+				description: "Present while the remove button is pressed.",
+				appliesTo: "Remove",
+			},
 		],
 		frameworks: {
 			react: {
 				importStatement: "import { Tag } from '@wire-ui/react'",
-				basicExample: `<Tag.Root color="blue">
+				basicExample: `<Tag.Root>
   <Tag.Label>Frontend</Tag.Label>
   <Tag.Remove onClick={onRemove}>×</Tag.Remove>
 </Tag.Root>`,
 			},
 			solid: {
 				importStatement: "import { Tag } from '@wire-ui/solid'",
-				basicExample: `<Tag.Root color="blue">
+				basicExample: `<Tag.Root>
   <Tag.Label>Frontend</Tag.Label>
   <Tag.Remove onClick={onRemove}>×</Tag.Remove>
 </Tag.Root>`,
@@ -3531,7 +4508,10 @@ export const components: ComponentData[] = [
 			vue: {
 				importStatement: "import { Tag } from '@wire-ui/vue'",
 				basicExample: `<template>
-  <Tag color="blue" @remove="onRemove">Frontend</Tag>
+  <Tag.Root>
+    <Tag.Label>Frontend</Tag.Label>
+    <Tag.Remove @click="onRemove">×</Tag.Remove>
+  </Tag.Root>
 </template>`,
 			},
 		},
@@ -3553,29 +4533,23 @@ export const components: ComponentData[] = [
 					description: "Current progress percentage.",
 				},
 				{
-					name: "value",
-					type: "number",
+					name: "size",
+					type: "string",
 					required: false,
-					description: "Current progress value.",
-				},
-				{
-					name: "min",
-					type: "number",
-					required: false,
-					description: "Minimum value.",
-					defaultValue: "0",
-				},
-				{
-					name: "max",
-					type: "number",
-					required: false,
-					description: "Maximum value.",
-					defaultValue: "100",
+					description: "Size of the progress bar; reflected as data-size.",
+					defaultValue: '"medium"',
 				},
 			],
 		},
 		dataAttributes: [
-			{ name: "data-size", description: "Reflects size prop." },
+			{ name: "data-size", description: "Reflects the size prop." },
+			{
+				name: "data-part",
+				description:
+					"Identifies the fill element the ProgressBar renders for you. Style the filled portion with [data-part=fill].",
+				values: '"fill"',
+				appliesTo: "fill",
+			},
 		],
 		frameworks: {
 			react: {
@@ -3599,46 +4573,56 @@ export const components: ComponentData[] = [
 		name: "Spinner",
 		category: "feedback",
 		description:
-			'Animated 12-dot loading spinner with role="status" and aria-label="Loading".',
+			'Accessible loading-status wrapper. Announces via role="status" and aria-live="polite"; you supply the visual indicator as children.',
 		isCompound: false,
 		parts: [],
 		props: {
 			Spinner: [
 				{
-					name: "size",
-					type: '"small" | "medium" | "large"',
-					required: false,
-					description: "Spinner size.",
-					defaultValue: '"medium"',
-				},
-				{
-					name: "color",
+					name: "label",
 					type: "string",
 					required: false,
 					description:
-						"Color for the spinner dots, exposed as the --spinner-color CSS var.",
+						"Accessible label announced to screen readers. Also rendered in a visually-hidden span.",
+					defaultValue: '"Loading"',
+				},
+				{
+					name: "decorative",
+					type: "boolean",
+					required: false,
+					description:
+						"Hides the visual children from screen readers (the label is still announced).",
+					defaultValue: "true",
 				},
 			],
 		},
-		dataAttributes: [
-			{ name: "data-size", description: "Reflects size prop." },
-		],
+		dataAttributes: [],
 		frameworks: {
 			react: {
 				importStatement: "import { Spinner } from '@wire-ui/react'",
-				basicExample: `<Spinner size="medium" />`,
+				basicExample: `<Spinner label="Loading results">
+  <MySpinnerGraphic />
+</Spinner>`,
 			},
 			solid: {
 				importStatement: "import { Spinner } from '@wire-ui/solid'",
-				basicExample: `<Spinner size="medium" />`,
+				basicExample: `<Spinner label="Loading results">
+  <MySpinnerGraphic />
+</Spinner>`,
 			},
 			vue: {
 				importStatement: "import { Spinner } from '@wire-ui/vue'",
 				basicExample: `<template>
-  <Spinner size="medium" />
+  <Spinner label="Loading results">
+    <MySpinnerGraphic />
+  </Spinner>
 </template>`,
 			},
 		},
+		notes: [
+			"Spinner ships no animation, no dots, and no CSS — it is an accessibility wrapper. Render your own visual indicator as children.",
+			"There are no size or color props and no data-* attributes; style the children directly.",
+		],
 	},
 
 	{
@@ -3650,7 +4634,7 @@ export const components: ComponentData[] = [
 		props: {
 			Skeleton: [
 				{
-					name: "isLoading",
+					name: "loading",
 					type: "boolean",
 					required: false,
 					description:
@@ -3665,13 +4649,13 @@ export const components: ComponentData[] = [
 		frameworks: {
 			react: {
 				importStatement: "import { Skeleton } from '@wire-ui/react'",
-				basicExample: `<Skeleton isLoading={loading}>
+				basicExample: `<Skeleton loading={loading}>
   <p>{data}</p>
 </Skeleton>`,
 			},
 			solid: {
 				importStatement: "import { Skeleton } from '@wire-ui/solid'",
-				basicExample: `<Skeleton isLoading={loading()}>
+				basicExample: `<Skeleton loading={loading()}>
   <p>{data()}</p>
 </Skeleton>`,
 			},
@@ -3692,36 +4676,33 @@ export const components: ComponentData[] = [
 		description:
 			"Compound notification system with provider, viewport, and imperative toast() API.",
 		isCompound: true,
-		parts: [
-			"Provider",
-			"Viewport",
-			"Root",
-			"Title",
-			"Description",
-			"Action",
-			"Close",
-		],
+		parts: ["Provider", "Viewport", "Root", "Title", "Description", "Close"],
 		props: {
 			Provider: [
 				{
-					name: "duration",
+					name: "defaultDuration",
 					type: "number",
 					required: false,
-					description: "Default auto-dismiss duration (ms).",
+					description:
+						"Default auto-dismiss duration in ms, applied to toasts that don't specify one.",
+					defaultValue: "5000",
 				},
+			],
+			Viewport: [
 				{
-					name: "position",
-					type: '"top-left" | "top-right" | "bottom-left" | "bottom-right"',
-					required: false,
-					description: "Viewport position.",
+					name: "children",
+					type: "(toast: ToastData, dismiss: () => void) => ReactNode",
+					required: true,
+					description:
+						"Render prop called once per queued toast. You render the toast body; Wire UI owns the queue and timers.",
 				},
 			],
 		},
 		dataAttributes: [
 			{
 				name: "data-status",
-				description:
-					'Reflects status (e.g. "success" | "error" | "info").',
+				description: "Reflects the toast's status.",
+				values: '"default" | "success" | "warning" | "danger" | "info"',
 				appliesTo: "Root",
 			},
 		],
@@ -3729,10 +4710,18 @@ export const components: ComponentData[] = [
 			react: {
 				importStatement:
 					"import { Toast, useToast } from '@wire-ui/react'",
-				basicExample: `// Root: wrap your app
-<Toast.Provider>
+				basicExample: `// Wrap your app
+<Toast.Provider defaultDuration={5000}>
   <App />
-  <Toast.Viewport />
+  <Toast.Viewport>
+    {(t, dismiss) => (
+      <Toast.Root key={t.id}>
+        <Toast.Title>{t.title}</Toast.Title>
+        <Toast.Description>{t.description}</Toast.Description>
+        <Toast.Close onClick={dismiss}>×</Toast.Close>
+      </Toast.Root>
+    )}
+  </Toast.Viewport>
 </Toast.Provider>
 
 // In a component
@@ -3742,9 +4731,16 @@ toast({ title: 'Saved', status: 'success' });`,
 			solid: {
 				importStatement:
 					"import { Toast, useToast } from '@wire-ui/solid'",
-				basicExample: `<Toast.Provider>
+				basicExample: `<Toast.Provider defaultDuration={5000}>
   <App />
-  <Toast.Viewport />
+  <Toast.Viewport>
+    {(t, dismiss) => (
+      <Toast.Root>
+        <Toast.Title>{t.title}</Toast.Title>
+        <Toast.Close onClick={dismiss}>×</Toast.Close>
+      </Toast.Root>
+    )}
+  </Toast.Viewport>
 </Toast.Provider>
 
 const { toast } = useToast();
@@ -3754,9 +4750,14 @@ toast({ title: 'Saved', status: 'success' });`,
 				importStatement:
 					"import { Toast, useToast } from '@wire-ui/vue'",
 				basicExample: `<template>
-  <Toast.Provider>
+  <Toast.Provider :default-duration="5000">
     <App />
-    <Toast.Viewport />
+    <Toast.Viewport v-slot="{ toast: t, dismiss }">
+      <Toast.Root>
+        <Toast.Title>{{ t.title }}</Toast.Title>
+        <Toast.Close @click="dismiss">×</Toast.Close>
+      </Toast.Root>
+    </Toast.Viewport>
   </Toast.Provider>
 </template>
 
@@ -3768,8 +4769,10 @@ toast({ title: 'Saved', status: 'success' });
 		},
 		notes: [
 			"Toast.Provider must wrap any component that calls useToast.",
-			"Use the imperative toast() API for one-shot notifications.",
-			"Each toast's auto-dismiss timer uses [[timeout]] (useTimeout / createTimeout) internally — no behavior change.",
+			"There is no Toast.Action part — render your own action button inside the Viewport render prop.",
+			"Viewport takes a required render prop, not children elements: (toast, dismiss) => ReactNode.",
+			"useToast() returns { toast, dismiss, toasts }. toast() accepts { title, description, status, duration, pauseOnHover, data } and returns the new toast's id.",
+			"A toast with duration <= 0 is persistent. Each toast's auto-dismiss timer uses [[timeout]] internally.",
 		],
 	},
 
@@ -3810,6 +4813,13 @@ toast({ title: 'Saved', status: 'success' });
 		},
 		dataAttributes: [
 			{
+				name: "data-part",
+				description:
+					"Identifies the elements Image renders for you — [data-part=loader] for the placeholder shown before load, [data-part=image] for the <img>.",
+				values: '"loader" | "image"',
+				appliesTo: "loader, img",
+			},
+			{
 				name: "data-position",
 				description: "Reflects the position prop value.",
 				appliesTo: "wrapper",
@@ -3848,28 +4858,38 @@ toast({ title: 'Saved', status: 'success' });
 		props: {
 			Icon: [
 				{
-					name: "name",
-					type: "string",
+					name: "type",
+					type: "IconName",
 					required: true,
-					description: "Icon name to look up in the icons map.",
+					description:
+						"The icon name that matches an SVG asset. This is the selector prop — it is named type, not name.",
 				},
 				{
 					name: "icons",
-					type: "Record<string, string>",
-					required: true,
+					type: "Partial<Record<IconName, string>>",
+					required: false,
 					description: "Map of icon names to SVG markup strings.",
 				},
 				{
 					name: "size",
+					type: "IconSize",
+					required: false,
+					description: "Icon size preset; reflected as data-size.",
+				},
+				{
+					name: "label",
 					type: "string",
 					required: false,
-					description:
-						'Icon size preset (e.g. "small", "medium", "large").',
+					description: "Accessible label for the icon.",
 				},
 			],
 		},
 		dataAttributes: [
 			{ name: "data-size", description: "Reflects the size prop." },
+			{
+				name: "data-name",
+				description: "Reflects the icon's type prop — the icon's name.",
+			},
 		],
 		frameworks: {
 			react: {
@@ -3917,6 +4937,33 @@ toast({ title: 'Saved', status: 'success' });
 					required: false,
 					description: "Show only the time portion.",
 				},
+				{
+					name: "isLive",
+					type: "boolean",
+					required: false,
+					description: "Enable live updates on an interval.",
+				},
+				{
+					name: "locale",
+					type: "string",
+					required: false,
+					description:
+						"BCP 47 locale for relative-time and date-name formatting via Intl. Falls back to the nearest WireUIProvider, then en-US. Ignored when an explicit format override is supplied.",
+				},
+				{
+					name: "format",
+					type: "TimeagoFormatConfig",
+					required: false,
+					description:
+						"Custom format configuration. When supplied, it fully overrides the locale-aware Intl formatting (legacy template behaviour).",
+				},
+				{
+					name: "pluralize",
+					type: "(n: number) => TimeagoPlural",
+					required: false,
+					description:
+						"Determines the pluralisation form. Only used together with format.",
+				},
 			],
 		},
 		dataAttributes: [],
@@ -3938,6 +4985,7 @@ toast({ title: 'Saved', status: 'success' });
 		},
 		notes: [
 			"The periodic re-render uses [[interval]] (useInterval / createInterval) internally — no behavior change.",
+			"@wire-ui/vue sets a data-tick attribute on the <time> element to force the re-render on each tick. It is a Vue implementation detail, not part of the contract — do not style or assert against it.",
 		],
 	},
 
@@ -3969,7 +5017,14 @@ toast({ title: 'Saved', status: 'success' });
 				},
 			],
 		},
-		dataAttributes: [],
+		dataAttributes: [
+			{
+				name: "data-orientation",
+				description:
+					"Reflects the orientation prop. Divider ships no CSS, so this is the hook you size against — e.g. [data-orientation=horizontal] { width: 100%; height: 1px }.",
+				values: '"horizontal" | "vertical"',
+			},
+		],
 		frameworks: {
 			react: {
 				importStatement: "import { Divider } from '@wire-ui/react'",
@@ -4002,6 +5057,18 @@ toast({ title: 'Saved', status: 'success' });
 					required: false,
 					description: "Render as <ol> instead of <ul>.",
 					defaultValue: "false",
+				},
+				{
+					name: "type",
+					type: "string",
+					required: false,
+					description: "Visual style type of the list.",
+				},
+				{
+					name: "size",
+					type: "string",
+					required: false,
+					description: "Size of the list items.",
 				},
 			],
 		},
@@ -4057,7 +5124,12 @@ toast({ title: 'Saved', status: 'success' });
 				},
 			],
 		},
-		dataAttributes: [],
+		dataAttributes: [
+			{
+				name: "data-ratio",
+				description: "Reflects the numeric ratio prop.",
+			},
+		],
 		frameworks: {
 			react: {
 				importStatement: "import { AspectRatio } from '@wire-ui/react'",
@@ -4088,21 +5160,34 @@ toast({ title: 'Saved', status: 'success' });
 		description:
 			"Compound split-pane layout with resizable panels separated by draggable handles.",
 		isCompound: true,
-		parts: ["Root", "Panel", "Handle"],
+		parts: ["Group", "Panel", "Handle"],
 		props: {
-			Root: [
+			Group: [
 				{
-					name: "direction",
+					name: "orientation",
 					type: '"horizontal" | "vertical"',
 					required: false,
-					description: "Direction the panels split along.",
+					description: "Axis the panels split along.",
 					defaultValue: '"horizontal"',
+				},
+				{
+					name: "sizes",
+					type: "number[]",
+					required: false,
+					description:
+						"Controlled sizes as percentages summing to ~100. One per Panel.",
+				},
+				{
+					name: "defaultSizes",
+					type: "number[]",
+					required: false,
+					description: "Initial sizes (uncontrolled).",
 				},
 				{
 					name: "onSizesChange",
 					type: "(sizes: number[]) => void",
 					required: false,
-					description: "Called when panel sizes change.",
+					description: "Called whenever sizes change.",
 				},
 			],
 			Panel: [
@@ -4110,7 +5195,7 @@ toast({ title: 'Saved', status: 'success' });
 					name: "defaultSize",
 					type: "number",
 					required: false,
-					description: "Initial size in percent.",
+					description: "Default size in percent of the group.",
 				},
 				{
 					name: "minSize",
@@ -4125,19 +5210,42 @@ toast({ title: 'Saved', status: 'success' });
 					description: "Maximum size in percent.",
 				},
 			],
+			Handle: [
+				{
+					name: "disabled",
+					type: "boolean",
+					required: false,
+					description: "Disable resizing on this handle.",
+				},
+			],
 		},
 		dataAttributes: [
 			{
 				name: "data-orientation",
-				description: "Reflects direction.",
-				appliesTo: "Root, Handle",
+				description: "Reflects the group's orientation.",
+				appliesTo: "Group, Panel, Handle",
+			},
+			{
+				name: "data-panel",
+				description: "Marks a panel element.",
+				appliesTo: "Panel",
+			},
+			{
+				name: "data-handle",
+				description: "Marks a drag handle element.",
+				appliesTo: "Handle",
+			},
+			{
+				name: "data-disabled",
+				description: "Present when the handle cannot be dragged.",
+				appliesTo: "Handle",
 			},
 		],
 		frameworks: {
 			react: {
 				importStatement:
 					"import { ResizablePanels } from '@wire-ui/react'",
-				basicExample: `<ResizablePanels.Root direction="horizontal">
+				basicExample: `<ResizablePanels.Group orientation="horizontal">
   <ResizablePanels.Panel defaultSize={30} minSize={20}>
     Sidebar
   </ResizablePanels.Panel>
@@ -4145,12 +5253,12 @@ toast({ title: 'Saved', status: 'success' });
   <ResizablePanels.Panel defaultSize={70}>
     Content
   </ResizablePanels.Panel>
-</ResizablePanels.Root>`,
+</ResizablePanels.Group>`,
 			},
 			solid: {
 				importStatement:
 					"import { ResizablePanels } from '@wire-ui/solid'",
-				basicExample: `<ResizablePanels.Group direction="horizontal">
+				basicExample: `<ResizablePanels.Group orientation="horizontal">
   <ResizablePanels.Panel defaultSize={30} minSize={20}>
     Sidebar
   </ResizablePanels.Panel>
@@ -4164,7 +5272,7 @@ toast({ title: 'Saved', status: 'success' });
 				importStatement:
 					"import { ResizablePanels } from '@wire-ui/vue'",
 				basicExample: `<template>
-  <ResizablePanels.Root direction="horizontal">
+  <ResizablePanels.Group orientation="horizontal">
     <ResizablePanels.Panel :default-size="30" :min-size="20">
       Sidebar
     </ResizablePanels.Panel>
@@ -4172,10 +5280,13 @@ toast({ title: 'Saved', status: 'success' });
     <ResizablePanels.Panel :default-size="70">
       Content
     </ResizablePanels.Panel>
-  </ResizablePanels.Root>
+  </ResizablePanels.Group>
 </template>`,
 			},
 		},
+		notes: [
+			"The container part is Group, not Root, and the axis prop is orientation, not direction.",
+		],
 	},
 
 	// ─── 0.4.0 components ───────────────────────────────────────────────
@@ -4248,6 +5359,11 @@ toast({ title: 'Saved', status: 'success' });
 				appliesTo: "Viewport",
 			},
 			{
+				name: "data-carousel-content",
+				description: "Marks the track element that holds the slides.",
+				appliesTo: "Content",
+			},
+			{
 				name: "data-carousel-slide",
 				description: "Marks an individual slide.",
 				appliesTo: "Slide",
@@ -4273,6 +5389,7 @@ toast({ title: 'Saved', status: 'success' });
 		notes: [
 			"Carousel.Indicators requires a render-prop child that is invoked once per slide.",
 			"Slide tracking is derived from the Viewport's scroll position; make the Viewport focusable (tabIndex={0}) to enable arrow-key navigation.",
+			"@wire-ui/vue wraps Indicators in a <div data-carousel-indicators style=\"display: contents\"> because the render-prop needs a host element; React and Solid emit a bare fragment. Do not style against data-carousel-indicators — it is not part of the cross-framework contract.",
 		],
 	},
 
@@ -4397,6 +5514,18 @@ toast({ title: 'Saved', status: 'success' });
 			],
 		},
 		dataAttributes: [
+			{
+				name: "data-chat-item",
+				description:
+					"Marks each virtualised row wrapper the List renders around your message.",
+				appliesTo: "List row",
+			},
+			{
+				name: "data-chat-list-sizer",
+				description:
+					"Marks the spacer element that gives the virtualised List its total scroll height.",
+				appliesTo: "List",
+			},
 			{
 				name: "data-role",
 				description: "Identifies the message sender.",
@@ -4717,6 +5846,21 @@ toast({ title: 'Saved', status: 'success' });
 				description: "Marks the swatch element.",
 				appliesTo: "Swatch",
 			},
+			{
+				name: "data-color-picker-area-thumb",
+				description: "Marks the saturation/value thumb element.",
+				appliesTo: "AreaThumb",
+			},
+			{
+				name: "data-color-picker-hue-thumb",
+				description: "Marks the hue thumb element.",
+				appliesTo: "HueThumb",
+			},
+			{
+				name: "data-color-picker-alpha-thumb",
+				description: "Marks the alpha thumb element.",
+				appliesTo: "AlphaThumb",
+			},
 		],
 		frameworks: {
 			react: {
@@ -4857,6 +6001,12 @@ toast({ title: 'Saved', status: 'success' });
 		},
 		dataAttributes: [
 			{
+				name: "data-command-root",
+				description:
+					"Marks the Command root element. A stable styling/testing hook, since Command ships no classes of its own.",
+				appliesTo: "Root",
+			},
+			{
 				name: "data-command-group-heading",
 				description: "Marks the group's heading element.",
 				appliesTo: "Group",
@@ -4953,6 +6103,16 @@ toast({ title: 'Saved', status: 'success' });
 				description: "Identifies the view layout wrapper.",
 				values: '"unified" | "split"',
 				appliesTo: "Unified, Split",
+			},
+			{
+				name: "data-diff-line",
+				description: "Marks a single line row in unified view.",
+				appliesTo: "Unified",
+			},
+			{
+				name: "data-diff-row",
+				description: "Marks a paired old/new row in split view.",
+				appliesTo: "Split",
 			},
 			{
 				name: "data-type",
@@ -5449,6 +6609,7 @@ toast({ title: 'Saved', status: 'success' });
 			"Provide either nodes (pre-parsed) or content; when content is given without parse, it renders as a single paragraph.",
 			"Node shape mirrors mdast (remark's AST); unknown node types fall back to rendering their children.",
 			"Default renderers emit semantic HTML with zero styling; pass a components map to override per node type.",
+			"@wire-ui/vue wraps plain text nodes in <span data-text> because its renderer needs a keyed element; React and Solid emit bare text. Do not style against data-text — it is not part of the cross-framework contract.",
 		],
 	},
 
@@ -5677,6 +6838,7 @@ toast({ title: 'Saved', status: 'success' });
 			"Action wraps the current selection or inserts text at the caret; pass wrap as a single string for symmetric markers or a [before, after] tuple (e.g. ['[', '](url)']).",
 			"Editor renders nothing in 'preview' mode; Preview renders nothing in 'edit' mode; in 'split' mode both are shown.",
 			"Provide a parse function (wrap remark/marked) and optional components overrides for the Preview, which is rendered via the Markdown component.",
+			"Preview delegates rendering to Markdown, so the markdown node attributes (data-inline, data-language, data-checked, data-task) appear inside Preview too — see the Markdown entry.",
 		],
 	},
 
@@ -5707,6 +6869,16 @@ toast({ title: 'Saved', status: 'success' });
 			],
 		},
 		dataAttributes: [
+			{
+				name: "data-scroll-area-scrollbar",
+				description: "Marks a scrollbar track element.",
+				appliesTo: "Scrollbar",
+			},
+			{
+				name: "data-scroll-area-thumb",
+				description: "Marks a scrollbar thumb element.",
+				appliesTo: "Thumb",
+			},
 			{
 				name: "data-scroll-area-viewport",
 				description: "Marks the scrollable viewport element.",
@@ -5866,6 +7038,12 @@ toast({ title: 'Saved', status: 'success' });
 				description:
 					"Present while the sheet is being dragged; useful to disable transitions mid-drag.",
 				appliesTo: "Content",
+			},
+			{
+				name: "data-sheet-handle",
+				description:
+					"Marks the drag handle element — the grab target for swipe-to-dismiss and snap-point dragging.",
+				appliesTo: "Handle",
 			},
 		],
 		frameworks: {
@@ -6348,7 +7526,15 @@ toast({ title: 'Saved', status: 'success' });
 				},
 			],
 		},
-		dataAttributes: [],
+		dataAttributes: [
+			{
+				name: "data-state",
+				description:
+					"Whether the reveal is still running. Note the values are typing/done, not the usual open/closed pair.",
+				values: '"typing" | "done"',
+				appliesTo: "Root, Text, Cursor",
+			},
+		],
 		frameworks: {
 			react: {
 				importStatement: "import { Typewriter } from '@wire-ui/react'",
@@ -6434,9 +7620,20 @@ toast({ title: 'Saved', status: 'success' });
 				appliesTo: "Root",
 			},
 			{
+				name: "data-virtualizer-sizer",
+				description:
+					"Marks the spacer element that gives the scroll container its full virtual height/width.",
+				appliesTo: "Root",
+			},
+			{
+				name: "data-virtual-item",
+				description: "Marks each rendered (windowed) item wrapper.",
+				appliesTo: "item",
+			},
+			{
 				name: "data-index",
 				description: "Index of each rendered (windowed) item.",
-				appliesTo: "Root",
+				appliesTo: "item",
 			},
 		],
 		frameworks: {

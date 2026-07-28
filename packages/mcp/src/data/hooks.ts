@@ -120,7 +120,7 @@ return <div ref={ref} />;`,
 		category: "state",
 		description:
 			"SSR-safe id generator with optional prefix. Stable between server and client.",
-		signature: "(prefix?: string) => string",
+		signature: "(prefix?: string, staticId?: string) => string",
 		returns: "A unique id string.",
 		frameworks: {
 			react: {
@@ -493,27 +493,35 @@ const { width, height } = useResizeObserver(el);`,
 		canonicalName: "debounce",
 		category: "timing",
 		description:
-			"Debounces a callback. Returns { execute, cancel, flush } so you can manually cancel pending invocations.",
-		signature: "(callback, delay) => { execute, cancel, flush }",
+			"Debounces a VALUE — returns the input value, updated only after `delay` ms have passed without a change. Use for derived state that drives expensive work (network requests, filters). To debounce a function, use debounced-callback instead.",
+		signature: "<T>(value: T, delay: number) => T",
+		returns:
+			"The debounced value. React returns it directly; Vue returns a Ref<T>; Solid returns an Accessor<T>.",
 		frameworks: {
 			react: {
 				name: "useDebounce",
 				importStatement: "import { useDebounce } from '@wire-ui/react'",
-				basicExample: `const { execute, cancel } = useDebounce((q) => search(q), 300);
-return <input onChange={(e) => execute(e.target.value)} />;`,
+				basicExample: `const debouncedQuery = useDebounce(query, 250);
+useEffect(() => { search(debouncedQuery); }, [debouncedQuery]);`,
 			},
 			solid: {
 				name: "createDebounce",
 				importStatement:
 					"import { createDebounce } from '@wire-ui/solid'",
-				basicExample: `const { execute, cancel } = createDebounce((q) => search(q), 300);`,
+				basicExample: `const debouncedQuery = createDebounce(query, 250);
+createEffect(() => search(debouncedQuery()));`,
 			},
 			vue: {
 				name: "useDebounce",
 				importStatement: "import { useDebounce } from '@wire-ui/vue'",
-				basicExample: `const { execute, cancel } = useDebounce((q) => search(q), 300);`,
+				basicExample: `const debouncedQuery = useDebounce(query, 250);
+watch(debouncedQuery, (q) => search(q));`,
 			},
 		},
+		notes: [
+			"This does NOT return { execute, cancel, flush } — it returns the debounced value itself.",
+			"Vue accepts a MaybeRefOrGetter source; Solid accepts an Accessor.",
+		],
 	},
 
 	{
@@ -547,27 +555,33 @@ return <input onChange={(e) => execute(e.target.value)} />;`,
 	{
 		canonicalName: "throttle",
 		category: "timing",
-		description: "Throttles a callback. Supports leading/trailing options.",
-		signature:
-			"(callback, delay, options?: { leading?, trailing? }) => { execute, cancel }",
+		description:
+			"Throttles a VALUE — returns the input value, updated at most once per `delay` ms. To throttle a function, use throttled-callback instead.",
+		signature: "<T>(value: T, delay: number) => T",
+		returns:
+			"The throttled value. React returns it directly; Vue returns a Ref<T>; Solid returns an Accessor<T>.",
 		frameworks: {
 			react: {
 				name: "useThrottle",
 				importStatement: "import { useThrottle } from '@wire-ui/react'",
-				basicExample: `const { execute } = useThrottle((y) => track(y), 100);`,
+				basicExample: `const throttledY = useThrottle(scrollY, 100);`,
 			},
 			solid: {
 				name: "createThrottle",
 				importStatement:
 					"import { createThrottle } from '@wire-ui/solid'",
-				basicExample: `const { execute } = createThrottle((y) => track(y), 100);`,
+				basicExample: `const throttledY = createThrottle(scrollY, 100);`,
 			},
 			vue: {
 				name: "useThrottle",
 				importStatement: "import { useThrottle } from '@wire-ui/vue'",
-				basicExample: `const { execute } = useThrottle((y) => track(y), 100);`,
+				basicExample: `const throttledY = useThrottle(scrollY, 100);`,
 			},
 		},
+		notes: [
+			"This does NOT return { execute, cancel } and takes no leading/trailing options — it returns the throttled value itself.",
+			"Vue accepts a MaybeRefOrGetter source; Solid accepts an Accessor.",
+		],
 	},
 
 	{
@@ -1154,6 +1168,73 @@ useEventListener('click', onClick, buttonRef);`,
 		},
 		notes: [
 			"React-only. Vue and Solid have no equivalent SSR layout-effect hazard, so they don't ship this primitive.",
+		],
+	},
+
+	{
+		canonicalName: "direction",
+		category: "dom",
+		description:
+			"Resolves an element's text direction (ltr/rtl). Ships as a reactive hook for render-time reads plus two synchronous helpers, getDirection and isRtl, for event-time reads.",
+		signature: "(el) => Direction  //  'ltr' | 'rtl'",
+		returns:
+			"The reactive form returns the current direction (React: a value; Vue: a Ref; Solid: an Accessor). getDirection/isRtl return a plain value.",
+		frameworks: {
+			react: {
+				name: "useDirection",
+				importStatement:
+					"import { useDirection, getDirection, isRtl } from '@wire-ui/react'",
+				basicExample: `const ref = useRef<HTMLDivElement>(null);
+const dir = useDirection(ref);
+const style = { insetInlineStart: dir === 'rtl' ? \`\${100 - pct}%\` : \`\${pct}%\` };
+
+// Event-time reads — no state, always current:
+function onKeyDown(e: React.KeyboardEvent) {
+  const rtl = isRtl(e.currentTarget);
+}`,
+			},
+			solid: {
+				name: "createDirection",
+				importStatement:
+					"import { createDirection, getDirection, isRtl } from '@wire-ui/solid'",
+				basicExample: `let track: HTMLDivElement | undefined;
+const dir = createDirection(() => track);
+const style = () => ({ insetInlineStart: dir() === 'rtl' ? \`\${100 - pct}%\` : \`\${pct}%\` });`,
+			},
+			vue: {
+				name: "useDirection",
+				importStatement:
+					"import { useDirection, getDirection, isRtl } from '@wire-ui/vue'",
+				basicExample: `const track = ref<HTMLElement | null>(null);
+const dir = useDirection(track);
+// dir.value === 'rtl'`,
+			},
+		},
+		notes: [
+			"Resolution order: the nearest ancestor carrying a dir attribute wins, then the computed direction style. Defaults to 'ltr' on the server.",
+			"Use getDirection/isRtl inside event handlers (pointer math, arrow keys) where the value must be correct at the moment of interaction; use the reactive form for values consumed during render.",
+			"The reactive form observes dir attribute changes on the nearest direction host via MutationObserver, so a later flip is picked up.",
+		],
+	},
+
+	{
+		canonicalName: "is-mounted",
+		category: "state",
+		description:
+			"Tracks whether the component has mounted on the client. False during server render and the first hydration render, then true.",
+		signature: "() => Readonly<Ref<boolean>>",
+		returns: "A readonly ref that flips to true after mount.",
+		frameworks: {
+			vue: {
+				name: "useIsMounted",
+				importStatement: "import { useIsMounted } from '@wire-ui/vue'",
+				basicExample: `const mounted = useIsMounted();
+// <Teleport v-if="mounted" to="body">…</Teleport>`,
+			},
+		},
+		notes: [
+			"Vue-only. Use it to gate client-only output — most importantly <Teleport> — so server markup and the first client render agree and hydration stays mismatch-free.",
+			"Not exported from @wire-ui/react or @wire-ui/solid.",
 		],
 	},
 ];

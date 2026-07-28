@@ -27,6 +27,11 @@ function scoreComponent(
 		}
 		for (const attr of component.dataAttributes) {
 			if (attr.name.toLowerCase().includes(token)) score += 2;
+			if (attr.description.toLowerCase().includes(token)) score += 1;
+			// `values` carries the named data-state enum ("open" | "closed"), which
+			// is often what a consumer actually searches for.
+			if (attr.values?.toLowerCase().includes(token)) score += 2;
+			if (attr.appliesTo?.toLowerCase().includes(token)) score += 1;
 		}
 		if (component.notes) {
 			for (const note of component.notes) {
@@ -54,6 +59,20 @@ function scoreHook(
 		if (hook.category.includes(token)) score += 3;
 		if (hook.signature && hook.signature.toLowerCase().includes(token))
 			score += 2;
+		if (hook.returns?.toLowerCase().includes(token)) score += 1;
+		if (hook.notes) {
+			for (const note of hook.notes) {
+				if (note.toLowerCase().includes(token)) score += 1;
+			}
+		}
+		// Sibling helpers (getDirection, isRtl) live in the import statement rather
+		// than `name`, so index it too or they are unsearchable.
+		if (
+			hook.frameworks[framework]?.importStatement
+				.toLowerCase()
+				.includes(token)
+		)
+			score += 4;
 	}
 
 	return score;
