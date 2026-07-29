@@ -78,6 +78,7 @@ function toMetadata(component: ComponentData): ComponentMetadata {
 		description: component.description,
 		isCompound: component.isCompound,
 		parts: component.parts,
+		contextOnlyParts: component.contextOnlyParts ?? [],
 		dataAttributes,
 		dataStateValues: dataState?.values ?? [],
 		props: component.props,

@@ -49,6 +49,12 @@ export interface ComponentMetadata {
 	isCompound: boolean;
 	/** Compound part names in authored order, e.g. `["Root", "Item", ...]`. */
 	parts: string[];
+	/**
+	 * Parts that render no DOM element — context providers, portals, render-prop
+	 * passthroughs. Styling props written on them are silently dropped. Empty
+	 * when every part renders markup.
+	 */
+	contextOnlyParts: string[];
 	/** All `data-*` attributes the component exposes, with parsed value enums. */
 	dataAttributes: DataAttributeMetadata[];
 	/**
