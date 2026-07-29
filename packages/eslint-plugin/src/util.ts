@@ -1,8 +1,14 @@
-import { ESLintUtils, type TSESLint, type TSESTree } from "@typescript-eslint/utils";
 import {
+	ESLintUtils,
+	type TSESLint,
+	type TSESTree,
+} from "@typescript-eslint/utils";
+import {
+	getAllComponentMetadata,
 	getComponentMetadata,
 	isWireComponent,
 	type ComponentMetadata,
+	type PropInfo,
 } from "@wire-ui/typescript-plugin/metadata";
 
 /** Factory for our rules, wiring each to its docs page. */
@@ -81,6 +87,12 @@ export interface ResolvedElement {
 	localName: string;
 	/** The compound part being written (`Accordion.Item` -> `Item`), if any. */
 	part?: string;
+	/**
+	 * The catalog key that governs this tag. Compound components key props by
+	 * part, so a bare `<X>` reads as `Root`; single-element components (`Button`)
+	 * and hybrids (`Toggle`) key theirs by the component's own name.
+	 */
+	effectivePart: string;
 }
 
 /**
@@ -101,7 +113,77 @@ export function resolveElement(
 	const component = getComponentMetadata(componentName);
 	if (!component) return undefined;
 
-	return { component, localName: tag.name, part: tag.part };
+	return {
+		component,
+		localName: tag.name,
+		part: tag.part,
+		effectivePart:
+			tag.part ??
+			(component.parts.includes("Root") ? "Root" : component.name),
+	};
+}
+
+/** The tag as it reads in the source — `Modal` or `Modal.Root`. */
+export function tagText(resolved: ResolvedElement): string {
+	return resolved.part
+		? `${resolved.localName}.${resolved.part}`
+		: resolved.localName;
+}
+
+/** Catalog props governing a tag, keyed by the part `resolveElement` chose. */
+export function propsForPart(resolved: ResolvedElement): PropInfo[] {
+	return resolved.component.props[resolved.effectivePart] ?? [];
+}
+
+/** Whether the catalog declares `propName` on the part governing this tag. */
+export function partDeclaresProp(
+	resolved: ResolvedElement,
+	propName: string,
+): boolean {
+	return propsForPart(resolved).some((prop) => prop.name === propName);
+}
+
+/** Parts that render markup — everything the catalog doesn't call context-only. */
+export function renderingParts(component: ComponentMetadata): string[] {
+	return component.parts.filter(
+		(part) => !component.contextOnlyParts.includes(part),
+	);
+}
+
+/** The named attribute written on a tag, if any. Spreads are not attributes. */
+export function findAttribute(
+	openingElement: TSESTree.JSXOpeningElement,
+	name: string,
+): TSESTree.JSXAttribute | undefined {
+	return openingElement.attributes.find(
+		(attribute): attribute is TSESTree.JSXAttribute =>
+			attribute.type === "JSXAttribute" &&
+			attribute.name.type === "JSXIdentifier" &&
+			attribute.name.name === name,
+	);
+}
+
+/** Whether the tag carries a `{...spread}`, which hides what it may contain. */
+export function hasSpreadAttribute(
+	openingElement: TSESTree.JSXOpeningElement,
+): boolean {
+	return openingElement.attributes.some(
+		(attribute) => attribute.type === "JSXSpreadAttribute",
+	);
+}
+
+// Every `data-state` value any component in the catalog emits, so a rule only
+// ever suggests a value Wire UI actually produces.
+let dataStateVocabulary: Set<string> | null = null;
+
+export function knownDataStateValues(): Set<string> {
+	if (dataStateVocabulary) return dataStateVocabulary;
+	const values = new Set<string>();
+	for (const component of getAllComponentMetadata()) {
+		for (const value of component.dataStateValues) values.add(value);
+	}
+	dataStateVocabulary = values;
+	return values;
 }
 
 /** Whether a resolved tag is the component's root — bare `<X>` or `<X.Root>`. */
@@ -157,9 +239,7 @@ export interface CompoundUsage {
  * JSX-only (React/Solid TSX, Vue-via-JSX). Import-gated and alias-aware, so
  * unrelated same-named tags and non-Wire markup produce nothing.
  */
-export function createCompoundVisitor<
-	MessageId extends string,
->(
+export function createCompoundVisitor<MessageId extends string>(
 	context: Readonly<TSESLint.RuleContext<MessageId, []>>,
 	mode: "outside" | "missing",
 	messageId: MessageId,
