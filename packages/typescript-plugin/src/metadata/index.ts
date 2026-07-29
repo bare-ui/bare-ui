@@ -4,7 +4,8 @@
 // reads that data once, reshapes it into the editor-facing `ComponentMetadata`
 // shape, and caches the result. Nothing here re-states component facts; it only
 // transforms what the catalog already knows (parsing value unions, deriving the
-// canonical docs URL, narrowing the framework map to a list).
+// canonical docs URL, narrowing the framework map to a list — while still
+// exposing that map's snippets verbatim as `examples`).
 
 import {
 	components,
@@ -18,6 +19,7 @@ export type {
 	DataAttributeMetadata,
 	ComponentCategory,
 	Framework,
+	FrameworkSnippets,
 	PropInfo,
 } from "./types.js";
 
@@ -27,13 +29,14 @@ const DOCS_BASE = "https://wire-ui.com/docs/components";
 export const FRAMEWORKS: readonly Framework[] = ["react", "vue", "solid"];
 
 /**
- * Convert a component name to its kebab-case docs slug.
+ * Convert a component name to its kebab-case slug — the docs URL segment, and
+ * the stem editor tooling builds snippet prefixes from (`wire-number-input`).
  *   Accordion   -> accordion
  *   NumberInput -> number-input
  *   MenuBar     -> menu-bar
  *   OTP         -> otp
  */
-function toSlug(name: string): string {
+export function toComponentSlug(name: string): string {
 	return name
 		.replace(/([a-z0-9])([A-Z])/g, "$1-$2")
 		.replace(/([A-Z]+)([A-Z][a-z])/g, "$1-$2")
@@ -83,7 +86,8 @@ function toMetadata(component: ComponentData): ComponentMetadata {
 		dataStateValues: dataState?.values ?? [],
 		props: component.props,
 		frameworks: FRAMEWORKS.filter((fw) => component.frameworks[fw]),
-		docsUrl: `${DOCS_BASE}/${toSlug(component.name)}`,
+		examples: component.frameworks,
+		docsUrl: `${DOCS_BASE}/${toComponentSlug(component.name)}`,
 		notes: component.notes ?? [],
 	};
 }

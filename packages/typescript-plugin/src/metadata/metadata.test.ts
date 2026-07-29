@@ -7,6 +7,7 @@ import {
 	getComponentMetadata,
 	isWireComponent,
 	listComponentNames,
+	toComponentSlug,
 } from "./index.js";
 
 describe("metadata coverage", () => {
@@ -90,6 +91,36 @@ describe("metadata shape", () => {
 		expect(getComponentMetadata("MenuBar")?.docsUrl).toBe(
 			"https://wire-ui.com/docs/components/menu-bar",
 		);
+	});
+
+	it("exposes the slug helper the docs URL is built from", () => {
+		expect(toComponentSlug("Accordion")).toBe("accordion");
+		expect(toComponentSlug("NumberInput")).toBe("number-input");
+		expect(toComponentSlug("MenuBar")).toBe("menu-bar");
+		expect(toComponentSlug("OTP")).toBe("otp");
+		expect(toComponentSlug("ResizablePanels")).toBe("resizable-panels");
+	});
+
+	// Snippet generation reads `examples`; a framework the catalog claims but
+	// leaves without a usable example would silently drop that component from
+	// the editor's snippet set.
+	it("carries an import statement and example for every claimed framework", () => {
+		for (const meta of getAllComponentMetadata()) {
+			expect(
+				meta.frameworks.length,
+				`${meta.name} ships in no framework`,
+			).toBeGreaterThan(0);
+
+			for (const framework of meta.frameworks) {
+				const example = meta.examples[framework];
+				expect(
+					example,
+					`${meta.name} is missing its ${framework} example`,
+				).toBeDefined();
+				expect(example!.importStatement.trim()).not.toBe("");
+				expect(example!.basicExample.trim()).not.toBe("");
+			}
+		}
 	});
 });
 

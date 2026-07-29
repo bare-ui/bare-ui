@@ -23,3 +23,8 @@ file.
 - `contextOnlyParts` on `ComponentMetadata`, mirroring the new catalog field —
   the parts that render no DOM element (providers, portals, render-prop
   passthroughs).
+- `examples` on `ComponentMetadata` — the catalog's per-framework import
+  statement and usage example, passed through verbatim so editor tooling can
+  scaffold a component without restating its structure.
+- `toComponentSlug()`, the kebab-casing the docs URL was already built from,
+  now exported for snippet prefixes and other slug-shaped needs.

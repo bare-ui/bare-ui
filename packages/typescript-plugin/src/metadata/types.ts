@@ -10,10 +10,16 @@ import type {
 	ComponentCategory,
 	DataAttributeInfo,
 	Framework,
+	FrameworkSnippets,
 	PropInfo,
 } from "@wire-ui/mcp/data";
 
-export type { ComponentCategory, Framework, PropInfo } from "@wire-ui/mcp/data";
+export type {
+	ComponentCategory,
+	Framework,
+	FrameworkSnippets,
+	PropInfo,
+} from "@wire-ui/mcp/data";
 
 /**
  * A single `data-*` attribute a component exposes, with its value enum parsed
@@ -67,6 +73,14 @@ export interface ComponentMetadata {
 	props: Record<string, PropInfo[]>;
 	/** Frameworks that actually ship this component. */
 	frameworks: Framework[];
+	/**
+	 * Per-framework import statement and canonical usage example, as authored in
+	 * the catalog. The example is the component's full compound structure with
+	 * sensible defaults — the source editor snippets are generated from. Keyed by
+	 * framework because the structure is shared but the authoring syntax is not
+	 * (Solid calls its signals, Vue uses SFC template syntax).
+	 */
+	examples: Partial<Record<Framework, FrameworkSnippets>>;
 	/** Canonical documentation URL on wire-ui.com. */
 	docsUrl: string;
 	/** Authoring notes / gotchas from the catalog. */
