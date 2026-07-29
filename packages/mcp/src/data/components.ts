@@ -2352,6 +2352,7 @@ export const components: ComponentData[] = [
 			"Compound modal dialog with portal, overlay, content, and close parts.",
 		isCompound: true,
 		parts: ["Root", "Portal", "Overlay", "Content", "Close"],
+		contextOnlyParts: ["Root", "Portal"],
 		props: {
 			Root: [
 				{
@@ -2450,6 +2451,7 @@ export const components: ComponentData[] = [
 		description: "Compound side-panel overlay with the same API as Modal.",
 		isCompound: true,
 		parts: ["Root", "Portal", "Overlay", "Content", "Header", "Close"],
+		contextOnlyParts: ["Root", "Portal"],
 		props: {
 			Root: [
 				{
@@ -4677,6 +4679,7 @@ export const components: ComponentData[] = [
 			"Compound notification system with provider, viewport, and imperative toast() API.",
 		isCompound: true,
 		parts: ["Provider", "Viewport", "Root", "Title", "Description", "Close"],
+		contextOnlyParts: ["Provider"],
 		props: {
 			Provider: [
 				{
@@ -6054,6 +6057,7 @@ toast({ title: 'Saved', status: 'success' });
 			"Line-level diff viewer with both unified and side-by-side (split) layouts. The diff is computed with a built-in dependency-free LCS algorithm and exposed as render parts you style yourself.",
 		isCompound: true,
 		parts: ["Root", "Unified", "Split", "Stats"],
+		contextOnlyParts: ["Stats"],
 		props: {
 			Root: [
 				{
@@ -6939,6 +6943,7 @@ toast({ title: 'Saved', status: 'success' });
 			"Description",
 			"Close",
 		],
+		contextOnlyParts: ["Root", "Portal"],
 		props: {
 			Root: [
 				{

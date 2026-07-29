@@ -42,6 +42,13 @@ export interface ComponentData {
 	description: string;
 	isCompound: boolean;
 	parts: string[];
+	/**
+	 * Parts that render no DOM element of their own — context providers, portals,
+	 * and render-prop passthroughs. They accept no styling props: a `className` /
+	 * `class` written on them has nowhere to land and is silently dropped.
+	 * Omitted when every part renders markup.
+	 */
+	contextOnlyParts?: string[];
 	props: Record<string, PropInfo[]>;
 	dataAttributes: DataAttributeInfo[];
 	frameworks: Partial<Record<Framework, FrameworkSnippets>>;

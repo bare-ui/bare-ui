@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1] - 2026-07-29
+
+### Added
+
+- **`contextOnlyParts`** on `ComponentData`, returned by `get_component`. Lists the parts that render no DOM element —
+  context providers, portals, and render-prop passthroughs — so consumers know a `className` written there has nowhere
+  to land and is silently dropped. Populated for `Modal` (`Root`, `Portal`), `Drawer` (`Root`, `Portal`), `Sheet`
+  (`Root`, `Portal`), `Toast` (`Provider`), and `Diff` (`Stats`), each verified against all three libraries. The field
+  is omitted for components where every part renders markup.
+
+  `Carousel.Indicators` is deliberately excluded: it renders nothing in React and Solid, but Vue wraps its slot in a
+  `display: contents` div, so the fact is not true across the three.
+
+  This is what `@wire-ui/eslint-plugin`'s `misplaced-classname` rule and the TypeScript plugin's matching diagnostic
+  read; adding a component here is all it takes to extend their coverage.
+
 ## [0.5.0] - 2026-07-28
 
 Catches the MCP catalog up to the `0.5.0` releases of `@wire-ui/react`, `@wire-ui/solid`, and `@wire-ui/vue`. This release is

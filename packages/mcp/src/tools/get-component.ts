@@ -58,6 +58,7 @@ export function registerGetComponent(server: McpServer) {
 				description: component.description,
 				isCompound: component.isCompound,
 				parts: component.parts,
+				contextOnlyParts: component.contextOnlyParts,
 				props: component.props,
 				dataAttributes: component.dataAttributes,
 				notes: component.notes,
