@@ -1,13 +1,29 @@
 # Wire UI for VS Code
 
-> ⚠️ **Work in progress** — this is the initial scaffold for the Wire UI VS Code
-> extension (roadmap milestone **0.8**). It does not provide any features yet.
+> ⚠️ **Work in progress** — the Wire UI VS Code extension (roadmap milestone
+> **0.8**) is still being built out.
 
 A developer-experience layer that makes [Wire UI](https://wire-ui.com) feel
 native in the editor: autocomplete, hover docs, snippets, and lints for the
 AI-native unstyled primitives framework.
 
 Published as `wire-ui.wire-ui` on the VS Code Marketplace and Open VSX.
+
+## Snippets
+
+Type `wire-` in a `.tsx`, `.jsx`, `.ts`, `.js`, or `.vue` file to scaffold any
+Wire UI component — `wire-button`, `wire-modal`, `wire-combobox`, one per
+component in the catalog. Each expands the component's full compound structure
+with tab stops over the labels and placeholder text, and adds the matching
+`@wire-ui/*` import if it isn't there already.
+
+The syntax matches the framework you're writing: the file's existing Wire UI
+imports decide, falling back to the workspace's dependency, then React. In a
+`.vue` file the snippets are Vue template markup and only offered inside the
+SFC's `<template>` block.
+
+Set `wire-ui.snippets.autoImport` to `false` to insert the markup without the
+import.
 
 ## Planned features
 
@@ -17,8 +33,8 @@ scope. In short:
 - **Editing intelligence** — `data-*` attribute & `data-state` value
   autocomplete, component-parts autocomplete, hover docs, go-to-definition, and
   diagnostic warnings for common misuses.
-- **Snippets** — compound component scaffolds, hook snippets, and AI-primitive
-  scaffolds.
+- **Snippets** — compound component scaffolds (done, above), plus hook and
+  AI-primitive scaffolds.
 - **Theme integration** (depends on 0.7) — theme preview swatches and an inline
   theme switcher.
 - **Project tooling** — `Wire UI: Init`, `Wire UI: Add Component`, and

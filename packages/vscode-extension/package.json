@@ -66,6 +66,11 @@
           "default": true,
           "description": "Enable Wire UI editor intelligence (autocomplete, hover docs, diagnostics)."
         },
+        "wire-ui.snippets.autoImport": {
+          "type": "boolean",
+          "default": true,
+          "description": "Add the matching @wire-ui import when a component snippet is inserted."
+        },
         "wire-ui.trace.server": {
           "type": "string",
           "enum": ["off", "messages", "verbose"],

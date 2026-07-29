@@ -17,8 +17,16 @@ file.
   and hands the TypeScript plugin its initial configuration via the built-in TS
   extension's API.
 - F5 launch + build tasks (`.vscode/launch.json`, `.vscode/tasks.json`).
+- Component snippets for every component in the catalog, reachable by typing
+  `wire-` (`wire-button`, `wire-modal`, `wire-combobox`, …). Each expands the
+  component's full compound structure with tab stops over the text worth
+  editing, and brings its own `@wire-ui/*` import.
+- `wire-ui.snippets.autoImport` setting to turn that import off.
 
 ### Changed
 
 - Metadata is now sourced from `@wire-ui/typescript-plugin/metadata` (the shared
   layer moved into the TS plugin) instead of a direct `@wire-ui/mcp` dependency.
+- The build bundles `@wire-ui/typescript-plugin` into `dist/extension.js` rather
+  than leaving it external — `vsce package --no-dependencies` would otherwise
+  ship a .vsix whose extension host cannot resolve the catalog.
