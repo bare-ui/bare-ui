@@ -11,6 +11,7 @@ import type {
 	DataAttributeInfo,
 	Framework,
 	FrameworkSnippets,
+	HookCategory,
 	PropInfo,
 } from "@wire-ui/mcp/data";
 
@@ -18,6 +19,7 @@ export type {
 	ComponentCategory,
 	Framework,
 	FrameworkSnippets,
+	HookCategory,
 	PropInfo,
 } from "@wire-ui/mcp/data";
 
@@ -83,6 +85,68 @@ export interface ComponentMetadata {
 	examples: Partial<Record<Framework, FrameworkSnippets>>;
 	/** Canonical documentation URL on wire-ui.com. */
 	docsUrl: string;
+	/** Authoring notes / gotchas from the catalog. */
+	notes: string[];
+}
+
+/**
+ * One framework's realization of a hook. `name` is the literal export
+ * (`useHotkeys` in React/Vue, `createHotkeys` in Solid), and `importedNames`
+ * is the import clause already broken apart, so a consumer that has to *write*
+ * the import doesn't re-parse the statement.
+ */
+export interface HookFrameworkMetadata {
+	name: string;
+	importStatement: string;
+	basicExample: string;
+	/** Every name the import statement binds, e.g. `useDirection`, `isRtl`. */
+	importedNames: string[];
+}
+
+/**
+ * Editor-facing metadata for one Wire UI hook / composable / primitive, derived
+ * from a single `HookData` entry in @wire-ui/mcp. The canonical name is the
+ * framework-independent identity (`click-outside`); the per-framework export
+ * names live in `examples`.
+ */
+export interface HookMetadata {
+	/** Canonical kebab-case identifier, e.g. `click-outside`. */
+	canonicalName: string;
+	category: HookCategory;
+	description: string;
+	/** Call signature as authored in the catalog, if any. */
+	signature?: string;
+	/** What the hook returns, in prose, if the catalog says. */
+	returns?: string;
+	/** Frameworks that actually ship this hook. */
+	frameworks: Framework[];
+	/** Per-framework export name, import statement, and usage example. */
+	examples: Partial<Record<Framework, HookFrameworkMetadata>>;
+	/** Documentation URL, or `undefined` when the hook has no page yet. */
+	docsUrl?: string;
+	/** Authoring notes / gotchas from the catalog. */
+	notes: string[];
+}
+
+/**
+ * Editor-facing metadata for one composed scaffold. Unlike a component example,
+ * a scaffold `source` is a whole file — imports included — so consumers insert
+ * it as-is rather than pairing it with an import edit.
+ */
+export interface ScaffoldMetadata {
+	/** Kebab-case identifier, e.g. `chat`. */
+	name: string;
+	/** Short human title, e.g. `Streaming chat`. */
+	title: string;
+	description: string;
+	/** Wire UI components the scaffold composes. */
+	components: string[];
+	/** Wire UI hooks the scaffold uses, by canonical name. */
+	hooks: string[];
+	/** Frameworks the scaffold is authored for. */
+	frameworks: Framework[];
+	/** Complete, ready-to-style file per framework. */
+	sources: Partial<Record<Framework, string>>;
 	/** Authoring notes / gotchas from the catalog. */
 	notes: string[];
 }

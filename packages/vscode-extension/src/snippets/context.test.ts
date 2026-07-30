@@ -3,6 +3,8 @@ import {
 	detectFramework,
 	frameworksFromPackageJson,
 	frameworksImportedIn,
+	hasVueSfcBlocks,
+	isInVueScript,
 	isInVueTemplate,
 	planImportEdit,
 } from "./context.js";
@@ -117,17 +119,57 @@ describe("isInVueTemplate", () => {
 	});
 });
 
+describe("isInVueScript", () => {
+	const sfc = [
+		'<script setup lang="ts">',
+		"const open = ref(false);",
+		"</script>",
+		"",
+		"<template>",
+		"  <Button>Go</Button>",
+		"</template>",
+	].join("\n");
+
+	it("accepts an offset inside the script block", () => {
+		expect(isInVueScript(sfc, sfc.indexOf("const open"))).toBe(true);
+	});
+
+	it("rejects an offset in the template block", () => {
+		expect(isInVueScript(sfc, sfc.indexOf("<Button>"))).toBe(false);
+	});
+
+	// The two checks partition an SFC: neither answers true at the top level,
+	// which is where a whole-file scaffold belongs.
+	it("leaves the top level to neither region", () => {
+		expect(isInVueScript("", 0)).toBe(false);
+		expect(isInVueTemplate("", 0)).toBe(false);
+		expect(isInVueScript("<template>\n</template>\n", 0)).toBe(false);
+	});
+});
+
+describe("hasVueSfcBlocks", () => {
+	it("tells a fresh .vue file from one that is already an SFC", () => {
+		expect(hasVueSfcBlocks("")).toBe(false);
+		expect(hasVueSfcBlocks("wire-")).toBe(false);
+		expect(hasVueSfcBlocks("<template>\n</template>")).toBe(true);
+		expect(hasVueSfcBlocks('<script setup lang="ts">\n</script>')).toBe(
+			true,
+		);
+		expect(hasVueSfcBlocks("<style scoped>\n</style>")).toBe(true);
+	});
+});
+
 describe("planImportEdit", () => {
-	const jsx = (text: string, component = "Modal") =>
+	const jsx = (text: string, ...names: string[]) =>
 		planImportEdit({
 			text,
 			languageId: "typescriptreact",
-			component,
+			names: names.length > 0 ? names : ["Modal"],
 			moduleId: "@wire-ui/react",
 		});
 
-	const apply = (text: string, component = "Modal") => {
-		const edit = jsx(text, component);
+	const apply = (text: string, ...names: string[]) => {
+		const edit = jsx(text, ...names);
 		if (!edit) return text;
 		return (
 			text.slice(0, edit.offset) + edit.newText + text.slice(edit.offset)
@@ -201,7 +243,7 @@ describe("planImportEdit", () => {
 		const edit = planImportEdit({
 			text: sfc,
 			languageId: "vue",
-			component: "Modal",
+			names: ["Modal"],
 			moduleId: "@wire-ui/vue",
 		});
 		expect(edit).toBeDefined();
@@ -214,12 +256,46 @@ describe("planImportEdit", () => {
 		);
 	});
 
+	it("brings every name a snippet needs, skipping the ones in scope", () => {
+		// useDirection ships two helpers alongside the reactive hook.
+		expect(
+			apply("const a = 1;\n", "useDirection", "getDirection", "isRtl"),
+		).toBe(
+			"import { useDirection, getDirection, isRtl } from '@wire-ui/react';\nconst a = 1;\n",
+		);
+		expect(
+			apply(
+				"import { isRtl } from '@wire-ui/react';\n",
+				"useDirection",
+				"isRtl",
+			),
+		).toBe("import { isRtl, useDirection } from '@wire-ui/react';\n");
+		expect(
+			jsx(
+				"import { isRtl, useDirection } from '@wire-ui/react';\n",
+				"isRtl",
+				"useDirection",
+			),
+		).toBeUndefined();
+	});
+
+	it("plans nothing when there is nothing to import", () => {
+		expect(
+			planImportEdit({
+				text: "const a = 1;\n",
+				languageId: "typescriptreact",
+				names: [],
+				moduleId: "@wire-ui/react",
+			}),
+		).toBeUndefined();
+	});
+
 	it("leaves an SFC with no script block alone", () => {
 		expect(
 			planImportEdit({
 				text: "<template>\n</template>\n",
 				languageId: "vue",
-				component: "Modal",
+				names: ["Modal"],
 				moduleId: "@wire-ui/vue",
 			}),
 		).toBeUndefined();

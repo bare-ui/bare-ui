@@ -1,11 +1,16 @@
 // Turning a catalog example into a VS Code snippet body.
 //
 // The @wire-ui/mcp catalog already carries a correct, framework-idiomatic usage
-// example for every component — the full compound structure with sensible
-// defaults. That *is* the snippet; this module only re-dresses it for the
-// snippet grammar: unwrap the Vue SFC wrapper, re-indent with tabs, escape the
-// three syntax characters, and turn the literal strings a user would actually
-// edit into tab stops.
+// example for every component, hook, and scaffold. That *is* the snippet; this
+// module only re-dresses it for the snippet grammar: unwrap the Vue SFC wrapper,
+// re-indent with tabs, escape the three syntax characters, and turn the literal
+// text a user would actually edit into tab stops.
+//
+// Markup and code want different tab stops, so there are two transforms.
+// `toSnippetBody` reads JSX/template markup (attribute values, element text);
+// `toCodeSnippetBody` reads statements (string and number arguments, callback
+// bodies). Scaffolds get `toScaffoldBody` and no tab stops at all — a
+// whole-file body peppered with them would be hostile to tab through.
 
 import type { Framework } from "@wire-ui/typescript-plugin/metadata";
 
@@ -15,6 +20,21 @@ import type { Framework } from "@wire-ui/typescript-plugin/metadata";
  * child (`<Modal.Close>Close</Modal.Close>`).
  */
 const EDITABLE_TEXT = /="([^"\n]*)"|>([^<>{}\n]+)</g;
+
+/**
+ * The parts of a statement worth a tab stop, most specific first:
+ *
+ * 1. a single-expression callback body — `() => close()`, the thing a user
+ *    swaps for their own function;
+ * 2. a single-quoted string argument — `'theme'`, `'(max-width: 768px)'`;
+ * 3. a bare number — `250`, `0.5`.
+ *
+ * The callback pattern deliberately refuses nested parentheses and quotes, so
+ * `() => setNow(Date.now())` and `(v) => emit('change', v)` stay literal rather
+ * than swallowing a stop over something a user has no reason to retype.
+ */
+const EDITABLE_CODE =
+	/(=>\s*)([A-Za-z_$][\w$.]*\([\w$., ]*\))|'([^'\n]*)'|(?<![\w.$])(\d+(?:\.\d+)?)(?![\w.])/g;
 
 /**
  * An attribute value carrying any of these reads as code, not copy — a Vue
@@ -64,49 +84,118 @@ function toTabIndent(line: string): string {
 	return "\t".repeat(tabs) + " ".repeat(remainder) + line.slice(spaces);
 }
 
-/**
- * Convert a catalog `basicExample` into a snippet body: placeholders over the
- * text worth editing, `$0` where the cursor lands last.
- */
-export function toSnippetBody(example: string, framework: Framework): string {
-	const source =
-		framework === "vue" ? unwrapVueTemplate(example) : example.trim();
-	const text = source.split("\n").map(toTabIndent).join("\n");
+function tabIndented(text: string): string {
+	return text.split("\n").map(toTabIndent).join("\n");
+}
 
+/**
+ * A catalog example ending on `return <div ref={ref}>…</div>` is showing where
+ * the hook's result goes. Inserted into a function that already returns, that
+ * would be a stray statement — so the line is commented out rather than dropped,
+ * since the guidance is the whole point of it.
+ */
+export function demoTailToComment(example: string): string {
+	const lines = example.split("\n");
+	for (let index = lines.length - 1; index >= 0; index--) {
+		const line = lines[index];
+		if (!line.trim()) continue;
+		if (!/^\s*return\s/.test(line)) break;
+		lines[index] = line.replace(/^([ \t]*)/, "$1// ");
+	}
+	return lines.join("\n");
+}
+
+/** Whether an offset sits after a `//` on its own line — no tab stops in prose. */
+function isInLineComment(text: string, offset: number): boolean {
+	const lineStart = text.lastIndexOf("\n", offset - 1) + 1;
+	const comment = text.indexOf("//", lineStart);
+	return comment !== -1 && comment < offset;
+}
+
+/**
+ * Walk `pattern` over `text`, letting `replace` turn each match into snippet
+ * text. Everything between matches is escaped verbatim; returning `undefined`
+ * leaves the match itself literal, which keeps the tab-stop numbering gapless.
+ */
+function withTabStops(
+	text: string,
+	pattern: RegExp,
+	replace: (
+		match: RegExpExecArray,
+		placeholder: (value: string) => string,
+	) => string | undefined,
+): string {
 	let body = "";
 	let cursor = 0;
 	let stop = 0;
 	const placeholder = (value: string) =>
 		`\${${++stop}:${escapeSnippetText(value)}}`;
 
-	EDITABLE_TEXT.lastIndex = 0;
-	for (
-		let match = EDITABLE_TEXT.exec(text);
-		match;
-		match = EDITABLE_TEXT.exec(text)
-	) {
-		const [whole, attributeValue, childText] = match;
+	pattern.lastIndex = 0;
+	for (let match = pattern.exec(text); match; match = pattern.exec(text)) {
 		body += escapeSnippetText(text.slice(cursor, match.index));
-		cursor = match.index + whole.length;
-
-		if (attributeValue !== undefined) {
-			if (!attributeValue.trim() || CODE_LIKE.test(attributeValue)) {
-				body += escapeSnippetText(whole);
-				continue;
-			}
-			body += `="${placeholder(attributeValue)}"`;
-			continue;
-		}
-
-		// Element child: keep the surrounding whitespace literal so the tab stop
-		// selects the words, not the padding.
-		const [, lead, core, trail] = /^(\s*)(.*?)(\s*)$/.exec(childText)!;
-		if (!core) {
-			body += escapeSnippetText(whole);
-			continue;
-		}
-		body += `>${lead}${placeholder(core)}${trail}<`;
+		cursor = match.index + match[0].length;
+		body += replace(match, placeholder) ?? escapeSnippetText(match[0]);
 	}
 
 	return `${body}${escapeSnippetText(text.slice(cursor))}$0`;
+}
+
+/**
+ * Convert a component's `basicExample` into a snippet body: placeholders over
+ * the markup text worth editing, `$0` where the cursor lands last.
+ */
+export function toSnippetBody(example: string, framework: Framework): string {
+	const source =
+		framework === "vue" ? unwrapVueTemplate(example) : example.trim();
+
+	return withTabStops(
+		tabIndented(source),
+		EDITABLE_TEXT,
+		(match, placeholder) => {
+			const [, attributeValue, childText] = match;
+
+			if (attributeValue !== undefined) {
+				if (!attributeValue.trim() || CODE_LIKE.test(attributeValue))
+					return undefined;
+				return `="${placeholder(attributeValue)}"`;
+			}
+
+			// Element child: keep the surrounding whitespace literal so the tab
+			// stop selects the words, not the padding.
+			const [, lead, core, trail] = /^(\s*)(.*?)(\s*)$/.exec(childText)!;
+			if (!core) return undefined;
+			return `>${lead}${placeholder(core)}${trail}<`;
+		},
+	);
+}
+
+/**
+ * Convert a hook's `basicExample` into a snippet body. Hook examples are
+ * statements rather than markup, so the tab stops land on the arguments and
+ * callbacks a user retypes — never on the identifiers they declare, which the
+ * editor renames far better than a snippet can.
+ */
+export function toCodeSnippetBody(example: string): string {
+	const text = tabIndented(demoTailToComment(example.trim()));
+
+	return withTabStops(text, EDITABLE_CODE, (match, placeholder) => {
+		if (isInLineComment(text, match.index)) return undefined;
+
+		const [, arrow, callback, quoted, numeric] = match;
+		if (callback !== undefined) return `${arrow}${placeholder(callback)}`;
+		if (quoted !== undefined)
+			return quoted.trim() ? `'${placeholder(quoted)}'` : undefined;
+		if (numeric !== undefined) return placeholder(numeric);
+		return undefined;
+	});
+}
+
+/**
+ * Convert a scaffold's source into a snippet body. A scaffold is a whole file,
+ * read and edited as code, so it gets escaping and a final cursor position but
+ * no tab stops — dozens of them would be hostile to tab through.
+ */
+export function toScaffoldBody(source: string): string {
+	return `${escapeSnippetText(tabIndented(source.trim()))}$0`;
 }

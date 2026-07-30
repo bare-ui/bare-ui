@@ -5556,7 +5556,7 @@ toast({ title: 'Saved', status: 'success' });
 			solid: {
 				importStatement: "import { Chat } from '@wire-ui/solid'",
 				basicExample:
-					'<Chat.Root onSubmit={send} isStreaming={streaming()}>\n  <Chat.List count={messages().length}>\n    {({ index }) => (\n      <Chat.Message role={messages()[index()].role}>\n        {messages()[index()].text}\n      </Chat.Message>\n    )}\n  </Chat.List>\n  <Chat.Composer>\n    <Chat.Input placeholder="Send a message…" />\n    <Chat.Send>Send</Chat.Send>\n  </Chat.Composer>\n</Chat.Root>',
+					'<Chat.Root onSubmit={send} isStreaming={streaming()}>\n  <Chat.List count={messages().length}>\n    {({ index }) => (\n      <Chat.Message role={messages()[index].role}>\n        {messages()[index].text}\n      </Chat.Message>\n    )}\n  </Chat.List>\n  <Chat.Composer>\n    <Chat.Input placeholder="Send a message…" />\n    <Chat.Send>Send</Chat.Send>\n  </Chat.Composer>\n</Chat.Root>',
 			},
 			vue: {
 				importStatement: "import { Chat } from '@wire-ui/vue'",

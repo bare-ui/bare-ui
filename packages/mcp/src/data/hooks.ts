@@ -530,6 +530,7 @@ watch(debouncedQuery, (q) => search(q));`,
 		description:
 			"Convenience wrapper around debounce that returns a single function (not an object).",
 		signature: "(callback, delay) => (...args) => void",
+		docsSlug: "use-debounce",
 		frameworks: {
 			react: {
 				name: "useDebouncedCallback",
@@ -590,6 +591,7 @@ watch(debouncedQuery, (q) => search(q));`,
 		description:
 			"Convenience wrapper around throttle returning a single function.",
 		signature: "(callback, delay) => (...args) => void",
+		docsSlug: "use-throttle",
 		frameworks: {
 			react: {
 				name: "useThrottledCallback",
@@ -659,6 +661,7 @@ watch(debouncedQuery, (q) => search(q));`,
 		signature:
 			"<T>(key: string, initialValue: T, options?: { serialize?, deserialize? }) => [value, setValue, remove]",
 		returns: "Tuple of [value, setValue, remove].",
+		docsSlug: "use-local-storage",
 		frameworks: {
 			react: {
 				name: "useSessionStorage",
@@ -1179,6 +1182,7 @@ useEventListener('click', onClick, buttonRef);`,
 		signature: "(el) => Direction  //  'ltr' | 'rtl'",
 		returns:
 			"The reactive form returns the current direction (React: a value; Vue: a Ref; Solid: an Accessor). getDirection/isRtl return a plain value.",
+		docsSlug: null,
 		frameworks: {
 			react: {
 				name: "useDirection",
@@ -1224,6 +1228,7 @@ const dir = useDirection(track);
 			"Tracks whether the component has mounted on the client. False during server render and the first hydration render, then true.",
 		signature: "() => Readonly<Ref<boolean>>",
 		returns: "A readonly ref that flips to true after mount.",
+		docsSlug: null,
 		frameworks: {
 			vue: {
 				name: "useIsMounted",

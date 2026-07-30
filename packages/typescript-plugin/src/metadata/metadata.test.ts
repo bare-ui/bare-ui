@@ -1,12 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { components } from "@wire-ui/mcp/data";
+import { components, hooks, scaffolds } from "@wire-ui/mcp/data";
 import type { Framework } from "@wire-ui/mcp/data";
 import {
 	FRAMEWORKS,
 	getAllComponentMetadata,
+	getAllHookMetadata,
+	getAllScaffoldMetadata,
 	getComponentMetadata,
+	getHookMetadata,
+	getScaffoldMetadata,
 	isWireComponent,
+	isWireHook,
 	listComponentNames,
+	listHookNames,
 	toComponentSlug,
 } from "./index.js";
 
@@ -120,6 +126,135 @@ describe("metadata shape", () => {
 				expect(example!.importStatement.trim()).not.toBe("");
 				expect(example!.basicExample.trim()).not.toBe("");
 			}
+		}
+	});
+});
+
+describe("hook metadata", () => {
+	it("exposes metadata for every hook in the MCP catalog", () => {
+		expect(hooks.length).toBeGreaterThan(0);
+		expect(listHookNames()).toEqual(hooks.map((h) => h.canonicalName));
+		expect(getAllHookMetadata()).toHaveLength(hooks.length);
+
+		for (const hook of hooks) {
+			const meta = getHookMetadata(hook.canonicalName);
+			expect(
+				meta,
+				`missing metadata for ${hook.canonicalName}`,
+			).toBeDefined();
+			expect(meta!.frameworks.length).toBeGreaterThan(0);
+		}
+	});
+
+	// A hook the catalog claims for a framework but leaves without an example
+	// would silently drop out of the editor's snippet set.
+	it.each(FRAMEWORKS)("covers every %s hook", (framework: Framework) => {
+		const inFramework = hooks.filter((h) => h.frameworks[framework]);
+		expect(inFramework.length).toBeGreaterThan(0);
+
+		for (const hook of inFramework) {
+			const meta = getHookMetadata(hook.canonicalName)!;
+			expect(
+				meta.frameworks,
+				`${hook.canonicalName} should list ${framework}`,
+			).toContain(framework);
+
+			const example = meta.examples[framework]!;
+			expect(example.name.trim()).not.toBe("");
+			expect(example.importStatement.trim()).not.toBe("");
+			expect(example.basicExample.trim()).not.toBe("");
+			expect(example.importedNames).toContain(example.name);
+		}
+	});
+
+	it("resolves a hook by canonical name or any framework's export name", () => {
+		const canonical = getHookMetadata("hotkeys");
+		expect(canonical?.canonicalName).toBe("hotkeys");
+		expect(getHookMetadata("useHotkeys")).toBe(canonical);
+		expect(getHookMetadata("createHotkeys")).toBe(canonical);
+		expect(getHookMetadata("CREATEHOTKEYS")).toBe(canonical);
+
+		expect(isWireHook("useDebounce")).toBe(true);
+		expect(isWireHook("click-outside")).toBe(true);
+		expect(isWireHook("useNotAHook")).toBe(false);
+		expect(getHookMetadata("useNotAHook")).toBeUndefined();
+	});
+
+	it("splits out every name an import statement binds", () => {
+		// useDirection ships two synchronous helpers alongside the reactive hook.
+		expect(
+			getHookMetadata("direction")?.examples.react?.importedNames,
+		).toEqual(["useDirection", "getDirection", "isRtl"]);
+		expect(
+			getHookMetadata("disclosure")?.examples.react?.importedNames,
+		).toEqual(["useDisclosure"]);
+	});
+
+	it("derives a docs URL, and none for the hooks without a page", () => {
+		expect(getHookMetadata("hotkeys")?.docsUrl).toBe(
+			"https://wire-ui.com/docs/hooks/use-hotkeys",
+		);
+		// Documented on a sibling's page rather than one of its own.
+		expect(getHookMetadata("debounced-callback")?.docsUrl).toBe(
+			"https://wire-ui.com/docs/hooks/use-debounce",
+		);
+		expect(getHookMetadata("session-storage")?.docsUrl).toBe(
+			"https://wire-ui.com/docs/hooks/use-local-storage",
+		);
+		// No page yet — better no link than a 404.
+		expect(getHookMetadata("direction")?.docsUrl).toBeUndefined();
+		expect(getHookMetadata("is-mounted")?.docsUrl).toBeUndefined();
+	});
+
+	it("shares hook and component name spaces without collision", () => {
+		// Editor prefixes are built from these, so a clash would shadow a snippet.
+		const componentSlugs = new Set(
+			listComponentNames().map((name) => toComponentSlug(name)),
+		);
+		const clashes = listHookNames().filter((name) =>
+			componentSlugs.has(name),
+		);
+		expect(clashes).toEqual([]);
+	});
+});
+
+describe("scaffold metadata", () => {
+	it("exposes every scaffold in the MCP catalog", () => {
+		expect(scaffolds.length).toBeGreaterThan(0);
+		expect(getAllScaffoldMetadata()).toHaveLength(scaffolds.length);
+		expect(getScaffoldMetadata("CHAT")?.name).toBe("chat");
+		expect(getScaffoldMetadata("not-a-scaffold")).toBeUndefined();
+	});
+
+	// Scaffolds are inserted verbatim, so each must be a whole file: it brings its
+	// own imports, and never leans on an import edit the way a component does.
+	it.each(FRAMEWORKS)(
+		"carries a complete %s file",
+		(framework: Framework) => {
+			for (const meta of getAllScaffoldMetadata()) {
+				expect(
+					meta.frameworks,
+					`${meta.name} should ship in ${framework}`,
+				).toContain(framework);
+
+				const source = meta.sources[framework]!;
+				expect(source).toContain(`@wire-ui/${framework}`);
+				expect(source).toMatch(/^import |^<script/);
+				for (const component of meta.components)
+					expect(
+						source,
+						`${meta.name} never uses ${component}`,
+					).toContain(component);
+			}
+		},
+	);
+
+	it("names components and hooks the catalog actually has", () => {
+		for (const meta of getAllScaffoldMetadata()) {
+			for (const component of meta.components)
+				expect(isWireComponent(component), component).toBe(true);
+			for (const hook of meta.hooks)
+				expect(isWireHook(hook), hook).toBe(true);
 		}
 	});
 });

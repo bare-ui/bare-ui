@@ -9,10 +9,20 @@
 
 import {
 	components,
+	hooks,
+	scaffolds,
 	type ComponentData,
 	type Framework,
+	type HookData,
+	type ScaffoldData,
 } from "@wire-ui/mcp/data";
-import type { ComponentMetadata, DataAttributeMetadata } from "./types.js";
+import type {
+	ComponentMetadata,
+	DataAttributeMetadata,
+	HookFrameworkMetadata,
+	HookMetadata,
+	ScaffoldMetadata,
+} from "./types.js";
 
 export type {
 	ComponentMetadata,
@@ -20,10 +30,15 @@ export type {
 	ComponentCategory,
 	Framework,
 	FrameworkSnippets,
+	HookCategory,
+	HookFrameworkMetadata,
+	HookMetadata,
 	PropInfo,
+	ScaffoldMetadata,
 } from "./types.js";
 
 const DOCS_BASE = "https://wire-ui.com/docs/components";
+const HOOKS_DOCS_BASE = "https://wire-ui.com/docs/hooks";
 
 /** All frameworks Wire UI targets, in catalog order. */
 export const FRAMEWORKS: readonly Framework[] = ["react", "vue", "solid"];
@@ -134,7 +149,160 @@ export function isWireComponent(name: string): boolean {
 	return getCache().has(name.toLowerCase());
 }
 
-/** Reset the cache. Intended for tests only. */
+// ---------------------------------------------------------------------------
+// Hooks / composables / primitives
+// ---------------------------------------------------------------------------
+
+/**
+ * Split an import statement's named clause into the identifiers it binds.
+ * A few hooks ship helpers alongside the reactive form
+ * (`import { useDirection, getDirection, isRtl } from '@wire-ui/react'`), and a
+ * consumer writing the import needs all of them, not just the hook.
+ */
+function parseImportedNames(statement: string): string[] {
+	const clause = /\{([^}]*)\}/.exec(statement);
+	if (!clause) return [];
+	return clause[1]
+		.split(",")
+		.map((name) => name.trim())
+		.filter(Boolean);
+}
+
+function toHookFramework(
+	snippet: NonNullable<HookData["frameworks"][Framework]>,
+): HookFrameworkMetadata {
+	return {
+		name: snippet.name,
+		importStatement: snippet.importStatement,
+		basicExample: snippet.basicExample,
+		importedNames: parseImportedNames(snippet.importStatement),
+	};
+}
+
+/**
+ * The docs page a hook is documented on. Most follow `use-<canonicalName>`;
+ * the catalog overrides that for hooks documented on a sibling's page, and says
+ * `null` for the ones with no page yet — those get no URL rather than a 404.
+ */
+function hookDocsUrl(hook: HookData): string | undefined {
+	if (hook.docsSlug === null) return undefined;
+	return `${HOOKS_DOCS_BASE}/${hook.docsSlug ?? `use-${hook.canonicalName}`}`;
+}
+
+function toHookMetadata(hook: HookData): HookMetadata {
+	const examples: HookMetadata["examples"] = {};
+	for (const framework of FRAMEWORKS) {
+		const snippet = hook.frameworks[framework];
+		if (snippet) examples[framework] = toHookFramework(snippet);
+	}
+
+	return {
+		canonicalName: hook.canonicalName,
+		category: hook.category,
+		description: hook.description,
+		signature: hook.signature,
+		returns: hook.returns,
+		frameworks: FRAMEWORKS.filter((fw) => hook.frameworks[fw]),
+		examples,
+		docsUrl: hookDocsUrl(hook),
+		notes: hook.notes ?? [],
+	};
+}
+
+// Keyed by canonical name *and* by every framework export name, so
+// `useHotkeys`, `createHotkeys`, and `hotkeys` all resolve to one entry.
+let hookCache: Map<string, HookMetadata> | null = null;
+
+function getHookCache(): Map<string, HookMetadata> {
+	if (hookCache) return hookCache;
+	const map = new Map<string, HookMetadata>();
+	for (const hook of hooks) {
+		const meta = toHookMetadata(hook);
+		map.set(hook.canonicalName.toLowerCase(), meta);
+		for (const framework of meta.frameworks)
+			map.set(meta.examples[framework]!.name.toLowerCase(), meta);
+	}
+	hookCache = map;
+	return map;
+}
+
+/**
+ * Get editor metadata for a single hook. Accepts the canonical name or any
+ * framework's export name, case-insensitively.
+ *
+ * @example
+ * getHookMetadata('useHotkeys')?.canonicalName // "hotkeys"
+ * getHookMetadata('createHotkeys')?.canonicalName // "hotkeys"
+ */
+export function getHookMetadata(name: string): HookMetadata | undefined {
+	return getHookCache().get(name.toLowerCase());
+}
+
+/** All hook metadata, in catalog order. */
+export function getAllHookMetadata(): HookMetadata[] {
+	const cached = getHookCache();
+	return hooks.map((hook) => cached.get(hook.canonicalName.toLowerCase())!);
+}
+
+/** Canonical hook names, in catalog order. */
+export function listHookNames(): string[] {
+	return hooks.map((hook) => hook.canonicalName);
+}
+
+/** Whether a name (canonical or per-framework export) is a known Wire UI hook. */
+export function isWireHook(name: string): boolean {
+	return getHookCache().has(name.toLowerCase());
+}
+
+// ---------------------------------------------------------------------------
+// Scaffolds
+// ---------------------------------------------------------------------------
+
+function toScaffoldMetadata(scaffold: ScaffoldData): ScaffoldMetadata {
+	const sources: ScaffoldMetadata["sources"] = {};
+	for (const framework of FRAMEWORKS) {
+		const snippet = scaffold.frameworks[framework];
+		if (snippet) sources[framework] = snippet.source;
+	}
+
+	return {
+		name: scaffold.name,
+		title: scaffold.title,
+		description: scaffold.description,
+		components: scaffold.components,
+		hooks: scaffold.hooks,
+		frameworks: FRAMEWORKS.filter((fw) => scaffold.frameworks[fw]),
+		sources,
+		notes: scaffold.notes ?? [],
+	};
+}
+
+let scaffoldCache: Map<string, ScaffoldMetadata> | null = null;
+
+function getScaffoldCache(): Map<string, ScaffoldMetadata> {
+	if (scaffoldCache) return scaffoldCache;
+	const map = new Map<string, ScaffoldMetadata>();
+	for (const scaffold of scaffolds)
+		map.set(scaffold.name.toLowerCase(), toScaffoldMetadata(scaffold));
+	scaffoldCache = map;
+	return map;
+}
+
+/** Get metadata for a single scaffold by name (case-insensitive). */
+export function getScaffoldMetadata(
+	name: string,
+): ScaffoldMetadata | undefined {
+	return getScaffoldCache().get(name.toLowerCase());
+}
+
+/** All scaffold metadata, in catalog order. */
+export function getAllScaffoldMetadata(): ScaffoldMetadata[] {
+	return [...getScaffoldCache().values()];
+}
+
+/** Reset the caches. Intended for tests only. */
 export function __resetMetadataCache(): void {
 	cache = null;
+	hookCache = null;
+	scaffoldCache = null;
 }

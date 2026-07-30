@@ -19,10 +19,13 @@ export type {
 	ComponentData,
 	HookFrameworkSnippet,
 	HookData,
+	ScaffoldSnippet,
+	ScaffoldData,
 	DecisionEntry,
 	DecisionTree,
 } from "./types.js";
 
 export { components } from "./components.js";
 export { hooks } from "./hooks.js";
+export { scaffolds } from "./scaffolds.js";
 export { decisionTrees } from "./decision-trees.js";

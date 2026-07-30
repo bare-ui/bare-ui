@@ -1,4 +1,4 @@
-// The VS Code surface for component snippets.
+// The VS Code surface for Wire UI snippets.
 //
 // Everything decision-shaped lives in the sibling pure modules; this file only
 // translates between them and the editor API. Snippets are served as completion
@@ -8,11 +8,17 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import * as vscode from "vscode";
-import { getComponentSnippets } from "./build.js";
+import {
+	getComponentSnippets,
+	getHookSnippets,
+	getScaffoldSnippets,
+} from "./build.js";
 import {
 	SNIPPET_LANGUAGES,
 	detectFramework,
 	frameworksFromPackageJson,
+	hasVueSfcBlocks,
+	isInVueScript,
 	isInVueTemplate,
 	planImportEdit,
 } from "./context.js";
@@ -41,9 +47,39 @@ export function registerSnippetCompletions(
 		provider,
 	);
 	log.appendLine(
-		`Registered component snippets for ${getComponentSnippets("react").length} components.`,
+		`Registered snippets for ${getComponentSnippets("react").length} components, ` +
+			`${getHookSnippets("react").length} hooks, and ` +
+			`${getScaffoldSnippets("react").length} scaffolds.`,
 	);
 	return disposable;
+}
+
+/**
+ * Which snippet kinds belong at this position. Markup, statements, and whole
+ * files each have exactly one right home in an SFC, so a `.vue` document is
+ * partitioned: `<template>` takes components, `<script>` takes hooks, and a file
+ * with neither block yet takes scaffolds. Elsewhere the document is JSX, where
+ * all three are plausible and nothing cheap tells them apart; the TypeScript
+ * plugin owns AST-precise context, not this provider.
+ */
+function snippetsFor(
+	framework: Framework,
+	languageId: string,
+	text: string,
+	offset: number,
+): WireSnippet[] {
+	if (languageId !== "vue")
+		return [
+			...getComponentSnippets(framework),
+			...getHookSnippets(framework),
+			...getScaffoldSnippets(framework),
+		];
+
+	if (isInVueTemplate(text, offset)) return getComponentSnippets(framework);
+	if (isInVueScript(text, offset)) return getHookSnippets(framework);
+	// Between or outside the blocks. Only a file with no blocks at all can take
+	// a whole new SFC; anywhere else there is nothing to offer.
+	return hasVueSfcBlocks(text) ? [] : getScaffoldSnippets(framework);
 }
 
 class WireSnippetProvider implements vscode.CompletionItemProvider<WireSnippetItem> {
@@ -58,12 +94,6 @@ class WireSnippetProvider implements vscode.CompletionItemProvider<WireSnippetIt
 			if (!config.get<boolean>("enable", true)) return [];
 
 			const text = document.getText();
-			if (
-				document.languageId === "vue" &&
-				!isInVueTemplate(text, document.offsetAt(position))
-			)
-				return [];
-
 			const framework = detectFramework({
 				languageId: document.languageId,
 				documentText: text,
@@ -74,9 +104,12 @@ class WireSnippetProvider implements vscode.CompletionItemProvider<WireSnippetIt
 				PREFIX_PATTERN,
 			);
 
-			return getComponentSnippets(framework).map((snippet) =>
-				toCompletionItem(snippet, document, range),
-			);
+			return snippetsFor(
+				framework,
+				document.languageId,
+				text,
+				document.offsetAt(position),
+			).map((snippet) => toCompletionItem(snippet, document, range));
 		} catch (error) {
 			this.log.appendLine(`Snippet completion failed: ${message(error)}`);
 			return [];
@@ -90,11 +123,15 @@ class WireSnippetProvider implements vscode.CompletionItemProvider<WireSnippetIt
 			const config = vscode.workspace.getConfiguration("wire-ui");
 			if (!config.get<boolean>("snippets.autoImport", true)) return item;
 
+			// Scaffolds are whole files and already carry their imports.
+			const imports = item.snippet.imports;
+			if (!imports) return item;
+
 			const edit = planImportEdit({
 				text: item.document.getText(),
 				languageId: item.document.languageId,
-				component: item.snippet.component,
-				moduleId: item.snippet.moduleId,
+				names: imports.names,
+				moduleId: imports.moduleId,
 			});
 			if (edit)
 				item.additionalTextEdits = [
@@ -116,7 +153,7 @@ function toCompletionItem(
 	range: vscode.Range | undefined,
 ): WireSnippetItem {
 	const item = new WireSnippetItem(snippet, document);
-	item.detail = `Wire UI · ${snippet.component}`;
+	item.detail = `Wire UI · ${snippet.title}`;
 	item.insertText = new vscode.SnippetString(snippet.body);
 	item.documentation = documentationFor(snippet);
 	item.filterText = snippet.prefix;
@@ -129,8 +166,11 @@ function toCompletionItem(
 function documentationFor(snippet: WireSnippet): vscode.MarkdownString {
 	const markdown = new vscode.MarkdownString();
 	markdown.appendMarkdown(`${snippet.description}\n\n`);
-	markdown.appendCodeblock(snippet.importStatement, "ts");
-	markdown.appendMarkdown(`\n[Documentation](${snippet.docsUrl})`);
+	if (snippet.signature) markdown.appendCodeblock(snippet.signature, "ts");
+	if (snippet.imports)
+		markdown.appendCodeblock(snippet.imports.statement, "ts");
+	if (snippet.docsUrl)
+		markdown.appendMarkdown(`\n[Documentation](${snippet.docsUrl})`);
 	return markdown;
 }
 

@@ -89,6 +89,19 @@ describe("provideCompletionItems", () => {
 		expect(modal.insertText.value.endsWith("$0")).toBe(true);
 	});
 
+	it("offers hooks and scaffolds alongside components in a JSX file", () => {
+		const { items } = complete("wire-", "typescriptreact");
+		const labels = items.map((item) => item.label);
+		expect(labels).toContain("wire-modal");
+		expect(labels).toContain("wire-hotkeys");
+		expect(labels).toContain("wire-ai-chat");
+
+		// A hook's detail names the export, which differs per framework.
+		const hotkeys = items.find((item) => item.label === "wire-hotkeys")!;
+		expect(hotkeys.detail).toBe("Wire UI · useHotkeys");
+		expect(hotkeys.insertText.value).toContain("useHotkeys(");
+	});
+
 	it("replaces the typed prefix rather than appending to it", () => {
 		const { items } = complete("wire-mod", "typescriptreact");
 		const modal = items.find((item) => item.label === "wire-modal")!;
@@ -113,16 +126,37 @@ describe("provideCompletionItems", () => {
 		).toContain("value={value()\\}");
 	});
 
-	it("serves Vue markup inside an SFC template and nothing outside it", () => {
+	// An SFC has one right home for each kind of snippet, so the three sets are
+	// offered in three different places rather than all at once.
+	it("partitions an SFC: markup in the template, hooks in the script", () => {
 		const sfc = "<script setup>\n</script>\n\n<template>\n\n</template>";
 		const inTemplate = sfc.indexOf("<template>") + "<template>\n".length;
+		const inScript = "<script setup>\n".length;
 
-		const { items } = complete(sfc, "vue", inTemplate);
+		const template = complete(sfc, "vue", inTemplate).items;
 		expect(
-			items.find((i) => i.label === "wire-modal")!.insertText.value,
+			template.find((i) => i.label === "wire-modal")!.insertText.value,
 		).toContain(':open="');
+		expect(template.map((i) => i.label)).not.toContain("wire-hotkeys");
 
-		expect(complete(sfc, "vue", 15).items).toEqual([]);
+		const script = complete(sfc, "vue", inScript).items;
+		expect(script.map((i) => i.label)).toContain("wire-hotkeys");
+		expect(script.map((i) => i.label)).not.toContain("wire-modal");
+	});
+
+	it("offers a whole-SFC scaffold only in a .vue file with no blocks yet", () => {
+		const empty = complete("wire-", "vue").items;
+		expect(empty.map((i) => i.label)).toEqual([
+			"wire-ai-chat",
+			"wire-ai-stream",
+			"wire-ai-markdown",
+		]);
+		expect(empty[0].insertText.value).toContain("<script setup");
+
+		// An SFC that already has blocks cannot take a second one, and between
+		// them there is no markup or statement context either.
+		const sfc = "\n<script setup>\n</script>\n\n<template>\n</template>";
+		expect(complete(sfc, "vue", 0).items).toEqual([]);
 	});
 
 	it("goes quiet when the extension is disabled", () => {
@@ -164,5 +198,28 @@ describe("resolveCompletionItem", () => {
 		__state.configuration.set("wire-ui.snippets.autoImport", false);
 		const resolved = resolve("wire-", "typescriptreact", "wire-modal");
 		expect(resolved.additionalTextEdits).toBeUndefined();
+	});
+
+	it("brings a hook's import, helpers included", () => {
+		expect(
+			resolve("wire-", "typescriptreact", "wire-hotkeys")
+				.additionalTextEdits![0].newText,
+		).toBe("import { useHotkeys } from '@wire-ui/react';\n");
+		// useDirection ships two synchronous helpers its example uses.
+		expect(
+			resolve("wire-", "typescriptreact", "wire-direction")
+				.additionalTextEdits![0].newText,
+		).toBe(
+			"import { useDirection, getDirection, isRtl } from '@wire-ui/react';\n",
+		);
+	});
+
+	// A scaffold's body already opens with its own imports; adding another would
+	// duplicate it.
+	it("adds no import for a scaffold", () => {
+		expect(
+			resolve("wire-", "typescriptreact", "wire-ai-chat")
+				.additionalTextEdits,
+		).toBeUndefined();
 	});
 });
