@@ -53,6 +53,11 @@
     ],
     "commands": [
       {
+        "command": "wire-ui.init",
+        "title": "Init",
+        "category": "Wire UI"
+      },
+      {
         "command": "wire-ui.showOutput",
         "title": "Show Output Log",
         "category": "Wire UI"

@@ -22,6 +22,15 @@ file.
   component's full compound structure with tab stops over the text worth
   editing, and brings its own `@wire-ui/*` import.
 - `wire-ui.snippets.autoImport` setting to turn that import off.
+- Hook snippets (`wire-hotkeys`, `wire-debounce`, …) and AI-primitive scaffolds
+  (`wire-ai-chat`, `wire-ai-stream`, `wire-ai-markdown`), covering every hook and
+  scaffold in the catalog.
+- `Wire UI: Init` command — sets a workspace up for Wire UI: detects the package
+  manager (`packageManager` field, then lockfile, then npm), installs
+  `@wire-ui/<framework>` plus any missing framework peers in a visible terminal,
+  and writes a starter `wire-ui.css` styling the `data-*` states. Shows the plan
+  before touching anything, creates a `package.json` when there is none, and
+  leaves an existing Wire UI dependency or stylesheet alone.
 
 ### Changed
 

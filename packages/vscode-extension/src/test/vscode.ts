@@ -76,18 +76,99 @@ export interface Registration {
 	};
 }
 
+export interface FakeWorkspaceFolder {
+	uri: { fsPath: string };
+	name: string;
+	index: number;
+}
+
+/** A message the extension showed, recorded rather than displayed. */
+export interface ShownMessage {
+	kind: "info" | "warning" | "error";
+	message: string;
+	options?: unknown;
+	items: string[];
+}
+
+export interface FakeTerminal {
+	name: string;
+	cwd?: string;
+	shown: boolean;
+	sent: string[];
+}
+
 /** Test-visible state; reset between cases with `__reset()`. */
 export const __state = {
 	registrations: [] as Registration[],
 	configuration: new Map<string, unknown>(),
 	workspaceFolder: undefined as { uri: { fsPath: string } } | undefined,
+	commands: new Map<string, (...args: unknown[]) => unknown>(),
+	workspaceFolders: [] as FakeWorkspaceFolder[],
+	messages: [] as ShownMessage[],
+	terminals: [] as FakeTerminal[],
+	openedDocuments: [] as string[],
+	/** Answers a quick pick; returning undefined models a dismissal. */
+	onQuickPick: undefined as
+		| ((items: readonly unknown[], options?: unknown) => unknown)
+		| undefined,
+	/** Answers a message with buttons; returns the chosen item, or undefined. */
+	onMessage: undefined as
+		| ((message: ShownMessage) => string | undefined)
+		| undefined,
+	onWorkspaceFolderPick: undefined as
+		| (() => FakeWorkspaceFolder | undefined)
+		| undefined,
 };
 
 export function __reset(): void {
 	__state.registrations = [];
 	__state.configuration.clear();
 	__state.workspaceFolder = undefined;
+	__state.commands.clear();
+	__state.workspaceFolders = [];
+	__state.messages = [];
+	__state.terminals = [];
+	__state.openedDocuments = [];
+	__state.onQuickPick = undefined;
+	__state.onMessage = undefined;
+	__state.onWorkspaceFolderPick = undefined;
 }
+
+/** Invokes a registered command the way the command palette would. */
+export async function __runCommand(id: string, ...args: unknown[]) {
+	const handler = __state.commands.get(id);
+	if (!handler) throw new Error(`command not registered: ${id}`);
+	return handler(...args);
+}
+
+function show(
+	kind: ShownMessage["kind"],
+	message: string,
+	...rest: unknown[]
+): Promise<string | undefined> {
+	// VS Code's overloads put an optional options object before the button
+	// labels; both forms have to be understood to record the buttons.
+	const options =
+		rest.length > 0 && typeof rest[0] === "object" && rest[0] !== null
+			? rest[0]
+			: undefined;
+	const items = (options === undefined ? rest : rest.slice(1)) as string[];
+
+	const entry: ShownMessage = { kind, message, options, items };
+	__state.messages.push(entry);
+	return Promise.resolve(__state.onMessage?.(entry));
+}
+
+export const commands = {
+	registerCommand(id: string, handler: (...args: unknown[]) => unknown) {
+		__state.commands.set(id, handler);
+		return {
+			dispose() {
+				__state.commands.delete(id);
+			},
+		};
+	},
+};
 
 export const languages = {
 	registerCompletionItemProvider(
@@ -99,7 +180,52 @@ export const languages = {
 	},
 };
 
+export const window = {
+	showInformationMessage: (message: string, ...rest: unknown[]) =>
+		show("info", message, ...rest),
+	showWarningMessage: (message: string, ...rest: unknown[]) =>
+		show("warning", message, ...rest),
+	showErrorMessage: (message: string, ...rest: unknown[]) =>
+		show("error", message, ...rest),
+
+	showQuickPick(items: readonly unknown[], options?: unknown) {
+		return Promise.resolve(__state.onQuickPick?.(items, options));
+	},
+
+	showWorkspaceFolderPick() {
+		return Promise.resolve(__state.onWorkspaceFolderPick?.());
+	},
+
+	createTerminal(options: { name: string; cwd?: string }) {
+		const terminal: FakeTerminal = {
+			name: options.name,
+			cwd: options.cwd,
+			shown: false,
+			sent: [],
+		};
+		__state.terminals.push(terminal);
+		return {
+			show() {
+				terminal.shown = true;
+			},
+			sendText(text: string) {
+				terminal.sent.push(text);
+			},
+		};
+	},
+
+	showTextDocument(document: { fileName: string }) {
+		__state.openedDocuments.push(document.fileName);
+		return Promise.resolve({ document });
+	},
+};
+
 export const workspace = {
+	get workspaceFolders(): FakeWorkspaceFolder[] | undefined {
+		return __state.workspaceFolders.length > 0
+			? __state.workspaceFolders
+			: undefined;
+	},
 	getConfiguration(section: string) {
 		return {
 			get<T>(key: string, fallback: T): T {
@@ -110,5 +236,8 @@ export const workspace = {
 	},
 	getWorkspaceFolder() {
 		return __state.workspaceFolder;
+	},
+	openTextDocument(fileName: string) {
+		return Promise.resolve({ fileName });
 	},
 };

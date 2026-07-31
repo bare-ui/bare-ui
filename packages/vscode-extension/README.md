@@ -25,6 +25,31 @@ SFC's `<template>` block.
 Set `wire-ui.snippets.autoImport` to `false` to insert the markup without the
 import.
 
+Hooks and AI primitives are there too — `wire-hotkeys`, `wire-debounce`, … for
+every hook in the catalog, and `wire-ai-chat`, `wire-ai-stream`,
+`wire-ai-markdown` for ready-to-style scaffolds.
+
+## Commands
+
+### Wire UI: Init
+
+Sets the workspace up for Wire UI. It works out which package manager you use
+(the `packageManager` field first, then the lockfile, then npm), then:
+
+- installs `@wire-ui/<framework>` and any framework peer you're missing, in a
+  terminal you can watch and cancel;
+- writes a starter `wire-ui.css` — Wire UI ships no CSS, so this is a small
+  stylesheet giving the `data-*` states a default look to build on. It lands in
+  `src/`, `app/`, or `styles/` if you have one, otherwise the workspace root.
+
+The framework is picked for you when the workspace already depends on one.
+Nothing happens until you confirm the plan, an existing `package.json` or
+stylesheet is never overwritten, and running it a second time on a set-up
+workspace just offers to open the stylesheet.
+
+> The starter stylesheet is a placeholder for milestone **0.7**'s
+> `@wire-ui/themes` package; once that ships, Init will install a real theme.
+
 ## Planned features
 
 See [`.claude/roadmap.md`](../../.claude/roadmap.md) (milestone 0.8) for the full
@@ -33,12 +58,12 @@ scope. In short:
 - **Editing intelligence** — `data-*` attribute & `data-state` value
   autocomplete, component-parts autocomplete, hover docs, go-to-definition, and
   diagnostic warnings for common misuses.
-- **Snippets** — compound component scaffolds (done, above), plus hook and
-  AI-primitive scaffolds.
+- **Snippets** — component, hook, and AI-primitive scaffolds (done, above).
 - **Theme integration** (depends on 0.7) — theme preview swatches and an inline
   theme switcher.
-- **Project tooling** — `Wire UI: Init`, `Wire UI: Add Component`, and
-  `Wire UI: Open Playground` commands, plus MCP detection.
+- **Project tooling** — `Wire UI: Init` (done, above), plus
+  `Wire UI: Add Component` and `Wire UI: Open Playground` commands and MCP
+  detection.
 
 ## Architecture
 

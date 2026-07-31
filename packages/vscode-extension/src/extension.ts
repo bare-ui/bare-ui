@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { registerInitCommand } from "./init/index.js";
 import { registerSnippetCompletions } from "./snippets/index.js";
 
 const TS_PLUGIN_ID = "@wire-ui/typescript-plugin";
@@ -24,6 +25,7 @@ export async function activate(
 	);
 
 	context.subscriptions.push(registerSnippetCompletions(output));
+	context.subscriptions.push(registerInitCommand(output));
 
 	await configureTypeScriptPlugin(output);
 }
