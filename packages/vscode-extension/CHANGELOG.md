@@ -31,6 +31,12 @@ file.
   and writes a starter `wire-ui.css` styling the `data-*` states. Shows the plan
   before touching anything, creates a `package.json` when there is none, and
   leaves an existing Wire UI dependency or stylesheet alone.
+- `Wire UI: Add Component` command — scaffolds a new compound component in Wire
+  UI's own pattern (context + `Root` + parts, controllable open state, `data-*`
+  for every interactive state) for React, Vue, or Solid. Prompts for a name,
+  its parts, and a target folder; refuses to overwrite existing files. The
+  generated output is typechecked against the real `@wire-ui/*` declarations in
+  CI via `tsc` / `vue-tsc`.
 
 ### Changed
 

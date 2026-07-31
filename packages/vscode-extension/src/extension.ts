@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { registerAddComponentCommand } from "./add-component/index.js";
 import { registerInitCommand } from "./init/index.js";
 import { registerSnippetCompletions } from "./snippets/index.js";
 
@@ -26,6 +27,7 @@ export async function activate(
 
 	context.subscriptions.push(registerSnippetCompletions(output));
 	context.subscriptions.push(registerInitCommand(output));
+	context.subscriptions.push(registerAddComponentCommand(output));
 
 	await configureTypeScriptPlugin(output);
 }

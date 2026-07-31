@@ -58,6 +58,11 @@
         "category": "Wire UI"
       },
       {
+        "command": "wire-ui.addComponent",
+        "title": "Add Component",
+        "category": "Wire UI"
+      },
+      {
         "command": "wire-ui.showOutput",
         "title": "Show Output Log",
         "category": "Wire UI"

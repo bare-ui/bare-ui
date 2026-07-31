@@ -118,7 +118,23 @@ export const __state = {
 	onWorkspaceFolderPick: undefined as
 		| (() => FakeWorkspaceFolder | undefined)
 		| undefined,
+	/**
+	 * Answers an input box. The stub runs the box's own `validateInput` over the
+	 * answer and throws if it fails, so a test cannot feed the extension input a
+	 * real user would have been blocked from entering.
+	 */
+	onInputBox: undefined as
+		| ((options: InputBoxOptions) => string | undefined)
+		| undefined,
 };
+
+export interface InputBoxOptions {
+	title?: string;
+	prompt?: string;
+	value?: string;
+	placeHolder?: string;
+	validateInput?: (value: string) => string | undefined;
+}
 
 export function __reset(): void {
 	__state.registrations = [];
@@ -132,6 +148,7 @@ export function __reset(): void {
 	__state.onQuickPick = undefined;
 	__state.onMessage = undefined;
 	__state.onWorkspaceFolderPick = undefined;
+	__state.onInputBox = undefined;
 }
 
 /** Invokes a registered command the way the command palette would. */
@@ -194,6 +211,19 @@ export const window = {
 
 	showWorkspaceFolderPick() {
 		return Promise.resolve(__state.onWorkspaceFolderPick?.());
+	},
+
+	showInputBox(options: InputBoxOptions = {}) {
+		const answer = __state.onInputBox?.(options);
+		if (answer === undefined) return Promise.resolve(undefined);
+
+		const complaint = options.validateInput?.(answer);
+		if (complaint)
+			throw new Error(
+				`input box rejected ${JSON.stringify(answer)}: ${complaint}`,
+			);
+
+		return Promise.resolve(answer);
 	},
 
 	createTerminal(options: { name: string; cwd?: string }) {

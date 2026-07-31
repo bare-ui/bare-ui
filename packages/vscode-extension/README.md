@@ -50,6 +50,24 @@ workspace just offers to open the stylesheet.
 > The starter stylesheet is a placeholder for milestone **0.7**'s
 > `@wire-ui/themes` package; once that ships, Init will install a real theme.
 
+### Wire UI: Add Component
+
+Scaffolds a **new** compound component written the way Wire UI's own primitives
+are — context + `Root` + parts, controllable open state, `data-state` and the
+interactive `data-*` attributes wired up, types and a barrel file alongside.
+It's for authoring your own primitive; to compose one the catalog already
+ships, use the `wire-` snippets above.
+
+Prompts for a name (PascalCase, spaces and dashes converted), the parts besides
+`Root`, and a folder. Parts named `Trigger` and `Content`/`Panel` get their
+conventional behaviour — a button that toggles, and markup that unmounts while
+closed — and anything else becomes a styleable passthrough that reads the shared
+state.
+
+React and Solid get `Name.tsx` + `Name.types.ts` + `index.ts`; Vue gets one SFC
+per part plus `keys.ts` for the injection key. Existing files are never
+overwritten.
+
 ## Planned features
 
 See [`.claude/roadmap.md`](../../.claude/roadmap.md) (milestone 0.8) for the full
@@ -61,9 +79,8 @@ scope. In short:
 - **Snippets** — component, hook, and AI-primitive scaffolds (done, above).
 - **Theme integration** (depends on 0.7) — theme preview swatches and an inline
   theme switcher.
-- **Project tooling** — `Wire UI: Init` (done, above), plus
-  `Wire UI: Add Component` and `Wire UI: Open Playground` commands and MCP
-  detection.
+- **Project tooling** — `Wire UI: Init` and `Wire UI: Add Component` (done,
+  above), plus the `Wire UI: Open Playground` command and MCP detection.
 
 ## Architecture
 
