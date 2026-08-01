@@ -1,13 +1,14 @@
 import * as vscode from "vscode";
 import { registerAddComponentCommand } from "./add-component/index.js";
 import { registerInitCommand } from "./init/index.js";
+import { registerMcpStatus } from "./mcp/index.js";
+import { registerOpenPlaygroundCommand } from "./playground/index.js";
 import { registerSnippetCompletions } from "./snippets/index.js";
 
 const TS_PLUGIN_ID = "@wire-ui/typescript-plugin";
 const TS_EXTENSION_ID = "vscode.typescript-language-features";
 
 let output: vscode.OutputChannel | undefined;
-let statusBar: vscode.StatusBarItem | undefined;
 
 export async function activate(
 	context: vscode.ExtensionContext,
@@ -16,18 +17,20 @@ export async function activate(
 	context.subscriptions.push(output);
 	output.appendLine("Wire UI extension activated.");
 
-	statusBar = createStatusBar();
-	context.subscriptions.push(statusBar);
-
 	context.subscriptions.push(
 		vscode.commands.registerCommand("wire-ui.showOutput", () =>
 			output?.show(true),
 		),
 	);
 
+	// The status bar item lives here: it reports MCP presence, and its own
+	// command is what the click opens.
+	context.subscriptions.push(registerMcpStatus(output));
+
 	context.subscriptions.push(registerSnippetCompletions(output));
 	context.subscriptions.push(registerInitCommand(output));
 	context.subscriptions.push(registerAddComponentCommand(output));
+	context.subscriptions.push(registerOpenPlaygroundCommand(output));
 
 	await configureTypeScriptPlugin(output);
 }
@@ -35,18 +38,6 @@ export async function activate(
 export function deactivate(): void {
 	// Disposables registered on `context.subscriptions` are cleaned up by VS Code;
 	// nothing else to tear down yet.
-}
-
-function createStatusBar(): vscode.StatusBarItem {
-	const item = vscode.window.createStatusBarItem(
-		vscode.StatusBarAlignment.Right,
-		100,
-	);
-	item.text = "$(symbol-misc) Wire UI";
-	item.tooltip = "Wire UI — click to open the log";
-	item.command = "wire-ui.showOutput";
-	item.show();
-	return item;
 }
 
 /**

@@ -63,6 +63,16 @@
         "category": "Wire UI"
       },
       {
+        "command": "wire-ui.openPlayground",
+        "title": "Open Playground",
+        "category": "Wire UI"
+      },
+      {
+        "command": "wire-ui.mcpStatus",
+        "title": "MCP Server Status",
+        "category": "Wire UI"
+      },
+      {
         "command": "wire-ui.showOutput",
         "title": "Show Output Log",
         "category": "Wire UI"

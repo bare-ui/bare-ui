@@ -68,6 +68,46 @@ export enum StatusBarAlignment {
 	Right = 2,
 }
 
+export class Disposable {
+	constructor(private readonly callOnDispose: () => void) {}
+
+	static from(...disposables: { dispose(): void }[]): Disposable {
+		return new Disposable(() => {
+			for (const disposable of disposables) disposable.dispose();
+		});
+	}
+
+	dispose(): void {
+		this.callOnDispose();
+	}
+}
+
+/** A `RelativePattern`, recorded so tests can assert what is watched. */
+export class RelativePattern {
+	constructor(
+		readonly base: unknown,
+		readonly pattern: string,
+	) {}
+}
+
+/** A status bar item, with its current text/tooltip visible to tests. */
+export interface FakeStatusBarItem {
+	alignment: StatusBarAlignment;
+	priority?: number;
+	text: string;
+	tooltip?: string;
+	command?: string;
+	shown: boolean;
+	disposed: boolean;
+}
+
+/** A file system watcher; `__fireWatchers()` drives its handlers. */
+export interface FakeWatcher {
+	pattern: unknown;
+	disposed: boolean;
+	handlers: (() => void)[];
+}
+
 export interface Registration {
 	selector: unknown;
 	provider: {
@@ -107,6 +147,10 @@ export const __state = {
 	messages: [] as ShownMessage[],
 	terminals: [] as FakeTerminal[],
 	openedDocuments: [] as string[],
+	statusBarItems: [] as FakeStatusBarItem[],
+	watchers: [] as FakeWatcher[],
+	workspaceFolderListeners: [] as (() => void)[],
+	clipboard: "",
 	/** Answers a quick pick; returning undefined models a dismissal. */
 	onQuickPick: undefined as
 		| ((items: readonly unknown[], options?: unknown) => unknown)
@@ -145,6 +189,10 @@ export function __reset(): void {
 	__state.messages = [];
 	__state.terminals = [];
 	__state.openedDocuments = [];
+	__state.statusBarItems = [];
+	__state.watchers = [];
+	__state.workspaceFolderListeners = [];
+	__state.clipboard = "";
 	__state.onQuickPick = undefined;
 	__state.onMessage = undefined;
 	__state.onWorkspaceFolderPick = undefined;
@@ -156,6 +204,25 @@ export async function __runCommand(id: string, ...args: unknown[]) {
 	const handler = __state.commands.get(id);
 	if (!handler) throw new Error(`command not registered: ${id}`);
 	return handler(...args);
+}
+
+/** Models a watched file changing on disk. */
+export function __fireWatchers(): void {
+	for (const watcher of __state.watchers)
+		if (!watcher.disposed)
+			for (const handler of watcher.handlers) handler();
+}
+
+/** Models the set of workspace folders changing. */
+export function __fireWorkspaceFoldersChanged(): void {
+	for (const listener of __state.workspaceFolderListeners) listener();
+}
+
+/** The single status bar item the extension creates. */
+export function __statusBarItem(): FakeStatusBarItem {
+	const [item] = __state.statusBarItems;
+	if (!item) throw new Error("no status bar item created");
+	return item;
 }
 
 function show(
@@ -184,6 +251,22 @@ export const commands = {
 				__state.commands.delete(id);
 			},
 		};
+	},
+
+	executeCommand(id: string, ...args: unknown[]) {
+		return Promise.resolve(__state.commands.get(id)?.(...args));
+	},
+};
+
+export const env = {
+	clipboard: {
+		writeText(text: string) {
+			__state.clipboard = text;
+			return Promise.resolve();
+		},
+		readText() {
+			return Promise.resolve(__state.clipboard);
+		},
 	},
 };
 
@@ -248,6 +331,28 @@ export const window = {
 		__state.openedDocuments.push(document.fileName);
 		return Promise.resolve({ document });
 	},
+
+	createStatusBarItem(alignment: StatusBarAlignment, priority?: number) {
+		const item: FakeStatusBarItem = {
+			alignment,
+			priority,
+			text: "",
+			shown: false,
+			disposed: false,
+		};
+		__state.statusBarItems.push(item);
+		return Object.assign(item, {
+			show() {
+				item.shown = true;
+			},
+			hide() {
+				item.shown = false;
+			},
+			dispose() {
+				item.disposed = true;
+			},
+		});
+	},
 };
 
 export const workspace = {
@@ -269,5 +374,39 @@ export const workspace = {
 	},
 	openTextDocument(fileName: string) {
 		return Promise.resolve({ fileName });
+	},
+
+	createFileSystemWatcher(pattern: unknown) {
+		const watcher: FakeWatcher = {
+			pattern,
+			disposed: false,
+			handlers: [],
+		};
+		__state.watchers.push(watcher);
+
+		const on = (handler: () => void) => {
+			watcher.handlers.push(handler);
+			return { dispose() {} };
+		};
+		return {
+			onDidCreate: on,
+			onDidChange: on,
+			onDidDelete: on,
+			dispose() {
+				watcher.disposed = true;
+			},
+		};
+	},
+
+	onDidChangeWorkspaceFolders(listener: () => void) {
+		__state.workspaceFolderListeners.push(listener);
+		return {
+			dispose() {
+				__state.workspaceFolderListeners =
+					__state.workspaceFolderListeners.filter(
+						(entry) => entry !== listener,
+					);
+			},
+		};
 	},
 };
