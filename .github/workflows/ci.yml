@@ -97,7 +97,7 @@ jobs:
   # it rather than on release day — .vscodeignore and the manifest's icon /
   # engine floor are only ever exercised by packaging.
   vscode-extension:
-    name: vscode extension · types · unit · package
+    name: editor tooling · types · unit · package
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -121,6 +121,16 @@ jobs:
 
       - name: Unit tests
         run: npm run test:run --workspace wire-ui
+
+      # The extension is a shell around these two. Their tests were running
+      # nowhere until Day 19 — including the one guarding against the plugin
+      # touching a program before tsserver has built the project graph, which is
+      # the kind of thing only a real editor notices, and only in a log file.
+      - name: Unit tests · TypeScript plugin
+        run: npm run test:run --workspace @wire-ui/typescript-plugin
+
+      - name: Unit tests · ESLint plugin
+        run: npm run test:run --workspace @wire-ui/eslint-plugin
 
       - name: Package (.vsix)
         run: npm run package --workspace wire-ui
