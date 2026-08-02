@@ -108,6 +108,13 @@ export interface FakeWatcher {
 	handlers: (() => void)[];
 }
 
+/** An output channel, with everything written to it visible to tests. */
+export interface FakeOutputChannel {
+	name: string;
+	lines: string[];
+	disposed: boolean;
+}
+
 export interface Registration {
 	selector: unknown;
 	provider: {
@@ -151,6 +158,15 @@ export const __state = {
 	watchers: [] as FakeWatcher[],
 	workspaceFolderListeners: [] as (() => void)[],
 	clipboard: "",
+	outputChannels: [] as FakeOutputChannel[],
+	/**
+	 * Answers `extensions.getExtension`. Undefined models the extension being
+	 * absent — which is what a VS Code fork shipping no built-in TypeScript
+	 * extension would look like.
+	 */
+	onGetExtension: undefined as
+		| ((id: string) => unknown | undefined)
+		| undefined,
 	/** Answers a quick pick; returning undefined models a dismissal. */
 	onQuickPick: undefined as
 		| ((items: readonly unknown[], options?: unknown) => unknown)
@@ -193,6 +209,8 @@ export function __reset(): void {
 	__state.watchers = [];
 	__state.workspaceFolderListeners = [];
 	__state.clipboard = "";
+	__state.outputChannels = [];
+	__state.onGetExtension = undefined;
 	__state.onQuickPick = undefined;
 	__state.onMessage = undefined;
 	__state.onWorkspaceFolderPick = undefined;
@@ -270,6 +288,12 @@ export const env = {
 	},
 };
 
+export const extensions = {
+	getExtension(id: string) {
+		return __state.onGetExtension?.(id);
+	},
+};
+
 export const languages = {
 	registerCompletionItemProvider(
 		selector: unknown,
@@ -330,6 +354,28 @@ export const window = {
 	showTextDocument(document: { fileName: string }) {
 		__state.openedDocuments.push(document.fileName);
 		return Promise.resolve({ document });
+	},
+
+	createOutputChannel(name: string) {
+		const channel: FakeOutputChannel = { name, lines: [], disposed: false };
+		__state.outputChannels.push(channel);
+		return {
+			name,
+			appendLine(line: string) {
+				channel.lines.push(line);
+			},
+			append(text: string) {
+				channel.lines.push(text);
+			},
+			show() {},
+			hide() {},
+			clear() {
+				channel.lines = [];
+			},
+			dispose() {
+				channel.disposed = true;
+			},
+		};
 	},
 
 	createStatusBarItem(alignment: StatusBarAlignment, priority?: number) {

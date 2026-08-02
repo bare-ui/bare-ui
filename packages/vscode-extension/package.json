@@ -34,7 +34,7 @@
     "Other"
   ],
   "engines": {
-    "vscode": "^1.90.0",
+    "vscode": "^1.82.0",
     "node": ">=20.19.0"
   },
   "activationEvents": [
@@ -103,19 +103,23 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "package": "vsce package --no-dependencies",
+    "typecheck": "tsc --noEmit",
+    "package": "vsce package --no-dependencies --out wire-ui.vsix",
+    "publish:vsce": "vsce publish --packagePath wire-ui.vsix",
+    "publish:ovsx": "ovsx publish wire-ui.vsix",
     "format": "prettier --write \"src/**/*.ts\"",
     "test": "vitest",
     "test:run": "vitest run",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist wire-ui.vsix"
   },
   "dependencies": {
     "@wire-ui/typescript-plugin": "*"
   },
   "devDependencies": {
     "@types/node": "^24.12.0",
-    "@types/vscode": "^1.90.0",
+    "@types/vscode": "1.82.0",
     "@vscode/vsce": "^3.2.0",
+    "ovsx": "^1.0.2",
     "prettier": "^3.8.1",
     "tsup": "^8.5.0",
     "typescript": "~5.9.3",

@@ -91,6 +91,40 @@ jobs:
         if: matrix.package == 'react' || matrix.package == 'solid'
         run: npm run attw --workspace @wire-ui/${{ matrix.package }}
 
+  # The VS Code extension. Kept out of the `quality` matrix: it has no lint,
+  # a11y, SSR or bundle-budget legs, and its packaging gate is unique to it.
+  # `vsce package` runs here so a broken .vsix is caught on the PR that breaks
+  # it rather than on release day — .vscodeignore and the manifest's icon /
+  # engine floor are only ever exercised by packaging.
+  vscode-extension:
+    name: vscode extension · types · unit · package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install
+
+      # The extension bundles @wire-ui/typescript-plugin, so its dependencies
+      # must be built first. React/Vue/Solid are built too: the Add Component
+      # scaffolds are typechecked against their real `dist` declarations, and
+      # those tests skip themselves silently when the packages are unbuilt.
+      - name: Build
+        run: npx turbo build --filter=wire-ui... --filter=@wire-ui/react --filter=@wire-ui/vue --filter=@wire-ui/solid
+
+      - name: Type check
+        run: npm run typecheck --workspace wire-ui
+
+      - name: Unit tests
+        run: npm run test:run --workspace wire-ui
+
+      - name: Package (.vsix)
+        run: npm run package --workspace wire-ui
+
   # Per-component bundle-size budgets. Lives in its own job (not the quality
   # matrix) so Vue is gated too — Vue is held out of `quality` until its a11y
   # harness lands, but its size budgets are ready now. Each package's

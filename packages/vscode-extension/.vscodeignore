@@ -1,12 +1,29 @@
-# Source & config — only the bundled dist ships in the .vsix
+# What stays out of the .vsix. Everything not listed here ships, so this file
+# is the last thing between the repo and the Marketplace.
+#
+# Order matters: a later `!` negation re-includes what an earlier pattern
+# excluded. `!dist/**` used to sit below `**/*.map`, which quietly undid the
+# sourcemap exclusion and shipped a 548 KB map next to 397 KB of code.
+
+# Source & config — only the bundled dist ships
 src/**
 node_modules/**
 tsconfig.json
 tsup.config.ts
+vitest.config.ts
 .vscode/**
-**/*.map
-**/*.ts
-!dist/**
 
-# Keep these out of the package
-CHANGELOG.md
+# Turbo writes its task logs into the package directory
+.turbo/**
+
+# Maintainer docs — README and CHANGELOG are the listing; this is not
+RELEASING.md
+
+# The bundle ships; its sourcemap does not — the map is larger than the code
+# it maps, and a published .vsix is not where we debug.
+dist/**/*.map
+
+# Nothing TypeScript: `dist` is JavaScript, and a blanket `!dist/**` would
+# re-include the sources excluded above.
+**/*.ts
+!dist/**/*.js

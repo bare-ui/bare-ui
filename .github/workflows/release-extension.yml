@@ -1,0 +1,107 @@
+name: Release VS Code extension
+
+# Publishes `wire-ui.wire-ui` to the VS Code Marketplace and Open VSX.
+#
+# Open VSX is not optional extra credit: Cursor, Windsurf and VSCodium all
+# resolve extensions from it by default, so an extension published only to the
+# Marketplace does not exist as far as the forks are concerned.
+#
+# Both registries receive the *same* .vsix — it is built once, uploaded as a
+# workflow artifact, and published from that file. Building twice would let the
+# two registries drift to different bytes under the same version.
+#
+# Triggered by a `vscode-extension-v*` tag, or by hand (dry run by default).
+
+on:
+  push:
+    tags: ["vscode-extension-v*"]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish to the registries (otherwise build and package only)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: release-extension
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: package · publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # package-lock.json is git-ignored repo-wide (see ci.yml), hence `install`.
+      - name: Install dependencies
+        run: npm install
+
+      # The extension bundles @wire-ui/typescript-plugin (and through it the
+      # @wire-ui/mcp catalog) into dist/extension.js, so its dependencies have to
+      # be built first — `--filter=wire-ui...` pulls them in.
+      - name: Build
+        run: npx turbo build --filter=wire-ui...
+
+      - name: Type check
+        run: npm run typecheck --workspace wire-ui
+
+      - name: Unit tests
+        run: npm run test:run --workspace wire-ui
+
+      # A tag that disagrees with the manifest publishes a version nobody can
+      # find again. Checked before anything is uploaded.
+      - name: Check the tag matches the manifest version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          manifest="$(node -p "require('./packages/vscode-extension/package.json').version")"
+          tagged="${GITHUB_REF_NAME#vscode-extension-v}"
+          if [ "$manifest" != "$tagged" ]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match package.json version $manifest"
+            exit 1
+          fi
+          if [ "$manifest" = "0.0.0" ]; then
+            echo "::error::version is still 0.0.0 — bump it before releasing"
+            exit 1
+          fi
+
+      - name: Package
+        run: npm run package --workspace wire-ui
+
+      - name: Upload .vsix
+        uses: actions/upload-artifact@v4
+        with:
+          name: wire-ui-vsix
+          path: packages/vscode-extension/wire-ui.vsix
+          if-no-files-found: error
+
+      - name: Publish to the VS Code Marketplace
+        if: startsWith(github.ref, 'refs/tags/') || inputs.publish
+        working-directory: packages/vscode-extension
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: npm run publish:vsce
+
+      # First publish only: the namespace has to exist before anything can be
+      # pushed into it. Idempotent in effect — it fails once the namespace is
+      # there, which is why it does not gate the publish below.
+      - name: Ensure the Open VSX namespace exists
+        if: startsWith(github.ref, 'refs/tags/') || inputs.publish
+        continue-on-error: true
+        working-directory: packages/vscode-extension
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: npx ovsx create-namespace wire-ui
+
+      - name: Publish to Open VSX
+        if: startsWith(github.ref, 'refs/tags/') || inputs.publish
+        working-directory: packages/vscode-extension
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: npm run publish:ovsx
