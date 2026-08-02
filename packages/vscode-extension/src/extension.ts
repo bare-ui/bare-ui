@@ -5,7 +5,11 @@ import { registerMcpStatus } from "./mcp/index.js";
 import { registerOpenPlaygroundCommand } from "./playground/index.js";
 import { registerSnippetCompletions } from "./snippets/index.js";
 
-const TS_PLUGIN_ID = "@wire-ui/typescript-plugin";
+// The plugin's *shipped* module name, which is what tsserver loaded it under
+// and therefore the only key `configurePlugin` answers to. It is deliberately
+// not `@wire-ui/typescript-plugin` — see scripts/ts-plugin-pack.mjs. Must stay
+// equal to `contributes.typescriptServerPlugins[0].name`; a test asserts it.
+const TS_PLUGIN_ID = "wire-ui-typescript-plugin-pack";
 const TS_EXTENSION_ID = "vscode.typescript-language-features";
 
 let output: vscode.OutputChannel | undefined;

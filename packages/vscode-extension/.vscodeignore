@@ -7,11 +7,19 @@
 
 # Source & config — only the bundled dist ships
 src/**
+scripts/**
 node_modules/**
 tsconfig.json
 tsup.config.ts
 vitest.config.ts
 .vscode/**
+
+# One thing does ship from node_modules — the TypeScript plugin pack, without
+# which the extension has no completions, hover or diagnostics — but not by way
+# of this file: `vsce package --no-dependencies` ignores node_modules before
+# .vscodeignore is ever read, so a `!` negation here would do nothing. It is
+# added to the archive afterwards by scripts/vsix-add-ts-plugin-pack.mjs, and
+# src/package.test.ts opens the .vsix to check that it is in there.
 
 # Turbo writes its task logs into the package directory
 .turbo/**

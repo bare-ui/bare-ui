@@ -38,6 +38,23 @@ file.
   generated output is typechecked against the real `@wire-ui/*` declarations in
   CI via `tsc` / `vue-tsc`.
 
+### Fixed
+
+- **The TypeScript plugin never loaded from a packaged `.vsix`.** Everything it
+  powers — `data-*` completion, component parts, hover docs, go-to-definition
+  and all ten diagnostics — was dead in an installed build, while working
+  perfectly in the F5 dev host. `contributes.typescriptServerPlugins` names a
+  module that _tsserver_ resolves from the installed extension's own directory,
+  and bundling the plugin into `dist/extension.js` does nothing for that; the
+  failure was one `Failed to load module` line in a tsserver log. The plugin now
+  ships as `node_modules/wire-ui-typescript-plugin-pack` inside the `.vsix`, and
+  a test packages for real and opens the archive to check it is there.
+- The plugin scanned the project from `create()`, which runs before tsserver has
+  built the project graph. That desynchronised `project.program` and made the
+  next `updateGraphWorker()` fail an internal assertion, taking down the
+  `updateOpen` request for the first file opened in a window. The scan now runs
+  on the first request served.
+
 ### Changed
 
 - Metadata is now sourced from `@wire-ui/typescript-plugin/metadata` (the shared

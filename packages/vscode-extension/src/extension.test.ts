@@ -22,7 +22,10 @@ const manifest = JSON.parse(
 	activationEvents: string[];
 	enabledApiProposals?: string[];
 	devDependencies: Record<string, string>;
-	contributes: { commands: { command: string; title: string }[] };
+	contributes: {
+		commands: { command: string; title: string }[];
+		typescriptServerPlugins: { name: string }[];
+	};
 };
 
 function context(): { subscriptions: { dispose(): void }[] } {
@@ -77,7 +80,12 @@ describe("activate", () => {
 
 		await activate(context() as never);
 
-		expect(configured).toEqual(["@wire-ui/typescript-plugin"]);
+		// Read from the manifest rather than repeated here: `configurePlugin`
+		// keys off the name tsserver loaded the plugin under, so a manifest rename
+		// that leaves the code behind is a silent no-op, not a crash.
+		expect(configured).toEqual([
+			manifest.contributes.typescriptServerPlugins[0].name,
+		]);
 	});
 
 	// The three ways a fork can differ from stock VS Code. None may take the

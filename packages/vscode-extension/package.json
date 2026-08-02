@@ -47,7 +47,7 @@
   "contributes": {
     "typescriptServerPlugins": [
       {
-        "name": "@wire-ui/typescript-plugin",
+        "name": "wire-ui-typescript-plugin-pack",
         "enableForWorkspaceTypeScriptVersions": true
       }
     ],
@@ -93,7 +93,11 @@
         },
         "wire-ui.trace.server": {
           "type": "string",
-          "enum": ["off", "messages", "verbose"],
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
           "default": "off",
           "description": "Trace the communication with the Wire UI TypeScript Language Service plugin."
         }
@@ -101,16 +105,16 @@
     }
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && node scripts/ts-plugin-pack.mjs",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
-    "package": "vsce package --no-dependencies --out wire-ui.vsix",
+    "package": "node scripts/package.mjs",
     "publish:vsce": "vsce publish --packagePath wire-ui.vsix",
     "publish:ovsx": "ovsx publish wire-ui.vsix",
     "format": "prettier --write \"src/**/*.ts\"",
     "test": "vitest",
     "test:run": "vitest run",
-    "clean": "rm -rf dist wire-ui.vsix"
+    "clean": "rm -rf dist wire-ui.vsix node_modules/wire-ui-typescript-plugin-pack"
   },
   "dependencies": {
     "@wire-ui/typescript-plugin": "*"
@@ -118,11 +122,14 @@
   "devDependencies": {
     "@types/node": "^24.12.0",
     "@types/vscode": "1.82.0",
+    "@types/yauzl": "^3.4.0",
     "@vscode/vsce": "^3.2.0",
     "ovsx": "^1.0.2",
     "prettier": "^3.8.1",
     "tsup": "^8.5.0",
     "typescript": "~5.9.3",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.2",
+    "yauzl": "^3.4.0",
+    "yazl": "^2.5.1"
   }
 }
