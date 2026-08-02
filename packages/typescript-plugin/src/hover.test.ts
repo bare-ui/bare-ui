@@ -6,6 +6,10 @@ import {
 	resolveHoverContext,
 	type HoverContext,
 } from "./hover.js";
+import {
+	getComponentMetadata,
+	listComponentNames,
+} from "./metadata/index.js";
 
 const WIRE_IMPORT =
 	"import { Switch, Button, Accordion } from '@wire-ui/react'\n";
@@ -164,5 +168,59 @@ describe("buildHoverQuickInfo", () => {
 		const info = buildHoverQuickInfo(ts, ctx);
 		const display = info.displayParts!.map((p) => p.text).join("");
 		expect(display).toBe("(Wire UI) Accordion.Item");
+	});
+});
+
+// Ship criterion (roadmap 0.8): "hover docs work for every component". Asserted
+// over the catalog rather than a sample, so a component added to `@wire-ui/mcp`
+// without the metadata a hover needs fails here instead of hovering blank in
+// someone's editor.
+describe("ship criterion — hover docs for every component", () => {
+	const components = listComponentNames();
+
+	it("covers the whole catalog", () => {
+		expect(components.length).toBeGreaterThan(0);
+	});
+
+	it.each(components)("%s hovers with docs", (name) => {
+		const meta = getComponentMetadata(name)!;
+		const prelude = `import { ${name} } from '@wire-ui/react'\n`;
+		const md = markdown(`const x = <${name.slice(0, 2)}|${name.slice(2)} />`, prelude);
+
+		expect(md, `no hover for <${name}>`).toBeDefined();
+		expect(md).toContain(`**${name}**`);
+		expect(md).toContain(meta.description);
+		// The docs link is the hover's escape hatch — every component gets one.
+		expect(md).toContain(`(${meta.docsUrl})`);
+
+		// Whatever the catalog says the component has, the hover shows.
+		if (meta.parts.some((part) => !part.includes("."))) {
+			expect(md).toContain("**Parts**");
+		}
+		if (meta.dataAttributes.length > 0) {
+			expect(md).toContain("**Data attributes**");
+			expect(md).toContain(`\`${meta.dataAttributes[0].name}\``);
+		}
+	});
+
+	// Hovering a part is the other half: `<Accordion.Trigger>` has to resolve to
+	// the part, not just to the component.
+	const compoundParts = components.flatMap((name) => {
+		const meta = getComponentMetadata(name)!;
+		return meta.parts
+			.filter((part) => !part.includes("."))
+			.map((part) => [name, part] as const);
+	});
+
+	it.each(compoundParts)("%s.%s hovers as a part", (name, part) => {
+		const prelude = `import { ${name} } from '@wire-ui/react'\n`;
+		const md = markdown(
+			`const x = <${name}.${part.slice(0, 1)}|${part.slice(1)} />`,
+			prelude,
+		);
+
+		expect(md, `no hover for <${name}.${part}>`).toBeDefined();
+		expect(md).toContain(`**${name}.${part}** — compound part of`);
+		expect(md).toContain(`▸ \`${name}.${part}\``);
 	});
 });
