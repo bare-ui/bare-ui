@@ -20,6 +20,33 @@ same `.vsix`, built once — see
 Both live in the repo's Actions secrets. The Open VSX namespace is created by
 the workflow's first run; it is a no-op afterwards.
 
+## Recording the listing GIFs
+
+The README is the Marketplace page and its first screen decides installs, so the
+demos are a ship criterion, not decoration. `npm run verify:listing` fails while
+any of them is missing, and the release workflow runs it before publishing.
+
+Record against a **clean editor**: a throwaway profile
+(`code --user-data-dir /tmp/demo --extensions-dir /tmp/demo-ext`) with only this
+extension installed, default dark theme, zoom level 1–2, minimap and breadcrumbs
+off, a maximised panel-free window cropped to the code. Type at a human speed —
+completion popups need a beat to be readable. Keep each under ~10 seconds and
+~2 MB; loop cleanly.
+
+Nothing on this repo's CI can record them. Any capture tool is fine — Kooha or
+Peek on Linux/Wayland, Kap on macOS, ScreenToGif on Windows — or record to video
+and convert with `ffmpeg -i in.webm -vf "fps=15,scale=900:-1" -f gif out.gif`
+(`gifski` gives better palettes if you have it).
+
+| File | What it shows |
+| --- | --- |
+| `assets/hero.gif` | An empty `.tsx`. Type `wire-switch`, accept the snippet: the whole compound structure lands *and* the `@wire-ui/react` import appears at the top. Then inside `<Switch.Root`, type `data-` and let the attribute list open. This one carries the listing — make it the clearest. |
+| `assets/completions.gif` | Inside `<Switch.Root data-state="` the completion offers `checked` / `unchecked`; move to an `<Accordion.Item data-state="` and it offers `open` / `closed`. The point is that the same attribute completes differently per component. |
+| `assets/hover.gif` | Hover `<Accordion.Trigger>`: the parts table with `▸` on the hovered part, the `data-*` table with value enums, the docs link. Let it sit long enough to read. |
+| `assets/diagnostics.gif` | Write `<Input.Field />` with no `<Input.Root>` around it; the squiggle appears as you type and the message is legible on hover. Wrapping it in `<Input.Root>` clears it — showing the fix is what sells the feature. |
+
+Alt text is checked too: describe what happens, not "screenshot".
+
 ## Cutting a release
 
 1. Bump `version` in `package.json`. It ships as `0.0.0` and the workflow
@@ -27,8 +54,9 @@ the workflow's first run; it is a no-op afterwards.
    registry cannot be replaced, only superseded.
 2. Move the `CHANGELOG.md` `[Unreleased]` section under the new version. The
    changelog ships in the `.vsix` and the Marketplace renders it as a tab.
-3. Confirm the README's opening still matches what the extension does — it is
-   the listing page, and its first screen is what decides installs.
+3. Run `npm run verify:listing --workspace wire-ui`, and read the README's first
+   screen yourself — the check can tell you a GIF exists, not that it still shows
+   what the extension does.
 4. Tag and push:
 
    ```bash

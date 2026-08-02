@@ -2,7 +2,7 @@
   "name": "wire-ui",
   "displayName": "Wire UI",
   "description": "Editor intelligence for Wire UI — autocomplete, hover docs, snippets, and lints for the AI-native unstyled primitives framework",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "publisher": "wire-ui",
   "license": "MIT",
@@ -63,11 +63,6 @@
         "category": "Wire UI"
       },
       {
-        "command": "wire-ui.openPlayground",
-        "title": "Open Playground",
-        "category": "Wire UI"
-      },
-      {
         "command": "wire-ui.mcpStatus",
         "title": "MCP Server Status",
         "category": "Wire UI"
@@ -109,6 +104,7 @@
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "package": "node scripts/package.mjs",
+    "verify:listing": "node scripts/verify-listing.mjs",
     "publish:vsce": "vsce publish --packagePath wire-ui.vsix",
     "publish:ovsx": "ovsx publish wire-ui.vsix",
     "format": "prettier --write \"src/**/*.ts\"",

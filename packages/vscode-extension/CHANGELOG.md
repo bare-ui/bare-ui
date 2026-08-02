@@ -3,20 +3,31 @@
 All notable changes to the Wire UI VS Code extension will be documented in this
 file.
 
-## [Unreleased]
+## [0.1.0] — 2026-08-02
+
+First public release: everything below shipped as one milestone (0.8), so it is
+listed as one version rather than replayed as the days it was built over.
 
 ### Added
 
-- Initial package scaffold (manifest, build config, empty extension entry
-  point). No features yet — see roadmap milestone 0.8.
-- Activation shell: real `activationEvents` (js/jsx/ts/tsx/vue) and a
-  `contributes` skeleton — `typescriptServerPlugins` (loads
-  `@wire-ui/typescript-plugin` into tsserver), a `Wire UI: Show Output Log`
-  command, and `wire-ui.enable` / `wire-ui.trace.server` settings.
-- `activate()` now stands up a "Wire UI" output channel and a status bar item,
-  and hands the TypeScript plugin its initial configuration via the built-in TS
-  extension's API.
-- F5 launch + build tasks (`.vscode/launch.json`, `.vscode/tasks.json`).
+- **Editor intelligence**, from the bundled `@wire-ui/typescript-plugin`:
+  `data-*` attribute completion filtered to the component under the cursor,
+  `data-state` value completion per component, compound-part completion after
+  `<Component.`, hover docs with the parts and `data-*` tables and a docs link
+  (every component in the catalog, asserted by test), and go-to-definition for
+  components and parts.
+- **Ten diagnostics** for compound-component misuse — `missing-root-wrapper`,
+  `compound-part-outside-root`, `required-pair-props`, `misplaced-classname`,
+  `prefer-data-state-selector`, `invalid-data-state-value`,
+  `managed-data-attribute`, `data-attribute-wrong-part`, `as-child-single-child`
+  and `presence-attribute-false-selector`. The same rules ship as
+  `@wire-ui/eslint-plugin` off the same metadata.
+- MCP detection: a status bar item reporting whether the workspace has
+  `@wire-ui/mcp` installed and whether an MCP client is configured to run it,
+  with a `Wire UI: MCP Server Status` command that copies a config snippet.
+- Activation shell: `activationEvents` for js/jsx/ts/tsx/vue, a "Wire UI" output
+  channel, a `Wire UI: Show Output Log` command, and the `wire-ui.enable` /
+  `wire-ui.trace.server` settings.
 - Component snippets for every component in the catalog, reachable by typing
   `wire-` (`wire-button`, `wire-modal`, `wire-combobox`, …). Each expands the
   component's full compound structure with tab stops over the text worth
@@ -38,7 +49,12 @@ file.
   generated output is typechecked against the real `@wire-ui/*` declarations in
   CI via `tsc` / `vue-tsc`.
 
-### Fixed
+### Fixed before release
+
+Neither of these ever reached a published build — both were found by installing
+a real `.vsix` in Cursor and reading tsserver's log, and both are recorded here
+because they are the failure modes to check for first if language features ever
+go quiet again.
 
 - **The TypeScript plugin never loaded from a packaged `.vsix`.** Everything it
   powers — `data-*` completion, component parts, hover docs, go-to-definition
@@ -55,10 +71,12 @@ file.
   `updateOpen` request for the first file opened in a window. The scan now runs
   on the first request served.
 
-### Changed
+### Not shipped
 
-- Metadata is now sourced from `@wire-ui/typescript-plugin/metadata` (the shared
-  layer moved into the TS plugin) instead of a direct `@wire-ui/mcp` dependency.
-- The build bundles `@wire-ui/typescript-plugin` into `dist/extension.js` rather
-  than leaving it external — `vsce package --no-dependencies` would otherwise
-  ship a .vsix whose extension host cannot resolve the catalog.
+- `Wire UI: Open Playground` was cut before the first release rather than
+  shipped as a stub. playground.wire-ui.com is milestone 0.6 and does not exist
+  yet, so the command could only ever apologise — worse, in a palette, than not
+  being there. It returns implemented, once there is a share-link format to
+  build against.
+- Theme preview swatches and the theme switcher wait on `@wire-ui/themes`
+  (milestone 0.7). `Wire UI: Init` writes a starter stylesheet in the meantime.

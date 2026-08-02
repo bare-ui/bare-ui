@@ -2,7 +2,6 @@ import * as vscode from "vscode";
 import { registerAddComponentCommand } from "./add-component/index.js";
 import { registerInitCommand } from "./init/index.js";
 import { registerMcpStatus } from "./mcp/index.js";
-import { registerOpenPlaygroundCommand } from "./playground/index.js";
 import { registerSnippetCompletions } from "./snippets/index.js";
 
 // The plugin's *shipped* module name, which is what tsserver loaded it under
@@ -34,7 +33,11 @@ export async function activate(
 	context.subscriptions.push(registerSnippetCompletions(output));
 	context.subscriptions.push(registerInitCommand(output));
 	context.subscriptions.push(registerAddComponentCommand(output));
-	context.subscriptions.push(registerOpenPlaygroundCommand(output));
+
+	// No `Wire UI: Open Playground` — playground.wire-ui.com ships with
+	// milestone 0.6 and does not exist yet. It was a stub that could only ever
+	// apologise, which in a palette is worse than an absent command; it comes
+	// back, implemented, when there is a share-link format to build against.
 
 	await configureTypeScriptPlugin(output);
 }
