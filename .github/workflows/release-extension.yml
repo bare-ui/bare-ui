@@ -55,6 +55,15 @@ jobs:
       - name: Unit tests
         run: npm run test:run --workspace wire-ui
 
+      - name: Unit tests · TypeScript plugin
+        run: npm run test:run --workspace @wire-ui/typescript-plugin
+
+      # The README is the Marketplace page. A missing GIF is not a broken build,
+      # so nothing else in this pipeline would notice one. Runs here rather than
+      # in CI because it is a property of a release, not of a pull request.
+      - name: Verify the listing
+        run: npm run verify:listing --workspace wire-ui
+
       # A tag that disagrees with the manifest publishes a version nobody can
       # find again. Checked before anything is uploaded.
       - name: Check the tag matches the manifest version
