@@ -104,16 +104,51 @@ describe("plugin factory", () => {
 		};
 		const proxy = plugin.create(info as never);
 
-		// Logs that it loaded and what it saw (no program → nothing yet).
+		// Logs that it loaded.
 		expect(logs.some((l) => l.includes("plugin loaded"))).toBe(true);
+
+		// The project scan is deferred to the first request, and only then logs
+		// what it saw (empty program → nothing yet).
+		expect(logs.some((l) => l.includes("no Wire UI components"))).toBe(
+			false,
+		);
+		proxy.getSemanticDiagnostics("example.tsx");
 		expect(logs.some((l) => l.includes("no Wire UI components"))).toBe(
 			true,
 		);
 
-		// Passthrough: untouched members still resolve to the original behaviour.
-		expect((proxy.getSemanticDiagnostics as () => unknown)()).toBe(
+		// Passthrough: with nothing of ours to add, the host's own result is what
+		// comes back.
+		expect(proxy.getSemanticDiagnostics("example.tsx")).toBe(
 			passthroughSentinel,
 		);
+	});
+
+	// The regression this guards: `create()` runs before the project has built
+	// its graph, so a `getProgram()` from inside it leaves
+	// `project.program !== languageService.getCurrentProgram()` and the next
+	// `updateGraphWorker()` dies on `Debug.assert(oldProgram === this.program)`.
+	// Cost: the first `updateOpen` request fails — i.e. the first file opened.
+	it("touches no program while tsserver is still building the project", () => {
+		let programRequests = 0;
+		const languageService = {
+			getProgram: () => {
+				programRequests += 1;
+				return undefined;
+			},
+			getSemanticDiagnostics: () => [],
+		} as unknown as ts.LanguageService;
+
+		const proxy = initFactory({ typescript: ts as never }).create({
+			languageService,
+			project: { projectService: { logger: { info: () => {} } } },
+		} as never);
+
+		expect(programRequests).toBe(0);
+
+		// …and does ask once a request is being served, which is safe.
+		proxy.getSemanticDiagnostics("example.tsx");
+		expect(programRequests).toBeGreaterThan(0);
 	});
 
 	it("serves a Wire UI hover over a component tag, delegating otherwise", () => {

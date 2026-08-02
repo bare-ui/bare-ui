@@ -76,11 +76,33 @@ function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
 			`plugin loaded — ${listComponentNames().length} components in catalog`,
 		);
 
-		// Report the Wire UI components this project uses. Guarded so a scan
-		// failure can never take down the host tsserver.
-		try {
-			const program = info.languageService.getProgram();
-			if (program) {
+		// Report the Wire UI components this project uses — on the first request
+		// we serve, never from `create()`.
+		//
+		// `create()` runs inside `Project.enableGlobalPlugins()`, before the
+		// project has ever built its graph. Calling
+		// `info.languageService.getProgram()` there makes the language service
+		// build a program that `project.program` knows nothing about, and the
+		// very next `updateGraphWorker()` fails its first assertion —
+		// `Debug.assert(oldProgram === this.program)` — taking the whole
+		// `updateOpen` request down with it, on the first file the user opens.
+		// Found on Cursor during the Day 19 fork verification; it is not
+		// fork-specific, stock tsserver asserts exactly the same thing.
+		//
+		// Deferring to a timer would be no safer: outside a request the project
+		// can be dirty, and building a program then desynchronises it just as
+		// badly. A request, by contrast, is always served after tsserver has
+		// brought the graph up to date.
+		let scanned = false;
+		function logProjectScan(): void {
+			if (scanned) return;
+			scanned = true;
+
+			// Guarded so a scan failure can never take down the host tsserver.
+			try {
+				const program = info.languageService.getProgram();
+				if (!program) return;
+
 				const sightings = collectWireComponentsInProgram(
 					tsLib,
 					program,
@@ -91,11 +113,11 @@ function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
 						? `saw ${seen.size} component(s): ${[...seen].sort().join(", ")}`
 						: "no Wire UI components in this project yet",
 				);
+			} catch (error) {
+				log(
+					`component scan failed: ${error instanceof Error ? error.message : String(error)}`,
+				);
 			}
-		} catch (error) {
-			log(
-				`component scan failed: ${error instanceof Error ? error.message : String(error)}`,
-			);
 		}
 
 		// Start from a passthrough proxy — every method bound to the original
@@ -121,6 +143,7 @@ function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
 			options,
 			formattingSettings,
 		) => {
+			logProjectScan();
 			const prior = info.languageService.getCompletionsAtPosition(
 				fileName,
 				position,
@@ -375,6 +398,9 @@ function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
 		// (missing root wrapper, part outside root) to tsserver's own. Guarded →
 		// never drop the host's diagnostics on a rule failure.
 		proxy.getSemanticDiagnostics = (fileName) => {
+			// Requested for every open file, so this is where the scan log
+			// reliably lands — completions only happen if the user types.
+			logProjectScan();
 			const prior = info.languageService.getSemanticDiagnostics(fileName);
 			try {
 				const sourceFile = info.languageService
